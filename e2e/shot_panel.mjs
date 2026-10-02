@@ -1,0 +1,11 @@
+import { chromium } from '../frontend/node_modules/playwright/index.mjs';
+import path from 'node:path'; import { fileURLToPath } from 'node:url';
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const b = await chromium.launch({ args: ['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader'] });
+const p = await (await b.newContext({ viewport: { width: 1360, height: 2300 } })).newPage();
+await p.goto(process.env.SABARI_URL ?? 'http://127.0.0.1:8766/'); await p.waitForFunction(() => window.__sabari);
+await p.setInputFiles('#filePick', path.join(ROOT, 'assets/samples/sample_lid_top.png'));
+await p.waitForFunction(() => window.__sabari.faces.lid_top.img); await p.waitForTimeout(400);
+await p.screenshot({ path: path.join(ROOT, `verification/15_panel_${process.env.TAG ?? 'after'}.png`), clip: { x: 0, y: 0, width: 330, height: 2300 } });
+console.log(await p.evaluate(() => document.getElementById('panel').scrollHeight));
+await b.close();

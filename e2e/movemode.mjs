@@ -21,8 +21,8 @@ R.off_drag = { image: await st(), cameraMoved: c0 !== await cam() };
 await p.click('[data-view=top]'); await p.waitForTimeout(200);
 
 // 켜짐
-await p.locator('#btnMoveMode').scrollIntoViewIfNeeded(); await p.click('#btnMoveMode');
-R.button_text = await p.textContent('#btnMoveMode');
+await p.locator('#moveMode').scrollIntoViewIfNeeded(); await p.check('#moveMode');
+R.checked = await p.isChecked('#moveMode');
 c0 = await cam();
 await p.mouse.move(800, 430); await p.mouse.down(); await p.mouse.move(900, 400, { steps: 8 }); await p.mouse.up();
 R.on_drag = { image: await st(), cameraMoved: c0 !== await cam() };
@@ -39,6 +39,6 @@ await p.click('#faceList button[data-face=lid_front]');
 const c2 = await cam(); await p.mouse.move(800, 430); await p.mouse.down(); await p.mouse.move(850, 450, { steps: 5 }); await p.mouse.up();
 R.empty_face_drag_rotates = c2 !== await cam();
 // 끄기
-await p.click('#btnMoveMode'); R.button_text_off = await p.textContent('#btnMoveMode');
+await p.uncheck('#moveMode', { force: true }); R.checked_off = await p.isChecked('#moveMode');
 R.errors = errs;
 console.log(JSON.stringify(R)); await b.close();

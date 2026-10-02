@@ -51,3 +51,18 @@ label.color input[type='color'] { width: 56px; height: 36px; padding: 2px; borde
 #loading { position: absolute; right: 16px; bottom: 16px; padding: 8px 14px; background: #25231f; color: #fff; border-radius: 8px; z-index: 5; }
 #dropHint { position: absolute; inset: 12px; border: 3px dashed var(--accent); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; background: rgba(255, 255, 255, 0.85); z-index: 6; pointer-events: none; }
 [hidden] { display: none !important; }
+
+/* 2차 정리: 패널 높이 축소·위계 */
+.facelist { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.facelist button { flex-direction: column; justify-content: center; text-align: center; gap: 0; padding: 4px 2px; min-height: 48px; line-height: 1.25; }
+.facelist small { font-size: 11px; }
+.head { display: flex; justify-content: space-between; align-items: center; }
+.head h2 { margin: 0; }
+button.link { min-height: 32px; border: none; background: none; color: #6b665e; text-decoration: underline; padding: 0 4px; }
+.swatches { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 6px 0 2px; }
+label.swatch { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 12px; }
+label.swatch input[type='color'] { width: 100%; height: 36px; padding: 2px; border: 1px solid #b9b5ad; border-radius: 6px; background: #fff; cursor: pointer; }
+.row .grow { flex: 1; }
+label.check small { display: block; font-size: 11px; color: #6b665e; }
+#bgSel { width: 92px; flex: none; }
+#faceControls.disabled .keep { opacity: 1; pointer-events: auto; }

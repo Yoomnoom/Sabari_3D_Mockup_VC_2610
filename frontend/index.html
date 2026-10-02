@@ -18,7 +18,7 @@
     <div id="editPanel">
       <section>
         <h2>1. 면 선택</h2>
-        <p class="hint">버튼을 누르거나 3D 박스의 면을 클릭하세요.</p>
+        <p class="hint">버튼 또는 3D 박스의 면을 클릭</p>
         <div id="faceList" class="facelist"></div>
       </section>
 
@@ -31,10 +31,8 @@
         </div>
         <p id="fileInfo" class="info">이미지 없음</p>
         <canvas id="facePreview" aria-label="면 미리보기"></canvas>
-        <p class="hint">미리보기를 드래그하면 이미지가 이동합니다. 3D 화면에서는 Shift+드래그.</p>
+        <p class="hint">미리보기를 끌어 위치를 옮길 수 있습니다.</p>
 
-        <button id="btnMoveMode" class="wide" aria-pressed="false">마우스로 이미지 이동: 꺼짐</button>
-        <p class="hint" id="moveHint">켜면 3D 화면에서 선택한 면을 끌어 이미지를 옮기고, 휠로 확대·축소합니다. 끄면 끌어서 박스가 회전합니다. (Shift+드래그는 항상 이동)</p>
         <div id="faceControls">
           <fieldset>
             <legend>맞춤 방식</legend>
@@ -58,6 +56,7 @@
 
           <fieldset>
             <legend>크기 · 위치</legend>
+            <label class="check keep"><input id="moveMode" type="checkbox" /> <span>3D 화면에서 마우스로 이동 <small>휠: 확대·축소 · 끄면 끌어서 회전</small></span></label>
             <label class="slider">배율 (%) <input id="scaleR" type="range" min="25" max="300" step="1" /><input id="scaleN" type="number" min="25" max="300" step="1" /></label>
             <label class="slider">X 위치 (%) <input id="xR" type="range" min="-100" max="100" step="1" /><input id="xN" type="number" min="-100" max="100" step="1" /></label>
             <label class="slider">Y 위치 (%) <input id="yR" type="range" min="-100" max="100" step="1" /><input id="yN" type="number" min="-100" max="100" step="1" /></label>
@@ -72,11 +71,13 @@
       </section>
 
       <section>
-        <h2>목업 색상</h2>
-        <label class="color"><span>면 바탕색 <small>(이미지 없는 면·여백)</small></span><input id="colFace" type="color" value="#ffffff" /></label>
-        <label class="color"><span>뚜껑 테두리·안쪽</span><input id="colLid" type="color" value="#ffffff" /></label>
-        <label class="color"><span>몸통</span><input id="colBase" type="color" value="#ffffff" /></label>
-        <button id="btnColorReset">색상 기본값</button>
+        <div class="head"><h2>목업 색상</h2><button id="btnColorReset" class="link">기본값</button></div>
+        <div class="swatches">
+          <label class="swatch"><input id="colFace" type="color" value="#ffffff" /><span>면 바탕</span></label>
+          <label class="swatch"><input id="colLid" type="color" value="#ffffff" /><span>뚜껑</span></label>
+          <label class="swatch"><input id="colBase" type="color" value="#ffffff" /><span>몸통</span></label>
+        </div>
+        <p class="hint">면 바탕 = 이미지 없는 면·여백 / 뚜껑 = 테두리·안쪽</p>
       </section>
 
       <section>
@@ -120,21 +121,20 @@
 
     <section>
       <h2>저장</h2>
-      <label class="check">PNG 배경
-        <select id="bgSel"><option value="white">흰색</option><option value="transparent">투명</option></select>
-      </label>
       <div class="col">
-        <button id="btnPng">현재 화면 PNG 저장</button>
+        <div class="row">
+          <button id="btnPng" class="grow">현재 화면 PNG 저장</button>
+          <select id="bgSel" aria-label="PNG 배경"><option value="white">흰 배경</option><option value="transparent">투명</option></select>
+        </div>
         <span id="editSave">
-          <div class="draft">
-            <div class="row"><button id="btnDraftSave">임시저장</button><button id="btnDraftLoad" disabled>임시저장 불러오기</button></div>
-            <p id="draftInfo" class="info">임시저장 없음</p>
-            <p class="hint">이미지를 넣거나 바꾸면 자동으로 저장됩니다. 이 브라우저 안에만 보관되며 다른 PC로는 옮겨지지 않습니다. 파일로 보관하려면 아래 프로젝트 저장을 쓰세요.</p>
-          </div>
           <button id="btnGlb">GLB 저장 (이미지 포함)</button>
-          <button id="btnProjSave">프로젝트 저장 (.sabari)</button>
-          <button id="btnProjOpen">프로젝트 열기</button>
+          <div class="row"><button id="btnProjSave" class="grow">프로젝트 저장</button><button id="btnProjOpen" class="grow">프로젝트 열기</button></div>
           <input id="fileProj" type="file" accept=".sabari,application/zip" hidden />
+          <div class="draft">
+            <div class="row"><button id="btnDraftSave" class="grow">임시저장</button><button id="btnDraftLoad" class="grow" disabled>불러오기</button></div>
+            <p id="draftInfo" class="info">임시저장 없음</p>
+            <p class="hint">변경 후 자동 보관 · 이 브라우저에만 저장됩니다. 파일로 보관하려면 프로젝트 저장(.sabari)을 쓰세요.</p>
+          </div>
         </span>
       </div>
       <p class="hint">파일은 브라우저 다운로드 폴더에 저장됩니다.</p>

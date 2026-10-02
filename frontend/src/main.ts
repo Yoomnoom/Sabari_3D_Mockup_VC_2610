@@ -76,7 +76,7 @@ function renderFaceList() {
     const b = document.createElement('button');
     b.setAttribute('aria-pressed', String(fd.id === current));
     b.dataset.face = fd.id;
-    b.innerHTML = `<span>${fd.label}</span><small>${f.img ? '이미지 있음' : '비어 있음'} · ${fd.wMm}×${fd.hMm}mm</small>`;
+    b.innerHTML = `<span>${fd.label}</span><small>${f.img ? '이미지 있음' : '비어 있음'}</small>`;
     b.onclick = () => setCurrent(fd.id);
     box.appendChild(b);
   }
@@ -336,12 +336,10 @@ async function init() {
   viewer.onPick = (id) => setCurrent(id);
   viewer.canDrag = () => !!faces[current].img;
   viewer.onWheelFace = (dy) => edit((f) => (f.state.scale = Math.min(3, Math.max(0.25, f.state.scale * Math.exp(-dy * 0.001)))));
-  const mm = $('btnMoveMode');
-  mm.onclick = () => {
-    viewer.moveMode = !viewer.moveMode;
-    mm.setAttribute('aria-pressed', String(viewer.moveMode));
-    mm.textContent = `마우스로 이미지 이동: ${viewer.moveMode ? '켜짐' : '꺼짐'}`;
-    $('viewport').classList.toggle('moving', viewer.moveMode);
+  const mm = $<HTMLInputElement>('moveMode');
+  mm.onchange = () => {
+    viewer.moveMode = mm.checked;
+    $('viewport').classList.toggle('moving', mm.checked);
   };
   const clamp1 = (v: number) => Math.min(1, Math.max(-1, v));
   viewer.onDragFace = (du, dv) => edit((f) => { f.state.offsetX = clamp1(f.state.offsetX + du); f.state.offsetY = clamp1(f.state.offsetY + dv); });
