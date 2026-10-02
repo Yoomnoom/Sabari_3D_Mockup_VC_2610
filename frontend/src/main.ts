@@ -1,4 +1,4 @@
-import { FACES, FaceData, FaceId, decode, faces, rebake } from './faces';
+import { FACES, FaceData, FaceId, decode, faces, rebake, theme } from './faces';
 import { Viewer, ViewName } from './viewer';
 import { Rotation, defaultState } from './transform';
 import { UserError, inspectImage, packProject, unpackProject } from './project';
@@ -141,6 +141,7 @@ async function saveProject() {
       FACES.map((x) => ({ id: x.id, state: faces[x.id].state, blob: faces[x.id].blob, name: faces[x.id].name })),
       Math.round(viewer.slot === 'editor' ? viewer.getLiftMm() : 0),
       $<HTMLSelectElement>('bgSel').value,
+      { face: $<HTMLInputElement>('colFace').value, lid: $<HTMLInputElement>('colLid').value, base: $<HTMLInputElement>('colBase').value },
     );
     download(blob, '사바리_프로젝트.sabari');
     msg('프로젝트를 저장했습니다. (다운로드 폴더의 사바리_프로젝트.sabari)', 'ok');
@@ -163,6 +164,7 @@ async function openProject(file: File) {
       }
       apply(fdsc.id);
     }
+    if (proj.colors) applyColors(proj.colors.face, proj.colors.lid, proj.colors.base);
     setLift(proj.lidLiftMm);
     $<HTMLSelectElement>('bgSel').value = proj.background;
     syncControls();
@@ -184,6 +186,20 @@ async function savePng() {
     download(blob, '사바리_목업.png');
     msg('PNG를 저장했습니다.', 'ok');
   });
+}
+
+// ---------- 목업 색상 ----------
+let defaultColors = { face: '#ffffff', lid: '#ffffff', base: '#ffffff' };
+
+function applyColors(face: string, lid: string, base: string) {
+  $<HTMLInputElement>('colFace').value = face;
+  $<HTMLInputElement>('colLid').value = lid;
+  $<HTMLInputElement>('colBase').value = base;
+  viewer.setPartColor('lid', lid);
+  viewer.setPartColor('base', base);
+  theme.faceBg = face;
+  viewer.setFaceBg(face);
+  for (const f of FACES) if (faces[f.id].img) apply(f.id); // 여백 색이 바뀌므로 다시 굽는다
 }
 
 // ---------- 박스 / 뷰어 ----------
@@ -284,6 +300,11 @@ async function init() {
     apply(current);
   };
 
+  // 목업 색상 (input 이벤트로 즉시 반영)
+  const cur = () => [$<HTMLInputElement>('colFace').value, $<HTMLInputElement>('colLid').value, $<HTMLInputElement>('colBase').value] as const;
+  for (const id of ['colFace', 'colLid', 'colBase']) $<HTMLInputElement>(id).oninput = () => applyColors(...cur());
+  $('btnColorReset').onclick = () => applyColors(defaultColors.face, defaultColors.lid, defaultColors.base);
+
   // 박스
   $('btnClose').onclick = () => setLift(0);
   $('btnOpen').onclick = () => setLift(OPEN_MM);
@@ -333,6 +354,8 @@ async function init() {
   });
 
   await busy(() => viewer.loadTemplate('./template.glb'));
+  defaultColors = { face: '#ffffff', lid: viewer.getPartColor('lid'), base: viewer.getPartColor('base') };
+  applyColors(defaultColors.face, defaultColors.lid, defaultColors.base);
   for (const f of FACES) viewer.setFaceTexture(f.id, null);
   setCurrent('lid_top');
   viewer.setView('iso');

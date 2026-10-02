@@ -1,6 +1,6 @@
 {
-  "file": "verification/exported_sabari_mockup.glb",
-  "bytes": 299108,
+  "file": "verification/exported_colors.glb",
+  "bytes": 46828,
   "validator": {
     "errors": 0,
     "warnings": 0,
@@ -12,30 +12,10 @@
     {
       "mime": "image/png",
       "embedded": true
-    },
-    {
-      "mime": "image/png",
-      "embedded": true
-    },
-    {
-      "mime": "image/png",
-      "embedded": true
-    },
-    {
-      "mime": "image/png",
-      "embedded": true
-    },
-    {
-      "mime": "image/png",
-      "embedded": true
     }
   ],
   "texturedMaterials": [
-    "lid_top",
-    "lid_front",
-    "lid_back",
-    "lid_left",
-    "lid_right"
+    "lid_front"
   ],
   "extensionsUsed": [],
   "nodes": [

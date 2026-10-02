@@ -1,5 +1,8 @@
 import { SurfaceState, bake, defaultState, textureSize } from './transform';
 
+/** 면 바탕색: 이미지 없는 면, 투명 픽셀, "전체 보이기" 여백에 쓴다. */
+export const theme = { faceBg: '#ffffff' };
+
 export type FaceId = 'lid_top' | 'lid_front' | 'lid_back' | 'lid_left' | 'lid_right';
 
 // 크기(mm)는 backend/app/template_gen.py 의 FACES / faceSizeMm 와 같아야 한다.
@@ -58,6 +61,6 @@ export function rebake(f: FaceData): boolean {
     ctx.clearRect(0, 0, f.canvas.width, f.canvas.height);
     return false;
   }
-  bake(ctx, f.canvas.width, f.canvas.height, f.img, f.iw, f.ih, f.state);
+  bake(ctx, f.canvas.width, f.canvas.height, f.img, f.iw, f.ih, f.state, theme.faceBg);
   return true;
 }

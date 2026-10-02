@@ -45,10 +45,10 @@ export function textureSize(faceWmm: number, faceHmm: number, longSide = 2048): 
 }
 
 /** 캔버스에 구워 넣는다. 이미지가 없으면 호출하지 않는다. */
-export function bake(ctx: CanvasRenderingContext2D, cw: number, ch: number, img: CanvasImageSource, iw: number, ih: number, s: SurfaceState) {
+export function bake(ctx: CanvasRenderingContext2D, cw: number, ch: number, img: CanvasImageSource, iw: number, ih: number, s: SurfaceState, bg = '#ffffff') {
   ctx.save();
   ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.fillStyle = '#ffffff'; // 투명 픽셀/여백은 흰색
+  ctx.fillStyle = bg; // 투명 픽셀/여백은 면 바탕색(기본 흰색)
   ctx.fillRect(0, 0, cw, ch);
   ctx.beginPath();
   ctx.rect(0, 0, cw, ch);

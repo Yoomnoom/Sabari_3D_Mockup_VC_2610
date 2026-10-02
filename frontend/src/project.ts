@@ -54,7 +54,11 @@ function parseSurface(v: unknown): { state: SurfaceState; sourceFile: string | n
 
 export interface SaveFace { id: FaceId; state: SurfaceState; blob: Blob | null; name: string | null }
 
-export async function packProject(faces: SaveFace[], lidLiftMm: number, background: string): Promise<Blob> {
+export interface Colors { face: string; lid: string; base: string }
+const HEX = /^#[0-9a-fA-F]{6}$/;
+const hex = (v: unknown, d: string) => (typeof v === 'string' && HEX.test(v) ? v.toLowerCase() : d);
+
+export async function packProject(faces: SaveFace[], lidLiftMm: number, background: string, colors: Colors): Promise<Blob> {
   const zip = new JSZip();
   const surfaces: Record<string, unknown> = {};
   for (const f of faces) {
@@ -66,13 +70,14 @@ export async function packProject(faces: SaveFace[], lidLiftMm: number, backgrou
     }
     surfaces[f.id] = { ...f.state, sourceFile, originalName: f.name };
   }
-  zip.file('project.json', JSON.stringify({ schemaVersion: SCHEMA_VERSION, templateId: TEMPLATE_ID, box: { lidLiftMm }, background, surfaces }, null, 2));
+  zip.file('project.json', JSON.stringify({ schemaVersion: SCHEMA_VERSION, templateId: TEMPLATE_ID, box: { lidLiftMm }, colors, background, surfaces }, null, 2));
   return zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
 }
 
 export interface OpenedProject {
   lidLiftMm: number;
   background: 'white' | 'transparent';
+  colors: Colors | null; // 없으면(이전 프로젝트) 기본값 유지
   faces: Record<FaceId, { state: SurfaceState; blob: Blob | null; name: string | null }>;
 }
 
@@ -105,5 +110,7 @@ export async function unpackProject(file: Blob): Promise<OpenedProject> {
     out[f.id] = { state: p.state, blob, name: blob ? (p.originalName ?? p.sourceFile) : null };
   }
   const box = (raw.box ?? {}) as Record<string, unknown>;
-  return { lidLiftMm: num(box.lidLiftMm, 0, 150, 0), background: raw.background === 'transparent' ? 'transparent' : 'white', faces: out };
+  const c = raw.colors as Record<string, unknown> | undefined;
+  const colors = c ? { face: hex(c.face, '#ffffff'), lid: hex(c.lid, '#ffffff'), base: hex(c.base, '#ffffff') } : null;
+  return { colors, lidLiftMm: num(box.lidLiftMm, 0, 150, 0), background: raw.background === 'transparent' ? 'transparent' : 'white', faces: out };
 }

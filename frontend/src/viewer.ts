@@ -30,6 +30,7 @@ export class Viewer {
   textures = new Map<FaceId, THREE.CanvasTexture>();
   highlight: THREE.LineSegments | null = null;
   selected: FaceId = 'lid_top';
+  faceBg = '#ffffff';
   onPick: ((id: FaceId) => void) | null = null;
   private dirty = true;
   private el: HTMLElement;
@@ -124,7 +125,7 @@ export class Viewer {
     const mat = mesh.material as THREE.MeshStandardMaterial;
     if (!canvas) {
       mat.map = null;
-      mat.color.setRGB(0.97, 0.97, 0.96);
+      mat.color.set(this.faceBg);
     } else {
       let tex = this.textures.get(id);
       if (!tex) {
@@ -140,6 +141,35 @@ export class Viewer {
       mat.color.setRGB(1, 1, 1);
     }
     mat.needsUpdate = true;
+    this.dirty = true;
+  }
+
+  /** 색상 설정 대상 재질. 'lid'는 두께면(lid_rim)과 안쪽(lid_inner) 둘 다. */
+  private partMats(part: 'base' | 'lid'): THREE.MeshStandardMaterial[] {
+    const names = part === 'base' ? ['Base'] : ['lid_rim', 'lid_inner'];
+    const out: THREE.MeshStandardMaterial[] = [];
+    for (const m of [this.models.editor, this.models.viewer]) {
+      if (m && m === this.models.editor) m.root.traverse((o) => {
+        const mesh = o as THREE.Mesh;
+        if (mesh.isMesh && names.includes(mesh.name)) out.push(mesh.material as THREE.MeshStandardMaterial);
+      });
+    }
+    return out;
+  }
+
+  getPartColor(part: 'base' | 'lid'): string { return '#' + (this.partMats(part)[0]?.color.getHexString() ?? 'ffffff'); }
+
+  setPartColor(part: 'base' | 'lid', hex: string) {
+    for (const mat of this.partMats(part)) mat.color.set(hex);
+    this.dirty = true;
+  }
+
+  setFaceBg(hex: string) {
+    this.faceBg = hex;
+    for (const mesh of this.faceMeshes.values()) {
+      const mat = mesh.material as THREE.MeshStandardMaterial;
+      if (!mat.map) mat.color.set(hex);
+    }
     this.dirty = true;
   }
 
