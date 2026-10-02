@@ -1,6 +1,6 @@
 import { FACES, FaceData, FaceId, FaceSnapshot, decode, faces, groupOf, rebake, resizeFaceCanvases, theme } from './faces';
 import { FaceGroup, GROUPS, applyFaceSizes, facesOf } from './faceDefs';
-import { BoxParams, DEFAULT_PARAMS, cloneParams, faceSizes, paramsEqual, validateParams } from './params';
+import { BoxParams, DEFAULT_PARAMS, RatioChange, cloneParams, faceSizes, formatPct, formatRatio, paramsEqual, ratioChanges, ratioOf, validateParams } from './params';
 import { initDimsUi } from './dimsUi';
 import { Viewer, ViewName } from './viewer';
 import { Rotation, defaultState } from './transform';
@@ -114,6 +114,7 @@ async function setImage(id: FaceId, file: Blob, name: string) {
   clearMsg();
   if (info.warnings.length) msg(info.warnings.join(' '), 'ok');
   apply(id);
+  resetRatioRefs([id]); // 새 이미지는 지금 비율에 맞춰 넣은 것이므로 이 면의 알림은 사라진다
   setCurrent(id);
 }
 
@@ -132,11 +133,11 @@ function apply(id: FaceId) {
  * 이미 넣은 이미지는 지우지 않고, 면마다 현재 맞춤 방식으로 다시 맞춘다(위치·확대·회전·반전 값은 그대로).
  * 불가능한 조합이면 적용하지 않고 false.
  */
-function applyParams(next: BoxParams, record = true, force = false): boolean {
+function applyParams(next: BoxParams, record = true, immediate = false): boolean {
   const errs = validateParams(next);
   if (errs.length) { dims?.showErrors(errs); return false; }
   if (paramsEqual(next, params)) return true;
-  if (record) pushParamHistory(params, force);
+  if (record) pushParamHistory(params, immediate);
   params = cloneParams(next);
   applyFaceSizes(faceSizes(params));
   resizeFaceCanvases();
@@ -150,7 +151,58 @@ function applyParams(next: BoxParams, record = true, force = false): boolean {
   updateOpenNotice();
   dims?.sync();
   scheduleDraft();
+  changeEpoch++;
+  if (!opening) scheduleRatioCheck(immediate || !record ? 0 : RATIO_DEBOUNCE_MS); // 버튼·실행 취소는 바로, 연속 입력은 멈춘 뒤 한 번
   return true;
+}
+
+// ---------- 비율 변경 알림 ----------
+// 면마다 "기준 비율"(이미지를 넣은 시점·마지막으로 확인한 시점·프로젝트를 연 시점의 비율)을 두고,
+// 현재 비율이 기준보다 RATIO_ALERT_THRESHOLD(params.ts) 이상 달라진 면 중 이미지가 있는 면만 알린다.
+const RATIO_DEBOUNCE_MS = 800;
+const ratioRef: Partial<Record<FaceId, number>> = {};
+let ratioAlerts: RatioChange[] = [];
+let ratioTimer = 0;
+let changeEpoch = 0; // 치수가 바뀔 때마다 증가. 배너를 "한 번만" 띄우는 기준
+let dismissedEpoch = -1; // 사용자가 닫기를 누른 시점의 epoch
+let opening = false; // 프로젝트·임시저장을 여는 중에는 알리지 않는다
+const alertOf = (id: FaceId) => ratioAlerts.find((a) => a.id === id);
+
+function resetRatioRefs(ids?: FaceId[]) {
+  const sizes = faceSizes(params);
+  for (const id of ids ?? FACES.map((f) => f.id)) ratioRef[id] = ratioOf(sizes[id]);
+  recomputeRatio();
+}
+function scheduleRatioCheck(ms: number) {
+  clearTimeout(ratioTimer);
+  if (ms <= 0) return recomputeRatio();
+  ratioTimer = window.setTimeout(recomputeRatio, ms);
+}
+function recomputeRatio() {
+  ratioAlerts = ratioChanges(ratioRef, faceSizes(params), (id) => !!faces[id as FaceId].img) as RatioChange[];
+  renderRatioUi();
+}
+function renderRatioUi() {
+  const n = ratioAlerts.length;
+  const show = n > 0 && dismissedEpoch !== changeEpoch && mode === 'edit'; // GLB 뷰어 모드에서는 보이지 않는다
+  $('ratioBanner').hidden = !show;
+  if (show) {
+    $('ratioBannerText').innerHTML = `<b>⚠ 비율 변경</b> · 치수 변경으로 ${n}개 면의 비율이 달라졌습니다. 이미지가 잘리거나 여백이 생길 수 있습니다.`;
+    const ul = $('ratioDetail');
+    ul.innerHTML = '';
+    for (const a of ratioAlerts) {
+      const li = document.createElement('li');
+      li.textContent = `${FACES.find((f) => f.id === a.id)!.label}: 비율 ${formatRatio(a.from)} → ${formatRatio(a.to)} (${formatPct(a.pct)})`;
+      ul.appendChild(li);
+    }
+  }
+  renderFaceList(); // 배지
+  renderRatioNote();
+}
+function renderRatioNote() {
+  const a = alertOf(current);
+  $('ratioNote').hidden = !a;
+  if (a) $('ratioNoteText').textContent = `⚠ 비율 ${formatRatio(a.from)} → ${formatRatio(a.to)} (${formatPct(a.pct)})`;
 }
 
 // ---------- 면 UI ----------
@@ -160,7 +212,9 @@ function renderFaceList() {
   for (const g of ['lid', 'base'] as FaceGroup[]) {
     const t = $('tab_' + g);
     t.setAttribute('aria-selected', String(g === group));
-    t.textContent = `${GROUPS[g].label} (${facesOf(g).filter((f) => faces[f.id].img).length}/${facesOf(g).length})`;
+    const alerted = facesOf(g).filter((f) => alertOf(f.id)).length; // 다른 탭의 면이 바뀌었을 때도 알아볼 수 있게 탭에 표시
+    t.textContent = `${GROUPS[g].label} (${facesOf(g).filter((f) => faces[f.id].img).length}/${facesOf(g).length})${alerted ? ` ⚠${alerted}` : ''}`;
+    t.title = alerted ? `비율이 달라진 면 ${alerted}개` : '';
   }
   const box = $('faceList');
   box.innerHTML = '';
@@ -169,7 +223,8 @@ function renderFaceList() {
     const b = document.createElement('button');
     b.setAttribute('aria-pressed', String(fd.id === current));
     b.dataset.face = fd.id;
-    b.innerHTML = `<span>${fd.short}</span><small>${f.img ? '이미지 있음' : '비어 있음'}</small>`;
+    const al = alertOf(fd.id);
+    b.innerHTML = `<span>${fd.short}</span><small>${f.img ? '이미지 있음' : '비어 있음'}</small>${al ? `<span class="badge" title="치수 변경으로 이 면의 비율이 ${formatPct(al.pct)} 달라졌습니다">⚠ 비율 변경</span>` : ''}`;
     b.onclick = () => setCurrent(fd.id);
     box.appendChild(b);
   }
@@ -251,6 +306,7 @@ function syncControls() {
   $<HTMLButtonElement>('btnRemove').disabled = !f.img;
   $<HTMLButtonElement>('btnReset').disabled = !f.img;
   $('btnUndo').hidden = undoStack.length === 0;
+  renderRatioNote();
 }
 function setPair(k: string, v: number) {
   $<HTMLInputElement>(k + 'R').value = String(Math.round(v));
@@ -296,6 +352,7 @@ async function saveProject() {
 }
 
 async function applyOpened(proj: OpenedProject) {
+  opening = true;
   clearHistory();
   // 치수가 없는 이전 파일·임시저장은 기본값으로 연다
   const np = proj.params ? cloneParams(proj.params) : cloneParams(DEFAULT_PARAMS);
@@ -321,6 +378,9 @@ async function applyOpened(proj: OpenedProject) {
   $<HTMLSelectElement>('bgSel').value = proj.background;
   syncControls();
   dims?.sync();
+  opening = false;
+  resetRatioRefs(); // 프로젝트·임시저장을 열 때는 알림을 띄우지 않는다(이번 세션에서 바꾼 경우에만)
+  dismissedEpoch = changeEpoch;
   if (note) msg(note);
 }
 
@@ -449,6 +509,7 @@ function setMode(m: 'edit' | 'view') {
   $('editSave').hidden = m !== 'edit';
   $('viewPanel').hidden = m !== 'view';
   viewer.setSlot(m === 'edit' ? 'editor' : 'viewer');
+  renderRatioUi();
   showView('iso', true);
   clearMsg();
   if (m === 'edit') {
@@ -597,6 +658,7 @@ async function init() {
     pushHistory(current, true);
     f.state = defaultState();
     apply(current);
+    resetRatioRefs([current]); // 면을 초기화하면 그 면의 배지는 사라진다
   };
   $('btnUndo').onclick = () => { undo(); };
 
@@ -730,6 +792,16 @@ async function init() {
     restoreBaseline: () => { applyParams(cloneParams(baselineParams), true, true); },
   });
   dims.sync();
+  resetRatioRefs();
+  $('btnRatioClose').onclick = () => { dismissedEpoch = changeEpoch; renderRatioUi(); };
+  $('btnRatioDetail').onclick = () => {
+    const open = $('ratioDetail').hidden;
+    $('ratioDetail').hidden = !open;
+    $('btnRatioDetail').setAttribute('aria-expanded', String(open));
+    $('btnRatioDetail').textContent = open ? '접기' : '자세히';
+  };
+  $('btnRatioRevert').onclick = () => { applyParams(cloneParams(baselineParams), true, true); };
+  $('btnRatioAck').onclick = () => { resetRatioRefs([current]); }; // 현재 비율을 이 면의 기준으로 받아들인다
   defaultColors = { face: '#ffffff', lid: viewer.getPartColor('lid'), base: viewer.getPartColor('base') };
   applyColors(defaultColors.face, defaultColors.lid, defaultColors.base);
   for (const f of FACES) viewer.setFaceTexture(f.id, null);

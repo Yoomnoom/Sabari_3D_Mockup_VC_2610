@@ -1,0 +1,13 @@
+2_after_change = {"banner": true, "bannerText": "⚠ 비율 변경 · 치수 변경으로 1개 면의 비율이 달라졌습니다. 이미지가 잘리거나 여백이 생길 수 있습니다.", "badges": ["base_front"], "note": "⚠ 비율 3.72:1 → 2.67:1 (−28%)", "selected": "base_front"}
+3_not_reshown_same_change = false
+3_new_change_shows_again = true
+4_after_revert = {"banner": false, "bannerText": "", "badges": [], "note": "", "selected": "base_back", "baseH": 43}
+5_after_ctrl_z_auto_clear = {"banner": false, "bannerText": "", "badges": [], "note": "", "selected": "base_back"}
+6_after_ack_base_front = {"badges": ["base_left"], "note": "", "banner": true, "bannerText": "⚠ 비율 변경 · 치수 변경으로 1개 면의 비율이 달라졌습니다. 이미지가 잘리거나 여백이 생길 수 있습니다."}
+7_after_reset_badge_gone = []
+7_alert_again = ["base_front", "base_left"]
+7_new_image_clears_that_face = ["base_left"]
+8_open_no_alert = {"banner": false, "badges": 0, "baseH": 58}
+8_open_then_change_alerts = {"banner": true, "tabs": ["뚜껑 (1/5)", "하단 (2/5) ⚠2"]}
+9_no_images_no_alert = {"banner": false, "badges": 0}
+errors = []

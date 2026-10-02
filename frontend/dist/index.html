@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>사바리 목업 스튜디오</title>
-  <script type="module" crossorigin src="./assets/index-OfEvIFc9.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-CDQyaDz3.css">
+  <script type="module" crossorigin src="./assets/index-BItDeyRp.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-CSeNQtQu.css">
 </head>
 <body>
   <aside id="panel">
@@ -31,6 +31,10 @@
       <section id="faceSection">
         <h2>2. <span id="faceTitle">상단</span> 이미지</h2>
         <p class="hint" id="faceSize"></p>
+        <div id="ratioNote" class="notice ratio" role="status" hidden>
+          <span id="ratioNoteText"></span>
+          <button id="btnRatioAck">확인했어요</button>
+        </div>
         <div id="openNotice" class="notice" role="status" hidden>
           <span id="openNoticeText">뚜껑을 열어야 보입니다.</span>
           <span class="row"><button id="btnNoticeOpen">뚜껑 열기</button><button id="btnNoticeBottom" hidden>아래에서 보기</button></span>
@@ -211,7 +215,20 @@
   <main id="stage">
     <div id="viewport"></div>
     <div id="panBadge" aria-live="polite">손 도구 (Space) — 끌어서 화면 이동</div>
-    <div id="msg" role="alert" hidden><span id="msgText"></span><button id="msgClose" aria-label="닫기">닫기</button></div>
+    <div id="overlayTop">
+      <div id="msg" role="alert" hidden><span id="msgText"></span><button id="msgClose" aria-label="닫기">닫기</button></div>
+      <div id="ratioBanner" role="status" hidden>
+        <div class="rb-row">
+          <span id="ratioBannerText"><b>⚠ 비율 변경</b> · </span>
+          <span class="rb-btns">
+            <button id="btnRatioDetail" aria-expanded="false" aria-controls="ratioDetail">자세히</button>
+            <button id="btnRatioRevert">원래 사이즈로 되돌리기</button>
+            <button id="btnRatioClose" aria-label="비율 변경 알림 닫기">닫기</button>
+          </span>
+        </div>
+        <ul id="ratioDetail" hidden></ul>
+      </div>
+    </div>
     <div id="loading" hidden>처리 중…</div>
     <div id="dropHint" hidden>여기에 놓으면 불러옵니다 (이미지 · .glb · .sabari)</div>
   </main>

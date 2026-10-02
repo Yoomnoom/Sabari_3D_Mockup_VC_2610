@@ -45,7 +45,7 @@ label.color input[type='color'] { width: 56px; height: 36px; padding: 2px; borde
 #stage { flex: 1; position: relative; background: #fff; min-width: 0; height: 100%; overflow: hidden; }
 #viewport { position: absolute; inset: 0; overflow: hidden; }
 #viewport canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
-#msg { position: absolute; left: 16px; right: 16px; top: 16px; padding: 10px 14px; border-radius: 8px; background: #fff3e8; border: 1px solid var(--accent); display: flex; justify-content: space-between; align-items: center; gap: 12px; z-index: 5; }
+#msg { position: relative; padding: 10px 14px; border-radius: 8px; background: #fff3e8; border: 1px solid var(--accent); display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 #msg.ok { background: #eaf7ee; border-color: #2f9e44; }
 #loading { position: absolute; right: 16px; bottom: 16px; padding: 8px 14px; background: #25231f; color: #fff; border-radius: 8px; z-index: 5; }
 #dropHint { position: absolute; inset: 12px; border: 3px dashed var(--accent); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; background: rgba(255, 255, 255, 0.85); z-index: 6; pointer-events: none; }
@@ -109,3 +109,17 @@ details.sec > summary button.fit { margin-left: auto; min-height: 32px; font-wei
 .err { color: #b42318; background: #fff1f0; border: 1px solid #f4b4ae; border-radius: 6px; padding: 6px 8px; font-size: 12px; margin: 6px 0; }
 #dimsDerived { white-space: pre-line; }
 #dimsOuterRows[hidden], #dimsWrapRows[hidden] { display: none; }
+
+/* 3D 위쪽 알림 영역: 메시지와 비율 변경 배너가 겹치지 않게 세로로 쌓는다 */
+#overlayTop { position: absolute; left: 16px; right: 16px; top: 16px; z-index: 5; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+#overlayTop > * { pointer-events: auto; }
+#ratioBanner { padding: 10px 14px; border-radius: 8px; background: #fff8e1; border: 1px solid #e0a800; font-size: 13px; }
+#ratioBanner .rb-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+#ratioBanner .rb-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+#ratioBanner button { min-height: 36px; }
+#ratioDetail { margin: 8px 0 0; padding-left: 18px; }
+#ratioDetail li { margin: 2px 0; }
+.badge { display: block; margin-top: 2px; padding: 0 4px; border: 1px solid #e0a800; border-radius: 4px; background: #fff8e1; color: #7a5200; font-size: 10px; line-height: 16px; }
+.facelist button[aria-pressed='true'] .badge { background: #fff8e1; color: #7a5200; }
+.notice.ratio { flex-direction: row; align-items: center; justify-content: space-between; background: #fff8e1; border-color: #e0a800; }
+.notice.ratio button { min-height: 36px; flex: none; }
