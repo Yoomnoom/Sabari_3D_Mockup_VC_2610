@@ -16,7 +16,7 @@ interface Model {
 
 const DIRS: Record<ViewName, [number, number, number]> = {
   front: [0, 0.12, 1], back: [0, 0.12, -1], left: [-1, 0.12, 0], right: [1, 0.12, 0],
-  top: [0, 1, 0.0001], iso: [0.9, 0.75, 1.05], isoL: [-0.9, 0.75, 1.05], // iso = 3/4 오른쪽(R), isoL = 3/4 왼쪽(L)
+  top: [0, 1, 0.0001], iso: [0.9, 0.75, 1.05], isoL: [-0.9, 0.75, -1.05], // R = 앞·오른쪽 날개가 보이는 모서리, L = 그 반대 모서리(뒤·왼쪽 날개)
 };
 
 export class Viewer {
