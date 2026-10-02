@@ -323,7 +323,7 @@ function setMode(m: 'edit' | 'view') {
   $('editSave').hidden = m !== 'edit';
   $('viewPanel').hidden = m !== 'view';
   viewer.setSlot(m === 'edit' ? 'editor' : 'viewer');
-  viewer.setView('iso');
+  showView('iso');
   clearMsg();
   if (m === 'edit') {
     $<HTMLInputElement>('showLid').checked = true;
@@ -342,7 +342,7 @@ async function openGlb(file: File) {
     setMode('view');
     $('glbInfo').textContent = `${file.name} · 메시 ${info.meshes}개 · 이미지가 붙은 재질 ${info.textured}개`;
     $('viewLid').hidden = !info.hasLid;
-    viewer.setView('iso');
+    showView('iso');
   });
 }
 
@@ -386,6 +386,17 @@ function initUiPrefs() {
   };
 }
 
+// ---------- 시점 (3/4는 R ↔ L 토글) ----------
+let lastView: ViewName | null = 'iso';
+function showView(v: ViewName) {
+  viewer.setView(v);
+  lastView = v;
+  const b = $('btnIso');
+  b.textContent = v === 'iso' ? '3/4 시점 R' : v === 'isoL' ? '3/4 시점 L' : '3/4 시점';
+  b.setAttribute('aria-pressed', String(v === 'iso' || v === 'isoL'));
+}
+const toggleIso = () => showView(lastView === 'iso' ? 'isoL' : 'iso');
+
 // ---------- 시작 ----------
 async function init() {
   try {
@@ -395,6 +406,10 @@ async function init() {
     return;
   }
   initUiPrefs();
+  $('viewport').addEventListener('pointerdown', () => {
+    const a = document.activeElement as HTMLElement | null;
+    if (a && ['INPUT', 'SELECT', 'TEXTAREA'].includes(a.tagName)) a.blur();
+  }, true);
   viewer.onPick = (id) => setCurrent(id);
   viewer.canDrag = () => !!faces[current].img;
   viewer.onWheelFace = (dy) => edit((f) => (f.state.scale = Math.min(3, Math.max(0.25, f.state.scale * Math.exp(-dy * 0.001)))));
@@ -469,7 +484,8 @@ async function init() {
   $<HTMLInputElement>('showBase').onchange = (e) => viewer.setPartVisible('base', (e.target as HTMLInputElement).checked);
 
   // 보기
-  document.querySelectorAll<HTMLButtonElement>('[data-view]').forEach((b) => (b.onclick = () => viewer.setView(b.dataset.view as ViewName)));
+  document.querySelectorAll<HTMLButtonElement>('[data-view]').forEach((b) => (b.onclick = () => showView(b.dataset.view as ViewName)));
+  $('btnIso').onclick = toggleIso; // 3/4 시점: 누를 때마다 R ↔ L
 
   // 저장 / 열기
   $('btnPng').onclick = savePng;
@@ -501,12 +517,15 @@ async function init() {
   const openHelp = () => { const d = $<HTMLDetailsElement>('dHelp'); d.open = true; d.scrollIntoView({ block: 'start' }); };
   const typing = (t: HTMLElement) => t.tagName === 'SELECT' || t.tagName === 'TEXTAREA' || (t.tagName === 'INPUT' && !['radio', 'checkbox', 'range', 'button'].includes((t as HTMLInputElement).type));
   const fieldFocus = (t: HTMLElement) => t.tagName === 'INPUT' || t.tagName === 'SELECT'; // 방향키는 슬라이더·입력칸이 쓴다
+  let overStage = false; // 마우스가 3D 화면 위에 있는지
+  $('stage').addEventListener('pointerenter', () => (overStage = true));
+  $('stage').addEventListener('pointerleave', () => (overStage = false));
   const releasePan = () => { viewer.setPanHeld(false); };
   window.addEventListener('blur', releasePan);
   window.addEventListener('keyup', (e) => {
-    if (e.code === 'Space' && !typing(e.target as HTMLElement)) { e.preventDefault(); releasePan(); }
+    if (e.code === 'Space' && (!typing(e.target as HTMLElement) || overStage)) { e.preventDefault(); releasePan(); }
   });
-  const goView = (v: ViewName) => viewer.setView(v);
+  const goView = (v: ViewName) => showView(v);
   const cycleFace = (d: number) => {
     const i = FACES.findIndex((x) => x.id === current);
     setCurrent(FACES[(i + d + FACES.length) % FACES.length].id);
@@ -519,7 +538,9 @@ async function init() {
 
   window.addEventListener('keydown', (e) => {
     const t = e.target as HTMLElement;
-    if (typing(t)) return;
+    const spaceOnStage = e.code === 'Space' && overStage; // 숫자 입력칸 등에 커서가 남아 있어도 3D 화면 위에서는 손 도구 우선
+    if (typing(t) && !spaceOnStage) return;
+    if (spaceOnStage && (typing(t) || t.tagName === 'BUTTON')) t.blur(); // 입력칸에 공백이 들어가거나 버튼이 눌리지 않게
     const k = e.key.toLowerCase();
     const editing = mode === 'edit';
 
@@ -543,7 +564,9 @@ async function init() {
     if (e.code === 'Digit1' || e.code === 'Numpad1') return goView(e.shiftKey ? 'back' : 'front');
     if (e.code === 'Digit3' || e.code === 'Numpad3') return goView(e.shiftKey ? 'left' : 'right');
     if (e.code === 'Digit7' || e.code === 'Numpad7') return goView('top');
-    if (e.code === 'Digit0' || e.code === 'Numpad0' || k === 'r') return goView('iso');
+    if (e.code === 'Digit0' || e.code === 'Numpad0') return toggleIso(); // 0 = 3/4 시점 (누를 때마다 R ↔ L)
+    if (k === 'r') return goView('iso'); // 3/4 오른쪽
+    if (k === 'l') return goView('isoL'); // 3/4 왼쪽
     if (k === 'o' && viewer.hasLid()) return setLift(viewer.getLiftMm() > 0 ? 0 : OPEN_MM);
     if (k === 'escape') { viewer.setHighlightOn(false); clearMsg(); return; }
     if (!editing) return;
@@ -566,7 +589,7 @@ async function init() {
   applyColors(defaultColors.face, defaultColors.lid, defaultColors.base);
   for (const f of FACES) viewer.setFaceTexture(f.id, null);
   setCurrent('lid_top');
-  viewer.setView('iso');
+  showView('iso');
   await initDraft();
   // 테스트·검증용 훅 (UI 동작에는 쓰지 않음)
   (window as unknown as Record<string, unknown>).__sabari = { viewer, faces, setCurrent };

@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>사바리 목업 스튜디오</title>
-  <script type="module" crossorigin src="./assets/index-CsN9G8EL.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-Dl2V50qm.css">
+  <title>사바리 목업 스튜디오</title>
+  <script type="module" crossorigin src="./assets/index-B7S4XQWi.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-CiDjL8bj.css">
 </head>
 <body>
   <aside id="panel">
@@ -115,9 +115,10 @@
         <button data-view="left">좌측</button>
         <button data-view="right">우측</button>
         <button data-view="top">윗면</button>
-        <button data-view="iso">3/4 시점</button>
+        <button id="btnIso" data-view="iso" title="한 번 더 누르면 반대편(L)으로 바뀝니다">3/4 시점</button>
       </div>
-      <p class="hint">드래그: 회전 · 휠: 확대/축소 · 오른쪽 드래그: 이동</p>
+      <p class="hint">3/4 시점을 한 번 더 누르면 반대편으로 바뀝니다. (키 <kbd>R</kbd> 오른쪽 · <kbd>L</kbd> 왼쪽)</p>
+      <p class="hint">드래그: 회전 · 휠: 확대/축소 · Space+드래그: 이동</p>
     </details>
 
     <section>
@@ -154,7 +155,9 @@
         <tr><td><kbd>Space</kbd> 누른 채 드래그</td><td>화면 이동 (손 도구)</td></tr>
         <tr><td>가운데 버튼 / 오른쪽 드래그</td><td>화면 이동</td></tr>
         <tr><td>왼쪽 드래그 / 휠</td><td>회전 / 확대·축소</td></tr>
-        <tr><td><kbd>1</kbd> <kbd>Shift+1</kbd> <kbd>3</kbd> <kbd>Shift+3</kbd> <kbd>7</kbd> <kbd>0</kbd>/<kbd>R</kbd></td><td>정면 · 후면 · 우측 · 좌측 · 윗면 · 3/4 시점</td></tr>
+        <tr><td><kbd>1</kbd> <kbd>Shift+1</kbd> <kbd>3</kbd> <kbd>Shift+3</kbd> <kbd>7</kbd></td><td>정면 · 후면 · 우측 · 좌측 · 윗면</td></tr>
+        <tr><td><kbd>R</kbd> / <kbd>L</kbd></td><td>3/4 시점 오른쪽 / 왼쪽</td></tr>
+        <tr><td><kbd>0</kbd></td><td>3/4 시점 (누를 때마다 R ↔ L)</td></tr>
         <tr><td><kbd>O</kbd></td><td>뚜껑 열기/닫기</td></tr>
         <tr><td><kbd>Esc</kbd></td><td>선택선·안내 닫기</td></tr>
         <tr><th colspan="2">편집</th></tr>
@@ -174,9 +177,10 @@
 
   <main id="stage">
     <div id="viewport"></div>
+    <div id="panBadge" aria-live="polite">손 도구 (Space) — 끌어서 화면 이동</div>
     <div id="msg" role="alert" hidden><span id="msgText"></span><button id="msgClose" aria-label="닫기">닫기</button></div>
     <div id="loading" hidden>처리 중…</div>
     <div id="dropHint" hidden>여기에 놓으면 불러옵니다 (이미지 · .glb · .sabari)</div>
-  </main>
+  </main>
 </body>
 </html>

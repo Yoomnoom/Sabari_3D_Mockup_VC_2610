@@ -4,7 +4,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { FACES, FaceId } from './faces';
 
-export type ViewName = 'front' | 'back' | 'left' | 'right' | 'top' | 'iso';
+export type ViewName = 'front' | 'back' | 'left' | 'right' | 'top' | 'iso' | 'isoL';
 export type Slot = 'editor' | 'viewer';
 
 interface Model {
@@ -16,7 +16,7 @@ interface Model {
 
 const DIRS: Record<ViewName, [number, number, number]> = {
   front: [0, 0.12, 1], back: [0, 0.12, -1], left: [-1, 0.12, 0], right: [1, 0.12, 0],
-  top: [0, 1, 0.0001], iso: [0.9, 0.75, 1.05],
+  top: [0, 1, 0.0001], iso: [0.9, 0.75, 1.05], isoL: [-0.9, 0.75, 1.05], // iso = 3/4 오른쪽(R), isoL = 3/4 왼쪽(L)
 };
 
 export class Viewer {
