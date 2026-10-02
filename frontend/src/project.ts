@@ -2,9 +2,11 @@
 import JSZip from 'jszip';
 import { FACES, FaceId } from './faceDefs';
 import { SurfaceState } from './transform';
+import { BoxParams, DEFAULT_PARAMS, paramsFromUnknown, validateParams } from './params';
 
-export const SCHEMA_VERSION = 3; // 3: 하단 5면 + 스위치(useBaseFaces). 2(뚜껑 5면)도 그대로 열린다.
-const READABLE_VERSIONS = [2, 3];
+// 4: 박스 치수 파라미터(params) + 칼선 이미지 분할(dieline). 3: 하단 5면 + 스위치(useBaseFaces). 2: 뚜껑 5면. 2~4 모두 열린다.
+export const SCHEMA_VERSION = 4;
+const READABLE_VERSIONS = [2, 3, 4];
 export const TEMPLATE_ID = 'sabari-160-110-43-v2';
 const MAX_BYTES = 50 * 1024 * 1024;
 const MAX_ENTRIES = 32;
@@ -59,10 +61,30 @@ export interface Colors { face: string; lid: string; base: string }
 const HEX = /^#[0-9a-fA-F]{6}$/;
 const hex = (v: unknown, d: string) => (typeof v === 'string' && HEX.test(v) ? v.toLowerCase() : d);
 
-export async function packProject(faces: SaveFace[], lidLiftMm: number, background: string, colors: Colors, useBaseFaces: boolean): Promise<Blob> {
+/** 칼선 이미지 위의 면 영역(원본 칼선 이미지의 픽셀 좌표). */
+export interface Rect { x: number; y: number; w: number; h: number }
+/** 올린 칼선 이미지 한 장과 분할 설정. 원본 바이트는 .sabari 안에 그대로 들어간다. */
+export interface DielineSave {
+  blob: Blob; name: string | null;
+  bleedMm: number;
+  kind: 'lid' | 'base';
+  regions: Partial<Record<FaceId, Rect>>;
+}
+
+export interface PackInput {
+  faces: SaveFace[];
+  lidLiftMm: number;
+  background: string;
+  colors: Colors;
+  useBaseFaces: boolean;
+  params: BoxParams;
+  dieline: DielineSave | null;
+}
+
+export async function packProject(i: PackInput): Promise<Blob> {
   const zip = new JSZip();
   const surfaces: Record<string, unknown> = {};
-  for (const f of faces) {
+  for (const f of i.faces) {
     let sourceFile: string | null = null;
     if (f.blob) {
       const info = await inspectImage(f.blob);
@@ -71,7 +93,17 @@ export async function packProject(faces: SaveFace[], lidLiftMm: number, backgrou
     }
     surfaces[f.id] = { ...f.state, sourceFile, originalName: f.name };
   }
-  zip.file('project.json', JSON.stringify({ schemaVersion: SCHEMA_VERSION, templateId: TEMPLATE_ID, box: { lidLiftMm }, colors, useBaseFaces, background, surfaces }, null, 2));
+  let dieline: unknown = null;
+  if (i.dieline) {
+    const info = await inspectImage(i.dieline.blob);
+    const file = `images/dieline${info.ext}`;
+    zip.file(file, i.dieline.blob, { compression: 'STORE' }); // 칼선 원본도 바이트 그대로
+    dieline = { file, originalName: i.dieline.name, bleedMm: i.dieline.bleedMm, kind: i.dieline.kind, regions: i.dieline.regions };
+  }
+  zip.file('project.json', JSON.stringify({
+    schemaVersion: SCHEMA_VERSION, templateId: TEMPLATE_ID, params: i.params,
+    box: { lidLiftMm: i.lidLiftMm }, colors: i.colors, useBaseFaces: i.useBaseFaces, background: i.background, surfaces, dieline,
+  }, null, 2));
   return zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
 }
 
@@ -80,8 +112,17 @@ export interface OpenedProject {
   background: 'white' | 'transparent';
   colors: Colors | null; // 없으면(이전 프로젝트) 기본값 유지
   useBase?: boolean; // 하단 몸통 디자인 사용 스위치. 하단 면에 이미지가 있으면 항상 true (이전 임시저장에는 없을 수 있음)
+  /** 박스 치수. 없는 이전 파일·임시저장은 기본값(없으면 undefined → 호출한 쪽이 기본값 사용) */
+  params?: BoxParams;
+  dieline?: DielineSave | null;
   faces: Record<FaceId, { state: SurfaceState; blob: Blob | null; name: string | null }>;
 }
+
+const rectOf = (v: unknown): Rect | null => {
+  const o = v as Record<string, unknown> | null;
+  if (!o || ![o.x, o.y, o.w, o.h].every((n) => typeof n === 'number' && Number.isFinite(n))) return null;
+  return { x: o.x as number, y: o.y as number, w: o.w as number, h: o.h as number };
+};
 
 export async function unpackProject(file: Blob): Promise<OpenedProject> {
   const zip = await JSZip.loadAsync(await file.arrayBuffer()).catch(() => { throw new UserError('프로젝트 파일(.sabari)을 읽지 못했습니다. 파일이 손상되지 않았는지 확인해 주세요.'); });
@@ -96,24 +137,52 @@ export async function unpackProject(file: Blob): Promise<OpenedProject> {
   const unknown = Object.keys(surfaces).filter((k) => !FACES.some((f) => f.id === k));
   if (unknown.length) throw new UserError(`알 수 없는 면이 있습니다: ${unknown.join(', ')}`);
 
+  const readImage = async (path: string, label: string) => {
+    // 경로 순회 차단: images/ 아래 단일 파일명만 허용
+    if (!/^images\/[^/\\]+$/.test(path) || path.includes('..')) throw new UserError('프로젝트 안에 허용되지 않는 경로가 있습니다.');
+    const entry = zip.file(path);
+    if (!entry) throw new UserError(`${label} 이미지가 파일 안에 없습니다.`);
+    const bytes = (await entry.async('arraybuffer')) as ArrayBuffer;
+    const info = await inspectImage(new Blob([bytes]));
+    return new Blob([bytes], { type: info.mime });
+  };
+
   const out = {} as OpenedProject['faces'];
   for (const f of FACES) {
     const p = parseSurface(surfaces[f.id]);
-    let blob: Blob | null = null;
-    if (p.sourceFile) {
-      // 경로 순회 차단: images/ 아래 단일 파일명만 허용
-      if (!/^images\/[^/\\]+$/.test(p.sourceFile) || p.sourceFile.includes('..')) throw new UserError('프로젝트 안에 허용되지 않는 경로가 있습니다.');
-      const entry = zip.file(p.sourceFile);
-      if (!entry) throw new UserError(`${f.id} 이미지가 파일 안에 없습니다.`);
-      const bytes = (await entry.async('arraybuffer')) as ArrayBuffer;
-      const info = await inspectImage(new Blob([bytes]));
-      blob = new Blob([bytes], { type: info.mime });
-    }
+    const blob = p.sourceFile ? await readImage(p.sourceFile, f.id) : null;
     out[f.id] = { state: p.state, blob, name: blob ? (p.originalName ?? p.sourceFile) : null };
   }
   const box = (raw.box ?? {}) as Record<string, unknown>;
   const c = raw.colors as Record<string, unknown> | undefined;
   const colors = c ? { face: hex(c.face, '#ffffff'), lid: hex(c.lid, '#ffffff'), base: hex(c.base, '#ffffff') } : null;
   const hasBaseImage = FACES.some((f) => f.group === 'base' && out[f.id].blob);
-  return { useBase: raw.useBaseFaces === true || hasBaseImage, colors, lidLiftMm: num(box.lidLiftMm, 0, 150, 0), background: raw.background === 'transparent' ? 'transparent' : 'white', faces: out };
+
+  // 박스 치수: 없으면(버전 2·3) 기본값. 값이 있는데 불가능한 조합이면 기본값으로 열고 알린다.
+  let params: BoxParams | undefined;
+  let paramNote: string | undefined;
+  if (raw.params !== undefined) {
+    const pp = paramsFromUnknown(raw.params);
+    if (validateParams(pp).length) paramNote = '저장된 박스 치수가 올바르지 않아 기본 치수로 열었습니다.';
+    else params = pp;
+  }
+  // 칼선 이미지 분할 정보
+  let dieline: DielineSave | null = null;
+  const dl = raw.dieline as Record<string, unknown> | null | undefined;
+  if (dl && typeof dl.file === 'string') {
+    const regions: Partial<Record<FaceId, Rect>> = {};
+    for (const [k, v] of Object.entries((dl.regions ?? {}) as Record<string, unknown>)) {
+      const r = rectOf(v);
+      if (r && FACES.some((f) => f.id === k)) regions[k as FaceId] = r;
+    }
+    dieline = {
+      blob: await readImage(dl.file, '칼선'), name: typeof dl.originalName === 'string' ? dl.originalName : null,
+      bleedMm: num(dl.bleedMm, 0, 50, DEFAULT_PARAMS.bleed), kind: dl.kind === 'base' ? 'base' : 'lid', regions,
+    };
+  }
+  return {
+    useBase: raw.useBaseFaces === true || hasBaseImage, colors, lidLiftMm: num(box.lidLiftMm, 0, 150, 0),
+    background: raw.background === 'transparent' ? 'transparent' : 'white', faces: out, params, dieline,
+    ...(paramNote ? { paramNote } : {}),
+  } as OpenedProject & { paramNote?: string };
 }

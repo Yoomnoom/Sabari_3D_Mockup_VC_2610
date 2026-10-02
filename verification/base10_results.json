@@ -214,15 +214,15 @@
   "3_undo_restores_bottom_image": true,
   "4_png_white_bytes": 1020372,
   "4_png_transparent_bytes": 1020723,
-  "4_glb10_bytes": 703336,
+  "4_glb10_bytes": 703060,
   "4_project_json": {
-    "schemaVersion": 3,
+    "schemaVersion": 4,
     "useBaseFaces": true,
     "baseImagesInZip": 5,
     "lidImagesInZip": 5
   },
   "4_project_json_default_off": {
-    "schemaVersion": 3,
+    "schemaVersion": 4,
     "useBaseFaces": false,
     "baseImagesInZip": 0
   },
@@ -242,9 +242,9 @@
     "images": 10
   },
   "6_errors_p2": [],
-  "7_viewer_glb10": "exported_base10.glb · 메시 14개 · 이미지가 붙은 재질 10개",
+  "7_viewer_glb10": "exported_base10.glb · 메시 14개 · 이미지가 붙은 재질 10개 · 몸통 160×110×43mm",
   "7_viewer_legacy5": "legacy_5face.glb · 메시 8개 · 이미지가 붙은 재질 5개",
-  "7_viewer_default_off5": "base10_default_off.glb · 메시 14개 · 이미지가 붙은 재질 5개",
+  "7_viewer_default_off5": "base10_default_off.glb · 메시 14개 · 이미지가 붙은 재질 5개 · 몸통 160×110×43mm",
   "7_errors_p3": [],
   "8_cancel_keeps_everything": {
     "dialogMsg": "하단 이미지 5개가 제거됩니다.\n계속할까요? (Ctrl+Z로 되돌릴 수 있습니다)",

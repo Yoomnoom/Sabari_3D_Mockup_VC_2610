@@ -3,6 +3,8 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { FACES, FaceId, groupOf } from './faces';
+import { BoxParams } from './params';
+import { TEMPLATE_ID, buildParts } from './templateMesh';
 
 export type ViewName = 'front' | 'back' | 'left' | 'right' | 'top' | 'iso' | 'isoL' | 'bottom';
 export type Slot = 'editor' | 'viewer';
@@ -176,17 +178,58 @@ export class Viewer {
     return { root, lid, base: root.getObjectByName('Base') ?? null, lidBaseY: 0 };
   }
 
-  async loadTemplate(url: string) {
-    const gltf = await new GLTFLoader().loadAsync(url);
-    const m = this.makeModel(gltf.scene);
-    this.models.editor = m;
-    this.scene.add(m.root);
-    for (const f of FACES) {
-      const mesh = m.root.getObjectByName(f.id) as THREE.Mesh | undefined;
-      if (!mesh) throw new Error(`템플릿에 ${f.id} 면이 없습니다.`);
-      mesh.material = (mesh.material as THREE.MeshStandardMaterial).clone();
-      this.faceMeshes.set(f.id, mesh);
+  /** 하이라이트·텍스처를 뺀 모델의 GPU 자원을 해제한다. */
+  private disposeModel(root: THREE.Object3D) {
+    root.traverse((o) => {
+      const mesh = o as THREE.Mesh;
+      if (!mesh.isMesh) return;
+      mesh.geometry.dispose();
+      for (const m of Array.isArray(mesh.material) ? mesh.material : [mesh.material]) m.dispose();
+    });
+  }
+
+  private partColors: Partial<Record<'lid' | 'base', string>> = {};
+
+  /**
+   * 파라미터에서 편집용 템플릿을 (다시) 만든다. 서버·GLB 파일 없이 브라우저에서 만든다.
+   * 이미 있으면 교체하고 뚜껑 높이·표시·색상·선택은 유지한다. 면 텍스처는 호출한 쪽이 setFaceTexture 로 다시 연결한다.
+   */
+  setTemplate(p: BoxParams) {
+    const old = this.models.editor;
+    const lift = old?.lid ? (old.lid.position.y - old.lidBaseY) * 1000 : 0;
+    const lidVisible = old?.lid?.visible ?? true, baseVisible = old?.base?.visible ?? true;
+    if (old) { this.highlight?.removeFromParent(); this.scene.remove(old.root); this.disposeModel(old.root); }
+    for (const t of this.textures.values()) t.dispose(); // 면 크기가 바뀌면 캔버스 크기도 바뀌므로 텍스처를 새로 만든다
+    this.textures.clear();
+    this.faceMeshes.clear();
+
+    const root = new THREE.Group();
+    root.name = 'Template';
+    root.userData = { templateId: TEMPLATE_ID, params: { ...p } }; // GLB 로 내보내면 extras 로 들어간다
+    const lid = new THREE.Group(); lid.name = 'Lid';
+    const base = new THREE.Group(); base.name = 'Base';
+    root.add(base, lid); // Python 템플릿의 scene 순서(Base, Lid)와 같다
+    for (const part of buildParts(p)) {
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.Float32BufferAttribute(part.pos, 3));
+      g.setAttribute('normal', new THREE.Float32BufferAttribute(part.nrm, 3));
+      if (part.editable) g.setAttribute('uv', new THREE.Float32BufferAttribute(part.uv, 2));
+      g.setIndex(part.idx);
+      const mat = new THREE.MeshStandardMaterial({ metalness: 0, roughness: 0.9 });
+      mat.color.setRGB(part.color[0], part.color[1], part.color[2], THREE.LinearSRGBColorSpace); // GLB 의 baseColorFactor 는 선형값
+      mat.name = part.name;
+      const mesh = new THREE.Mesh(g, mat);
+      mesh.name = part.name;
+      (part.group === 'base' ? base : lid).add(mesh);
+      if (part.editable) this.faceMeshes.set(part.name as FaceId, mesh);
     }
+    this.models.editor = { root, lid, base, lidBaseY: 0 };
+    this.scene.add(root);
+    root.visible = this.slot === 'editor';
+    lid.position.y = lift / 1000;
+    lid.visible = lidVisible; base.visible = baseVisible;
+    if (this.partColors.lid) this.setPartColor('lid', this.partColors.lid);
+    if (this.partColors.base) this.setPartColor('base', this.partColors.base);
     this.setSelected(this.selected);
     this.dirty = true;
   }
@@ -232,6 +275,7 @@ export class Viewer {
   getPartColor(part: 'base' | 'lid'): string { return '#' + (this.partMats(part)[0]?.color.getHexString() ?? 'ffffff'); }
 
   setPartColor(part: 'base' | 'lid', hex: string) {
+    this.partColors[part] = hex;
     for (const mat of this.partMats(part)) mat.color.set(hex);
     if (part === 'base') { // 이미지 없는 하단 면도 같은 색
       this.baseBg = hex;
@@ -387,7 +431,9 @@ export class Viewer {
         }
       }
     });
-    return { meshes, textured, hasLid: !!m.lid };
+    const found: { params: Record<string, number> | null } = { params: null };
+    gltf.scene.traverse((o) => { const pr = (o.userData as { params?: Record<string, number> })?.params; if (!found.params && pr && typeof pr.baseW === 'number') found.params = pr; });
+    return { meshes, textured, hasLid: !!m.lid, params: found.params };
   }
 
   private renderToCanvas(scale: number): HTMLCanvasElement {

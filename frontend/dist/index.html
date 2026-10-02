@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>사바리 목업 스튜디오</title>
-  <script type="module" crossorigin src="./assets/index-Cqbgxzf_.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-CmmIJxYM.css">
+  <script type="module" crossorigin src="./assets/index-OfEvIFc9.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-CDQyaDz3.css">
 </head>
 <body>
   <aside id="panel">
@@ -78,6 +78,28 @@
           <button id="btnUndo" hidden>되돌리기</button>
         </div>
       </section>
+
+      <details class="sec" id="dDims">
+        <summary>박스 치수</summary>
+        <p class="hint">목업용 치수입니다. <b>가정값(싸바리지 여유·접어 넣는 폭·재단 여분)은 제조 규격이 아닙니다.</b></p>
+        <div class="seg" role="radiogroup" aria-label="입력 기준">
+          <label><input type="radio" name="dimMode" value="outer" checked /> 완성 외경</label>
+          <label><input type="radio" name="dimMode" value="wrap" /> 싸바리지(전개) 크기</label>
+        </div>
+        <div id="dimsOuterRows"></div>
+        <div id="dimsWrapRows" hidden></div>
+        <details class="grp" id="dAssume">
+          <summary>가정값 (제조 규격 아님)</summary>
+          <div id="dimsAssumeRows"></div>
+          <p class="hint">칼선 샘플(뚜껑 117.4×167.4, 날개 깊이 38)에서 읽은 값입니다. 인쇄소 규격에 맞게 바꾸세요.</p>
+        </details>
+        <p id="dimsDerived" class="info"></p>
+        <p id="dimsError" class="err" role="alert" hidden></p>
+        <div class="row wrap">
+          <button id="btnDimsDefault">기본값 복원</button>
+          <button id="btnDimsBaseline" title="처음 열었을 때 또는 마지막으로 저장한 치수로">원래 사이즈로 되돌리기</button>
+        </div>
+      </details>
 
       <details class="sec" id="dColor" open>
         <summary>목업 색상</summary>

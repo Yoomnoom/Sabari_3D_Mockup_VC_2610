@@ -59,3 +59,12 @@ export function rebake(f: FaceData): boolean {
   bake(ctx, f.canvas.width, f.canvas.height, f.img, f.iw, f.ih, f.state, bgFor(f.id));
   return true;
 }
+
+/** 면 크기(mm)가 바뀌었을 때 구워진 텍스처 캔버스 크기를 맞춘다. 크기가 바뀐 캔버스는 비워지므로 호출한 쪽이 rebake 한다. */
+export function resizeFaceCanvases() {
+  for (const fd of FACES) {
+    const f = faces[fd.id];
+    const [w, h] = textureSize(fd.wMm, fd.hMm);
+    if (f.canvas.width !== w || f.canvas.height !== h) { f.canvas.width = w; f.canvas.height = h; }
+  }
+}

@@ -102,3 +102,10 @@ details.sec > summary button.fit { margin-left: auto; min-height: 32px; font-wei
 .notice { display: flex; flex-direction: column; gap: 6px; margin: 6px 0; padding: 8px 10px; border: 1px solid var(--accent); border-radius: 6px; background: #fff3e8; font-size: 13px; }
 .notice .row button { flex: 1; min-height: 36px; }
 #dView .grid3 #btnIso { grid-column: 1 / -1; }
+
+/* 박스 치수 */
+.seg { display: flex; gap: 10px; flex-wrap: wrap; margin: 6px 0; }
+.seg label { min-height: 32px; display: flex; align-items: center; gap: 6px; }
+.err { color: #b42318; background: #fff1f0; border: 1px solid #f4b4ae; border-radius: 6px; padding: 6px 8px; font-size: 12px; margin: 6px 0; }
+#dimsDerived { white-space: pre-line; }
+#dimsOuterRows[hidden], #dimsWrapRows[hidden] { display: none; }

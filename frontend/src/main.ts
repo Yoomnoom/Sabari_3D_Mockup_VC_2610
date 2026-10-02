@@ -1,5 +1,7 @@
-import { FACES, FaceData, FaceId, FaceSnapshot, decode, faces, groupOf, rebake, theme } from './faces';
-import { FaceGroup, GROUPS, facesOf } from './faceDefs';
+import { FACES, FaceData, FaceId, FaceSnapshot, decode, faces, groupOf, rebake, resizeFaceCanvases, theme } from './faces';
+import { FaceGroup, GROUPS, applyFaceSizes, facesOf } from './faceDefs';
+import { BoxParams, DEFAULT_PARAMS, cloneParams, faceSizes, paramsEqual, validateParams } from './params';
+import { initDimsUi } from './dimsUi';
 import { Viewer, ViewName } from './viewer';
 import { Rotation, defaultState } from './transform';
 import { UserError, inspectImage, packProject, unpackProject, OpenedProject } from './project';
@@ -14,6 +16,11 @@ let current: FaceId = 'lid_top';
 let baseEnabled = false;
 const lastByGroup: Record<FaceGroup, FaceId> = { lid: 'lid_top', base: 'base_front' };
 let mode: 'edit' | 'view' = 'edit';
+/** 박스 치수 파라미터. 3D·면 크기·텍스처 크기는 모두 여기서 만들어진다. */
+let params: BoxParams = cloneParams(DEFAULT_PARAMS);
+/** "원래 사이즈로 되돌리기" 기준: 처음 열었을 때 / 프로젝트를 연 시점 / 마지막으로 저장한 시점의 치수 */
+let baselineParams: BoxParams = cloneParams(DEFAULT_PARAMS);
+let dims: ReturnType<typeof initDimsUi> | null = null;
 
 // ---------- 공통 UI 유틸 ----------
 function msg(text: string, kind: 'error' | 'ok' = 'error') {
@@ -47,13 +54,13 @@ function download(blob: Blob, name: string) {
 // 실행 취소/다시 실행: 한 번의 변경 전 상태(면 스냅샷 묶음 + 스위치 상태)를 쌓는다.
 // 같은 면의 연속 조작(드래그·슬라이더)은 0.8초 안이면 한 번으로 묶는다. 하단 면을 한꺼번에 제거하는 것도 한 항목이다.
 type Snap = FaceSnapshot & { id: FaceId };
-type Entry = { snaps: Snap[]; base: boolean };
+type Entry = { snaps: Snap[]; base: boolean; params: BoxParams };
 const undoStack: Entry[] = [];
 const redoStack: Entry[] = [];
 let lastPushAt = 0;
-let lastPushId: FaceId | null = null;
+let lastPushId: FaceId | 'params' | null = null;
 const take = (id: FaceId): Snap => { const f = faces[id]; return { id, state: { ...f.state }, blob: f.blob, name: f.name, img: f.img, iw: f.iw, ih: f.ih }; };
-const takeEntry = (ids: FaceId[]): Entry => ({ snaps: ids.map(take), base: baseEnabled });
+const takeEntry = (ids: FaceId[]): Entry => ({ snaps: ids.map(take), base: baseEnabled, params: cloneParams(params) });
 
 function pushHistory(id: FaceId, force = false) {
   const now = performance.now();
@@ -61,6 +68,16 @@ function pushHistory(id: FaceId, force = false) {
   lastPushAt = now; lastPushId = id;
   if (merge) return;
   undoStack.push(takeEntry([id]));
+  if (undoStack.length > 50) undoStack.shift();
+  redoStack.length = 0;
+}
+/** 치수 변경 직전 상태를 기록한다. 입력 중 연속 변경은 0.8초 안이면 한 항목으로 묶는다. */
+function pushParamHistory(before: BoxParams, force = false) {
+  const now = performance.now();
+  const merge = !force && lastPushId === 'params' && now - lastPushAt < 800;
+  lastPushAt = now; lastPushId = force ? null : 'params'; // 버튼 동작(기본값 복원 등)은 항상 별도 항목이고, 뒤따르는 입력과도 묶이지 않는다
+  if (merge) return;
+  undoStack.push({ snaps: [], base: baseEnabled, params: cloneParams(before) });
   if (undoStack.length > 50) undoStack.shift();
   redoStack.length = 0;
 }
@@ -74,12 +91,13 @@ function stepHistory(from: Entry[], to: Entry[]): boolean {
   const e = from.pop();
   if (!e) return false;
   to.push(takeEntry(e.snaps.map((x) => x.id)));
-  for (const { id, ...rest } of e.snaps) Object.assign(faces[id], { ...rest, state: { ...rest.state } });
   lastPushId = null;
+  if (!paramsEqual(e.params, params)) applyParams(e.params, false); // 치수 변경도 실행 취소/다시 실행 대상
+  for (const { id, ...rest } of e.snaps) Object.assign(faces[id], { ...rest, state: { ...rest.state } });
   if (e.base !== baseEnabled) setBaseEnabled(e.base, false);
   for (const { id } of e.snaps) apply(id);
-  const first = e.snaps[0].id;
-  if (groupOf(first) === 'lid' || baseEnabled) setCurrent(first);
+  const first = e.snaps[0]?.id;
+  if (first && (groupOf(first) === 'lid' || baseEnabled)) setCurrent(first);
   return true;
 }
 const undo = () => stepHistory(undoStack, redoStack);
@@ -107,6 +125,32 @@ function apply(id: FaceId) {
   renderFaceList();
   if (id === current) syncControls();
   scheduleDraft();
+}
+
+/**
+ * 박스 치수를 바꾼다: 면 크기·텍스처 캔버스·3D 템플릿·칼선 레이아웃을 한꺼번에 갱신한다.
+ * 이미 넣은 이미지는 지우지 않고, 면마다 현재 맞춤 방식으로 다시 맞춘다(위치·확대·회전·반전 값은 그대로).
+ * 불가능한 조합이면 적용하지 않고 false.
+ */
+function applyParams(next: BoxParams, record = true, force = false): boolean {
+  const errs = validateParams(next);
+  if (errs.length) { dims?.showErrors(errs); return false; }
+  if (paramsEqual(next, params)) return true;
+  if (record) pushParamHistory(params, force);
+  params = cloneParams(next);
+  applyFaceSizes(faceSizes(params));
+  resizeFaceCanvases();
+  viewer.setTemplate(params);
+  for (const fd of FACES) { // 새 3D 에 텍스처를 다시 연결한다(캔버스 크기가 바뀐 면은 다시 구워야 한다)
+    const has = rebake(faces[fd.id]);
+    viewer.setFaceTexture(fd.id, has ? faces[fd.id].canvas : null);
+  }
+  renderFaceList();
+  syncControls();
+  updateOpenNotice();
+  dims?.sync();
+  scheduleDraft();
+  return true;
 }
 
 // ---------- 면 UI ----------
@@ -236,13 +280,16 @@ function bindPair(k: string, min: number, max: number, set: (f: FaceData, v: num
 // ---------- 저장 / 열기 ----------
 async function saveProject() {
   await busy(async () => {
-    const blob = await packProject(
-      FACES.map((x) => ({ id: x.id, state: faces[x.id].state, blob: faces[x.id].blob, name: faces[x.id].name })),
-      Math.round(viewer.slot === 'editor' ? viewer.getLiftMm() : 0),
-      $<HTMLSelectElement>('bgSel').value,
-      { face: $<HTMLInputElement>('colFace').value, lid: $<HTMLInputElement>('colLid').value, base: $<HTMLInputElement>('colBase').value },
-      baseEnabled,
-    );
+    const blob = await packProject({
+      faces: FACES.map((x) => ({ id: x.id, state: faces[x.id].state, blob: faces[x.id].blob, name: faces[x.id].name })),
+      lidLiftMm: Math.round(viewer.slot === 'editor' ? viewer.getLiftMm() : 0),
+      background: $<HTMLSelectElement>('bgSel').value,
+      colors: { face: $<HTMLInputElement>('colFace').value, lid: $<HTMLInputElement>('colLid').value, base: $<HTMLInputElement>('colBase').value },
+      useBaseFaces: baseEnabled,
+      params: cloneParams(params),
+      dieline: null,
+    });
+    baselineParams = cloneParams(params); // 마지막 저장 시점의 치수가 "원래 사이즈"가 된다
     download(blob, '사바리_프로젝트.sabari');
     msg('프로젝트를 저장했습니다. (다운로드 폴더의 사바리_프로젝트.sabari)', 'ok');
   });
@@ -250,6 +297,11 @@ async function saveProject() {
 
 async function applyOpened(proj: OpenedProject) {
   clearHistory();
+  // 치수가 없는 이전 파일·임시저장은 기본값으로 연다
+  const np = proj.params ? cloneParams(proj.params) : cloneParams(DEFAULT_PARAMS);
+  applyParams(np, false);
+  baselineParams = cloneParams(np);
+  const note = (proj as OpenedProject & { paramNote?: string }).paramNote;
   for (const fdsc of FACES) {
     const f = faces[fdsc.id];
     const p = proj.faces[fdsc.id] as OpenedProject['faces'][FaceId] | undefined; // 이전 임시저장에는 하단 면이 없다
@@ -268,6 +320,8 @@ async function applyOpened(proj: OpenedProject) {
   setLift(proj.lidLiftMm);
   $<HTMLSelectElement>('bgSel').value = proj.background;
   syncControls();
+  dims?.sync();
+  if (note) msg(note);
 }
 
 async function openProject(file: File) {
@@ -288,7 +342,7 @@ const timeText = (t: number) => new Date(t).toLocaleString('ko-KR');
 function collectDraft(): Draft {
   const [face, lid, base] = COLOR_IDS.map((i) => $<HTMLInputElement>(i).value);
   return {
-    savedAt: Date.now(), lidLiftMm: Math.round(viewer.getLiftMm()), colors: { face, lid, base }, useBase: baseEnabled,
+    savedAt: Date.now(), lidLiftMm: Math.round(viewer.getLiftMm()), colors: { face, lid, base }, useBase: baseEnabled, params: cloneParams(params),
     background: $<HTMLSelectElement>('bgSel').value as 'white' | 'transparent',
     faces: Object.fromEntries(FACES.map((x) => [x.id, { state: { ...faces[x.id].state }, blob: faces[x.id].blob, name: faces[x.id].name }])) as Draft['faces'],
   };
@@ -412,7 +466,8 @@ async function openGlb(file: File) {
       throw new Error('GLB를 읽지 못했습니다. 파일이 손상되지 않았는지 확인해 주세요.');
     });
     setMode('view');
-    $('glbInfo').textContent = `${file.name} · 메시 ${info.meshes}개 · 이미지가 붙은 재질 ${info.textured}개`;
+    const dimText = info.params ? ` · 몸통 ${info.params.baseW}×${info.params.baseD}×${info.params.baseH}mm` : '';
+    $('glbInfo').textContent = `${file.name} · 메시 ${info.meshes}개 · 이미지가 붙은 재질 ${info.textured}개${dimText}`;
     $('viewLid').hidden = !info.hasLid;
     showView('iso', true);
   });
@@ -664,7 +719,17 @@ async function init() {
     }
   });
 
-  await busy(() => viewer.loadTemplate('./template.glb'));
+  // 템플릿은 서버·GLB 파일 없이 브라우저에서 파라미터로 만든다
+  applyFaceSizes(faceSizes(params));
+  resizeFaceCanvases();
+  viewer.setTemplate(params);
+  dims = initDimsUi({
+    get: () => params,
+    apply: (p) => { applyParams(p, true); },
+    restoreDefault: () => { applyParams(cloneParams(DEFAULT_PARAMS), true, true); },
+    restoreBaseline: () => { applyParams(cloneParams(baselineParams), true, true); },
+  });
+  dims.sync();
   defaultColors = { face: '#ffffff', lid: viewer.getPartColor('lid'), base: viewer.getPartColor('base') };
   applyColors(defaultColors.face, defaultColors.lid, defaultColors.base);
   for (const f of FACES) viewer.setFaceTexture(f.id, null);
@@ -672,7 +737,7 @@ async function init() {
   showView('iso', true);
   await initDraft();
   // 테스트·검증용 훅 (UI 동작에는 쓰지 않음)
-  (window as unknown as Record<string, unknown>).__sabari = { viewer, faces, setCurrent };
+  (window as unknown as Record<string, unknown>).__sabari = { viewer, faces, setCurrent, getParams: () => cloneParams(params), getBaseline: () => cloneParams(baselineParams), applyParams: (p: BoxParams) => applyParams(p, true) };
 }
 
 init();
