@@ -173,7 +173,7 @@
   "project_saved_bytes": 146539,
   "error_message_bad_file": "이미지를 읽지 못했습니다. 파일이 손상되지 않았는지 확인해 주세요.",
   "console_errors_edit": [
-    "Qf: 이미지를 읽지 못했습니다. 파일이 손상되지 않았는지 확인해 주세요.\n    at $f (http://127.0.0.1:8766/assets/index-B-dFieHk.js:4221:90408)\n    at async Mp (http://127.0.0.1:8766/assets/index-B-dFieHk.js:4221:95060)\n    at async bp (http://127.0.0.1:8766/assets/index-B-dFieHk.js:4221:94226)"
+    "Qf: 이미지를 읽지 못했습니다. 파일이 손상되지 않았는지 확인해 주세요.\n    at $f (http://127.0.0.1:8766/assets/index-XiyZS6KI.js:4221:90408)\n    at async Mp (http://127.0.0.1:8766/assets/index-XiyZS6KI.js:4221:95060)\n    at async bp (http://127.0.0.1:8766/assets/index-XiyZS6KI.js:4221:94226)"
   ],
   "project_reopen_state_equal": true,
   "project_reopen_lift_mm": 80,

@@ -65,7 +65,9 @@ export class Viewer {
     this.controls.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.PAN, RIGHT: THREE.MOUSE.PAN };
     this.controls.addEventListener('change', () => (this.dirty = true));
 
-    new ResizeObserver(() => this.resize()).observe(el);
+    // 크기 갱신은 프레임당 한 번만, 실제로 바뀐 경우에만 한다. (스크롤바·소수점 크기 때문에 매 프레임 반복되면 캔버스가 계속 지워져 빈 화면이 된다)
+    let raf = 0;
+    new ResizeObserver(() => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; this.resize(); }); }).observe(el);
     this.resize();
     this.setView('iso');
     this.installPicking();
@@ -81,12 +83,21 @@ export class Viewer {
 
   request() { this.dirty = true; }
 
+  resizeCount = 0;
+  private lastSize = '';
   resize() {
-    const w = Math.max(1, this.el.clientWidth), h = Math.max(1, this.el.clientHeight);
-    this.renderer.setSize(w, h);
+    // 소수점 크기는 버리고(올림하면 영역을 1px 넘겨 스크롤바가 생길 수 있다) 캔버스 크기는 CSS(100%)에 맡긴다.
+    const r = this.el.getBoundingClientRect();
+    const w = Math.max(1, Math.floor(r.width)), h = Math.max(1, Math.floor(r.height));
+    const key = `${w}x${h}@${this.renderer.getPixelRatio()}`;
+    if (key === this.lastSize) return;
+    this.lastSize = key;
+    this.resizeCount++;
+    this.renderer.setSize(w, h, false);
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
-    this.dirty = true;
+    this.renderer.render(this.scene, this.camera); // 지워진 캔버스가 한 프레임이라도 화면에 나가지 않게 바로 그린다
+    this.dirty = false;
   }
 
   private rayAt(e: PointerEvent, objs: THREE.Object3D[], recursive = true) {
