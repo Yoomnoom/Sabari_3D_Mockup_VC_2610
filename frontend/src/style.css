@@ -93,3 +93,5 @@ table.keys td:first-child { width: 48%; }
 #viewport.panning ~ #panBadge { display: block; }
 #viewport.panning, #viewport.panning canvas { cursor: grab !important; }
 #viewport.panning canvas:active { cursor: grabbing !important; }
+
+details.sec > summary button.fit { margin-left: auto; min-height: 32px; font-weight: 400; font-size: 12px; }

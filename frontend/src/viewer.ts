@@ -285,16 +285,37 @@ export class Viewer {
     return box.isEmpty() ? new THREE.Box3(new THREE.Vector3(-0.08, 0, -0.06), new THREE.Vector3(0.08, 0.045, 0.06)) : box;
   }
 
-  setView(name: ViewName) {
-    const box = this.bounds();
-    const center = box.getCenter(new THREE.Vector3());
+  /** 박스 전체가 화면에 들어오는 카메라 거리. */
+  private fitDistance(box: THREE.Box3): number {
     const r = box.getBoundingSphere(new THREE.Sphere()).radius;
     const vfov = THREE.MathUtils.degToRad(this.camera.fov);
     const hfov = 2 * Math.atan(Math.tan(vfov / 2) * this.camera.aspect);
-    const dist = (r / Math.sin(Math.min(vfov, hfov) / 2)) * 1.05;
+    return (r / Math.sin(Math.min(vfov, hfov) / 2)) * 1.05;
+  }
+
+  /**
+   * 보는 방향을 바꾼다. 기본은 사용자가 정한 확대(카메라 거리)를 유지하고, 이동(pan)만 박스 중심으로 되돌린다.
+   * fit=true면 박스 전체가 보이는 거리로 다시 맞춘다(처음 열기·GLB 불러오기).
+   */
+  setView(name: ViewName, fit = false) {
+    const box = this.bounds();
+    const center = box.getCenter(new THREE.Vector3());
+    const dist = fit ? this.fitDistance(box) : this.camera.position.distanceTo(this.controls.target);
     const d = new THREE.Vector3(...DIRS[name]).normalize();
     this.camera.position.copy(center).addScaledVector(d, dist);
     this.camera.up.set(0, 1, 0);
+    this.controls.target.copy(center);
+    this.controls.update();
+    this.dirty = true;
+  }
+
+  /** 위치 초기화(화면에 맞추기): 지금 보는 방향은 그대로, 확대와 이동만 처음 상태로. */
+  fit() {
+    const box = this.bounds();
+    const center = box.getCenter(new THREE.Vector3());
+    const d = this.camera.position.clone().sub(this.controls.target).normalize();
+    if (d.lengthSq() < 0.5) d.set(...DIRS.iso).normalize();
+    this.camera.position.copy(center).addScaledVector(d, this.fitDistance(box));
     this.controls.target.copy(center);
     this.controls.update();
     this.dirty = true;

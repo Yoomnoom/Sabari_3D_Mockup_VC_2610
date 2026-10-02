@@ -323,7 +323,7 @@ function setMode(m: 'edit' | 'view') {
   $('editSave').hidden = m !== 'edit';
   $('viewPanel').hidden = m !== 'view';
   viewer.setSlot(m === 'edit' ? 'editor' : 'viewer');
-  showView('iso');
+  showView('iso', true);
   clearMsg();
   if (m === 'edit') {
     $<HTMLInputElement>('showLid').checked = true;
@@ -342,7 +342,7 @@ async function openGlb(file: File) {
     setMode('view');
     $('glbInfo').textContent = `${file.name} · 메시 ${info.meshes}개 · 이미지가 붙은 재질 ${info.textured}개`;
     $('viewLid').hidden = !info.hasLid;
-    showView('iso');
+    showView('iso', true);
   });
 }
 
@@ -388,8 +388,8 @@ function initUiPrefs() {
 
 // ---------- 시점 (3/4는 R ↔ L 토글) ----------
 let lastView: ViewName | null = 'iso';
-function showView(v: ViewName) {
-  viewer.setView(v);
+function showView(v: ViewName, fit = false) {
+  viewer.setView(v, fit);
   lastView = v;
   const b = $('btnIso');
   b.textContent = v === 'iso' ? '3/4 시점 R' : v === 'isoL' ? '3/4 시점 L' : '3/4 시점';
@@ -486,6 +486,7 @@ async function init() {
   // 보기
   document.querySelectorAll<HTMLButtonElement>('[data-view]').forEach((b) => (b.onclick = () => showView(b.dataset.view as ViewName)));
   $('btnIso').onclick = toggleIso; // 3/4 시점: 누를 때마다 R ↔ L
+  $('btnFit').onclick = (e) => { e.preventDefault(); e.stopPropagation(); viewer.fit(); }; // summary 안의 버튼이라 접기가 같이 눌리지 않게 한다
 
   // 저장 / 열기
   $('btnPng').onclick = savePng;
@@ -565,6 +566,7 @@ async function init() {
     if (e.code === 'Digit3' || e.code === 'Numpad3') return goView(e.shiftKey ? 'left' : 'right');
     if (e.code === 'Digit7' || e.code === 'Numpad7') return goView('top');
     if (e.code === 'Digit0' || e.code === 'Numpad0') return toggleIso(); // 0 = 3/4 시점 (누를 때마다 R ↔ L)
+    if (k === 'f') return viewer.fit(); // 위치 초기화(화면에 맞추기)
     if (k === 'r') return goView('iso'); // 3/4 오른쪽
     if (k === 'l') return goView('isoL'); // 3/4 왼쪽
     if (k === 'o' && viewer.hasLid()) return setLift(viewer.getLiftMm() > 0 ? 0 : OPEN_MM);
@@ -589,7 +591,7 @@ async function init() {
   applyColors(defaultColors.face, defaultColors.lid, defaultColors.base);
   for (const f of FACES) viewer.setFaceTexture(f.id, null);
   setCurrent('lid_top');
-  showView('iso');
+  showView('iso', true);
   await initDraft();
   // 테스트·검증용 훅 (UI 동작에는 쓰지 않음)
   (window as unknown as Record<string, unknown>).__sabari = { viewer, faces, setCurrent };
