@@ -329,6 +329,13 @@ export class Viewer {
       meshes++;
       const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
       if (mats.some((x) => (x as THREE.MeshStandardMaterial).map)) textured++;
+      // 편집 모드와 같은 선명도: 로더 기본값(이방성 1)이면 비스듬히 볼 때 텍스처가 흐려진다.
+      for (const mat of mats) {
+        const m = mat as THREE.MeshStandardMaterial;
+        for (const tex of [m.map, m.emissiveMap, m.normalMap, m.roughnessMap, m.metalnessMap, m.aoMap]) {
+          if (tex) { tex.anisotropy = this.renderer.capabilities.getMaxAnisotropy(); tex.needsUpdate = true; }
+        }
+      }
     });
     return { meshes, textured, hasLid: !!m.lid };
   }
