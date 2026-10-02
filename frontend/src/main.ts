@@ -1,7 +1,8 @@
 import { FACES, FaceData, FaceId, decode, faces, rebake, theme } from './faces';
 import { Viewer, ViewName } from './viewer';
 import { Rotation, defaultState } from './transform';
-import { UserError, inspectImage, packProject, unpackProject } from './project';
+import { UserError, inspectImage, packProject, unpackProject, OpenedProject } from './project';
+import { Draft, getDraft, putDraft } from './draft';
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const OPEN_MM = 80;
@@ -63,6 +64,7 @@ function apply(id: FaceId) {
   viewer.setFaceTexture(id, has ? f.canvas : null);
   renderFaceList();
   if (id === current) syncControls();
+  scheduleDraft();
 }
 
 // ---------- 면 UI ----------
@@ -94,6 +96,7 @@ function syncControls() {
   $('faceSize').textContent = `면 크기 ${fd.wMm}×${fd.hMm}mm (비율 ${(fd.wMm / fd.hMm).toFixed(2)}:1)`;
   $('fileInfo').textContent = f.img ? `${f.name} · 원본 ${f.iw}×${f.ih}px` : '이미지 없음';
   $('faceControls').classList.toggle('disabled', !f.img);
+  $('facePreview').style.cursor = f.img ? 'grab' : 'default';
   const prev = $<HTMLCanvasElement>('facePreview');
   prev.width = f.canvas.width / 4; prev.height = f.canvas.height / 4;
   const ctx = prev.getContext('2d')!;
@@ -148,28 +151,100 @@ async function saveProject() {
   });
 }
 
+async function applyOpened(proj: OpenedProject) {
+  for (const fdsc of FACES) {
+    const f = faces[fdsc.id];
+    const p = proj.faces[fdsc.id];
+    f.undo = null;
+    f.state = p.state;
+    if (p.blob) {
+      const d = await decode(p.blob);
+      f.blob = p.blob; f.name = p.name; f.img = d.img; f.iw = d.iw; f.ih = d.ih;
+    } else {
+      f.blob = null; f.name = null; f.img = null; f.iw = f.ih = 0;
+    }
+    apply(fdsc.id);
+  }
+  if (proj.colors) applyColors(proj.colors.face, proj.colors.lid, proj.colors.base);
+  setLift(proj.lidLiftMm);
+  $<HTMLSelectElement>('bgSel').value = proj.background;
+  syncControls();
+}
+
 async function openProject(file: File) {
   await busy(async () => {
-    const proj = await unpackProject(file);
-    for (const fdsc of FACES) {
-      const f = faces[fdsc.id];
-      const p = proj.faces[fdsc.id];
-      f.undo = null;
-      f.state = p.state;
-      if (p.blob) {
-        const d = await decode(p.blob);
-        f.blob = p.blob; f.name = p.name; f.img = d.img; f.iw = d.iw; f.ih = d.ih;
-      } else {
-        f.blob = null; f.name = null; f.img = null; f.iw = f.ih = 0;
-      }
-      apply(fdsc.id);
-    }
-    if (proj.colors) applyColors(proj.colors.face, proj.colors.lid, proj.colors.base);
-    setLift(proj.lidLiftMm);
-    $<HTMLSelectElement>('bgSel').value = proj.background;
-    syncControls();
+    await applyOpened(await unpackProject(file));
     msg('프로젝트를 열었습니다.', 'ok');
   });
+}
+
+// ---------- 임시저장 (IndexedDB) ----------
+const COLOR_IDS = ['colFace', 'colLid', 'colBase'] as const;
+let draftReady = false;
+let draftTimer = 0;
+let draftPending = false;
+const hasAnyImage = () => FACES.some((f) => faces[f.id].blob);
+const timeText = (t: number) => new Date(t).toLocaleString('ko-KR');
+
+function collectDraft(): Draft {
+  const [face, lid, base] = COLOR_IDS.map((i) => $<HTMLInputElement>(i).value);
+  return {
+    savedAt: Date.now(), lidLiftMm: Math.round(viewer.getLiftMm()), colors: { face, lid, base },
+    background: $<HTMLSelectElement>('bgSel').value as 'white' | 'transparent',
+    faces: Object.fromEntries(FACES.map((x) => [x.id, { state: { ...faces[x.id].state }, blob: faces[x.id].blob, name: faces[x.id].name }])) as Draft['faces'],
+  };
+}
+
+async function saveDraft(manual: boolean) {
+  try {
+    const d = collectDraft();
+    await putDraft(d);
+    $('draftInfo').textContent = `${manual ? '임시저장' : '자동 저장'}됨 · ${timeText(d.savedAt)}`;
+    $<HTMLButtonElement>('btnDraftLoad').disabled = false;
+    if (manual) msg('임시저장했습니다. (이 브라우저 안에 보관됩니다)', 'ok');
+  } catch (e) {
+    $('draftInfo').textContent = '임시저장 실패';
+    if (manual) msg(e instanceof Error ? e.message : String(e));
+  }
+}
+
+/** 변경 후 1.5초 뒤 자동 저장. 이미지가 하나도 없을 때는 기존 임시저장을 덮어쓰지 않는다. */
+function scheduleDraft() {
+  if (!draftReady || !hasAnyImage()) return;
+  clearTimeout(draftTimer);
+  draftPending = true;
+  draftTimer = window.setTimeout(() => { draftPending = false; saveDraft(false); }, 1500);
+}
+
+/** 탭을 닫거나 숨길 때, 기다리던 자동 저장을 바로 실행한다(브라우저가 허용하는 범위의 최선). */
+function flushDraft() {
+  if (!draftPending) return;
+  clearTimeout(draftTimer);
+  draftPending = false;
+  saveDraft(false);
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flushDraft(); });
+window.addEventListener('pagehide', flushDraft);
+
+async function loadDraft() {
+  await busy(async () => {
+    const d = await getDraft();
+    if (!d) throw new UserError('임시저장된 작업이 없습니다.');
+    await applyOpened(d);
+    msg(`임시저장을 불러왔습니다. (${timeText(d.savedAt)})`, 'ok');
+  });
+}
+
+async function initDraft() {
+  try {
+    const d = await getDraft();
+    if (d) {
+      $('draftInfo').textContent = `임시저장 있음 · ${timeText(d.savedAt)}`;
+      $<HTMLButtonElement>('btnDraftLoad').disabled = false;
+      msg(`이전 임시저장(${timeText(d.savedAt)})이 있습니다. 왼쪽 아래 "임시저장 불러오기"로 이어서 작업할 수 있습니다.`, 'ok');
+    }
+  } catch { $('draftInfo').textContent = '이 브라우저에서는 임시저장을 쓸 수 없습니다'; }
+  draftReady = true;
 }
 
 async function saveGlb() {
@@ -200,6 +275,7 @@ function applyColors(face: string, lid: string, base: string) {
   theme.faceBg = face;
   viewer.setFaceBg(face);
   for (const f of FACES) if (faces[f.id].img) apply(f.id); // 여백 색이 바뀌므로 다시 굽는다
+  scheduleDraft();
 }
 
 // ---------- 박스 / 뷰어 ----------
@@ -207,6 +283,7 @@ function setLift(mm: number) {
   const v = Math.min(150, Math.max(0, Math.round(mm)));
   viewer.setLiftMm(v);
   for (const id of ['liftR', 'liftN', 'vLiftR', 'vLiftN']) $<HTMLInputElement>(id).value = String(v);
+  scheduleDraft();
 }
 
 function setMode(m: 'edit' | 'view') {
@@ -257,6 +334,20 @@ async function init() {
     return;
   }
   viewer.onPick = (id) => setCurrent(id);
+  const clamp1 = (v: number) => Math.min(1, Math.max(-1, v));
+  viewer.onDragFace = (du, dv) => edit((f) => { f.state.offsetX = clamp1(f.state.offsetX + du); f.state.offsetY = clamp1(f.state.offsetY + dv); });
+  // 면 미리보기 드래그 = 이미지 이동 (오프셋은 면 크기 대비 비율이라 미리보기 크기와 무관)
+  const prev = $<HTMLCanvasElement>('facePreview');
+  let pd: { x: number; y: number } | null = null;
+  prev.onpointerdown = (e) => { if (!faces[current].img) return; pd = { x: e.clientX, y: e.clientY }; prev.setPointerCapture(e.pointerId); };
+  prev.onpointermove = (e) => {
+    if (!pd) return;
+    const r = prev.getBoundingClientRect();
+    const dx = (e.clientX - pd.x) / r.width, dy = (e.clientY - pd.y) / r.height;
+    pd = { x: e.clientX, y: e.clientY };
+    edit((f) => { f.state.offsetX = clamp1(f.state.offsetX + dx); f.state.offsetY = clamp1(f.state.offsetY + dy); });
+  };
+  prev.onpointerup = prev.onpointercancel = () => { pd = null; };
   $('msgClose').onclick = clearMsg;
   renderFaceList();
 
@@ -322,6 +413,8 @@ async function init() {
   $('btnPng').onclick = savePng;
   $('btnGlb').onclick = saveGlb;
   $('btnProjSave').onclick = saveProject;
+  $('btnDraftSave').onclick = () => saveDraft(true);
+  $('btnDraftLoad').onclick = loadDraft;
   const pf = $<HTMLInputElement>('fileProj');
   $('btnProjOpen').onclick = () => pf.click();
   pf.onchange = () => { const f = pf.files?.[0]; pf.value = ''; if (f) openProject(f); };
@@ -359,6 +452,7 @@ async function init() {
   for (const f of FACES) viewer.setFaceTexture(f.id, null);
   setCurrent('lid_top');
   viewer.setView('iso');
+  await initDraft();
   // 테스트·검증용 훅 (UI 동작에는 쓰지 않음)
   (window as unknown as Record<string, unknown>).__sabari = { viewer, faces, setCurrent };
 }

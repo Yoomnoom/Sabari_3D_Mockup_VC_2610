@@ -34,10 +34,12 @@ label.slider input[type='range'] { grid-area: r; width: 100%; }
 label.slider input[type='number'] { grid-area: n; width: 70px; height: 32px; }
 label.check { display: flex; gap: 8px; align-items: center; min-height: 32px; }
 select { height: 36px; }
+.draft { border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; background: #fff; }
+.draft .row button { flex: 1; }
 label.color { display: flex; justify-content: space-between; align-items: center; min-height: 40px; }
 label.color small { color: #6b665e; }
 label.color input[type='color'] { width: 56px; height: 36px; padding: 2px; border: 1px solid #b9b5ad; border-radius: 6px; background: #fff; cursor: pointer; }
-#facePreview { width: 100%; border: 1px solid var(--line); background: #fff; margin-top: 4px; }
+#facePreview { touch-action: none; cursor: grab; width: 100%; border: 1px solid var(--line); background: #fff; margin-top: 4px; }
 #faceControls.disabled { opacity: 0.45; pointer-events: none; }
 #stage { flex: 1; position: relative; background: #fff; min-width: 0; }
 #viewport { position: absolute; inset: 0; }

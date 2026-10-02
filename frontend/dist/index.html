@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>사바리 목업 스튜디오</title>
-  <script type="module" crossorigin src="./assets/index-GHrNCpu-.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-BEh4Y87W.css">
+  <script type="module" crossorigin src="./assets/index-DwskA3e5.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-BM6AuPNB.css">
 </head>
 <body>
   <aside id="panel">
@@ -32,6 +32,7 @@
         </div>
         <p id="fileInfo" class="info">이미지 없음</p>
         <canvas id="facePreview" aria-label="면 미리보기"></canvas>
+        <p class="hint">미리보기를 드래그하면 이미지가 이동합니다. 3D 화면에서는 Shift+드래그.</p>
 
         <div id="faceControls">
           <fieldset>
@@ -124,6 +125,11 @@
       <div class="col">
         <button id="btnPng">현재 화면 PNG 저장</button>
         <span id="editSave">
+          <div class="draft">
+            <div class="row"><button id="btnDraftSave">임시저장</button><button id="btnDraftLoad" disabled>임시저장 불러오기</button></div>
+            <p id="draftInfo" class="info">임시저장 없음</p>
+            <p class="hint">이미지를 넣거나 바꾸면 자동으로 저장됩니다. 이 브라우저 안에만 보관되며 다른 PC로는 옮겨지지 않습니다. 파일로 보관하려면 아래 프로젝트 저장을 쓰세요.</p>
+          </div>
           <button id="btnGlb">GLB 저장 (이미지 포함)</button>
           <button id="btnProjSave">프로젝트 저장 (.sabari)</button>
           <button id="btnProjOpen">프로젝트 열기</button>

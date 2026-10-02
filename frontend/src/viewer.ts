@@ -32,6 +32,9 @@ export class Viewer {
   selected: FaceId = 'lid_top';
   faceBg = '#ffffff';
   onPick: ((id: FaceId) => void) | null = null;
+  /** Shift+드래그: 선택된 면 위에서 커서가 움직인 만큼(UV 증가분) 이미지 이동. */
+  onDragFace: ((du: number, dv: number) => void) | null = null;
+  private hlOn = true;
   private dirty = true;
   private el: HTMLElement;
 
@@ -81,21 +84,56 @@ export class Viewer {
     this.dirty = true;
   }
 
+  private rayAt(e: PointerEvent, objs: THREE.Object3D[], recursive = true) {
+    const dom = this.renderer.domElement;
+    const r = dom.getBoundingClientRect();
+    const ndc = new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    const ray = new THREE.Raycaster();
+    ray.setFromCamera(ndc, this.camera);
+    return ray.intersectObjects(objs, recursive).filter((h) => h.object.visible && h.object.name !== '__highlight');
+  }
+
   private installPicking() {
     const dom = this.renderer.domElement;
     let down: { x: number; y: number } | null = null;
-    dom.addEventListener('pointerdown', (e) => (down = { x: e.clientX, y: e.clientY }));
+    let drag: THREE.Vector2 | null = null; // Shift+드래그로 이미지 이동 중일 때 직전 UV
+
+    // 캡처 단계: OrbitControls보다 먼저 받아서, Shift+드래그일 때 회전을 막는다.
+    dom.addEventListener('pointerdown', (e) => {
+      down = { x: e.clientX, y: e.clientY };
+      if (!e.shiftKey || e.button !== 0 || this.slot !== 'editor' || !this.onDragFace) return;
+      const mesh = this.faceMeshes.get(this.selected);
+      const h = mesh && this.rayAt(e, [mesh], false)[0];
+      if (h?.uv) {
+        drag = h.uv.clone();
+        this.controls.enabled = false;
+        dom.setPointerCapture(e.pointerId);
+      }
+    }, true);
+    dom.addEventListener('pointermove', (e) => {
+      if (!drag) return;
+      const mesh = this.faceMeshes.get(this.selected)!;
+      const h = this.rayAt(e, [mesh], false)[0];
+      if (!h?.uv) return;
+      this.onDragFace!(h.uv.x - drag.x, h.uv.y - drag.y); // u→이미지 x, v→이미지 y (v=0이 위)
+      drag.copy(h.uv);
+    });
     dom.addEventListener('pointerup', (e) => {
+      if (drag) { drag = null; this.controls.enabled = true; down = null; return; }
       if (!down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 4 || e.button !== 0) return;
       if (this.slot !== 'editor' || !this.onPick) return;
-      const r = dom.getBoundingClientRect();
-      const ndc = new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
-      const ray = new THREE.Raycaster();
-      ray.setFromCamera(ndc, this.camera);
-      const hit = ray.intersectObject(this.models.editor!.root, true).find((h) => h.object.visible && h.object.name !== '__highlight');
+      const hit = this.rayAt(e, [this.models.editor!.root])[0];
       const id = hit && FACES.find((f) => f.id === hit.object.name)?.id;
       if (id) this.onPick(id);
+      else this.setHighlightOn(false); // 박스 바깥이나 면이 아닌 곳(두께면·몸통 등)을 누르면 선택 표시 해제
     });
+    dom.addEventListener('pointercancel', () => { drag = null; this.controls.enabled = true; });
+  }
+
+  setHighlightOn(v: boolean) {
+    this.hlOn = v;
+    if (this.highlight) this.highlight.visible = v && this.slot === 'editor';
+    this.dirty = true;
   }
 
   private makeModel(root: THREE.Group): Model {
@@ -184,6 +222,7 @@ export class Viewer {
     );
     this.highlight.renderOrder = 10;
     this.highlight.name = '__highlight';
+    this.hlOn = true;
     this.highlight.visible = this.slot === 'editor';
     mesh.add(this.highlight);
     this.dirty = true;
@@ -195,7 +234,7 @@ export class Viewer {
       const m = this.models[k];
       if (m) m.root.visible = k === slot;
     }
-    if (this.highlight) this.highlight.visible = slot === 'editor';
+    if (this.highlight) this.highlight.visible = slot === 'editor' && this.hlOn;
     this.dirty = true;
   }
 
