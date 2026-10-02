@@ -1,0 +1,24 @@
+{
+  "lid": {
+    "kind": "lid",
+    "panel": {
+      "w": 117.4,
+      "h": 167.4
+    },
+    "depth": 38,
+    "tuck": 19.3,
+    "cutWidth": 232,
+    "cutHeight": 282
+  },
+  "base": {
+    "kind": "base",
+    "panel": {
+      "w": 112.4,
+      "h": 162.4
+    },
+    "depth": 43,
+    "tuck": 19.3,
+    "cutWidth": 237,
+    "cutHeight": 287
+  }
+}

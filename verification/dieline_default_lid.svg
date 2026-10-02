@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 디자인 가이드용, 제조 칼선 아님. 최종 칼선은 인쇄소 템플릿을 사용하세요 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+     width="238mm" height="288mm" viewBox="-3 -3 238 288"
+     data-kind="lid" data-cut-width-mm="232" data-cut-height-mm="282" data-bleed-mm="3">
+  <title>사바리 뚜껑(십자형) 칼선 가이드 (1:1, mm)</title>
+  <desc>디자인 가이드용, 제조 칼선 아님. 최종 칼선은 인쇄소 템플릿을 사용하세요. 재단선=빨강 실선, 접는선=파랑 점선, 안내선(여분·면 영역)=초록 점선. 단위 mm.</desc>
+  <g id="재단선" inkscape:groupmode="layer" inkscape:label="재단선 (빨강 실선)">
+    <polygon points="57.3,57.3 60.3,0 171.7,0 174.7,57.3 232,60.3 232,221.7 174.7,224.7 171.7,282 60.3,282 57.3,224.7 0,221.7 0,60.3" stroke="#e60000" stroke-width="0.3" fill="none" stroke-linejoin="miter"/>
+  </g>
+  <g id="접는선" inkscape:groupmode="layer" inkscape:label="접는선 (파랑 점선)">
+    <line x1="57.3" y1="57.3" x2="174.7" y2="57.3" stroke="#0066ff" stroke-width="0.25" stroke-dasharray="4 2" fill="none"/>
+    <line x1="174.7" y1="57.3" x2="174.7" y2="224.7" stroke="#0066ff" stroke-width="0.25" stroke-dasharray="4 2" fill="none"/>
+    <line x1="174.7" y1="224.7" x2="57.3" y2="224.7" stroke="#0066ff" stroke-width="0.25" stroke-dasharray="4 2" fill="none"/>
+    <line x1="57.3" y1="224.7" x2="57.3" y2="57.3" stroke="#0066ff" stroke-width="0.25" stroke-dasharray="4 2" fill="none"/>
+    <line x1="60.3" y1="19.3" x2="171.7" y2="19.3" stroke="#0066ff" stroke-width="0.25" stroke-dasharray="4 2" fill="none"/>
+    <line x1="212.7" y1="60.3" x2="212.7" y2="221.7" stroke="#0066ff" stroke-width="0.25" stroke-dasharray="4 2" fill="none"/>
+    <line x1="171.7" y1="262.7" x2="60.3" y2="262.7" stroke="#0066ff" stroke-width="0.25" stroke-dasharray="4 2" fill="none"/>
+    <line x1="19.3" y1="221.7" x2="19.3" y2="60.3" stroke="#0066ff" stroke-width="0.25" stroke-dasharray="4 2" fill="none"/>
+  </g>
+  <g id="안내선" inkscape:groupmode="layer" inkscape:label="안내선: 여분·면 영역 (초록 점선)">
+    <rect x="-3" y="-3" width="238" height="288" stroke="#00a050" stroke-width="0.2" stroke-dasharray="1 1.5" fill="none"/>
+    <rect x="58.5" y="58.5" width="115" height="165" stroke="#00a050" stroke-width="0.2" stroke-dasharray="1 1.5" fill="none"/>
+    <rect x="19.3" y="58.5" width="38" height="165" stroke="#00a050" stroke-width="0.2" stroke-dasharray="1 1.5" fill="none"/>
+    <rect x="174.7" y="58.5" width="38" height="165" stroke="#00a050" stroke-width="0.2" stroke-dasharray="1 1.5" fill="none"/>
+    <rect x="58.5" y="19.3" width="115" height="38" stroke="#00a050" stroke-width="0.2" stroke-dasharray="1 1.5" fill="none"/>
+    <rect x="58.5" y="224.7" width="115" height="38" stroke="#00a050" stroke-width="0.2" stroke-dasharray="1 1.5" fill="none"/>
+    <text x="116" y="141" font-size="5" fill="#00a050" text-anchor="middle" dominant-baseline="middle" transform="rotate(270 116 141)">lid_top</text>
+    <text x="38.3" y="141" font-size="5" fill="#00a050" text-anchor="middle" dominant-baseline="middle" transform="rotate(90 38.3 141)">lid_back</text>
+    <text x="193.7" y="141" font-size="5" fill="#00a050" text-anchor="middle" dominant-baseline="middle" transform="rotate(270 193.7 141)">lid_front</text>
+    <text x="116" y="38.3" font-size="5" fill="#00a050" text-anchor="middle" dominant-baseline="middle" transform="rotate(180 116 38.3)">lid_right</text>
+    <text x="116" y="243.7" font-size="5" fill="#00a050" text-anchor="middle" dominant-baseline="middle" transform="rotate(0 116 243.7)">lid_left</text>
+    <text x="-2" y="284" font-size="2.6" fill="#555">디자인 가이드용, 제조 칼선 아님. 최종 칼선은 인쇄소 템플릿을 사용하세요</text>
+  </g>
+</svg>

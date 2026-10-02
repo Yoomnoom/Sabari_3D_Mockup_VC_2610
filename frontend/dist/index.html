@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>사바리 목업 스튜디오</title>
-  <script type="module" crossorigin src="./assets/index-BItDeyRp.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-CSeNQtQu.css">
+  <script type="module" crossorigin src="./assets/index-CIniXKFC.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-AZZUcHtL.css">
 </head>
 <body>
   <aside id="panel">
@@ -102,6 +102,23 @@
         <div class="row wrap">
           <button id="btnDimsDefault">기본값 복원</button>
           <button id="btnDimsBaseline" title="처음 열었을 때 또는 마지막으로 저장한 치수로">원래 사이즈로 되돌리기</button>
+        </div>
+      </details>
+
+      <details class="sec" id="dDie">
+        <summary>칼선 (디자인 가이드)</summary>
+        <p class="hint"><b>디자인 가이드용, 제조 칼선 아님.</b> 최종 칼선은 인쇄소 템플릿을 사용하세요.</p>
+        <div class="row wrap">
+          <button id="btnDieLid" class="grow">뚜껑 칼선 SVG</button>
+          <button id="btnDieBase" class="grow">하단 칼선 SVG</button>
+        </div>
+        <p class="hint">현재 치수로 만든 1:1(mm) SVG입니다. 재단선(빨강 실선)·접는선(파랑 점선)·안내선(초록 점선)이 레이어로 나뉩니다.</p>
+        <div class="split-box">
+          <button id="btnSplitPick" class="grow">칼선 이미지 한 장 올리기</button>
+          <input id="fileDieline" type="file" accept="image/png,image/jpeg,image/webp" hidden />
+          <p id="dielineInfo" class="info">올린 칼선 이미지 없음</p>
+          <button id="btnSplitEdit" disabled>분할 영역 조정</button>
+          <p class="hint">칼선 위에서 만든 디자인 한 장(PNG/JPG)을 면별로 자동으로 나눕니다. 접어 넣는 영역과 모서리 탭은 면에 포함되지 않습니다.</p>
         </div>
       </details>
 
@@ -211,6 +228,20 @@
       </table>
     </details>
   </aside>
+
+  <dialog id="splitDlg" aria-labelledby="splitTitle">
+    <h2 id="splitTitle">칼선 이미지 분할</h2>
+    <p class="hint">사각형을 끌면 위치가, 모서리를 끌면 크기가 바뀝니다. 면 목록에서 회전을 바꿀 수 있습니다. 원본 이미지는 그대로 보존됩니다.</p>
+    <div class="split-controls">
+      <label>칼선 종류 <select id="splitKind"><option value="lid">뚜껑(십자형)</option><option value="base">하단 몸통</option></select></label>
+      <label>재단 여분 (mm) <input id="splitBleed" type="number" step="0.5" min="0" max="50" /></label>
+      <button id="btnSplitAuto">자동 배치로 되돌리기</button>
+    </div>
+    <p id="splitWarn" class="err" role="alert" hidden></p>
+    <div id="splitStage"><img id="splitImg" alt="올린 칼선 이미지" draggable="false" /><svg id="splitSvg" role="img" aria-label="면 영역 조정"></svg></div>
+    <div id="splitList"></div>
+    <div class="row"><button id="btnSplitApply" class="primary">면에 적용</button><button id="btnSplitCancel">취소</button></div>
+  </dialog>
 
   <main id="stage">
     <div id="viewport"></div>

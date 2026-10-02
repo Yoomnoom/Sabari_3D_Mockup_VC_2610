@@ -2,9 +2,11 @@ import { FACES, FaceData, FaceId, FaceSnapshot, decode, faces, groupOf, rebake, 
 import { FaceGroup, GROUPS, applyFaceSizes, facesOf } from './faceDefs';
 import { BoxParams, DEFAULT_PARAMS, RatioChange, cloneParams, faceSizes, formatPct, formatRatio, paramsEqual, ratioChanges, ratioOf, validateParams } from './params';
 import { initDimsUi } from './dimsUi';
+import { DieKind, buildDieline, dielineSvg } from './dieline';
+import { SplitResult, initSplitUi } from './splitUi';
 import { Viewer, ViewName } from './viewer';
 import { Rotation, defaultState } from './transform';
-import { UserError, inspectImage, packProject, unpackProject, OpenedProject } from './project';
+import { DielineSave, UserError, inspectImage, packProject, unpackProject, OpenedProject } from './project';
 import { Draft, delDraft, getDraft, putDraft } from './draft';
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -21,6 +23,9 @@ let params: BoxParams = cloneParams(DEFAULT_PARAMS);
 /** "원래 사이즈로 되돌리기" 기준: 처음 열었을 때 / 프로젝트를 연 시점 / 마지막으로 저장한 시점의 치수 */
 let baselineParams: BoxParams = cloneParams(DEFAULT_PARAMS);
 let dims: ReturnType<typeof initDimsUi> | null = null;
+let split: ReturnType<typeof initSplitUi> | null = null;
+/** 마지막으로 올린 칼선 이미지 한 장과 분할 설정(원본 이미지는 .sabari 에 그대로 들어간다) */
+let dieline: DielineSave | null = null;
 
 // ---------- 공통 UI 유틸 ----------
 function msg(text: string, kind: 'error' | 'ok' = 'error') {
@@ -343,7 +348,7 @@ async function saveProject() {
       colors: { face: $<HTMLInputElement>('colFace').value, lid: $<HTMLInputElement>('colLid').value, base: $<HTMLInputElement>('colBase').value },
       useBaseFaces: baseEnabled,
       params: cloneParams(params),
-      dieline: null,
+      dieline,
     });
     baselineParams = cloneParams(params); // 마지막 저장 시점의 치수가 "원래 사이즈"가 된다
     download(blob, '사바리_프로젝트.sabari');
@@ -377,6 +382,8 @@ async function applyOpened(proj: OpenedProject) {
   setLift(proj.lidLiftMm);
   $<HTMLSelectElement>('bgSel').value = proj.background;
   syncControls();
+  dieline = proj.dieline ?? null;
+  renderDielineInfo();
   dims?.sync();
   opening = false;
   resetRatioRefs(); // 프로젝트·임시저장을 열 때는 알림을 띄우지 않는다(이번 세션에서 바꾼 경우에만)
@@ -402,7 +409,7 @@ const timeText = (t: number) => new Date(t).toLocaleString('ko-KR');
 function collectDraft(): Draft {
   const [face, lid, base] = COLOR_IDS.map((i) => $<HTMLInputElement>(i).value);
   return {
-    savedAt: Date.now(), lidLiftMm: Math.round(viewer.getLiftMm()), colors: { face, lid, base }, useBase: baseEnabled, params: cloneParams(params),
+    savedAt: Date.now(), lidLiftMm: Math.round(viewer.getLiftMm()), colors: { face, lid, base }, useBase: baseEnabled, params: cloneParams(params), dieline,
     background: $<HTMLSelectElement>('bgSel').value as 'white' | 'transparent',
     faces: Object.fromEntries(FACES.map((x) => [x.id, { state: { ...faces[x.id].state }, blob: faces[x.id].blob, name: faces[x.id].name }])) as Draft['faces'],
   };
@@ -572,6 +579,42 @@ function initUiPrefs() {
       msg('임시저장을 삭제했습니다.', 'ok');
     });
   };
+}
+
+// ---------- 칼선(디자인 가이드) · 칼선 이미지 분할 ----------
+function renderDielineInfo() {
+  const has = !!dieline;
+  $('dielineInfo').textContent = dieline ? `${dieline.name ?? '칼선 이미지'} · ${dieline.kind === 'base' ? '하단 몸통' : '뚜껑'} · 여분 ${dieline.bleedMm}mm` : '올린 칼선 이미지 없음';
+  $<HTMLButtonElement>('btnSplitEdit').disabled = !has;
+}
+
+function downloadDielineSvg(kind: DieKind) {
+  const d = buildDieline(params, kind);
+  const label = (id: FaceId) => FACES.find((f) => f.id === id)?.label ?? id;
+  const svg = dielineSvg(d, params.bleed, label);
+  download(new Blob([svg], { type: 'image/svg+xml' }), kind === 'lid' ? '사바리_뚜껑_칼선가이드.svg' : '사바리_하단_칼선가이드.svg');
+  msg('칼선 가이드 SVG를 저장했습니다. 디자인 가이드용이며 제조 칼선이 아닙니다. 최종 칼선은 인쇄소 템플릿을 사용하세요.', 'ok');
+}
+
+/** 분할 결과를 면에 적용한다: 5개 면을 한 번의 실행 취소 항목으로 바꾸고, 새 이미지이므로 비율 기준을 현재로 맞춘다. */
+async function applySplit(r: SplitResult) {
+  const ids = r.faces.map((f) => f.id);
+  const decoded: { id: FaceId; blob: Blob; name: string; img: ImageBitmap; iw: number; ih: number }[] = [];
+  for (const f of r.faces) { const d = await decode(f.blob); decoded.push({ ...f, ...d }); }
+  if (ids.some((id) => groupOf(id) === 'base') && !baseEnabled) setBaseEnabled(true); // 하단 이미지가 생기면 스위치는 켜진다
+  pushHistoryMany(ids);
+  for (const d of decoded) {
+    const f = faces[d.id];
+    f.blob = d.blob; f.name = d.name; f.img = d.img; f.iw = d.iw; f.ih = d.ih;
+    f.state = { ...defaultState(), fit: 'cover' }; // 분할한 이미지는 면과 같은 비율이므로 면을 꽉 채운다(위치·확대·회전·반전은 이후 그대로 편집 가능)
+    apply(d.id);
+  }
+  dieline = { blob: r.source, name: r.name, bleedMm: r.bleedMm, kind: r.kind, regions: r.regions, rotations: r.rotations };
+  resetRatioRefs(ids);
+  renderDielineInfo();
+  setCurrent(ids[0]);
+  scheduleDraft();
+  msg(`칼선 이미지를 ${ids.length}개 면으로 나눠 적용했습니다. 실행 취소(Ctrl+Z)로 되돌릴 수 있습니다.`, 'ok');
 }
 
 // ---------- 시점 (3/4는 R ↔ L 토글) ----------
@@ -792,6 +835,22 @@ async function init() {
     restoreBaseline: () => { applyParams(cloneParams(baselineParams), true, true); },
   });
   dims.sync();
+  split = initSplitUi({
+    params: () => params,
+    faceLabel: (id) => FACES.find((f) => f.id === id)?.label ?? id,
+    apply: applySplit,
+  });
+  const dieFile = $<HTMLInputElement>('fileDieline');
+  $('btnSplitPick').onclick = () => dieFile.click();
+  dieFile.onchange = () => {
+    const f = dieFile.files?.[0]; dieFile.value = '';
+    if (!f) return;
+    busy(async () => { await inspectImage(f); await split!.open(f, f.name); });
+  };
+  $('btnSplitEdit').onclick = () => { if (dieline) busy(() => split!.open(dieline!.blob, dieline!.name, dieline)); };
+  $('btnDieLid').onclick = () => downloadDielineSvg('lid');
+  $('btnDieBase').onclick = () => downloadDielineSvg('base');
+  renderDielineInfo();
   resetRatioRefs();
   $('btnRatioClose').onclick = () => { dismissedEpoch = changeEpoch; renderRatioUi(); };
   $('btnRatioDetail').onclick = () => {
@@ -809,7 +868,7 @@ async function init() {
   showView('iso', true);
   await initDraft();
   // 테스트·검증용 훅 (UI 동작에는 쓰지 않음)
-  (window as unknown as Record<string, unknown>).__sabari = { viewer, faces, setCurrent, getParams: () => cloneParams(params), getBaseline: () => cloneParams(baselineParams), applyParams: (p: BoxParams) => applyParams(p, true) };
+  (window as unknown as Record<string, unknown>).__sabari = { viewer, faces, setCurrent, getLayout: (k: DieKind) => buildDieline(params, k), getDieline: () => dieline, getParams: () => cloneParams(params), getBaseline: () => cloneParams(baselineParams), applyParams: (p: BoxParams) => applyParams(p, true) };
 }
 
 init();

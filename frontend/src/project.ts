@@ -69,6 +69,8 @@ export interface DielineSave {
   bleedMm: number;
   kind: 'lid' | 'base';
   regions: Partial<Record<FaceId, Rect>>;
+  /** 면 이미지를 시계방향으로 이만큼 돌려 칼선에 놓았다고 보는 값(기본은 레이아웃의 값, 사용자가 바꿀 수 있다) */
+  rotations?: Partial<Record<FaceId, number>>;
 }
 
 export interface PackInput {
@@ -98,7 +100,7 @@ export async function packProject(i: PackInput): Promise<Blob> {
     const info = await inspectImage(i.dieline.blob);
     const file = `images/dieline${info.ext}`;
     zip.file(file, i.dieline.blob, { compression: 'STORE' }); // 칼선 원본도 바이트 그대로
-    dieline = { file, originalName: i.dieline.name, bleedMm: i.dieline.bleedMm, kind: i.dieline.kind, regions: i.dieline.regions };
+    dieline = { file, originalName: i.dieline.name, bleedMm: i.dieline.bleedMm, kind: i.dieline.kind, regions: i.dieline.regions, rotations: i.dieline.rotations ?? {} };
   }
   zip.file('project.json', JSON.stringify({
     schemaVersion: SCHEMA_VERSION, templateId: TEMPLATE_ID, params: i.params,
@@ -175,9 +177,11 @@ export async function unpackProject(file: Blob): Promise<OpenedProject> {
       const r = rectOf(v);
       if (r && FACES.some((f) => f.id === k)) regions[k as FaceId] = r;
     }
+    const rotations: Partial<Record<FaceId, number>> = {};
+    for (const [k, v] of Object.entries((dl.rotations ?? {}) as Record<string, unknown>)) if ([0, 90, 180, 270].includes(v as number) && FACES.some((f) => f.id === k)) rotations[k as FaceId] = v as number;
     dieline = {
       blob: await readImage(dl.file, '칼선'), name: typeof dl.originalName === 'string' ? dl.originalName : null,
-      bleedMm: num(dl.bleedMm, 0, 50, DEFAULT_PARAMS.bleed), kind: dl.kind === 'base' ? 'base' : 'lid', regions,
+      bleedMm: num(dl.bleedMm, 0, 50, DEFAULT_PARAMS.bleed), kind: dl.kind === 'base' ? 'base' : 'lid', regions, rotations,
     };
   }
   return {
