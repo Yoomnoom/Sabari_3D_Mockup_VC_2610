@@ -34,14 +34,14 @@
         <p class="hint">미리보기를 끌어 위치를 옮길 수 있습니다.</p>
 
         <div id="faceControls">
-          <fieldset>
-            <legend>맞춤 방식</legend>
+          <details class="grp" id="dFit" open>
+            <summary>맞춤 방식</summary>
             <label><input type="radio" name="fit" value="contain" checked /> 이미지 전체 보이기</label>
             <label><input type="radio" name="fit" value="cover" /> 면 전체 채우기</label>
-          </fieldset>
+          </details>
 
-          <fieldset>
-            <legend>회전 · 반전</legend>
+          <details class="grp" id="dRot" open>
+            <summary>회전 · 반전</summary>
             <div class="row wrap">
               <button id="rotL">90° 왼쪽</button>
               <button id="rotR">90° 오른쪽</button>
@@ -52,16 +52,15 @@
               <button id="flipY" aria-pressed="false">상하 반전</button>
             </div>
             <p class="info">현재 회전: <b id="rotText">0°</b></p>
-          </fieldset>
+          </details>
 
-          <fieldset>
-            <legend>크기 · 위치</legend>
+          <details class="grp" id="dPos" open>
+            <summary>크기 · 위치</summary>
             <label class="check keep"><input id="moveMode" type="checkbox" /> <span>3D 화면에서 마우스로 이동 <small>휠: 확대·축소 · 끄면 끌어서 회전</small></span></label>
             <label class="slider">배율 (%) <input id="scaleR" type="range" min="25" max="300" step="1" /><input id="scaleN" type="number" min="25" max="300" step="1" /></label>
             <label class="slider">X 위치 (%) <input id="xR" type="range" min="-100" max="100" step="1" /><input id="xN" type="number" min="-100" max="100" step="1" /></label>
             <label class="slider">Y 위치 (%) <input id="yR" type="range" min="-100" max="100" step="1" /><input id="yN" type="number" min="-100" max="100" step="1" /></label>
-          </fieldset>
-
+          </details>
         </div>
         <div class="row wrap">
           <button id="btnRemove">이미지 제거</button>
@@ -70,18 +69,19 @@
         </div>
       </section>
 
-      <section>
-        <div class="head"><h2>목업 색상</h2><button id="btnColorReset" class="link">기본값</button></div>
+      <details class="sec" id="dColor" open>
+        <summary>목업 색상</summary>
         <div class="swatches">
           <label class="swatch"><input id="colFace" type="color" value="#ffffff" /><span>면 바탕</span></label>
           <label class="swatch"><input id="colLid" type="color" value="#ffffff" /><span>뚜껑</span></label>
           <label class="swatch"><input id="colBase" type="color" value="#ffffff" /><span>몸통</span></label>
         </div>
         <p class="hint">면 바탕 = 이미지 없는 면·여백 / 뚜껑 = 테두리·안쪽</p>
-      </section>
+        <button id="btnColorReset">색상 기본값</button>
+      </details>
 
-      <section>
-        <h2>박스</h2>
+      <details class="sec" id="dBox" open>
+        <summary>박스</summary>
         <div class="row wrap">
           <button id="btnClose">닫힌 상태</button>
           <button id="btnOpen">열린 상태</button>
@@ -89,7 +89,7 @@
         <label class="slider">뚜껑 높이 (mm) <input id="liftR" type="range" min="0" max="150" step="1" value="0" /><input id="liftN" type="number" min="0" max="150" step="1" value="0" /></label>
         <label class="check"><input id="showLid" type="checkbox" checked /> 뚜껑 표시</label>
         <label class="check"><input id="showBase" type="checkbox" checked /> 몸통 표시</label>
-      </section>
+      </details>
     </div>
 
     <!-- ===== GLB 뷰어 모드 ===== -->
@@ -106,8 +106,8 @@
       </section>
     </div>
 
-    <section>
-      <h2>보기</h2>
+    <details class="sec" id="dView" open>
+      <summary>보기</summary>
       <div class="grid3">
         <button data-view="front">정면</button>
         <button data-view="back">후면</button>
@@ -117,7 +117,7 @@
         <button data-view="iso">3/4 시점</button>
       </div>
       <p class="hint">드래그: 회전 · 휠: 확대/축소 · 오른쪽 드래그: 이동</p>
-    </section>
+    </details>
 
     <section>
       <h2>저장</h2>
@@ -140,31 +140,36 @@
       <p class="hint">파일은 브라우저 다운로드 폴더에 저장됩니다.</p>
     </section>
 
-    <button id="btnHelp" class="link">단축키 보기 (?)</button>
-  </aside>
+    <details class="sec" id="dHelp">
+      <summary>설정 · 도움말</summary>
+      <h3>설정</h3>
+      <label class="check"><input id="optKeys" type="checkbox" checked /> <span>단축키 사용 <small>한글 입력기 등과 키가 겹치면 끄세요. (Space 화면 이동은 항상 사용)</small></span></label>
+      <button id="btnDraftClear">임시저장 삭제</button>
+      <button id="btnUiReset">접기·펼치기 상태 초기화</button>
 
-  <dialog id="help" aria-labelledby="helpTitle">
-    <h2 id="helpTitle">단축키</h2>
-    <table>
-      <tr><th colspan="2">화면</th></tr>
-      <tr><td><kbd>Space</kbd> 누른 채 드래그</td><td>화면 이동 (손 도구)</td></tr>
-      <tr><td>마우스 가운데 버튼 / 오른쪽 드래그</td><td>화면 이동</td></tr>
-      <tr><td>왼쪽 드래그 / 휠</td><td>회전 / 확대·축소</td></tr>
-      <tr><td><kbd>1</kbd> <kbd>Shift+1</kbd> <kbd>3</kbd> <kbd>Shift+3</kbd> <kbd>7</kbd> <kbd>0</kbd>/<kbd>R</kbd></td><td>정면 · 후면 · 우측 · 좌측 · 윗면 · 3/4 시점</td></tr>
-      <tr><td><kbd>O</kbd></td><td>뚜껑 열기/닫기</td></tr>
-      <tr><td><kbd>Esc</kbd></td><td>선택선·안내 닫기</td></tr>
-      <tr><th colspan="2">편집</th></tr>
-      <tr><td><kbd>[</kbd> <kbd>]</kbd></td><td>이전 / 다음 면 선택</td></tr>
-      <tr><td><kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd> (<kbd>Shift</kbd> = 크게)</td><td>이미지 위치 1% (5%) 이동</td></tr>
-      <tr><td><kbd>+</kbd> <kbd>-</kbd></td><td>이미지 확대 / 축소</td></tr>
-      <tr><td><kbd>M</kbd></td><td>3D에서 마우스로 이미지 이동 켜기/끄기</td></tr>
-      <tr><td><kbd>Delete</kbd></td><td>이미지 제거 (Ctrl+Z로 복구)</td></tr>
-      <tr><td><kbd>Ctrl+Z</kbd> / <kbd>Ctrl+Y</kbd></td><td>되돌리기 / 다시 실행 (최대 50단계)</td></tr>
-      <tr><td><kbd>Ctrl+S</kbd> / <kbd>Ctrl+O</kbd></td><td>프로젝트 저장 / 열기</td></tr>
-      <tr><td><kbd>?</kbd></td><td>이 도움말</td></tr>
-    </table>
-    <button id="helpClose" class="primary">닫기</button>
-  </dialog>
+      <h3>단축키 · 마우스 조작</h3>
+      <table class="keys">
+        <tr><th colspan="2">화면</th></tr>
+        <tr><td><kbd>Space</kbd> 누른 채 드래그</td><td>화면 이동 (손 도구)</td></tr>
+        <tr><td>가운데 버튼 / 오른쪽 드래그</td><td>화면 이동</td></tr>
+        <tr><td>왼쪽 드래그 / 휠</td><td>회전 / 확대·축소</td></tr>
+        <tr><td><kbd>1</kbd> <kbd>Shift+1</kbd> <kbd>3</kbd> <kbd>Shift+3</kbd> <kbd>7</kbd> <kbd>0</kbd>/<kbd>R</kbd></td><td>정면 · 후면 · 우측 · 좌측 · 윗면 · 3/4 시점</td></tr>
+        <tr><td><kbd>O</kbd></td><td>뚜껑 열기/닫기</td></tr>
+        <tr><td><kbd>Esc</kbd></td><td>선택선·안내 닫기</td></tr>
+        <tr><th colspan="2">편집</th></tr>
+        <tr><td><kbd>[</kbd> <kbd>]</kbd></td><td>이전 / 다음 면 선택</td></tr>
+        <tr><td><kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd></td><td>이미지 1% 이동 (<kbd>Shift</kbd> = 5%)</td></tr>
+        <tr><td><kbd>+</kbd> <kbd>-</kbd></td><td>이미지 확대 / 축소</td></tr>
+        <tr><td><kbd>M</kbd></td><td>3D에서 마우스로 이미지 이동 켜기/끄기</td></tr>
+        <tr><td>이동 모드 + 휠</td><td>선택한 면 위에서 이미지 확대·축소</td></tr>
+        <tr><td><kbd>Shift</kbd> + 3D 드래그</td><td>이미지 이동 (모드와 관계없이)</td></tr>
+        <tr><td><kbd>Delete</kbd></td><td>이미지 제거</td></tr>
+        <tr><td><kbd>Ctrl+Z</kbd> / <kbd>Ctrl+Y</kbd></td><td>되돌리기 / 다시 실행 (최대 50단계)</td></tr>
+        <tr><td><kbd>Ctrl+S</kbd> / <kbd>Ctrl+O</kbd></td><td>프로젝트 저장 / 열기</td></tr>
+        <tr><td><kbd>?</kbd></td><td>이 설명 열기</td></tr>
+      </table>
+    </details>
+  </aside>
 
   <main id="stage">
     <div id="viewport"></div>

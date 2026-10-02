@@ -27,3 +27,4 @@ async function tx<T>(mode: IDBTransactionMode, fn: (s: IDBObjectStore) => IDBReq
 
 export const putDraft = (d: Draft) => tx('readwrite', (s) => s.put(d, KEY));
 export const getDraft = () => tx<Draft | undefined>('readonly', (s) => s.get(KEY));
+export const delDraft = () => tx('readwrite', (s) => s.delete(KEY));

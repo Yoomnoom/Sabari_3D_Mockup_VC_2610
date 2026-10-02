@@ -2,7 +2,7 @@ import { FACES, FaceData, FaceId, FaceSnapshot, decode, faces, rebake, theme } f
 import { Viewer, ViewName } from './viewer';
 import { Rotation, defaultState } from './transform';
 import { UserError, inspectImage, packProject, unpackProject, OpenedProject } from './project';
-import { Draft, getDraft, putDraft } from './draft';
+import { Draft, delDraft, getDraft, putDraft } from './draft';
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const OPEN_MM = 80;
@@ -354,6 +354,38 @@ async function handleFile(file: File) {
   await busy(() => setImage(current, file, file.name));
 }
 
+// ---------- 화면 설정 (접기·펼치기, 단축키 사용) — 이 브라우저의 localStorage에 기억 ----------
+const UI_KEY = 'sabari-ui';
+let keysEnabled = true;
+const loadUi = (): { open?: Record<string, boolean>; keys?: boolean } => {
+  try { return JSON.parse(localStorage.getItem(UI_KEY) ?? '{}'); } catch { return {}; }
+};
+const saveUi = (patch: object) => { try { localStorage.setItem(UI_KEY, JSON.stringify({ ...loadUi(), ...patch })); } catch { /* 저장 불가 환경이면 기억만 안 한다 */ } };
+
+function initUiPrefs() {
+  const ui = loadUi();
+  const sections = Array.from(document.querySelectorAll<HTMLDetailsElement>('details[id]'));
+  const defaults = new Map(sections.map((d) => [d, d.open]));
+  for (const d of sections) {
+    if (ui.open && d.id in ui.open) d.open = ui.open[d.id];
+    d.addEventListener('toggle', () => saveUi({ open: { ...(loadUi().open ?? {}), [d.id]: d.open } }));
+  }
+  keysEnabled = ui.keys !== false;
+  const opt = $<HTMLInputElement>('optKeys');
+  opt.checked = keysEnabled;
+  opt.onchange = () => { keysEnabled = opt.checked; saveUi({ keys: keysEnabled }); };
+  $('btnUiReset').onclick = () => { for (const [d, open] of defaults) d.open = open; saveUi({ open: {} }); };
+  $('btnDraftClear').onclick = async () => {
+    if (!window.confirm('이 브라우저에 보관된 임시저장을 삭제할까요?\n(파일로 저장한 .sabari 프로젝트에는 영향이 없습니다.)')) return;
+    await busy(async () => {
+      await delDraft();
+      $('draftInfo').textContent = '임시저장 없음';
+      $<HTMLButtonElement>('btnDraftLoad').disabled = true;
+      msg('임시저장을 삭제했습니다.', 'ok');
+    });
+  };
+}
+
 // ---------- 시작 ----------
 async function init() {
   try {
@@ -362,6 +394,7 @@ async function init() {
     msg('이 브라우저에서는 3D 미리보기를 사용할 수 없습니다. Chrome 또는 Edge를 사용해 주세요.');
     return;
   }
+  initUiPrefs();
   viewer.onPick = (id) => setCurrent(id);
   viewer.canDrag = () => !!faces[current].img;
   viewer.onWheelFace = (dy) => edit((f) => (f.state.scale = Math.min(3, Math.max(0.25, f.state.scale * Math.exp(-dy * 0.001)))));
@@ -465,9 +498,7 @@ async function init() {
 
   // 단축키
   // ---------- 단축키 ----------
-  const help = $<HTMLDialogElement>('help');
-  $('btnHelp').onclick = () => help.showModal();
-  $('helpClose').onclick = () => help.close();
+  const openHelp = () => { const d = $<HTMLDetailsElement>('dHelp'); d.open = true; d.scrollIntoView({ block: 'start' }); };
   const typing = (t: HTMLElement) => t.tagName === 'SELECT' || t.tagName === 'TEXTAREA' || (t.tagName === 'INPUT' && !['radio', 'checkbox', 'range', 'button'].includes((t as HTMLInputElement).type));
   const fieldFocus = (t: HTMLElement) => t.tagName === 'INPUT' || t.tagName === 'SELECT'; // 방향키는 슬라이더·입력칸이 쓴다
   const releasePan = () => { viewer.setPanHeld(false); };
@@ -488,7 +519,7 @@ async function init() {
 
   window.addEventListener('keydown', (e) => {
     const t = e.target as HTMLElement;
-    if (typing(t) || help.open) return;
+    if (typing(t)) return;
     const k = e.key.toLowerCase();
     const editing = mode === 'edit';
 
@@ -497,6 +528,8 @@ async function init() {
       if (!e.repeat) viewer.setPanHeld(true);
       return;
     }
+    if (k === '?' || (e.code === 'Slash' && e.shiftKey) || k === 'f1') { e.preventDefault(); openHelp(); return; }
+    if (!keysEnabled) return; // 설정에서 단축키를 끈 경우 (Space 이동·도움말만 유지)
     if (e.ctrlKey || e.metaKey) {
       if (k === 's') { e.preventDefault(); if (editing) saveProject(); }
       else if (k === 'o') { e.preventDefault(); if (editing) pf.click(); }
@@ -511,7 +544,6 @@ async function init() {
     if (e.code === 'Digit3' || e.code === 'Numpad3') return goView(e.shiftKey ? 'left' : 'right');
     if (e.code === 'Digit7' || e.code === 'Numpad7') return goView('top');
     if (e.code === 'Digit0' || e.code === 'Numpad0' || k === 'r') return goView('iso');
-    if (k === '?' || (e.code === 'Slash' && e.shiftKey) || k === 'f1') { e.preventDefault(); help.showModal(); return; }
     if (k === 'o' && viewer.hasLid()) return setLift(viewer.getLiftMm() > 0 ? 0 : OPEN_MM);
     if (k === 'escape') { viewer.setHighlightOn(false); clearMsg(); return; }
     if (!editing) return;

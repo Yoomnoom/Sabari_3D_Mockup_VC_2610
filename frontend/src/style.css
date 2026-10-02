@@ -42,7 +42,6 @@ label.color { display: flex; justify-content: space-between; align-items: center
 label.color small { color: #6b665e; }
 label.color input[type='color'] { width: 56px; height: 36px; padding: 2px; border: 1px solid #b9b5ad; border-radius: 6px; background: #fff; cursor: pointer; }
 #facePreview { touch-action: none; cursor: grab; width: 100%; border: 1px solid var(--line); background: #fff; margin-top: 4px; }
-#faceControls.disabled { opacity: 0.45; pointer-events: none; }
 #stage { flex: 1; position: relative; background: #fff; min-width: 0; }
 #viewport { position: absolute; inset: 0; }
 #viewport canvas { display: block; width: 100%; height: 100%; }
@@ -65,13 +64,27 @@ label.swatch input[type='color'] { width: 100%; height: 36px; padding: 2px; bord
 .row .grow { flex: 1; }
 label.check small { display: block; font-size: 11px; color: #6b665e; }
 #bgSel { width: 92px; flex: none; }
-#faceControls.disabled .keep { opacity: 1; pointer-events: auto; }
 
 #viewport.panning canvas { cursor: grab; }
 #viewport.panning canvas:active { cursor: grabbing; }
-dialog#help { border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; max-width: 560px; }
-dialog#help::backdrop { background: rgba(0, 0, 0, 0.35); }
-dialog#help table { border-collapse: collapse; width: 100%; margin: 8px 0 12px; font-size: 13px; }
-dialog#help th { text-align: left; padding: 8px 0 4px; font-size: 12px; color: #6b665e; border-bottom: 1px solid var(--line); }
-dialog#help td { padding: 4px 8px 4px 0; vertical-align: top; }
 kbd { display: inline-block; min-width: 20px; padding: 1px 5px; border: 1px solid #b9b5ad; border-bottom-width: 2px; border-radius: 4px; background: #fff; font: inherit; font-size: 12px; text-align: center; }
+
+/* 접이식 섹션 */
+details.sec { border-top: 1px solid var(--line); padding: 4px 0 8px; }
+details.sec > summary, details.grp > summary { cursor: pointer; min-height: 36px; display: flex; align-items: center; gap: 6px; list-style: none; user-select: none; font-weight: 700; }
+details > summary::-webkit-details-marker { display: none; }
+details > summary::before { content: '\25B8'; font-size: 11px; color: #6b665e; display: inline-block; transition: transform 0.12s; }
+details[open] > summary::before { transform: rotate(90deg); }
+details > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+details.sec > summary { font-size: 14px; }
+details.grp { border: 1px solid var(--line); border-radius: 6px; margin: 8px 0; padding: 0 8px 6px; }
+details.grp > summary { font-size: 13px; font-weight: 600; }
+details.grp > label:not([class]) { display: block; min-height: 28px; line-height: 28px; }
+/* 이미지가 없을 때: 조절 항목만 흐리게 막고, 접기·펼치기와 이동 모드 옵션은 계속 쓸 수 있다 */
+#faceControls.disabled details > :not(summary):not(.keep) { opacity: 0.45; pointer-events: none; }
+details#dHelp h3 { font-size: 13px; margin: 10px 0 4px; }
+details#dHelp > button { width: 100%; margin: 4px 0; }
+table.keys { border-collapse: collapse; width: 100%; margin: 4px 0 8px; font-size: 12px; }
+table.keys th { text-align: left; padding: 8px 0 4px; color: #6b665e; border-bottom: 1px solid var(--line); }
+table.keys td { padding: 4px 6px 4px 0; vertical-align: top; }
+table.keys td:first-child { width: 48%; }
