@@ -1,0 +1,26 @@
+{
+  "file": "assets/templates/sabari_160x110x43_v2.glb",
+  "bytes": 10536,
+  "validator": {
+    "errors": 0,
+    "warnings": 0,
+    "infos": 5,
+    "hints": 0
+  },
+  "messages": [],
+  "images": [],
+  "texturedMaterials": [],
+  "extensionsUsed": [],
+  "nodes": [
+    "lid_top",
+    "lid_front",
+    "lid_back",
+    "lid_left",
+    "lid_right",
+    "lid_rim",
+    "lid_inner",
+    "Base",
+    "Lid"
+  ],
+  "externalUris": 0
+}

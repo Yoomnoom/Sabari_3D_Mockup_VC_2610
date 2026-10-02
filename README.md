@@ -1,0 +1,37 @@
+1. install.bat을 한 번 실행합니다.
+2. start.bat을 실행합니다.
+3. 브라우저에서 상단 이미지를 선택합니다.
+
+# 사바리 목업 스튜디오
+
+160×110×43mm 사바리 박스(뚜껑 165×115×38mm)에 디자인 이미지를 입혀 3D로 확인하는 로컬 프로그램입니다. Blender 불필요, 인터넷 없이 사용 가능(설치 때 1회만 인터넷 필요), Node 불필요.
+
+- 편집 면 5개: 상단, 앞날개, 뒷날개, 왼쪽 날개, 오른쪽 날개 (면마다 이미지·위치·확대·회전·반전·맞춤 독립)
+- 저장: `.sabari` 프로젝트(원본 이미지 포함) / GLB(이미지 임베드) / 현재 각도 PNG
+- 뷰어 모드: 내보낸 GLB를 불러와 확인
+
+사용법은 [사용방법.md](사용방법.md), 설계·검증 기록은 [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md), 제품 명세는 [PRD.md](PRD.md).
+
+## 구성
+
+```
+backend/app/    FastAPI 서버, 템플릿 GLB 생성기(template_gen.py), 이미지 검증, 프로젝트 ZIP
+frontend/       Vite + TypeScript + three.js 소스, dist/ = 미리 빌드한 결과 (배포 포함)
+assets/         templates/(코드로 생성한 템플릿 GLB), samples/(5면 샘플 이미지)
+e2e/            Playwright 검증 스크립트, GLB 검증 스크립트
+verification/   검증 스크린샷·결과 JSON
+```
+
+## 개발
+
+```
+.venv\Scripts\python -m pip install -r backend\requirements-dev.txt
+cd backend && ..\.venv\Scripts\python -m pytest tests          # 서버/템플릿 테스트
+cd frontend && npm i && npx vitest run && npm run build        # 변환 테스트 + dist 재빌드
+..\.venv\Scripts\python -m app.template_gen ..\assets\templates\sabari_160x110x43_v2.glb   # 템플릿 재생성 (backend 폴더에서)
+python tools\make_samples.py                                   # 샘플 이미지 재생성
+node e2e\run.mjs                                               # 서버 실행 후 E2E
+node e2e\validate_glb.mjs <파일.glb>                            # gltf-validator
+```
+
+GLB 저장은 서버 API 없이 브라우저의 `GLTFExporter`로 처리합니다(PRD §14 허용). 면별 변환값은 캔버스에 구워 PNG 텍스처로 임베드하며 KHR_texture_transform을 쓰지 않습니다.

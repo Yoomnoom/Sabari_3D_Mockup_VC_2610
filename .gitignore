@@ -1,0 +1,11 @@
+.venv/
+node_modules/
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+.env.*
+projects/
+exports/
+# 고객 칼선 원본(업무 자료)과 입력 자료는 올리지 않음
+inputs/

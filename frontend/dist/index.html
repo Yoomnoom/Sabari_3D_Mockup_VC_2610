@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>사바리 목업 스튜디오</title>
+  <script type="module" crossorigin src="./assets/index-TUX1JZnX.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-B7a3r_by.css">
+</head>
+<body>
+  <aside id="panel">
+    <h1>사바리 목업 스튜디오</h1>
+    <div class="tabs" role="tablist">
+      <button id="tabEdit" role="tab" aria-selected="true">편집</button>
+      <button id="tabView" role="tab" aria-selected="false">GLB 뷰어</button>
+    </div>
+
+    <!-- ===== 편집 모드 ===== -->
+    <div id="editPanel">
+      <section>
+        <h2>1. 면 선택</h2>
+        <p class="hint">버튼을 누르거나 3D 박스의 면을 클릭하세요.</p>
+        <div id="faceList" class="facelist"></div>
+      </section>
+
+      <section id="faceSection">
+        <h2>2. <span id="faceTitle">상단</span> 이미지</h2>
+        <p class="hint" id="faceSize"></p>
+        <div class="row">
+          <button id="btnPick" class="primary">이미지 선택</button>
+          <input id="filePick" type="file" accept="image/png,image/jpeg,image/webp" hidden />
+        </div>
+        <p id="fileInfo" class="info">이미지 없음</p>
+        <canvas id="facePreview" aria-label="면 미리보기"></canvas>
+
+        <div id="faceControls">
+          <fieldset>
+            <legend>맞춤 방식</legend>
+            <label><input type="radio" name="fit" value="contain" checked /> 이미지 전체 보이기</label>
+            <label><input type="radio" name="fit" value="cover" /> 면 전체 채우기</label>
+          </fieldset>
+
+          <fieldset>
+            <legend>회전 · 반전</legend>
+            <div class="row wrap">
+              <button id="rotL">90° 왼쪽</button>
+              <button id="rotR">90° 오른쪽</button>
+              <button id="rot180">180°</button>
+            </div>
+            <div class="row wrap">
+              <button id="flipX" aria-pressed="false">좌우 반전</button>
+              <button id="flipY" aria-pressed="false">상하 반전</button>
+            </div>
+            <p class="info">현재 회전: <b id="rotText">0°</b></p>
+          </fieldset>
+
+          <fieldset>
+            <legend>크기 · 위치</legend>
+            <label class="slider">배율 (%) <input id="scaleR" type="range" min="25" max="300" step="1" /><input id="scaleN" type="number" min="25" max="300" step="1" /></label>
+            <label class="slider">X 위치 (%) <input id="xR" type="range" min="-100" max="100" step="1" /><input id="xN" type="number" min="-100" max="100" step="1" /></label>
+            <label class="slider">Y 위치 (%) <input id="yR" type="range" min="-100" max="100" step="1" /><input id="yN" type="number" min="-100" max="100" step="1" /></label>
+          </fieldset>
+
+        </div>
+        <div class="row wrap">
+          <button id="btnRemove">이미지 제거</button>
+          <button id="btnReset">초기화</button>
+          <button id="btnUndo" hidden>되돌리기</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>박스</h2>
+        <div class="row wrap">
+          <button id="btnClose">닫힌 상태</button>
+          <button id="btnOpen">열린 상태</button>
+        </div>
+        <label class="slider">뚜껑 높이 (mm) <input id="liftR" type="range" min="0" max="150" step="1" value="0" /><input id="liftN" type="number" min="0" max="150" step="1" value="0" /></label>
+        <label class="check"><input id="showLid" type="checkbox" checked /> 뚜껑 표시</label>
+        <label class="check"><input id="showBase" type="checkbox" checked /> 몸통 표시</label>
+      </section>
+    </div>
+
+    <!-- ===== GLB 뷰어 모드 ===== -->
+    <div id="viewPanel" hidden>
+      <section>
+        <h2>GLB 열기</h2>
+        <p class="hint">이 앱에서 내보낸 GLB(또는 다른 GLB)를 불러와 봅니다. 파일을 3D 화면에 끌어놓아도 됩니다.</p>
+        <button id="btnOpenGlb" class="primary">GLB 파일 열기</button>
+        <input id="fileGlb" type="file" accept=".glb,model/gltf-binary" hidden />
+        <p id="glbInfo" class="info">불러온 파일 없음</p>
+        <div id="viewLid" hidden>
+          <label class="slider">뚜껑 높이 (mm) <input id="vLiftR" type="range" min="0" max="150" step="1" value="0" /><input id="vLiftN" type="number" min="0" max="150" step="1" value="0" /></label>
+        </div>
+      </section>
+    </div>
+
+    <section>
+      <h2>보기</h2>
+      <div class="grid3">
+        <button data-view="front">정면</button>
+        <button data-view="back">후면</button>
+        <button data-view="left">좌측</button>
+        <button data-view="right">우측</button>
+        <button data-view="top">윗면</button>
+        <button data-view="iso">3/4 시점</button>
+      </div>
+      <p class="hint">드래그: 회전 · 휠: 확대/축소 · 오른쪽 드래그: 이동</p>
+    </section>
+
+    <section>
+      <h2>저장</h2>
+      <label class="check">PNG 배경
+        <select id="bgSel"><option value="white">흰색</option><option value="transparent">투명</option></select>
+      </label>
+      <div class="col">
+        <button id="btnPng">현재 화면 PNG 저장</button>
+        <span id="editSave">
+          <button id="btnGlb">GLB 저장 (이미지 포함)</button>
+          <button id="btnProjSave">프로젝트 저장 (.sabari)</button>
+          <button id="btnProjOpen">프로젝트 열기</button>
+          <input id="fileProj" type="file" accept=".sabari,application/zip" hidden />
+        </span>
+      </div>
+      <p class="hint">파일은 브라우저 다운로드 폴더에 저장됩니다.</p>
+    </section>
+  </aside>
+
+  <main id="stage">
+    <div id="viewport"></div>
+    <div id="msg" role="alert" hidden><span id="msgText"></span><button id="msgClose" aria-label="닫기">닫기</button></div>
+    <div id="loading" hidden>처리 중…</div>
+    <div id="dropHint" hidden>여기에 놓으면 불러옵니다 (이미지 · .glb · .sabari)</div>
+  </main>
+</body>
+</html>

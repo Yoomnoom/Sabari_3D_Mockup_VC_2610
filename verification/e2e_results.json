@@ -1,0 +1,192 @@
+{
+  "applied_faces": [
+    "lid_top",
+    "lid_front",
+    "lid_back",
+    "lid_left",
+    "lid_right"
+  ],
+  "bleed": {
+    "iso_front_right": {
+      "count": {
+        "lid_top": 94243,
+        "lid_front": 48588,
+        "lid_right": 27149
+      },
+      "bleed": {
+        "lid_front": 11
+      }
+    },
+    "iso_back_left": {
+      "count": {
+        "lid_top": 92060,
+        "lid_back": 48173,
+        "lid_left": 27469
+      },
+      "bleed": {
+        "lid_back": 2
+      }
+    },
+    "iso_front_left": {
+      "count": {
+        "lid_top": 75088,
+        "lid_front": 54557,
+        "lid_left": 41725
+      },
+      "bleed": {
+        "lid_left": 3
+      }
+    },
+    "iso_back_right": {
+      "count": {
+        "lid_top": 75723,
+        "lid_back": 54132,
+        "lid_right": 41120
+      },
+      "bleed": {
+        "lid_right": 2
+      }
+    },
+    "axis_front": {
+      "count": {
+        "lid_front": 97077
+      },
+      "bleed": {}
+    },
+    "axis_back": {
+      "count": {
+        "lid_back": 96892
+      },
+      "bleed": {}
+    },
+    "axis_left": {
+      "count": {
+        "lid_left": 75373
+      },
+      "bleed": {
+        "lid_left": 7
+      }
+    },
+    "axis_right": {
+      "count": {
+        "lid_right": 74246
+      },
+      "bleed": {
+        "lid_right": 7
+      }
+    },
+    "top_down": {
+      "count": {
+        "lid_top": 246162
+      },
+      "bleed": {}
+    }
+  },
+  "bleed_total_pixels": 32,
+  "mouse_orbit_zoom_changed_camera": true,
+  "click_picks_top": "lid_top",
+  "top_state_after_edit": {
+    "fit": "cover",
+    "rotationDeg": 180,
+    "flipX": true,
+    "flipY": false,
+    "scale": 1.2,
+    "offsetX": 0.1,
+    "offsetY": 0
+  },
+  "rot_left_x4_returns_180": 180,
+  "remove_left_has_img": false,
+  "undo_restores_left": true,
+  "open_state": {
+    "liftMm": 80,
+    "lidMinY": 0.08700000000000001,
+    "baseMaxY": 0.043000000000000003
+  },
+  "closed_lift_mm": 0,
+  "png_white": {
+    "file": "08_export_white.png",
+    "bytes": 446993,
+    "pngSignature": true,
+    "w": 2080,
+    "h": 1720,
+    "corners": [
+      [
+        255,
+        255,
+        255,
+        255
+      ],
+      [
+        255,
+        255,
+        255,
+        255
+      ],
+      [
+        255,
+        255,
+        255,
+        255
+      ],
+      [
+        255,
+        255,
+        255,
+        255
+      ]
+    ]
+  },
+  "png_transparent": {
+    "file": "08_export_transparent.png",
+    "bytes": 447184,
+    "pngSignature": true,
+    "w": 2080,
+    "h": 1720,
+    "corners": [
+      [
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ]
+    ]
+  },
+  "glb_saved_bytes": 298984,
+  "project_saved_bytes": 146412,
+  "error_message_bad_file": "이미지를 읽지 못했습니다. 파일이 손상되지 않았는지 확인해 주세요.",
+  "console_errors_edit": [
+    "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+    "Error: 이미지를 읽지 못했습니다. 파일이 손상되지 않았는지 확인해 주세요.\n    at qf (http://127.0.0.1:8765/assets/index-TUX1JZnX.js:4220:164650)\n    at async Yf (http://127.0.0.1:8765/assets/index-TUX1JZnX.js:4220:164818)\n    at async Gf (http://127.0.0.1:8765/assets/index-TUX1JZnX.js:4220:164112)"
+  ],
+  "project_reopen_state_equal": true,
+  "project_reopen_lift_mm": 80,
+  "project_reopen_names": [
+    "sample_lid_top.png",
+    "sample_lid_front.png",
+    "sample_lid_back.png",
+    "sample_lid_left.png",
+    "sample_lid_right.png"
+  ],
+  "viewer_glb_info": "exported_sabari_mockup.glb · 메시 8개 · 이미지가 붙은 재질 5개",
+  "viewer_lid_slider_visible": true,
+  "viewer_mode_png_saved": true,
+  "external_requests_blocked": []
+}
