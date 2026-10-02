@@ -25,7 +25,8 @@ def project(**surf):
 def test_health_and_templates():
     assert c.get("/api/health").json()["status"] == "ok"
     t = c.get("/api/templates").json()[0]
-    assert [f["id"] for f in t["faces"]] == ["lid_top", "lid_front", "lid_back", "lid_left", "lid_right"]
+    assert [f["id"] for f in t["faces"]] == ["lid_top", "lid_front", "lid_back", "lid_left", "lid_right",
+                                             "base_front", "base_back", "base_left", "base_right", "base_bottom"]
     assert c.get("/api/template.glb").content[:4] == b"glTF"
 
 

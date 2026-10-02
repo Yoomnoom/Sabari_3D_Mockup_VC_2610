@@ -21,13 +21,21 @@ LID = (165.0, 115.0, 38.0)
 BOARD = 2.0
 CLEARANCE = 0.5  # 편측 여유 (LID - BASE) / 2
 
-FACES = ["lid_top", "lid_front", "lid_back", "lid_left", "lid_right"]
+LID_FACES = ["lid_top", "lid_front", "lid_back", "lid_left", "lid_right"]
+# 하단(몸통) 면: 앱에서는 사용자가 켜고 끄는 선택 기능이지만, 템플릿 GLB 구조는 항상 분리해 둔다.
+BASE_FACES = ["base_front", "base_back", "base_left", "base_right", "base_bottom"]
+FACES = LID_FACES + BASE_FACES
 FACE_LABELS = {
     "lid_top": "상단",
     "lid_front": "앞날개",
     "lid_back": "뒷날개",
     "lid_left": "왼쪽 날개",
     "lid_right": "오른쪽 날개",
+    "base_front": "하단 앞면",
+    "base_back": "하단 뒷면",
+    "base_left": "하단 왼쪽 면",
+    "base_right": "하단 오른쪽 면",
+    "base_bottom": "하단 바닥",
 }
 TEMPLATE_ID = "sabari-160-110-43-v2"
 
@@ -40,7 +48,13 @@ COLORS = {
     "lid_right": (0.97, 0.97, 0.96),
     "lid_rim": (0.78, 0.76, 0.72),  # 뚜껑 하단 두께면 (단색)
     "lid_inner": (0.90, 0.88, 0.84),
-    "base": (0.86, 0.84, 0.80),
+    "base_front": (0.86, 0.84, 0.80),
+    "base_back": (0.86, 0.84, 0.80),
+    "base_left": (0.86, 0.84, 0.80),
+    "base_right": (0.86, 0.84, 0.80),
+    "base_bottom": (0.86, 0.84, 0.80),
+    "base_rim": (0.86, 0.84, 0.80),  # 몸통 윗부분 두께면 (단색, UV 없음)
+    "base_inner": (0.86, 0.84, 0.80),  # 몸통 안쪽 (단색, UV 없음)
 }
 
 
@@ -75,11 +89,14 @@ def _box_faces(w, d, y0, y1):
 
 
 def _uv_for(face: str, p, w, d, y0, y1):
-    """꼭짓점 p 각각의 UV. 각 면의 이미지가 바깥에서 봤을 때 바로 서 보이도록 한다."""
+    """꼭짓점 p 각각의 UV. 각 면의 이미지가 바깥에서 봤을 때 바로 서 보이도록 한다.
+    top: 위에서 본 이미지 위쪽 = 뒤(-Z). bottom: 아래에서 올려다본 이미지 위쪽 = 앞(+Z). 옆면: 이미지 위쪽 = 위(+Y)."""
     out = []
     for (x, y, z) in p:
         if face == "top":
             u, v = (x + w / 2) / w, (z + d / 2) / d
+        elif face == "bottom":
+            u, v = (x + w / 2) / w, (d / 2 - z) / d
         elif face == "front":
             u, v = (x + w / 2) / w, (y1 - y) / (y1 - y0)
         elif face == "back":
@@ -151,17 +168,25 @@ def build_meshes():
     _inner_walls(inner, iw, idp, ly0, ly1 - t)
     meshes["lid_inner"] = inner
 
-    # --- 몸통(base): 열린 트레이. 이번 범위에서는 단색, 추후 면 분리 확장 ---
-    base = MeshBuilder()
-    bf = _box_faces(bw, bd, 0.0, bh)
-    for key in ("bottom", "front", "back", "left", "right"):
-        p, n = bf[key]
-        base.quad(p, n)
-    _ring(base, bw, bd, bw - 2 * t, bd - 2 * t, bh, up=True)
-    _inner_walls(base, bw - 2 * t, bd - 2 * t, t, bh)
+    # --- 몸통 편집면 5개(바깥 4면 + 바닥): UV 0..1 = 면 전체 ---
+    bfaces = _box_faces(bw, bd, 0.0, bh)
+    for name, key in {"base_front": "front", "base_back": "back", "base_left": "left", "base_right": "right", "base_bottom": "bottom"}.items():
+        mb = MeshBuilder()
+        p, n = bfaces[key]
+        mb.quad(p, n, _uv_for(key, p, bw, bd, 0.0, bh))
+        meshes[name] = mb
+
+    # --- 몸통 윗부분 두께면(개구부 테두리): 단색, UV 없음 → 이미지가 번지지 않는다 ---
+    brim = MeshBuilder()
+    _ring(brim, bw, bd, bw - 2 * t, bd - 2 * t, bh, up=True)
+    meshes["base_rim"] = brim
+
+    # --- 몸통 안쪽(벽 + 안쪽 바닥): 단색, UV 없음 ---
+    binner = MeshBuilder()
+    _inner_walls(binner, bw - 2 * t, bd - 2 * t, t, bh)
     x, z = (bw - 2 * t) / 2, (bd - 2 * t) / 2
-    base.quad([(-x, t, z), (x, t, z), (x, t, -z), (-x, t, -z)], (0, 1, 0))
-    meshes["base"] = base
+    binner.quad([(-x, t, z), (x, t, z), (x, t, -z), (-x, t, -z)], (0, 1, 0))
+    meshes["base_inner"] = binner
     return meshes
 
 
@@ -187,7 +212,7 @@ def build_glb() -> bytes:
         accessors.append(a)
         return len(accessors) - 1
 
-    lid_children, base_node = [], None
+    lid_children, base_children = [], []
     for name, mb in meshes.items():
         n = len(mb.pos)
         flat_pos = [c for p in mb.pos for c in p]
@@ -198,7 +223,7 @@ def build_glb() -> bytes:
         )
         nrm_acc = add_acc(add_view(struct.pack(f"<{n*3}f", *[c for v in mb.nrm for c in v]), 34962), 5126, n, "VEC3")
         attrs = {"POSITION": pos_acc, "NORMAL": nrm_acc}
-        if name.startswith("lid_") and name in FACES:
+        if name in FACES:  # 편집면만 UV를 가진다 (rim/inner는 UV 없음)
             attrs["TEXCOORD_0"] = add_acc(
                 add_view(struct.pack(f"<{n*2}f", *[c for v in mb.uv for c in v]), 34962), 5126, n, "VEC2"
             )
@@ -211,14 +236,12 @@ def build_glb() -> bytes:
         })
         gl_meshes.append({"name": name, "primitives": [{"attributes": attrs, "indices": idx_acc, "material": len(materials) - 1}]})
         nodes.append({"name": name, "mesh": len(gl_meshes) - 1})
-        if name == "base":
-            base_node = len(nodes) - 1
-        else:
-            lid_children.append(len(nodes) - 1)
+        (base_children if name.startswith("base_") else lid_children).append(len(nodes) - 1)
 
     nodes.append({"name": "Lid", "children": lid_children, "translation": [0, 0, 0]})
     lid_idx = len(nodes) - 1
-    nodes[base_node]["name"] = "Base"
+    nodes.append({"name": "Base", "children": base_children})
+    base_node = len(nodes) - 1
     root = {
         "asset": {"version": "2.0", "generator": "Sabari Mockup Studio template_gen"},
         "scene": 0,
@@ -237,13 +260,19 @@ def build_glb() -> bytes:
             "mockup_lid_mm": list(LID),
             "board_thickness_assumed_mm": BOARD,
             "clearance_per_side_mm": CLEARANCE,
-            "editableFaces": FACES,
+            "editableFaces": LID_FACES,
+            "optionalFaces": BASE_FACES,
             "faceSizeMm": {
                 "lid_top": [LID[0], LID[1]],
                 "lid_front": [LID[0], LID[2]],
                 "lid_back": [LID[0], LID[2]],
                 "lid_left": [LID[1], LID[2]],
                 "lid_right": [LID[1], LID[2]],
+                "base_front": [BASE[0], BASE[2]],
+                "base_back": [BASE[0], BASE[2]],
+                "base_left": [BASE[1], BASE[2]],
+                "base_right": [BASE[1], BASE[2]],
+                "base_bottom": [BASE[0], BASE[1]],
             },
             "note": "목업용 가정 치수이며 제조 치수가 아님.",
         },
