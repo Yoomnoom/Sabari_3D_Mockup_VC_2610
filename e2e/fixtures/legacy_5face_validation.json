@@ -1,0 +1,54 @@
+{
+  "file": "e2e/fixtures/legacy_5face.glb",
+  "bytes": 299108,
+  "validator": {
+    "errors": 0,
+    "warnings": 0,
+    "infos": 5,
+    "hints": 0
+  },
+  "messages": [],
+  "images": [
+    {
+      "mime": "image/png",
+      "embedded": true
+    },
+    {
+      "mime": "image/png",
+      "embedded": true
+    },
+    {
+      "mime": "image/png",
+      "embedded": true
+    },
+    {
+      "mime": "image/png",
+      "embedded": true
+    },
+    {
+      "mime": "image/png",
+      "embedded": true
+    }
+  ],
+  "texturedMaterials": [
+    "lid_top",
+    "lid_front",
+    "lid_back",
+    "lid_left",
+    "lid_right"
+  ],
+  "extensionsUsed": [],
+  "nodes": [
+    null,
+    "Base",
+    "Lid",
+    "lid_top",
+    "lid_front",
+    "lid_back",
+    "lid_left",
+    "lid_right",
+    "lid_rim",
+    "lid_inner"
+  ],
+  "externalUris": 0
+}

@@ -6,11 +6,15 @@
 
 160×110×43mm 사바리 박스(뚜껑 165×115×38mm)에 디자인 이미지를 입혀 3D로 확인하는 로컬 프로그램입니다. Blender 불필요, 인터넷 없이 사용 가능(설치 때 1회만 인터넷 필요), Node 불필요.
 
-- 편집 면 5개: 상단, 앞날개, 뒷날개, 왼쪽 날개, 오른쪽 날개 (면마다 이미지·위치·확대·회전·반전·맞춤 독립)
+- 편집 면: 뚜껑 5개(상단, 앞날개, 뒷날개, 왼쪽 날개, 오른쪽 날개)는 항상, **하단 몸통 5개(앞·뒤·왼쪽·오른쪽·바닥)는 "하단 몸통 디자인 사용" 스위치를 켠 경우에만** (기본 꺼짐). 면마다 이미지·위치·확대·회전·반전·맞춤 독립. 하단은 뚜껑을 열어야 보입니다.
 - 저장: `.sabari` 프로젝트(원본 이미지 포함) / GLB(이미지 임베드) / 현재 각도 PNG
 - 뷰어 모드: 내보낸 GLB를 불러와 확인
 
 사용법은 [사용방법.md](사용방법.md), 설계·검증 기록은 [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md), 제품 명세는 [PRD.md](PRD.md).
+
+## 하단 몸통 디자인 (선택 기능)
+
+왼쪽 "면 선택"의 **하단 몸통 디자인 사용** 스위치를 켜면 `뚜껑 / 하단` 탭이 생기고 하단 5면을 편집할 수 있습니다. 끄면 뚜껑 5면만 보입니다(기본). 하단 이미지가 있을 때 끄면 확인 창이 뜨고, `Ctrl+Z`로 되돌릴 수 있습니다. 하단 면은 뚜껑을 열어야(또는 `아래` 시점에서) 보입니다. 이전에 저장한 5면 `.sabari`·GLB도 그대로 열립니다.
 
 ## 구성
 
@@ -30,7 +34,9 @@ cd backend && ..\.venv\Scripts\python -m pytest tests          # 서버/템플�
 cd frontend && npm i && npx vitest run && npm run build        # 변환 테스트 + dist 재빌드
 ..\.venv\Scripts\python -m app.template_gen ..\assets\templates\sabari_160x110x43_v2.glb   # 템플릿 재생성 (backend 폴더에서)
 python tools\make_samples.py                                   # 샘플 이미지 재생성
-node e2e\run.mjs                                               # 서버 실행 후 E2E
+node e2e\run.mjs                                               # 서버 실행 후 E2E (뚜껑 5면 기본 흐름)
+node e2e\base10.mjs                                            # 하단 5면(선택 기능) 10면 검증: 번짐·저장·호환·끄기
+node e2e\viewkeep.mjs                                          # 시점 변경 시 확대 유지 / 위치 초기화
 node e2e\validate_glb.mjs <파일.glb>                            # gltf-validator
 ```
 
