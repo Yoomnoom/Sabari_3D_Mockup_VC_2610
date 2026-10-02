@@ -35,6 +35,10 @@ export class Viewer {
   /** Shift+드래그: 선택된 면 위에서 커서가 움직인 만큼(UV 증가분) 이미지 이동. */
   onDragFace: ((du: number, dv: number) => void) | null = null;
   private hlOn = true;
+  /** 이미지 이동 모드: 켜면 Shift 없이도 선택된 면을 끌어 이미지를 옮기고, 휠로 확대·축소한다. */
+  moveMode = false;
+  canDrag: (() => boolean) | null = null;
+  onWheelFace: ((deltaY: number) => void) | null = null;
   private dirty = true;
   private el: HTMLElement;
 
@@ -101,7 +105,8 @@ export class Viewer {
     // 캡처 단계: OrbitControls보다 먼저 받아서, Shift+드래그일 때 회전을 막는다.
     dom.addEventListener('pointerdown', (e) => {
       down = { x: e.clientX, y: e.clientY };
-      if (!e.shiftKey || e.button !== 0 || this.slot !== 'editor' || !this.onDragFace) return;
+      if (!(e.shiftKey || this.moveMode) || e.button !== 0 || this.slot !== 'editor' || !this.onDragFace) return;
+      if (this.canDrag && !this.canDrag()) return;
       const mesh = this.faceMeshes.get(this.selected);
       const h = mesh && this.rayAt(e, [mesh], false)[0];
       if (h?.uv) {
@@ -127,6 +132,13 @@ export class Viewer {
       if (id) this.onPick(id);
       else this.setHighlightOn(false); // 박스 바깥이나 면이 아닌 곳(두께면·몸통 등)을 누르면 선택 표시 해제
     });
+    dom.addEventListener('wheel', (e) => {
+      if (!this.moveMode || this.slot !== 'editor' || !this.onWheelFace || (this.canDrag && !this.canDrag())) return;
+      const mesh = this.faceMeshes.get(this.selected);
+      if (!mesh || !this.rayAt(e as unknown as PointerEvent, [mesh], false)[0]) return; // 선택된 면 위에서만
+      e.preventDefault(); e.stopImmediatePropagation();
+      this.onWheelFace(e.deltaY);
+    }, { capture: true, passive: false });
     dom.addEventListener('pointercancel', () => { drag = null; this.controls.enabled = true; });
   }
 

@@ -34,6 +34,8 @@ label.slider input[type='range'] { grid-area: r; width: 100%; }
 label.slider input[type='number'] { grid-area: n; width: 70px; height: 32px; }
 label.check { display: flex; gap: 8px; align-items: center; min-height: 32px; }
 select { height: 36px; }
+button.wide { width: 100%; }
+#viewport.moving canvas { cursor: move; }
 .draft { border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; background: #fff; }
 .draft .row button { flex: 1; }
 label.color { display: flex; justify-content: space-between; align-items: center; min-height: 40px; }

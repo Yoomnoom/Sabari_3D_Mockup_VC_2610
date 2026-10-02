@@ -334,6 +334,15 @@ async function init() {
     return;
   }
   viewer.onPick = (id) => setCurrent(id);
+  viewer.canDrag = () => !!faces[current].img;
+  viewer.onWheelFace = (dy) => edit((f) => (f.state.scale = Math.min(3, Math.max(0.25, f.state.scale * Math.exp(-dy * 0.001)))));
+  const mm = $('btnMoveMode');
+  mm.onclick = () => {
+    viewer.moveMode = !viewer.moveMode;
+    mm.setAttribute('aria-pressed', String(viewer.moveMode));
+    mm.textContent = `마우스로 이미지 이동: ${viewer.moveMode ? '켜짐' : '꺼짐'}`;
+    $('viewport').classList.toggle('moving', viewer.moveMode);
+  };
   const clamp1 = (v: number) => Math.min(1, Math.max(-1, v));
   viewer.onDragFace = (du, dv) => edit((f) => { f.state.offsetX = clamp1(f.state.offsetX + du); f.state.offsetY = clamp1(f.state.offsetY + dv); });
   // 면 미리보기 드래그 = 이미지 이동 (오프셋은 면 크기 대비 비율이라 미리보기 크기와 무관)
