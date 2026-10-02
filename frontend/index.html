@@ -139,7 +139,32 @@
       </div>
       <p class="hint">파일은 브라우저 다운로드 폴더에 저장됩니다.</p>
     </section>
+
+    <button id="btnHelp" class="link">단축키 보기 (?)</button>
   </aside>
+
+  <dialog id="help" aria-labelledby="helpTitle">
+    <h2 id="helpTitle">단축키</h2>
+    <table>
+      <tr><th colspan="2">화면</th></tr>
+      <tr><td><kbd>Space</kbd> 누른 채 드래그</td><td>화면 이동 (손 도구)</td></tr>
+      <tr><td>마우스 가운데 버튼 / 오른쪽 드래그</td><td>화면 이동</td></tr>
+      <tr><td>왼쪽 드래그 / 휠</td><td>회전 / 확대·축소</td></tr>
+      <tr><td><kbd>1</kbd> <kbd>Shift+1</kbd> <kbd>3</kbd> <kbd>Shift+3</kbd> <kbd>7</kbd> <kbd>0</kbd>/<kbd>R</kbd></td><td>정면 · 후면 · 우측 · 좌측 · 윗면 · 3/4 시점</td></tr>
+      <tr><td><kbd>O</kbd></td><td>뚜껑 열기/닫기</td></tr>
+      <tr><td><kbd>Esc</kbd></td><td>선택선·안내 닫기</td></tr>
+      <tr><th colspan="2">편집</th></tr>
+      <tr><td><kbd>[</kbd> <kbd>]</kbd></td><td>이전 / 다음 면 선택</td></tr>
+      <tr><td><kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd> (<kbd>Shift</kbd> = 크게)</td><td>이미지 위치 1% (5%) 이동</td></tr>
+      <tr><td><kbd>+</kbd> <kbd>-</kbd></td><td>이미지 확대 / 축소</td></tr>
+      <tr><td><kbd>M</kbd></td><td>3D에서 마우스로 이미지 이동 켜기/끄기</td></tr>
+      <tr><td><kbd>Delete</kbd></td><td>이미지 제거 (Ctrl+Z로 복구)</td></tr>
+      <tr><td><kbd>Ctrl+Z</kbd> / <kbd>Ctrl+Y</kbd></td><td>되돌리기 / 다시 실행 (최대 50단계)</td></tr>
+      <tr><td><kbd>Ctrl+S</kbd> / <kbd>Ctrl+O</kbd></td><td>프로젝트 저장 / 열기</td></tr>
+      <tr><td><kbd>?</kbd></td><td>이 도움말</td></tr>
+    </table>
+    <button id="helpClose" class="primary">닫기</button>
+  </dialog>
 
   <main id="stage">
     <div id="viewport"></div>

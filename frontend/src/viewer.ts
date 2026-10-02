@@ -37,6 +37,7 @@ export class Viewer {
   private hlOn = true;
   /** 이미지 이동 모드: 켜면 Shift 없이도 선택된 면을 끌어 이미지를 옮기고, 휠로 확대·축소한다. */
   moveMode = false;
+  panHeld = false;
   canDrag: (() => boolean) | null = null;
   onWheelFace: ((deltaY: number) => void) | null = null;
   private dirty = true;
@@ -61,7 +62,7 @@ export class Viewer {
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableDamping = false;
-    this.controls.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.PAN };
+    this.controls.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.PAN, RIGHT: THREE.MOUSE.PAN };
     this.controls.addEventListener('change', () => (this.dirty = true));
 
     new ResizeObserver(() => this.resize()).observe(el);
@@ -105,7 +106,7 @@ export class Viewer {
     // 캡처 단계: OrbitControls보다 먼저 받아서, Shift+드래그일 때 회전을 막는다.
     dom.addEventListener('pointerdown', (e) => {
       down = { x: e.clientX, y: e.clientY };
-      if (!(e.shiftKey || this.moveMode) || e.button !== 0 || this.slot !== 'editor' || !this.onDragFace) return;
+      if (this.panHeld || !(e.shiftKey || this.moveMode) || e.button !== 0 || this.slot !== 'editor' || !this.onDragFace) return;
       if (this.canDrag && !this.canDrag()) return;
       const mesh = this.faceMeshes.get(this.selected);
       const h = mesh && this.rayAt(e, [mesh], false)[0];
@@ -140,6 +141,13 @@ export class Viewer {
       this.onWheelFace(e.deltaY);
     }, { capture: true, passive: false });
     dom.addEventListener('pointercancel', () => { drag = null; this.controls.enabled = true; });
+  }
+
+  /** 스페이스를 누르는 동안 왼쪽 드래그 = 화면 이동(손 도구). */
+  setPanHeld(v: boolean) {
+    this.panHeld = v;
+    this.controls.mouseButtons.LEFT = v ? THREE.MOUSE.PAN : THREE.MOUSE.ROTATE;
+    this.el.classList.toggle('panning', v);
   }
 
   setHighlightOn(v: boolean) {

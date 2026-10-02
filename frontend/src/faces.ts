@@ -26,7 +26,6 @@ export interface FaceSnapshot {
 export interface FaceData extends FaceSnapshot {
   id: FaceId;
   canvas: HTMLCanvasElement; // 구워진 텍스처 (미리보기·GLB 공용)
-  undo: FaceSnapshot | null; // 제거/초기화 직전 상태 1단계
 }
 
 export const faces: Record<FaceId, FaceData> = Object.fromEntries(
@@ -35,7 +34,7 @@ export const faces: Record<FaceId, FaceData> = Object.fromEntries(
     const canvas = document.createElement('canvas');
     canvas.width = w;
     canvas.height = h;
-    const d: FaceData = { id: f.id, state: defaultState(), blob: null, name: null, img: null, iw: 0, ih: 0, canvas, undo: null };
+    const d: FaceData = { id: f.id, state: defaultState(), blob: null, name: null, img: null, iw: 0, ih: 0, canvas };
     return [f.id, d];
   }),
 ) as Record<FaceId, FaceData>;

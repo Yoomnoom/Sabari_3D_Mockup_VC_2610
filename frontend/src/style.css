@@ -66,3 +66,12 @@ label.swatch input[type='color'] { width: 100%; height: 36px; padding: 2px; bord
 label.check small { display: block; font-size: 11px; color: #6b665e; }
 #bgSel { width: 92px; flex: none; }
 #faceControls.disabled .keep { opacity: 1; pointer-events: auto; }
+
+#viewport.panning canvas { cursor: grab; }
+#viewport.panning canvas:active { cursor: grabbing; }
+dialog#help { border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; max-width: 560px; }
+dialog#help::backdrop { background: rgba(0, 0, 0, 0.35); }
+dialog#help table { border-collapse: collapse; width: 100%; margin: 8px 0 12px; font-size: 13px; }
+dialog#help th { text-align: left; padding: 8px 0 4px; font-size: 12px; color: #6b665e; border-bottom: 1px solid var(--line); }
+dialog#help td { padding: 4px 8px 4px 0; vertical-align: top; }
+kbd { display: inline-block; min-width: 20px; padding: 1px 5px; border: 1px solid #b9b5ad; border-bottom-width: 2px; border-radius: 4px; background: #fff; font: inherit; font-size: 12px; text-align: center; }

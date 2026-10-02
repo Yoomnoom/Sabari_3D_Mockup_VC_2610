@@ -1,4 +1,4 @@
-import { FACES, FaceData, FaceId, decode, faces, rebake, theme } from './faces';
+import { FACES, FaceData, FaceId, FaceSnapshot, decode, faces, rebake, theme } from './faces';
 import { Viewer, ViewName } from './viewer';
 import { Rotation, defaultState } from './transform';
 import { UserError, inspectImage, packProject, unpackProject, OpenedProject } from './project';
@@ -40,15 +40,43 @@ function download(blob: Blob, name: string) {
 }
 
 // ---------- 이미지 적용 ----------
-function snapshot(f: FaceData) {
-  f.undo = { state: { ...f.state }, blob: f.blob, name: f.name, img: f.img, iw: f.iw, ih: f.ih };
+// 실행 취소/다시 실행: 면 하나의 변경 전 상태를 쌓는다. 같은 면의 연속 조작(드래그·슬라이더)은 0.8초 안이면 한 번으로 묶는다.
+type Snap = FaceSnapshot & { id: FaceId };
+const undoStack: Snap[] = [];
+const redoStack: Snap[] = [];
+let lastPushAt = 0;
+let lastPushId: FaceId | null = null;
+const take = (id: FaceId): Snap => { const f = faces[id]; return { id, state: { ...f.state }, blob: f.blob, name: f.name, img: f.img, iw: f.iw, ih: f.ih }; };
+
+function pushHistory(id: FaceId, force = false) {
+  const now = performance.now();
+  const merge = !force && lastPushId === id && now - lastPushAt < 800;
+  lastPushAt = now; lastPushId = id;
+  if (merge) return;
+  undoStack.push(take(id));
+  if (undoStack.length > 50) undoStack.shift();
+  redoStack.length = 0;
 }
+function stepHistory(from: Snap[], to: Snap[]): boolean {
+  const s = from.pop();
+  if (!s) return false;
+  to.push(take(s.id));
+  const { id, ...rest } = s;
+  Object.assign(faces[id], { ...rest, state: { ...rest.state } });
+  lastPushId = null;
+  apply(id);
+  setCurrent(id);
+  return true;
+}
+const undo = () => stepHistory(undoStack, redoStack);
+const redo = () => stepHistory(redoStack, undoStack);
+const clearHistory = () => { undoStack.length = 0; redoStack.length = 0; lastPushId = null; };
 
 async function setImage(id: FaceId, file: Blob, name: string) {
   const info = await inspectImage(file);
   const { img, iw, ih } = await decode(file).catch(() => { throw new Error('이미지를 읽지 못했습니다. 파일이 손상되지 않았는지 확인해 주세요.'); });
   const f = faces[id];
-  snapshot(f);
+  pushHistory(id, true);
   f.blob = file; f.name = name; f.img = img; f.iw = iw; f.ih = ih;
   f.state = defaultState(); // 새 이미지는 항상 "이미지 전체 보이기"로 시작
   clearMsg();
@@ -111,7 +139,7 @@ function syncControls() {
   setPair('y', f.state.offsetY * 100);
   $<HTMLButtonElement>('btnRemove').disabled = !f.img;
   $<HTMLButtonElement>('btnReset').disabled = !f.img;
-  $('btnUndo').hidden = !f.undo;
+  $('btnUndo').hidden = undoStack.length === 0;
 }
 function setPair(k: string, v: number) {
   $<HTMLInputElement>(k + 'R').value = String(Math.round(v));
@@ -121,6 +149,7 @@ function setPair(k: string, v: number) {
 function edit(fn: (f: FaceData) => void) {
   const f = faces[current];
   if (!f.img) return;
+  pushHistory(current);
   fn(f);
   apply(current);
 }
@@ -152,10 +181,10 @@ async function saveProject() {
 }
 
 async function applyOpened(proj: OpenedProject) {
+  clearHistory();
   for (const fdsc of FACES) {
     const f = faces[fdsc.id];
     const p = proj.faces[fdsc.id];
-    f.undo = null;
     f.state = p.state;
     if (p.blob) {
       const d = await decode(p.blob);
@@ -378,25 +407,18 @@ async function init() {
   $('btnRemove').onclick = () => {
     const f = faces[current];
     if (!f.img) return;
-    snapshot(f);
+    pushHistory(current, true);
     f.blob = null; f.name = null; f.img = null; f.iw = f.ih = 0; f.state = defaultState();
     apply(current);
   };
   $('btnReset').onclick = () => {
     const f = faces[current];
     if (!f.img) return;
-    snapshot(f);
+    pushHistory(current, true);
     f.state = defaultState();
     apply(current);
   };
-  $('btnUndo').onclick = () => {
-    const f = faces[current];
-    const u = f.undo;
-    if (!u) return;
-    f.undo = null;
-    Object.assign(f, { state: u.state, blob: u.blob, name: u.name, img: u.img, iw: u.iw, ih: u.ih });
-    apply(current);
-  };
+  $('btnUndo').onclick = () => { undo(); };
 
   // 목업 색상 (input 이벤트로 즉시 반영)
   const cur = () => [$<HTMLInputElement>('colFace').value, $<HTMLInputElement>('colLid').value, $<HTMLInputElement>('colBase').value] as const;
@@ -442,15 +464,69 @@ async function init() {
   });
 
   // 단축키
+  // ---------- 단축키 ----------
+  const help = $<HTMLDialogElement>('help');
+  $('btnHelp').onclick = () => help.showModal();
+  $('helpClose').onclick = () => help.close();
+  const typing = (t: HTMLElement) => t.tagName === 'SELECT' || t.tagName === 'TEXTAREA' || (t.tagName === 'INPUT' && !['radio', 'checkbox', 'range', 'button'].includes((t as HTMLInputElement).type));
+  const fieldFocus = (t: HTMLElement) => t.tagName === 'INPUT' || t.tagName === 'SELECT'; // 방향키는 슬라이더·입력칸이 쓴다
+  const releasePan = () => { viewer.setPanHeld(false); };
+  window.addEventListener('blur', releasePan);
+  window.addEventListener('keyup', (e) => {
+    if (e.code === 'Space' && !typing(e.target as HTMLElement)) { e.preventDefault(); releasePan(); }
+  });
+  const goView = (v: ViewName) => viewer.setView(v);
+  const cycleFace = (d: number) => {
+    const i = FACES.findIndex((x) => x.id === current);
+    setCurrent(FACES[(i + d + FACES.length) % FACES.length].id);
+  };
+  const nudge = (dx: number, dy: number) => edit((f) => {
+    f.state.offsetX = Math.min(1, Math.max(-1, f.state.offsetX + dx));
+    f.state.offsetY = Math.min(1, Math.max(-1, f.state.offsetY + dy));
+  });
+  const zoomImg = (k: number) => edit((f) => (f.state.scale = Math.min(3, Math.max(0.25, f.state.scale * k))));
+
   window.addEventListener('keydown', (e) => {
     const t = e.target as HTMLElement;
-    if (t.tagName === 'INPUT' && (t as HTMLInputElement).type !== 'radio' && (t as HTMLInputElement).type !== 'checkbox' && (t as HTMLInputElement).type !== 'range') return;
-    if (e.ctrlKey && e.key.toLowerCase() === 's') { e.preventDefault(); if (mode === 'edit') saveProject(); return; }
-    if (e.ctrlKey || e.altKey || e.metaKey) return;
+    if (typing(t) || help.open) return;
     const k = e.key.toLowerCase();
-    const views: Record<string, ViewName> = { '1': 'front', '3': 'right', '7': 'top', '0': 'iso', r: 'iso' };
-    if (views[k]) viewer.setView(views[k]);
-    else if (k === 'o' && viewer.hasLid()) setLift(viewer.getLiftMm() > 0 ? 0 : OPEN_MM);
+    const editing = mode === 'edit';
+
+    if (e.code === 'Space') { // 누르고 있는 동안 화면 이동. 포커스된 버튼이 눌리거나 페이지가 스크롤되지 않게 막는다.
+      e.preventDefault();
+      if (!e.repeat) viewer.setPanHeld(true);
+      return;
+    }
+    if (e.ctrlKey || e.metaKey) {
+      if (k === 's') { e.preventDefault(); if (editing) saveProject(); }
+      else if (k === 'o') { e.preventDefault(); if (editing) pf.click(); }
+      else if (k === 'z' && !e.shiftKey) { e.preventDefault(); if (editing) undo(); }
+      else if (k === 'y' || (k === 'z' && e.shiftKey)) { e.preventDefault(); if (editing) redo(); }
+      return;
+    }
+    if (e.altKey) return;
+
+    // 시점: 숫자(키패드 포함) 1 정면 · Shift+1 후면 · 3 우측 · Shift+3 좌측 · 7 윗면 · 0/R 3/4
+    if (e.code === 'Digit1' || e.code === 'Numpad1') return goView(e.shiftKey ? 'back' : 'front');
+    if (e.code === 'Digit3' || e.code === 'Numpad3') return goView(e.shiftKey ? 'left' : 'right');
+    if (e.code === 'Digit7' || e.code === 'Numpad7') return goView('top');
+    if (e.code === 'Digit0' || e.code === 'Numpad0' || k === 'r') return goView('iso');
+    if (k === '?' || (e.code === 'Slash' && e.shiftKey) || k === 'f1') { e.preventDefault(); help.showModal(); return; }
+    if (k === 'o' && viewer.hasLid()) return setLift(viewer.getLiftMm() > 0 ? 0 : OPEN_MM);
+    if (k === 'escape') { viewer.setHighlightOn(false); clearMsg(); return; }
+    if (!editing) return;
+
+    if (k === 'm') { const c = $<HTMLInputElement>('moveMode'); c.checked = !c.checked; c.dispatchEvent(new Event('change')); }
+    else if (k === '[') cycleFace(-1);
+    else if (k === ']') cycleFace(1);
+    else if (k === 'delete' || k === 'backspace') { if (faces[current].img) { e.preventDefault(); $('btnRemove').click(); } }
+    else if (k === '+' || k === '=') zoomImg(1.05);
+    else if (k === '-' || k === '_') zoomImg(1 / 1.05);
+    else if (!fieldFocus(t) && k.startsWith('arrow')) {
+      e.preventDefault();
+      const s = e.shiftKey ? 0.05 : 0.01; // Shift = 5%
+      nudge(k === 'arrowleft' ? -s : k === 'arrowright' ? s : 0, k === 'arrowup' ? -s : k === 'arrowdown' ? s : 0);
+    }
   });
 
   await busy(() => viewer.loadTemplate('./template.glb'));
