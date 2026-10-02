@@ -170,11 +170,10 @@
     ]
   },
   "glb_saved_bytes": 298984,
-  "project_saved_bytes": 146412,
+  "project_saved_bytes": 146502,
   "error_message_bad_file": "이미지를 읽지 못했습니다. 파일이 손상되지 않았는지 확인해 주세요.",
   "console_errors_edit": [
-    "Failed to load resource: the server responded with a status of 400 (Bad Request)",
-    "Error: 이미지를 읽지 못했습니다. 파일이 손상되지 않았는지 확인해 주세요.\n    at qf (http://127.0.0.1:8765/assets/index-TUX1JZnX.js:4220:164650)\n    at async Yf (http://127.0.0.1:8765/assets/index-TUX1JZnX.js:4220:164818)\n    at async Gf (http://127.0.0.1:8765/assets/index-TUX1JZnX.js:4220:164112)"
+    "Zf: 이미지를 읽지 못했습니다. 파일이 손상되지 않았는지 확인해 주세요.\n    at Qf (http://127.0.0.1:8766/assets/index-JzPYICdX.js:4221:90429)\n    at async fp (http://127.0.0.1:8766/assets/index-JzPYICdX.js:4221:93742)\n    at async lp (http://127.0.0.1:8766/assets/index-JzPYICdX.js:4221:93315)"
   ],
   "project_reopen_state_equal": true,
   "project_reopen_lift_mm": 80,

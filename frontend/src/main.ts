@@ -1,10 +1,9 @@
 import { FACES, FaceData, FaceId, decode, faces, rebake } from './faces';
 import { Viewer, ViewName } from './viewer';
 import { Rotation, defaultState } from './transform';
+import { UserError, inspectImage, packProject, unpackProject } from './project';
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
-const SCHEMA_VERSION = 2;
-const TEMPLATE_ID = 'sabari-160-110-43-v2';
 const OPEN_MM = 80;
 
 let viewer: Viewer;
@@ -40,26 +39,12 @@ function download(blob: Blob, name: string) {
 }
 
 // ---------- 이미지 적용 ----------
-async function inspectOnServer(file: Blob, name: string) {
-  const fd = new FormData();
-  fd.append('file', file, name);
-  let r: Response;
-  try {
-    r = await fetch('/api/images/inspect', { method: 'POST', body: fd });
-  } catch {
-    throw new Error('앱 서버에 연결하지 못했습니다. start.bat으로 실행했는지 확인해 주세요.');
-  }
-  const j = await r.json();
-  if (!r.ok) throw new Error(j.error ?? '이미지를 검사하지 못했습니다.');
-  return j as { width: number; height: number; warnings: string[] };
-}
-
 function snapshot(f: FaceData) {
   f.undo = { state: { ...f.state }, blob: f.blob, name: f.name, img: f.img, iw: f.iw, ih: f.ih };
 }
 
 async function setImage(id: FaceId, file: Blob, name: string) {
-  const info = await inspectOnServer(file, name);
+  const info = await inspectImage(file);
   const { img, iw, ih } = await decode(file).catch(() => { throw new Error('이미지를 읽지 못했습니다. 파일이 손상되지 않았는지 확인해 주세요.'); });
   const f = faces[id];
   snapshot(f);
@@ -150,58 +135,36 @@ function bindPair(k: string, min: number, max: number, set: (f: FaceData, v: num
 }
 
 // ---------- 저장 / 열기 ----------
-function projectJson(): string {
-  const surfaces: Record<string, unknown> = {};
-  for (const fd of FACES) {
-    const s = faces[fd.id].state;
-    surfaces[fd.id] = { fit: s.fit, rotationDeg: s.rotationDeg, flipX: s.flipX, flipY: s.flipY, scale: s.scale, offsetX: s.offsetX, offsetY: s.offsetY };
-  }
-  return JSON.stringify({
-    schemaVersion: SCHEMA_VERSION, templateId: TEMPLATE_ID,
-    box: { lidLiftMm: Math.round(viewer.slot === 'editor' ? viewer.getLiftMm() : 0) },
-    background: $<HTMLSelectElement>('bgSel').value, surfaces,
-  });
-}
-
 async function saveProject() {
   await busy(async () => {
-    const fd = new FormData();
-    fd.append('project', projectJson());
-    const withImg = FACES.filter((x) => faces[x.id].blob);
-    fd.append('faces', JSON.stringify(withImg.map((x) => x.id)));
-    for (const x of withImg) fd.append('files', faces[x.id].blob!, faces[x.id].name ?? 'image');
-    const r = await fetch('/api/projects/save', { method: 'POST', body: fd });
-    if (!r.ok) throw new Error((await r.json()).error ?? '프로젝트 저장에 실패했습니다.');
-    download(await r.blob(), '사바리_프로젝트.sabari');
+    const blob = await packProject(
+      FACES.map((x) => ({ id: x.id, state: faces[x.id].state, blob: faces[x.id].blob, name: faces[x.id].name })),
+      Math.round(viewer.slot === 'editor' ? viewer.getLiftMm() : 0),
+      $<HTMLSelectElement>('bgSel').value,
+    );
+    download(blob, '사바리_프로젝트.sabari');
     msg('프로젝트를 저장했습니다. (다운로드 폴더의 사바리_프로젝트.sabari)', 'ok');
   });
 }
 
 async function openProject(file: File) {
   await busy(async () => {
-    const fd = new FormData();
-    fd.append('file', file);
-    const r = await fetch('/api/projects/open', { method: 'POST', body: fd });
-    const j = await r.json();
-    if (!r.ok) throw new Error(j.error ?? '프로젝트를 열지 못했습니다.');
+    const proj = await unpackProject(file);
     for (const fdsc of FACES) {
       const f = faces[fdsc.id];
-      const s = j.project.surfaces[fdsc.id];
+      const p = proj.faces[fdsc.id];
       f.undo = null;
-      f.state = s ? { fit: s.fit, rotationDeg: s.rotationDeg, flipX: s.flipX, flipY: s.flipY, scale: s.scale, offsetX: s.offsetX, offsetY: s.offsetY } : defaultState();
-      const im = j.images[fdsc.id];
-      if (im) {
-        const bytes = Uint8Array.from(atob(im.base64), (c) => c.charCodeAt(0));
-        const blob = new Blob([bytes], { type: im.mime });
-        const d = await decode(blob);
-        f.blob = blob; f.name = im.name; f.img = d.img; f.iw = d.iw; f.ih = d.ih;
+      f.state = p.state;
+      if (p.blob) {
+        const d = await decode(p.blob);
+        f.blob = p.blob; f.name = p.name; f.img = d.img; f.iw = d.iw; f.ih = d.ih;
       } else {
         f.blob = null; f.name = null; f.img = null; f.iw = f.ih = 0;
       }
       apply(fdsc.id);
     }
-    setLift(j.project.box.lidLiftMm);
-    $<HTMLSelectElement>('bgSel').value = j.project.background;
+    setLift(proj.lidLiftMm);
+    $<HTMLSelectElement>('bgSel').value = proj.background;
     syncControls();
     msg('프로젝트를 열었습니다.', 'ok');
   });
@@ -369,7 +332,7 @@ async function init() {
     else if (k === 'o' && viewer.hasLid()) setLift(viewer.getLiftMm() > 0 ? 0 : OPEN_MM);
   });
 
-  await busy(() => viewer.loadTemplate('/api/template.glb'));
+  await busy(() => viewer.loadTemplate('./template.glb'));
   for (const f of FACES) viewer.setFaceTexture(f.id, null);
   setCurrent('lid_top');
   viewer.setView('iso');

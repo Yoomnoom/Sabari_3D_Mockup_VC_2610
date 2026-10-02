@@ -238,6 +238,7 @@ await p2.waitForTimeout(300);
 await p2.click('[data-view=iso]');
 await p2.screenshot({ path: path.join(V, '09_project_reopened.png') });
 
+await ctx2.close(); await ctx.close(); // 소프트웨어 렌더링 메모리 확보
 // ====== GLB 뷰어 모드: 내보낸 GLB 불러오기 (이미지 파일 없이 GLB만) ======
 const p3 = await (await browser.newContext({ viewport: { width: 1360, height: 860 } })).newPage();
 await p3.goto(URL);

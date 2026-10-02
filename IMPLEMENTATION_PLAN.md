@@ -71,6 +71,13 @@
 - ⚠️ install.bat의 pip 설치 단계는 **최초 1회 인터넷이 필요**하다(오프라인 설치용 휠 동봉은 안 함). 설치 후 앱 사용은 인터넷 불필요.
 - 임베디드 Python 자동 다운로드는 구현하지 않았다(안내 방식 선택).
 
+### 단계 6 — Vercel용 정적 배포 구조 ✅(배포 자체는 ⚠️ 미실행)
+- 이미지 검사와 `.sabari` 저장/열기를 서버(Python)에서 브라우저(`frontend/src/project.ts`, JSZip)로 옮겼다. 템플릿 GLB는 `frontend/public/template.glb`(정적 파일). 파일 형식은 기존 서버 구현과 같다(project.json + images/). 백엔드는 로컬 실행(start.bat)에서 `dist`를 서빙하는 용도로 남아 있으며 앱 동작에 필수가 아니다.
+- 검증: Python 서버 없이 `python -m http.server`로 `frontend/dist`만 서빙한 상태에서 `SABARI_URL=http://127.0.0.1:8766/ node e2e/run.mjs` 전체 통과 (5면 번짐 32px, PNG, GLB 재로드, 프로젝트 재열기 값 일치, 외부 요청 0). 같은 파일로 gltf-validator 오류 0.
+- 불안정 기록: 소프트웨어 렌더링 환경에서 3번째 브라우저 창 생성 시 탭 크래시 1회, PNG 생성 실패 1회가 있었고 앞 창을 닫도록 스크립트를 고친 뒤 재실행에서 통과. 원인은 메모리 압박으로 추정(미확정).
+- ⚠️ 미검증: 실제 Vercel 배포(미실행). Vercel 설정은 Root Directory=`frontend`, Framework=Vite, Build=`npm run build`, Output=`dist`.
+- ⚠️ 백엔드의 `/api/projects/*` 테스트는 남아 있으나 프런트는 더 이상 호출하지 않는다.
+
 ## 2. 미완료 / 미검증 / 범위 밖
 
 - ❌ 박스 치수 수정 UI(FR-09), 원근/정투영 전환, 그림자 강도, 하단 몸통(base) 면별 이미지, `.ai` 직접 불러오기, 코팅·박·형압.
