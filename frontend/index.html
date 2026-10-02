@@ -18,6 +18,11 @@
     <div id="editPanel">
       <section>
         <h2>1. 면 선택</h2>
+        <label class="check keep"><input id="useBase" type="checkbox" /> <span>하단 몸통 디자인 사용 <small>켜면 하단 5면(앞·뒤·왼쪽·오른쪽·바닥)도 편집합니다. 하단은 뚜껑을 열어야 보입니다.</small></span></label>
+        <div id="faceTabs" class="subtabs" role="tablist" hidden>
+          <button id="tab_lid" role="tab" aria-selected="true">뚜껑</button>
+          <button id="tab_base" role="tab" aria-selected="false">하단</button>
+        </div>
         <p class="hint">버튼 또는 3D 박스의 면을 클릭</p>
         <div id="faceList" class="facelist"></div>
       </section>
@@ -25,6 +30,10 @@
       <section id="faceSection">
         <h2>2. <span id="faceTitle">상단</span> 이미지</h2>
         <p class="hint" id="faceSize"></p>
+        <div id="openNotice" class="notice" role="status" hidden>
+          <span id="openNoticeText">뚜껑을 열어야 보입니다.</span>
+          <span class="row"><button id="btnNoticeOpen">뚜껑 열기</button><button id="btnNoticeBottom" hidden>아래에서 보기</button></span>
+        </div>
         <div class="row">
           <button id="btnPick" class="primary">이미지 선택</button>
           <input id="filePick" type="file" accept="image/png,image/jpeg,image/webp" hidden />
@@ -114,6 +123,7 @@
         <button data-view="left">좌측</button>
         <button data-view="right">우측</button>
         <button data-view="top">윗면</button>
+        <button data-view="bottom" title="아래에서 올려다봅니다 (Shift+7)">아래</button>
         <button id="btnIso" data-view="iso" title="한 번 더 누르면 반대편 모서리(뒤·왼쪽 날개)로 바뀝니다">3/4 시점</button>
       </div>
       <p class="hint">시점 버튼은 방향만 바꾸고 확대는 유지합니다. 처음처럼 전체를 보려면 <kbd>F</kbd> 또는 위치 초기화.<br>3/4 시점을 한 번 더 누르면 반대편 모서리로 바뀝니다. <kbd>R</kbd> 앞·오른쪽 날개 / <kbd>L</kbd> 뒤·왼쪽 날개</p>
@@ -154,14 +164,14 @@
         <tr><td><kbd>Space</kbd> 누른 채 드래그</td><td>화면 이동 (손 도구)</td></tr>
         <tr><td>가운데 버튼 / 오른쪽 드래그</td><td>화면 이동</td></tr>
         <tr><td>왼쪽 드래그 / 휠</td><td>회전 / 확대·축소</td></tr>
-        <tr><td><kbd>1</kbd> <kbd>Shift+1</kbd> <kbd>3</kbd> <kbd>Shift+3</kbd> <kbd>7</kbd></td><td>정면 · 후면 · 우측 · 좌측 · 윗면</td></tr>
+        <tr><td><kbd>1</kbd> <kbd>Shift+1</kbd> <kbd>3</kbd> <kbd>Shift+3</kbd> <kbd>7</kbd> <kbd>Shift+7</kbd></td><td>정면 · 후면 · 우측 · 좌측 · 윗면 · 아래</td></tr>
         <tr><td><kbd>R</kbd> / <kbd>L</kbd></td><td>3/4 시점: 앞·오른쪽 날개 / 뒤·왼쪽 날개</td></tr>
         <tr><td><kbd>0</kbd></td><td>3/4 시점 (누를 때마다 R ↔ L)</td></tr>
         <tr><td><kbd>F</kbd></td><td>위치 초기화 (확대·이동을 처음 상태로, 방향은 유지)</td></tr>
         <tr><td><kbd>O</kbd></td><td>뚜껑 열기/닫기</td></tr>
         <tr><td><kbd>Esc</kbd></td><td>선택선·안내 닫기</td></tr>
         <tr><th colspan="2">편집</th></tr>
-        <tr><td><kbd>[</kbd> <kbd>]</kbd></td><td>이전 / 다음 면 선택</td></tr>
+        <tr><td><kbd>[</kbd> <kbd>]</kbd></td><td>이전 / 다음 면 선택 (하단 몸통 디자인을 켠 경우 하단 면 포함)</td></tr>
         <tr><td><kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd></td><td>이미지 1% 이동 (<kbd>Shift</kbd> = 5%)</td></tr>
         <tr><td><kbd>+</kbd> <kbd>-</kbd></td><td>이미지 확대 / 축소</td></tr>
         <tr><td><kbd>M</kbd></td><td>3D에서 마우스로 이미지 이동 켜기/끄기</td></tr>

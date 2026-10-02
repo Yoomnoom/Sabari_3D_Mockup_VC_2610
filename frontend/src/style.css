@@ -95,3 +95,10 @@ table.keys td:first-child { width: 48%; }
 #viewport.panning canvas:active { cursor: grabbing !important; }
 
 details.sec > summary button.fit { margin-left: auto; min-height: 32px; font-weight: 400; font-size: 12px; }
+
+/* 하단 몸통 디자인(선택 기능) */
+.subtabs { display: flex; gap: 6px; margin: 6px 0; }
+.subtabs button { flex: 1; min-height: 36px; font-size: 13px; }
+.notice { display: flex; flex-direction: column; gap: 6px; margin: 6px 0; padding: 8px 10px; border: 1px solid var(--accent); border-radius: 6px; background: #fff3e8; font-size: 13px; }
+.notice .row button { flex: 1; min-height: 36px; }
+#dView .grid3 #btnIso { grid-column: 1 / -1; }

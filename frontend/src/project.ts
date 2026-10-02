@@ -1,9 +1,10 @@
 // 브라우저 안에서 처리하는 이미지 검사와 .sabari(ZIP) 저장/열기. backend/app/project_io.py 와 같은 파일 형식이다.
 import JSZip from 'jszip';
-import { FACES, FaceId } from './faces';
+import { FACES, FaceId } from './faceDefs';
 import { SurfaceState } from './transform';
 
-export const SCHEMA_VERSION = 2;
+export const SCHEMA_VERSION = 3; // 3: 하단 5면 + 스위치(useBaseFaces). 2(뚜껑 5면)도 그대로 열린다.
+const READABLE_VERSIONS = [2, 3];
 export const TEMPLATE_ID = 'sabari-160-110-43-v2';
 const MAX_BYTES = 50 * 1024 * 1024;
 const MAX_ENTRIES = 32;
@@ -58,7 +59,7 @@ export interface Colors { face: string; lid: string; base: string }
 const HEX = /^#[0-9a-fA-F]{6}$/;
 const hex = (v: unknown, d: string) => (typeof v === 'string' && HEX.test(v) ? v.toLowerCase() : d);
 
-export async function packProject(faces: SaveFace[], lidLiftMm: number, background: string, colors: Colors): Promise<Blob> {
+export async function packProject(faces: SaveFace[], lidLiftMm: number, background: string, colors: Colors, useBaseFaces: boolean): Promise<Blob> {
   const zip = new JSZip();
   const surfaces: Record<string, unknown> = {};
   for (const f of faces) {
@@ -70,7 +71,7 @@ export async function packProject(faces: SaveFace[], lidLiftMm: number, backgrou
     }
     surfaces[f.id] = { ...f.state, sourceFile, originalName: f.name };
   }
-  zip.file('project.json', JSON.stringify({ schemaVersion: SCHEMA_VERSION, templateId: TEMPLATE_ID, box: { lidLiftMm }, colors, background, surfaces }, null, 2));
+  zip.file('project.json', JSON.stringify({ schemaVersion: SCHEMA_VERSION, templateId: TEMPLATE_ID, box: { lidLiftMm }, colors, useBaseFaces, background, surfaces }, null, 2));
   return zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
 }
 
@@ -78,17 +79,18 @@ export interface OpenedProject {
   lidLiftMm: number;
   background: 'white' | 'transparent';
   colors: Colors | null; // 없으면(이전 프로젝트) 기본값 유지
+  useBase?: boolean; // 하단 몸통 디자인 사용 스위치. 하단 면에 이미지가 있으면 항상 true (이전 임시저장에는 없을 수 있음)
   faces: Record<FaceId, { state: SurfaceState; blob: Blob | null; name: string | null }>;
 }
 
 export async function unpackProject(file: Blob): Promise<OpenedProject> {
-  const zip = await JSZip.loadAsync(file).catch(() => { throw new UserError('프로젝트 파일(.sabari)을 읽지 못했습니다. 파일이 손상되지 않았는지 확인해 주세요.'); });
+  const zip = await JSZip.loadAsync(await file.arrayBuffer()).catch(() => { throw new UserError('프로젝트 파일(.sabari)을 읽지 못했습니다. 파일이 손상되지 않았는지 확인해 주세요.'); });
   if (Object.keys(zip.files).length > MAX_ENTRIES) throw new UserError('프로젝트 파일이 너무 크거나 항목이 많습니다.');
   const pj = zip.file('project.json');
   if (!pj) throw new UserError('project.json이 없는 파일입니다.');
   let raw: Record<string, unknown>;
   try { raw = JSON.parse(await pj.async('string')); } catch { throw new UserError('프로젝트 데이터를 읽지 못했습니다.'); }
-  if (!raw || raw.schemaVersion !== SCHEMA_VERSION) throw new UserError('이 프로젝트는 현재 버전에서 열 수 없습니다. 앱을 업데이트해 주세요.');
+  if (!raw || !READABLE_VERSIONS.includes(raw.schemaVersion as number)) throw new UserError('이 프로젝트는 현재 버전에서 열 수 없습니다. 앱을 업데이트해 주세요.');
   if ((raw.templateId ?? TEMPLATE_ID) !== TEMPLATE_ID) throw new UserError('지원하지 않는 템플릿의 프로젝트입니다.');
   const surfaces = (raw.surfaces ?? {}) as Record<string, unknown>;
   const unknown = Object.keys(surfaces).filter((k) => !FACES.some((f) => f.id === k));
@@ -112,5 +114,6 @@ export async function unpackProject(file: Blob): Promise<OpenedProject> {
   const box = (raw.box ?? {}) as Record<string, unknown>;
   const c = raw.colors as Record<string, unknown> | undefined;
   const colors = c ? { face: hex(c.face, '#ffffff'), lid: hex(c.lid, '#ffffff'), base: hex(c.base, '#ffffff') } : null;
-  return { colors, lidLiftMm: num(box.lidLiftMm, 0, 150, 0), background: raw.background === 'transparent' ? 'transparent' : 'white', faces: out };
+  const hasBaseImage = FACES.some((f) => f.group === 'base' && out[f.id].blob);
+  return { useBase: raw.useBaseFaces === true || hasBaseImage, colors, lidLiftMm: num(box.lidLiftMm, 0, 150, 0), background: raw.background === 'transparent' ? 'transparent' : 'white', faces: out };
 }

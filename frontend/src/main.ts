@@ -1,4 +1,5 @@
-import { FACES, FaceData, FaceId, FaceSnapshot, decode, faces, rebake, theme } from './faces';
+import { FACES, FaceData, FaceId, FaceSnapshot, decode, faces, groupOf, rebake, theme } from './faces';
+import { FaceGroup, GROUPS, facesOf } from './faceDefs';
 import { Viewer, ViewName } from './viewer';
 import { Rotation, defaultState } from './transform';
 import { UserError, inspectImage, packProject, unpackProject, OpenedProject } from './project';
@@ -9,6 +10,9 @@ const OPEN_MM = 80;
 
 let viewer: Viewer;
 let current: FaceId = 'lid_top';
+/** "하단 몸통 디자인 사용" 스위치. 기본은 꺼짐이며, 꺼져 있으면 화면·동작이 뚜껑 5면만 있을 때와 같다. */
+let baseEnabled = false;
+const lastByGroup: Record<FaceGroup, FaceId> = { lid: 'lid_top', base: 'base_front' };
 let mode: 'edit' | 'view' = 'edit';
 
 // ---------- 공통 UI 유틸 ----------
@@ -40,32 +44,42 @@ function download(blob: Blob, name: string) {
 }
 
 // ---------- 이미지 적용 ----------
-// 실행 취소/다시 실행: 면 하나의 변경 전 상태를 쌓는다. 같은 면의 연속 조작(드래그·슬라이더)은 0.8초 안이면 한 번으로 묶는다.
+// 실행 취소/다시 실행: 한 번의 변경 전 상태(면 스냅샷 묶음 + 스위치 상태)를 쌓는다.
+// 같은 면의 연속 조작(드래그·슬라이더)은 0.8초 안이면 한 번으로 묶는다. 하단 면을 한꺼번에 제거하는 것도 한 항목이다.
 type Snap = FaceSnapshot & { id: FaceId };
-const undoStack: Snap[] = [];
-const redoStack: Snap[] = [];
+type Entry = { snaps: Snap[]; base: boolean };
+const undoStack: Entry[] = [];
+const redoStack: Entry[] = [];
 let lastPushAt = 0;
 let lastPushId: FaceId | null = null;
 const take = (id: FaceId): Snap => { const f = faces[id]; return { id, state: { ...f.state }, blob: f.blob, name: f.name, img: f.img, iw: f.iw, ih: f.ih }; };
+const takeEntry = (ids: FaceId[]): Entry => ({ snaps: ids.map(take), base: baseEnabled });
 
 function pushHistory(id: FaceId, force = false) {
   const now = performance.now();
   const merge = !force && lastPushId === id && now - lastPushAt < 800;
   lastPushAt = now; lastPushId = id;
   if (merge) return;
-  undoStack.push(take(id));
+  undoStack.push(takeEntry([id]));
   if (undoStack.length > 50) undoStack.shift();
   redoStack.length = 0;
 }
-function stepHistory(from: Snap[], to: Snap[]): boolean {
-  const s = from.pop();
-  if (!s) return false;
-  to.push(take(s.id));
-  const { id, ...rest } = s;
-  Object.assign(faces[id], { ...rest, state: { ...rest.state } });
+function pushHistoryMany(ids: FaceId[]) {
   lastPushId = null;
-  apply(id);
-  setCurrent(id);
+  undoStack.push(takeEntry(ids));
+  if (undoStack.length > 50) undoStack.shift();
+  redoStack.length = 0;
+}
+function stepHistory(from: Entry[], to: Entry[]): boolean {
+  const e = from.pop();
+  if (!e) return false;
+  to.push(takeEntry(e.snaps.map((x) => x.id)));
+  for (const { id, ...rest } of e.snaps) Object.assign(faces[id], { ...rest, state: { ...rest.state } });
+  lastPushId = null;
+  if (e.base !== baseEnabled) setBaseEnabled(e.base, false);
+  for (const { id } of e.snaps) apply(id);
+  const first = e.snaps[0].id;
+  if (groupOf(first) === 'lid' || baseEnabled) setCurrent(first);
   return true;
 }
 const undo = () => stepHistory(undoStack, redoStack);
@@ -97,24 +111,77 @@ function apply(id: FaceId) {
 
 // ---------- 면 UI ----------
 function renderFaceList() {
+  const group = groupOf(current);
+  $('faceTabs').hidden = !baseEnabled;
+  for (const g of ['lid', 'base'] as FaceGroup[]) {
+    const t = $('tab_' + g);
+    t.setAttribute('aria-selected', String(g === group));
+    t.textContent = `${GROUPS[g].label} (${facesOf(g).filter((f) => faces[f.id].img).length}/${facesOf(g).length})`;
+  }
   const box = $('faceList');
   box.innerHTML = '';
-  for (const fd of FACES) {
+  for (const fd of facesOf(group)) {
     const f = faces[fd.id];
     const b = document.createElement('button');
     b.setAttribute('aria-pressed', String(fd.id === current));
     b.dataset.face = fd.id;
-    b.innerHTML = `<span>${fd.label}</span><small>${f.img ? '이미지 있음' : '비어 있음'}</small>`;
+    b.innerHTML = `<span>${fd.short}</span><small>${f.img ? '이미지 있음' : '비어 있음'}</small>`;
     b.onclick = () => setCurrent(fd.id);
     box.appendChild(b);
   }
 }
 
 function setCurrent(id: FaceId) {
+  if (groupOf(id) === 'base' && !baseEnabled) return; // 스위치가 꺼져 있으면 하단 면은 선택할 수 없다
   current = id;
+  lastByGroup[groupOf(id)] = id;
   viewer.setSelected(id);
   renderFaceList();
   syncControls();
+  updateOpenNotice();
+}
+
+/** 하단 면을 고른 채 뚜껑이 닫혀 있으면 안내한다(자동으로 열지는 않는다). */
+function updateOpenNotice() {
+  const isBase = baseEnabled && groupOf(current) === 'base' && mode === 'edit';
+  const closed = viewer && viewer.getLiftMm() < 10;
+  $('openNotice').hidden = !(isBase && closed);
+  $('btnNoticeBottom').hidden = current !== 'base_bottom';
+  $('openNoticeText').textContent = current === 'base_bottom'
+    ? '뚜껑을 열거나 "아래" 시점에서 보입니다.'
+    : '뚜껑을 열어야 보입니다.';
+}
+
+/** 스위치 상태를 화면에 반영한다. 하단 면 이미지를 지우는 일은 하지 않는다(그건 requestBaseOff 담당). */
+function setBaseEnabled(v: boolean, schedule = true) {
+  baseEnabled = v;
+  viewer.pickFilter = (id) => groupOf(id) === 'lid' || baseEnabled;
+  $<HTMLInputElement>('useBase').checked = v;
+  if (!v && groupOf(current) === 'base') { current = lastByGroup.lid; viewer.setSelected(current); }
+  renderFaceList();
+  syncControls();
+  updateOpenNotice();
+  if (schedule) scheduleDraft();
+}
+
+/** 사용자가 스위치를 눌렀을 때. 끌 때 하단 이미지가 있으면 확인을 받고, 실행 취소로 복구할 수 있게 한 항목으로 기록한다. */
+function onUseBaseToggle() {
+  const want = $<HTMLInputElement>('useBase').checked;
+  if (want) return setBaseEnabled(true);
+  const withImage = facesOf('base').filter((f) => faces[f.id].img).map((f) => f.id);
+  if (withImage.length) {
+    if (!window.confirm(`하단 이미지 ${withImage.length}개가 제거됩니다.\n계속할까요? (Ctrl+Z로 되돌릴 수 있습니다)`)) {
+      $<HTMLInputElement>('useBase').checked = true;
+      return;
+    }
+    pushHistoryMany(withImage);
+    for (const id of withImage) {
+      const f = faces[id];
+      f.blob = null; f.name = null; f.img = null; f.iw = f.ih = 0; f.state = defaultState();
+      apply(id);
+    }
+  }
+  setBaseEnabled(false);
 }
 
 function syncControls() {
@@ -174,6 +241,7 @@ async function saveProject() {
       Math.round(viewer.slot === 'editor' ? viewer.getLiftMm() : 0),
       $<HTMLSelectElement>('bgSel').value,
       { face: $<HTMLInputElement>('colFace').value, lid: $<HTMLInputElement>('colLid').value, base: $<HTMLInputElement>('colBase').value },
+      baseEnabled,
     );
     download(blob, '사바리_프로젝트.sabari');
     msg('프로젝트를 저장했습니다. (다운로드 폴더의 사바리_프로젝트.sabari)', 'ok');
@@ -184,9 +252,9 @@ async function applyOpened(proj: OpenedProject) {
   clearHistory();
   for (const fdsc of FACES) {
     const f = faces[fdsc.id];
-    const p = proj.faces[fdsc.id];
-    f.state = p.state;
-    if (p.blob) {
+    const p = proj.faces[fdsc.id] as OpenedProject['faces'][FaceId] | undefined; // 이전 임시저장에는 하단 면이 없다
+    f.state = p ? p.state : defaultState();
+    if (p && p.blob) {
       const d = await decode(p.blob);
       f.blob = p.blob; f.name = p.name; f.img = d.img; f.iw = d.iw; f.ih = d.ih;
     } else {
@@ -195,6 +263,8 @@ async function applyOpened(proj: OpenedProject) {
     apply(fdsc.id);
   }
   if (proj.colors) applyColors(proj.colors.face, proj.colors.lid, proj.colors.base);
+  // 하단 면에 이미지가 있으면 스위치는 자동으로 켜진다(없던 이전 파일은 꺼짐)
+  setBaseEnabled(proj.useBase === true || facesOf('base').some((x) => faces[x.id].img), false);
   setLift(proj.lidLiftMm);
   $<HTMLSelectElement>('bgSel').value = proj.background;
   syncControls();
@@ -218,7 +288,7 @@ const timeText = (t: number) => new Date(t).toLocaleString('ko-KR');
 function collectDraft(): Draft {
   const [face, lid, base] = COLOR_IDS.map((i) => $<HTMLInputElement>(i).value);
   return {
-    savedAt: Date.now(), lidLiftMm: Math.round(viewer.getLiftMm()), colors: { face, lid, base },
+    savedAt: Date.now(), lidLiftMm: Math.round(viewer.getLiftMm()), colors: { face, lid, base }, useBase: baseEnabled,
     background: $<HTMLSelectElement>('bgSel').value as 'white' | 'transparent',
     faces: Object.fromEntries(FACES.map((x) => [x.id, { state: { ...faces[x.id].state }, blob: faces[x.id].blob, name: faces[x.id].name }])) as Draft['faces'],
   };
@@ -302,6 +372,7 @@ function applyColors(face: string, lid: string, base: string) {
   viewer.setPartColor('lid', lid);
   viewer.setPartColor('base', base);
   theme.faceBg = face;
+  theme.baseBg = base; // 이미지 없는 하단 면·여백·투명 픽셀은 "몸통" 색
   viewer.setFaceBg(face);
   for (const f of FACES) if (faces[f.id].img) apply(f.id); // 여백 색이 바뀌므로 다시 굽는다
   scheduleDraft();
@@ -312,6 +383,7 @@ function setLift(mm: number) {
   const v = Math.min(150, Math.max(0, Math.round(mm)));
   viewer.setLiftMm(v);
   for (const id of ['liftR', 'liftN', 'vLiftR', 'vLiftN']) $<HTMLInputElement>(id).value = String(v);
+  updateOpenNotice();
   scheduleDraft();
 }
 
@@ -411,6 +483,11 @@ async function init() {
     if (a && ['INPUT', 'SELECT', 'TEXTAREA'].includes(a.tagName)) a.blur();
   }, true);
   viewer.onPick = (id) => setCurrent(id);
+  viewer.pickFilter = (id) => groupOf(id) === 'lid' || baseEnabled;
+  $<HTMLInputElement>('useBase').onchange = onUseBaseToggle;
+  for (const g of ['lid', 'base'] as FaceGroup[]) $('tab_' + g).onclick = () => setCurrent(lastByGroup[g]);
+  $('btnNoticeOpen').onclick = () => setLift(OPEN_MM); // 사용자가 직접 누를 때만 연다
+  $('btnNoticeBottom').onclick = () => showView('bottom');
   viewer.canDrag = () => !!faces[current].img;
   viewer.onWheelFace = (dy) => edit((f) => (f.state.scale = Math.min(3, Math.max(0.25, f.state.scale * Math.exp(-dy * 0.001)))));
   const mm = $<HTMLInputElement>('moveMode');
@@ -528,8 +605,9 @@ async function init() {
   });
   const goView = (v: ViewName) => showView(v);
   const cycleFace = (d: number) => {
-    const i = FACES.findIndex((x) => x.id === current);
-    setCurrent(FACES[(i + d + FACES.length) % FACES.length].id);
+    const list = FACES.filter((x) => x.group === 'lid' || baseEnabled);
+    const i = list.findIndex((x) => x.id === current);
+    setCurrent(list[(i + d + list.length) % list.length].id);
   };
   const nudge = (dx: number, dy: number) => edit((f) => {
     f.state.offsetX = Math.min(1, Math.max(-1, f.state.offsetX + dx));
@@ -564,7 +642,7 @@ async function init() {
     // 시점: 숫자(키패드 포함) 1 정면 · Shift+1 후면 · 3 우측 · Shift+3 좌측 · 7 윗면 · 0/R 3/4
     if (e.code === 'Digit1' || e.code === 'Numpad1') return goView(e.shiftKey ? 'back' : 'front');
     if (e.code === 'Digit3' || e.code === 'Numpad3') return goView(e.shiftKey ? 'left' : 'right');
-    if (e.code === 'Digit7' || e.code === 'Numpad7') return goView('top');
+    if (e.code === 'Digit7' || e.code === 'Numpad7') return goView(e.shiftKey ? 'bottom' : 'top'); // 7 윗면 · Shift+7 아래
     if (e.code === 'Digit0' || e.code === 'Numpad0') return toggleIso(); // 0 = 3/4 시점 (누를 때마다 R ↔ L)
     if (k === 'f') return viewer.fit(); // 위치 초기화(화면에 맞추기)
     if (k === 'r') return goView('iso'); // 3/4 오른쪽

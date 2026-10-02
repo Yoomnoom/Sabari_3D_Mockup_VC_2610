@@ -2,9 +2,9 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
-import { FACES, FaceId } from './faces';
+import { FACES, FaceId, groupOf } from './faces';
 
-export type ViewName = 'front' | 'back' | 'left' | 'right' | 'top' | 'iso' | 'isoL';
+export type ViewName = 'front' | 'back' | 'left' | 'right' | 'top' | 'iso' | 'isoL' | 'bottom';
 export type Slot = 'editor' | 'viewer';
 
 interface Model {
@@ -16,7 +16,7 @@ interface Model {
 
 const DIRS: Record<ViewName, [number, number, number]> = {
   front: [0, 0.12, 1], back: [0, 0.12, -1], left: [-1, 0.12, 0], right: [1, 0.12, 0],
-  top: [0, 1, 0.0001], iso: [0.9, 0.75, 1.05], isoL: [-0.9, 0.75, -1.05], // R = 앞·오른쪽 날개가 보이는 모서리, L = 그 반대 모서리(뒤·왼쪽 날개)
+  top: [0, 1, 0.0001], iso: [0.9, 0.75, 1.05], isoL: [-0.9, 0.75, -1.05], bottom: [0, -1, 0.0001], // bottom: 아래에서 올려다봄(화면 위쪽 = 앞) // R = 앞·오른쪽 날개가 보이는 모서리, L = 그 반대 모서리(뒤·왼쪽 날개)
 };
 
 export class Viewer {
@@ -31,6 +31,9 @@ export class Viewer {
   highlight: THREE.LineSegments | null = null;
   selected: FaceId = 'lid_top';
   faceBg = '#ffffff';
+  baseBg = '#efece7';
+  /** 선택할 수 있는 면인지. 하단 면은 "하단 몸통 디자인 사용"이 꺼져 있으면 클릭해도 선택하지 않는다. */
+  pickFilter: ((id: FaceId) => boolean) | null = null;
   onPick: ((id: FaceId) => void) | null = null;
   /** Shift+드래그: 선택된 면 위에서 커서가 움직인 만큼(UV 증가분) 이미지 이동. */
   onDragFace: ((du: number, dv: number) => void) | null = null;
@@ -141,7 +144,7 @@ export class Viewer {
       if (this.slot !== 'editor' || !this.onPick) return;
       const hit = this.rayAt(e, [this.models.editor!.root])[0];
       const id = hit && FACES.find((f) => f.id === hit.object.name)?.id;
-      if (id) this.onPick(id);
+      if (id && (!this.pickFilter || this.pickFilter(id))) this.onPick(id);
       else this.setHighlightOn(false); // 박스 바깥이나 면이 아닌 곳(두께면·몸통 등)을 누르면 선택 표시 해제
     });
     dom.addEventListener('wheel', (e) => {
@@ -194,7 +197,7 @@ export class Viewer {
     const mat = mesh.material as THREE.MeshStandardMaterial;
     if (!canvas) {
       mat.map = null;
-      mat.color.set(this.faceBg);
+      mat.color.set(groupOf(id) === 'base' ? this.baseBg : this.faceBg); // 하단 면은 "몸통" 색
     } else {
       let tex = this.textures.get(id);
       if (!tex) {
@@ -215,7 +218,7 @@ export class Viewer {
 
   /** 색상 설정 대상 재질. 'lid'는 두께면(lid_rim)과 안쪽(lid_inner) 둘 다. */
   private partMats(part: 'base' | 'lid'): THREE.MeshStandardMaterial[] {
-    const names = part === 'base' ? ['Base'] : ['lid_rim', 'lid_inner'];
+    const names = part === 'base' ? ['base_rim', 'base_inner'] : ['lid_rim', 'lid_inner'];
     const out: THREE.MeshStandardMaterial[] = [];
     for (const m of [this.models.editor, this.models.viewer]) {
       if (m && m === this.models.editor) m.root.traverse((o) => {
@@ -230,14 +233,21 @@ export class Viewer {
 
   setPartColor(part: 'base' | 'lid', hex: string) {
     for (const mat of this.partMats(part)) mat.color.set(hex);
+    if (part === 'base') { // 이미지 없는 하단 면도 같은 색
+      this.baseBg = hex;
+      for (const [id, mesh] of this.faceMeshes) {
+        const mat = mesh.material as THREE.MeshStandardMaterial;
+        if (groupOf(id) === 'base' && !mat.map) mat.color.set(hex);
+      }
+    }
     this.dirty = true;
   }
 
   setFaceBg(hex: string) {
     this.faceBg = hex;
-    for (const mesh of this.faceMeshes.values()) {
+    for (const [id, mesh] of this.faceMeshes) {
       const mat = mesh.material as THREE.MeshStandardMaterial;
-      if (!mat.map) mat.color.set(hex);
+      if (!mat.map && groupOf(id) === 'lid') mat.color.set(hex); // 하단 면은 "몸통" 색을 따른다
     }
     this.dirty = true;
   }

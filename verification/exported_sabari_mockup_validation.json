@@ -1,10 +1,10 @@
 {
   "file": "verification/exported_sabari_mockup.glb",
-  "bytes": 299108,
+  "bytes": 305680,
   "validator": {
     "errors": 0,
     "warnings": 0,
-    "infos": 5,
+    "infos": 10,
     "hints": 0
   },
   "messages": [],
@@ -41,6 +41,13 @@
   "nodes": [
     null,
     "Base",
+    "base_front",
+    "base_back",
+    "base_left",
+    "base_right",
+    "base_bottom",
+    "base_rim",
+    "base_inner",
     "Lid",
     "lid_top",
     "lid_front",

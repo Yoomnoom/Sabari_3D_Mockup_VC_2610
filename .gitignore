@@ -15,3 +15,5 @@ inputs/
 *.mov
 *.webm
 화면 공유*
+public/*_validation.json
+assets/templates/*_validation.json
