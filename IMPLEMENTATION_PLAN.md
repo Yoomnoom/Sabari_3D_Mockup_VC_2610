@@ -189,5 +189,16 @@
 
 ## 3. 실행 방법 요약
 
+### 단계 23-0 — 단계 17 기준 복구 및 회귀 검증
+
+- 기준: `6c9165698a79e13be97dcb4f1db695dd2ea00ac7` (2026-10-03).
+- 기존 HEAD `ca71e7d`의 staged/unstaged/untracked 변경을 모두 WIP 커밋 `19fe415d83872ac0377424556bfb9e95bbac4a14`로 보존했다. 보관 브랜치 `archive/rotation-experiment-20261003`, 태그 `archive-rotation-experiment-20261003`는 같은 WIP 커밋을 가리킨다.
+- 새 브랜치 `rebuild/compact-view-submit-angle`는 기준 커밋에서 생성했다. 새 회전 기능·제출 각도·UI 정리·PNG 배율은 구현하지 않았다.
+- 검증 서버: 단계 17 소스를 다시 빌드하고 `127.0.0.1:8873`에서 실행. Chromium/SwiftShader 기반 자동 브라우저 검증이며 실제 GPU·사용자 PC에서의 수동 검증은 ⚠️ 미검증.
+- Vitest: 5개 파일, 59개 테스트 통과. pytest: 13개 통과. TypeScript 검사 및 Vite 빌드 통과. PowerShell의 `npm.ps1` 실행 정책 때문에 `npm.cmd`로 실행했다.
+- 정면·후면·좌측·우측·윗면·아랫면·3/4: 실제 버튼 클릭 후 카메라 방향을 기준 정의와 비교한 7개 검증 통과 (`verification/stage23-0/views.mjs`, `views.json`).
+- 기존 e2e 실행 로그와 종료 코드는 `verification/stage23-0/*.log`, `runs.json`에 보존한다. 종료 코드 0만으로 기능 통과를 판단하지 않고 각 스크립트의 기록값도 확인한다.
+- 회귀 검증의 최종 결과 및 기존 문제는 `verification/stage23-0/REPORT.md`에 기록한다.
+
 - 사용자: `install.bat` 한 번 → `start.bat` → 브라우저(http://127.0.0.1:8765).
 - 개발자: `cd frontend && npm i && npm run build`(dist 갱신), `cd backend && ..\.venv\Scripts\python -m pytest tests`, 서버 실행 후 `node e2e/run.mjs`.

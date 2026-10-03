@@ -1,0 +1,82 @@
+{
+ "cursor_class_while_space": true,
+ "space_pan": {
+  "targetMoved": true,
+  "offsetSameAsTarget": true
+ },
+ "cursor_class_after_space": false,
+ "after_space_drag_rotates": {
+  "targetSame": true,
+  "cameraMoved": true
+ },
+ "middle_drag_pans": true,
+ "space_does_not_click_focused_button": {
+  "before": 180,
+  "after": 180
+ },
+ "m_toggles_move_mode": true,
+ "space_in_move_mode": {
+  "imageUnchanged": true,
+  "targetMoved": true
+ },
+ "m_toggles_off": true,
+ "arrow_right_1pct": {
+  "x": 0.01,
+  "y": 0,
+  "s": 1,
+  "r": 0
+ },
+ "shift_down_5pct": {
+  "x": 0.01,
+  "y": 0.05,
+  "s": 1,
+  "r": 0
+ },
+ "plus_scale": 1.05,
+ "minus_x2_scale": 0.952,
+ "undo_steps": [
+  {
+   "x": 0,
+   "y": 0,
+   "s": 1,
+   "r": 180
+  },
+  {
+   "x": 0,
+   "y": 0,
+   "s": 1,
+   "r": 0
+  }
+ ],
+ "redo_step": {
+  "x": 0,
+  "y": 0,
+  "s": 1,
+  "r": 180
+ },
+ "redo_step2": {
+  "x": 0.01,
+  "y": 0.05,
+  "s": 0.952,
+  "r": 0
+ },
+ "coalesced_undo_returns_before": true,
+ "delete_removed": true,
+ "undo_restores_image": true,
+ "undo_button_visible": true,
+ "next_face": "lid_front",
+ "prev_face_wraps": "lid_right",
+ "view_dirs": {
+  "front": "0,0.05,0.42",
+  "back": "0,0.05,-0.42",
+  "right": "0.42,0.05,0",
+  "left": "-0.42,0.05,0",
+  "top": "0,0.42,0",
+  "iso": "0.24,0.2,0.28"
+ },
+ "esc_hides_highlight": true,
+ "help_opens": true,
+ "help_visible": true,
+ "typing_in_number_field_ignored": true,
+ "errors": []
+}

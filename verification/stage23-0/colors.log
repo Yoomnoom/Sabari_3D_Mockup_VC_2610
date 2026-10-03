@@ -1,0 +1,40 @@
+{
+ "defaults": [
+  "#ffffff",
+  "#e5e2dd",
+  "#efece7"
+ ],
+ "baked_margin_px": [
+  255,
+  224,
+  138,
+  255
+ ],
+ "glb_materials": {
+  "base_front": "#2c3e50",
+  "base_back": "#2c3e50",
+  "base_left": "#2c3e50",
+  "base_right": "#2c3e50",
+  "base_bottom": "#2c3e50",
+  "base_rim": "#2c3e50",
+  "base_inner": "#2c3e50",
+  "lid_top": "#ffe08a",
+  "lid_front": "#ffffff",
+  "lid_back": "#ffe08a",
+  "lid_left": "#ffe08a",
+  "lid_right": "#ffe08a",
+  "lid_rim": "#c0392b",
+  "lid_inner": "#c0392b"
+ },
+ "reopened": [
+  "#ffe08a",
+  "#c0392b",
+  "#2c3e50"
+ ],
+ "after_reset": [
+  "#ffffff",
+  "#e5e2dd",
+  "#efece7"
+ ],
+ "errors": []
+}

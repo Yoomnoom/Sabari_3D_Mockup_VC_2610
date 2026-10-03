@@ -1,0 +1,102 @@
+[
+  {
+    "script": "e2e\\base10.mjs",
+    "exit": 0,
+    "seconds": 42.6
+  },
+  {
+    "script": "e2e\\bleed_id.mjs",
+    "exit": 0,
+    "seconds": 18.9
+  },
+  {
+    "script": "e2e\\closed_click.mjs",
+    "exit": 0,
+    "seconds": 3.2
+  },
+  {
+    "script": "e2e\\collapse.mjs",
+    "exit": 0,
+    "seconds": 6.7
+  },
+  {
+    "script": "e2e\\colors.mjs",
+    "exit": 0,
+    "seconds": 4.7
+  },
+  {
+    "script": "e2e\\dieline.mjs",
+    "exit": 0,
+    "seconds": 23.8
+  },
+  {
+    "script": "e2e\\dims.mjs",
+    "exit": 0,
+    "seconds": 52.6
+  },
+  {
+    "script": "e2e\\draft.mjs",
+    "exit": 0,
+    "seconds": 12.2
+  },
+  {
+    "script": "e2e\\iso_faces.mjs",
+    "exit": 0,
+    "seconds": 4.0
+  },
+  {
+    "script": "e2e\\legacy_draft.mjs",
+    "exit": 0,
+    "seconds": 4.5
+  },
+  {
+    "script": "e2e\\mouse.mjs",
+    "exit": 0,
+    "seconds": 8.1
+  },
+  {
+    "script": "e2e\\movemode.mjs",
+    "exit": 0,
+    "seconds": 6.9
+  },
+  {
+    "script": "e2e\\ratio.mjs",
+    "exit": 0,
+    "seconds": 25.2
+  },
+  {
+    "script": "e2e\\run.mjs",
+    "exit": 0,
+    "seconds": 25.9
+  },
+  {
+    "script": "e2e\\scroll_fix.mjs",
+    "exit": 0,
+    "seconds": 51.0
+  },
+  {
+    "script": "e2e\\sharp.mjs",
+    "exit": 0,
+    "seconds": 6.1
+  },
+  {
+    "script": "e2e\\shortcuts.mjs",
+    "exit": 0,
+    "seconds": 9.4
+  },
+  {
+    "script": "e2e\\shot_panel.mjs",
+    "exit": 0,
+    "seconds": 2.6
+  },
+  {
+    "script": "e2e\\space_repro.mjs",
+    "exit": 0,
+    "seconds": 3.6
+  },
+  {
+    "script": "e2e\\viewkeep.mjs",
+    "exit": 0,
+    "seconds": 8.0
+  }
+]

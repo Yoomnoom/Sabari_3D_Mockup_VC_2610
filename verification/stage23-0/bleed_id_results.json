@@ -1,0 +1,189 @@
+{
+  "default_dims": {
+    "cameras": {
+      "from_below_oblique": {
+        "stats": {
+          "classified": 133765,
+          "strictBleedToOtherFace": 7,
+          "bleedOntoNonFaceMesh": 0,
+          "edgeOrBackground": 43
+        },
+        "offenders": {
+          "base_front → base_right": 4,
+          "lid_top → base_right": 3
+        },
+        "polyFlagged": {
+          "base_right": 43,
+          "base_front": 8,
+          "base_bottom": 3
+        },
+        "polyFlaggedButIdConsistent": {
+          "base_right:edge": 41,
+          "base_right:id_says_same_face": 2,
+          "base_front:id_says_same_face": 2,
+          "base_bottom:id_says_same_face": 3,
+          "base_front:edge": 2
+        }
+      },
+      "from_below_oblique_2": {
+        "stats": {
+          "classified": 111407,
+          "strictBleedToOtherFace": 0,
+          "bleedOntoNonFaceMesh": 0,
+          "edgeOrBackground": 5
+        },
+        "offenders": {},
+        "polyFlagged": {
+          "base_left": 2,
+          "base_front": 41,
+          "base_bottom": 4
+        },
+        "polyFlaggedButIdConsistent": {
+          "base_left:id_says_same_face": 2,
+          "base_front:id_says_same_face": 40,
+          "base_front:edge": 1,
+          "base_bottom:edge": 4
+        }
+      },
+      "open_iso_front_right": {
+        "stats": {
+          "classified": 111009,
+          "strictBleedToOtherFace": 0,
+          "bleedOntoNonFaceMesh": 0,
+          "edgeOrBackground": 27
+        },
+        "offenders": {},
+        "polyFlagged": {
+          "lid_front": 9,
+          "lid_right": 28,
+          "base_front": 2
+        },
+        "polyFlaggedButIdConsistent": {
+          "lid_front:id_says_same_face": 9,
+          "lid_right:id_says_same_face": 1,
+          "lid_right:edge": 27,
+          "base_front:id_says_same_face": 2
+        }
+      },
+      "low_left": {
+        "stats": {
+          "classified": 90901,
+          "strictBleedToOtherFace": 36,
+          "bleedOntoNonFaceMesh": 0,
+          "edgeOrBackground": 4
+        },
+        "offenders": {
+          "base_front → base_left": 35,
+          "base_right → base_left": 1
+        },
+        "polyFlagged": {
+          "base_left": 4,
+          "base_front": 35,
+          "base_right": 1
+        },
+        "polyFlaggedButIdConsistent": {
+          "base_left:edge": 4
+        }
+      }
+    },
+    "totals": {
+      "classified": 447082,
+      "strictBleedToOtherFace": 43,
+      "bleedOntoNonFaceMesh": 0,
+      "edgeOrBackground": 79,
+      "polygonMethodFlagged": 180
+    }
+  },
+  "changed_dims": {
+    "params": {
+      "baseW": 200,
+      "baseD": 130,
+      "baseH": 60,
+      "lidH": 50,
+      "board": 2,
+      "lidClearance": 0.5,
+      "wrapMargin": 2.4,
+      "tuck": 19.3,
+      "bleed": 3
+    }
+  },
+  "changed_dims_200x130x60_lid50": {
+    "cameras": {
+      "from_below_oblique": {
+        "stats": {
+          "classified": 137377,
+          "strictBleedToOtherFace": 8,
+          "bleedOntoNonFaceMesh": 0,
+          "edgeOrBackground": 24
+        },
+        "offenders": {
+          "base_front → base_right": 4,
+          "lid_top → base_right": 4
+        },
+        "polyFlagged": {
+          "base_right": 24,
+          "base_front": 4,
+          "base_bottom": 2
+        },
+        "polyFlaggedButIdConsistent": {
+          "base_right:edge": 24,
+          "base_bottom:id_says_same_face": 2
+        }
+      },
+      "from_below_oblique_2": {
+        "stats": {
+          "classified": 118646,
+          "strictBleedToOtherFace": 0,
+          "bleedOntoNonFaceMesh": 0,
+          "edgeOrBackground": 53
+        },
+        "offenders": {},
+        "polyFlagged": {
+          "base_front": 52,
+          "base_bottom": 1
+        },
+        "polyFlaggedButIdConsistent": {
+          "base_front:edge": 52,
+          "base_bottom:edge": 1
+        }
+      },
+      "open_iso_front_right": {
+        "stats": {
+          "classified": 123402,
+          "strictBleedToOtherFace": 6,
+          "bleedOntoNonFaceMesh": 0,
+          "edgeOrBackground": 23
+        },
+        "offenders": {
+          "base_front → lid_top": 6
+        },
+        "polyFlagged": {
+          "base_front": 6,
+          "lid_right": 23
+        },
+        "polyFlaggedButIdConsistent": {
+          "lid_right:edge": 23
+        }
+      },
+      "low_left": {
+        "stats": {
+          "classified": 116392,
+          "strictBleedToOtherFace": 0,
+          "bleedOntoNonFaceMesh": 0,
+          "edgeOrBackground": 0
+        },
+        "offenders": {},
+        "polyFlagged": {},
+        "polyFlaggedButIdConsistent": {}
+      }
+    },
+    "totals": {
+      "classified": 495817,
+      "strictBleedToOtherFace": 14,
+      "bleedOntoNonFaceMesh": 0,
+      "edgeOrBackground": 100,
+      "polygonMethodFlagged": 112
+    }
+  },
+  "errors": []
+}
