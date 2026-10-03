@@ -25,9 +25,10 @@ R.space_pan = { targetMoved: d(c0.tgt, c1.tgt), offsetSameAsTarget: JSON.stringi
 R.cursor_class_after_space = await p.evaluate(() => document.getElementById('viewport').classList.contains('panning'));
 // Space 뗀 뒤 왼쪽 드래그 = 회전(타깃 유지). 윗면 시점은 수평 회전해도 위치가 거의 같으므로 3/4 시점에서 확인
 await p.click('[data-view=iso]'); await p.waitForTimeout(150); c1 = await cam();
+const qBefore = await p.evaluate(() => window.__sabari.viewer.boxQuat.toArray().join());
 await p.mouse.move(840, 430); await p.mouse.down(); await p.mouse.move(890, 470, { steps: 5 }); await p.mouse.up();
 let c2 = await cam();
-R.after_space_drag_rotates = { targetSame: !d(c1.tgt, c2.tgt), cameraMoved: d(c1.pos, c2.pos) };
+R.after_space_drag_rotates = { targetSame: !d(c1.tgt, c2.tgt), cameraMoved: d(c1.pos, c2.pos), boxRotated: qBefore !== await p.evaluate(() => window.__sabari.viewer.boxQuat.toArray().join()) }; // 단계 24: Space 를 뗀 뒤 드래그는 박스를 돌린다
 // 가운데 버튼 드래그 = 이동
 await p.click('[data-view=top]'); await p.waitForTimeout(150); c0 = await cam();
 await p.mouse.move(840, 430); await p.mouse.down({ button: 'middle' }); await p.mouse.move(900, 460, { steps: 5 }); await p.mouse.up({ button: 'middle' });

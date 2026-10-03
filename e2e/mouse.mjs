@@ -46,6 +46,7 @@ R.slider_x_after = await p.inputValue('#xN'); R.slider_y_after = await p.inputVa
 // 3) 3D Shift+드래그 (윗면 정면 뷰에서 커서가 움직인 만큼 이미지가 따라가야 함)
 await p.locator('#btnReset').click(); await p.waitForTimeout(100);
 const camBefore = await p.evaluate(() => window.__sabari.viewer.camera.position.toArray());
+const quatBefore = await p.evaluate(() => window.__sabari.viewer.boxQuat.toArray().join());
 await p.keyboard.down('Shift');
 await p.mouse.move(800, 430); await p.mouse.down(); await p.mouse.move(900, 400, { steps: 8 }); await p.mouse.up();
 await p.keyboard.up('Shift');
@@ -54,6 +55,6 @@ R.camera_unchanged_during_shift_drag = JSON.stringify(camBefore) === JSON.string
 await p.screenshot({ path: path.join(V, '12_shift_drag.png') });
 // 일반 드래그는 여전히 회전
 await p.mouse.move(800, 430); await p.mouse.down(); await p.mouse.move(860, 460, { steps: 5 }); await p.mouse.up();
-R.normal_drag_rotates = JSON.stringify(camBefore) !== JSON.stringify(await p.evaluate(() => window.__sabari.viewer.camera.position.toArray()));
+R.normal_drag_rotates = JSON.stringify(camBefore) !== JSON.stringify(await p.evaluate(() => window.__sabari.viewer.camera.position.toArray())) || quatBefore !== await p.evaluate(() => window.__sabari.viewer.boxQuat.toArray().join()); // 단계 24: 카메라 대신 박스 자세
 R.errors = errs;
 console.log(JSON.stringify(R, null, 1)); await b.close();

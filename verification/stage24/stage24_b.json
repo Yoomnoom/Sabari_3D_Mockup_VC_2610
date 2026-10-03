@@ -227,7 +227,7 @@
       "posedAgain": "2f7cc80d77383aaf5c56c13a5f1b41c81ad8d0369c82640889c371dbc69c3b29"
     },
     "byteIdenticalEverywhere": false,
-    "byteNote": "같은 자세에서 연속으로 내보내도 바이트가 다를 수 있다(이미지 배열 순서). 그래서 내용 비교를 쓴다.",
+    "byteNote": "같은 자세에서 연속으로 내보내도 파일 바이트가 다르게 관찰됐다(원인 추정: GLTFExporter 가 이미지를 병렬 처리해 images 배열 순서가 바뀜, 미확인). 그래서 노드 변환 전체와 메시별 지오메트리·재질·이미지 해시로 비교한다.",
     "nodeTransformsEqual": true,
     "contentEqual_nodes_geometry_materials_images": true,
     "meshCount": 14,

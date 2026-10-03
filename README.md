@@ -24,6 +24,10 @@
 - 템플릿(3D 메시·UV)은 브라우저에서 파라미터로 생성합니다. `backend/app/template_gen.py`는 로컬 실행·테스트용으로 남기며, 기본값에서 TypeScript 생성물과 바이트 단위로 같은지 vitest가 확인합니다.
 - 검증 스크립트: `e2e/dims.mjs`, `ratio.mjs`, `dieline.mjs`, `bleed_id.mjs`, 칼선 샘플 대조는 `tools/measure_dieline.py` → `tools/compare_dieline.py`.
 
+## 화면 기준 박스 회전
+
+왼쪽 드래그(한 손가락 터치 포함)는 카메라가 아니라 박스를 돌립니다. 카메라는 고정이고 박스만 화면 전용 pivot으로 회전하므로 윗면·아랫면 시점에서도 문처럼 돌아 날개면이 보이고, 극점 제한 없이 계속 돌 수 있습니다. 보기의 `좌우로 돌리기`(가로 이동만, 화면 세로축 기준)와 `위아래로 돌리기`(세로 이동만, 화면 가로축 기준)로 방향을 고르고(`T` 키), `Ctrl`은 15° 스냅입니다. 박스 자세는 `.sabari`·임시저장·GLB에 들어가지 않고(GLB 노드 변환 불변), 시점 버튼은 기본 자세로 되돌립니다. 검증: `node e2e/stage24.mjs`, `node e2e/stage24_b.mjs`, `node e2e/stage24_views.mjs <출력>`.
+
 ## 구성
 
 ```
