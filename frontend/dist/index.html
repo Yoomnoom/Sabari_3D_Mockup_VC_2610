@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>사바리 목업 스튜디오</title>
-  <script type="module" crossorigin src="./assets/index-Ch_cpBpG.js"></script>
+  <title>사바리 목업 스튜디오</title>
+  <script type="module" crossorigin src="./assets/index-CXZz2bbg.js"></script>
   <link rel="stylesheet" crossorigin href="./assets/index-CVjAtd6A.css">
 </head>
 <body>
@@ -181,6 +181,11 @@
       <p class="hint" id="lockHint" hidden></p>
       <p class="hint">시점 버튼은 박스를 기본 자세로 되돌리고 방향만 바꾸며 확대는 유지합니다. 처음처럼 전체를 보려면 <kbd>F</kbd> 또는 위치 초기화.<br>3/4 시점을 한 번 더 누르면 반대편 모서리로 바뀝니다. <kbd>R</kbd> 앞·오른쪽 날개 / <kbd>L</kbd> 뒤·왼쪽 날개</p>
       <p class="hint">드래그: 박스 자유 회전(제한 없음) · <kbd>Ctrl</kbd>+드래그: 15° 단위 · 휠: 확대/축소 · Space+드래그: 이동</p>
+      <details class="grp" id="dLight">
+        <summary>조명 (음영)</summary>
+        <label class="slider">음영 세기 (%) <input id="shadeR" type="range" min="0" max="100" step="1" value="30" /><input id="shadeN" type="number" min="0" max="100" step="1" value="30" /></label>
+        <p class="hint">넣은 색은 카메라를 마주 보는 면에서 그대로 보입니다. 음영은 비스듬한 면을 어둡게만 하고 색을 밝히지 않으며, 0%면 모든 각도에서 평면 색 그대로입니다. 이 설정은 이 브라우저에만 기억되고 파일(.sabari·GLB·임시저장)에는 저장되지 않습니다.</p>
+      </details>
     </details>
 
     <section>
@@ -272,6 +277,6 @@
     </div>
     <div id="loading" hidden>처리 중…</div>
     <div id="dropHint" hidden>여기에 놓으면 불러옵니다 (이미지 · .glb · .sabari)</div>
-  </main>
+  </main>
 </body>
 </html>

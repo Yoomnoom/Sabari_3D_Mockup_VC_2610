@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { FACES, FaceId, groupOf } from './faces';
+import { applyFlatShading, createShadeState } from './shading';
 import { BoxParams } from './params';
 import { TEMPLATE_ID, buildParts } from './templateMesh';
 import { dragRotation, lockedStep } from './screenRotate';
@@ -66,6 +67,7 @@ export class Viewer {
   private lockLine: THREE.Line | null = null;
   /** 앱이 만든 템플릿 GLB(면 이름이 있는 메시)인지: 외부 GLB는 면을 알 수 없어 축 잠금을 쓰지 않는다 */
   private viewerHasFaces = false;
+  private readonly shade = createShadeState();
   onLockChange: ((s: { on: boolean; face: FaceId | null; view: ViewName | null; views: ViewName[]; available: boolean }) => void) | null = null;
   onLockHint: ((text: string) => void) | null = null;
 
@@ -76,14 +78,9 @@ export class Viewer {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     el.appendChild(this.renderer.domElement);
 
-    // 조명: 반구광 + 고정 키라이트 + 카메라를 따라다니는 헤드라이트 (흰 박스가 번들거리지 않게 약하게)
-    this.scene.add(new THREE.HemisphereLight(0xffffff, 0xe0dbd2, 1.7));
-    const key = new THREE.DirectionalLight(0xffffff, 1.2);
-    key.position.set(1, 2, 1.5);
-    this.scene.add(key);
-    const head = new THREE.DirectionalLight(0xffffff, 1.0);
-    head.position.set(0, 0, 1);
-    this.camera.add(head);
+    // 조명 계산은 쓰지 않는다: 색은 정면에서 입력 그대로, 음영 계수만 곱한다(shading.ts). 톤매핑 없음, 출력은 sRGB.
+    this.renderer.toneMapping = THREE.NoToneMapping;
+    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.scene.add(this.camera);
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -396,6 +393,7 @@ export class Viewer {
       const mat = new THREE.MeshStandardMaterial({ metalness: 0, roughness: 0.9 });
       mat.color.setRGB(part.color[0], part.color[1], part.color[2], THREE.LinearSRGBColorSpace); // GLB 의 baseColorFactor 는 선형값
       mat.name = part.name;
+      applyFlatShading(mat, this.shade);
       const mesh = new THREE.Mesh(g, mat);
       mesh.name = part.name;
       (part.group === 'base' ? base : lid).add(mesh);
@@ -473,6 +471,12 @@ export class Viewer {
     }
     this.dirty = true;
   }
+
+  /** 음영 세기 0~1(0 = 모든 각도에서 입력 색 그대로의 평면 색). 화면 설정이라 파일·임시저장에는 저장하지 않는다. */
+  setShadeStrength(x: number) { this.shade.strength.value = Math.min(1, Math.max(0, x)); this.dirty = true; }
+  getShadeStrength(): number { return this.shade.strength.value; }
+  /** 빛 방향(뷰 공간 단위벡터, 기본 +Z = 카메라 쪽). 이후 조명 방향 조절 UI가 쓸 자리 — 지금은 UI가 없다. */
+  setShadeLightDir(x: number, y: number, z: number) { this.shade.lightDir.value.set(x, y, z).normalize(); this.dirty = true; }
 
   setSelected(id: FaceId) {
     this.selected = id;
@@ -609,6 +613,7 @@ export class Viewer {
       // 편집 모드와 같은 선명도: 로더 기본값(이방성 1)이면 비스듬히 볼 때 텍스처가 흐려진다.
       for (const mat of mats) {
         const m = mat as THREE.MeshStandardMaterial;
+        applyFlatShading(mat, this.shade); // 외부 GLB도 같은 방식으로 표시(색·텍스처 × 음영 계수)
         for (const tex of [m.map, m.emissiveMap, m.normalMap, m.roughnessMap, m.metalnessMap, m.aoMap]) {
           if (tex) { tex.anisotropy = this.renderer.capabilities.getMaxAnisotropy(); tex.needsUpdate = true; }
         }

@@ -553,7 +553,7 @@ async function handleFile(file: File) {
 // ---------- 화면 설정 (접기·펼치기, 단축키 사용) — 이 브라우저의 localStorage에 기억 ----------
 const UI_KEY = 'sabari-ui';
 let keysEnabled = true;
-const loadUi = (): { open?: Record<string, boolean>; keys?: boolean } => {
+const loadUi = (): { open?: Record<string, boolean>; keys?: boolean; shade?: number } => {
   try { return JSON.parse(localStorage.getItem(UI_KEY) ?? '{}'); } catch { return {}; }
 };
 const saveUi = (patch: object) => { try { localStorage.setItem(UI_KEY, JSON.stringify({ ...loadUi(), ...patch })); } catch { /* 저장 불가 환경이면 기억만 안 한다 */ } };
@@ -630,6 +630,22 @@ function showView(v: ViewName, fit = false) {
 const toggleIso = () => showView(lastView === 'iso' ? 'isoL' : 'iso');
 
 // ---------- 시작 ----------
+// 음영 세기(0~100%): 화면 설정이라 이 브라우저(localStorage)에만 기억하고 .sabari·임시저장·GLB에는 넣지 않는다.
+function initShade() {
+  const r = $<HTMLInputElement>('shadeR'), n = $<HTMLInputElement>('shadeN');
+  const pct = (x: unknown) => { const v = Math.round(Number(x)); return Number.isFinite(v) ? Math.min(100, Math.max(0, v)) : null; };
+  const set = (x: unknown, save: boolean) => {
+    const v = pct(x); if (v === null) return;
+    r.value = n.value = String(v); viewer.setShadeStrength(v / 100);
+    if (save) saveUi({ shade: v });
+  };
+  const saved = pct(loadUi().shade);
+  set(saved ?? Math.round(viewer.getShadeStrength() * 100), false);
+  r.oninput = () => set(r.value, true);
+  n.onchange = () => set(n.value, true);
+  n.oninput = () => { const v = pct(n.value); if (v !== null && n.value !== '') set(v, true); };
+}
+
 async function init() {
   try {
     viewer = new Viewer($('viewport'));
@@ -638,6 +654,7 @@ async function init() {
     return;
   }
   initUiPrefs();
+  initShade();
   $('viewport').addEventListener('pointerdown', () => {
     const a = document.activeElement as HTMLElement | null;
     if (a && ['INPUT', 'SELECT', 'TEXTAREA'].includes(a.tagName)) a.blur();
