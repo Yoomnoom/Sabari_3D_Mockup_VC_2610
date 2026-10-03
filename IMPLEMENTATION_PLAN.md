@@ -178,7 +178,7 @@
 - **레거시 갱신**: `backend/app/project_io.py`·`/api/projects/*`는 유지하되 schemaVersion 2만 안다. 프런트가 만드는 버전 4 `.sabari`(params·dieline·useBaseFaces·colors)는 백엔드 경로로 열 수 없고, 백엔드가 만든 파일은 치수·칼선·스위치를 담지 않는다. 앱의 저장/열기는 `frontend/src/project.ts`만 신뢰한다.
 
 
-### 단계 24 — 화면 기준 박스 회전 ✅ 구현·자동 검증 완료 / ⚠️ 사용자 실사용 감 승인 대기
+### 단계 24 — 화면 기준 박스 회전 ✅ 구현·자동 검증 완료 / 사용자 승인 완료(2026-10-03)
 
 - 브랜치 `feature/screen-rotation`(main 미병합, push 없음). 단계 17 상태(`6c91656` + 복원 기록) 위에서 새로 구현했고 단계 18~23 코드는 가져오지 않았다.
 - 왼쪽 드래그(한 손가락 터치 포함)는 박스 회전이다. 카메라는 고정하고 박스만 화면 전용 pivot으로 돌린다(`scene → pivot(중심) → shift → root`, root 변환·GLB 내보내기 노드 불변). OrbitControls는 `enableRotate=false`로 확대·이동만 맡는다.
