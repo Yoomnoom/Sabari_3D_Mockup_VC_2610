@@ -1,0 +1,449 @@
+{
+  "1_top": {
+    "start": {
+      "elDeg": 89.99,
+      "up": [
+        0,
+        0.0001,
+        -1
+      ],
+      "visible": [
+        "lid_top"
+      ]
+    },
+    "afterEach60pxDrag": [
+      {
+        "i": 1,
+        "elDeg": 80.6,
+        "azDeg": -89.97,
+        "upChangeDeg": 0,
+        "sideFacesVisible": 0,
+        "visible": [
+          "lid_top"
+        ]
+      },
+      {
+        "i": 2,
+        "elDeg": 75.57,
+        "azDeg": -89.98,
+        "upChangeDeg": 0,
+        "sideFacesVisible": 2,
+        "visible": [
+          "base_left",
+          "lid_left",
+          "lid_top"
+        ]
+      },
+      {
+        "i": 3,
+        "elDeg": 74.99,
+        "azDeg": -99.98,
+        "upChangeDeg": 19.83,
+        "sideFacesVisible": 2,
+        "visible": [
+          "base_left",
+          "lid_left",
+          "lid_top"
+        ]
+      },
+      {
+        "i": 4,
+        "elDeg": 74.99,
+        "azDeg": -111.98,
+        "upChangeDeg": 23.78,
+        "sideFacesVisible": 2,
+        "visible": [
+          "base_left",
+          "lid_left",
+          "lid_top"
+        ]
+      }
+    ],
+    "end": {
+      "elDeg": 74.99,
+      "dir": [
+        -0.2401,
+        0.9659,
+        -0.0969
+      ],
+      "up": [
+        0.6828,
+        0.0971,
+        -0.7241
+      ],
+      "tiltDeg": 13.89,
+      "visible": [
+        "base_left",
+        "lid_left",
+        "lid_top"
+      ]
+    },
+    "reproduced_flatSpinOnly": false
+  },
+  "1_bottom": {
+    "start": {
+      "elDeg": -89.99,
+      "up": [
+        0,
+        0.0001,
+        1
+      ],
+      "visible": [
+        "base_bottom"
+      ]
+    },
+    "afterEach60pxDrag": [
+      {
+        "i": 1,
+        "elDeg": -80.6,
+        "azDeg": -89.97,
+        "upChangeDeg": 0,
+        "sideFacesVisible": 0,
+        "visible": [
+          "base_bottom"
+        ]
+      },
+      {
+        "i": 2,
+        "elDeg": -75.57,
+        "azDeg": -89.98,
+        "upChangeDeg": 0,
+        "sideFacesVisible": 2,
+        "visible": [
+          "base_bottom",
+          "base_left",
+          "lid_left"
+        ]
+      },
+      {
+        "i": 3,
+        "elDeg": -74.99,
+        "azDeg": -99.98,
+        "upChangeDeg": 19.83,
+        "sideFacesVisible": 2,
+        "visible": [
+          "base_bottom",
+          "base_left",
+          "lid_left"
+        ]
+      },
+      {
+        "i": 4,
+        "elDeg": -74.99,
+        "azDeg": -111.98,
+        "upChangeDeg": 23.78,
+        "sideFacesVisible": 2,
+        "visible": [
+          "base_bottom",
+          "base_left",
+          "lid_left"
+        ]
+      }
+    ],
+    "end": {
+      "elDeg": -74.99,
+      "dir": [
+        -0.2401,
+        -0.9659,
+        -0.0969
+      ],
+      "up": [
+        -0.6828,
+        0.0971,
+        0.7241
+      ],
+      "tiltDeg": -13.89,
+      "visible": [
+        "base_bottom",
+        "base_left",
+        "lid_left"
+      ]
+    },
+    "reproduced_flatSpinOnly": false
+  },
+  "errors": [],
+  "2_top_after_exit_10plus_drags": {
+    "exitState": {
+      "elDeg": 74.53,
+      "azDeg": -115.98,
+      "tiltDeg": 13.87,
+      "sideFacesVisible": 2
+    },
+    "drags": 14,
+    "maxElevationDriftDeg": 0,
+    "minAzimuthChangePerDragDeg": 40,
+    "maxTiltDeg": 6.22,
+    "last": [
+      {
+        "el": 74.53,
+        "az": 124.02,
+        "tilt": 0
+      },
+      {
+        "el": 74.53,
+        "az": 84.02,
+        "tilt": 0
+      },
+      {
+        "el": 74.53,
+        "az": 44.02,
+        "tilt": 0
+      }
+    ]
+  },
+  "2_bottom_after_exit_10plus_drags": {
+    "exitState": {
+      "elDeg": -74.53,
+      "azDeg": -115.98,
+      "tiltDeg": -13.87,
+      "sideFacesVisible": 2
+    },
+    "drags": 14,
+    "maxElevationDriftDeg": 0,
+    "minAzimuthChangePerDragDeg": 40,
+    "maxTiltDeg": 6.22,
+    "last": [
+      {
+        "el": -74.53,
+        "az": 124.02,
+        "tilt": 0
+      },
+      {
+        "el": -74.53,
+        "az": 84.02,
+        "tilt": 0
+      },
+      {
+        "el": -74.53,
+        "az": 44.02,
+        "tilt": 0
+      }
+    ]
+  },
+  "3_top_transition_continuity": {
+    "steps": 60,
+    "maxUpChangePerStepDeg": 2.495,
+    "maxDirChangePerStepDeg": 1.146,
+    "crossesZoneAtStep": 22,
+    "around": [
+      {
+        "i": 21,
+        "elDeg": 75.37,
+        "upChangeDeg": 0,
+        "dirChangeDeg": 0.224
+      },
+      {
+        "i": 22,
+        "elDeg": 75.04,
+        "upChangeDeg": 0,
+        "dirChangeDeg": 0
+      },
+      {
+        "i": 23,
+        "elDeg": 74.72,
+        "upChangeDeg": 0,
+        "dirChangeDeg": 0
+      },
+      {
+        "i": 24,
+        "elDeg": 74.72,
+        "upChangeDeg": 2.43,
+        "dirChangeDeg": 0
+      },
+      {
+        "i": 25,
+        "elDeg": 74.72,
+        "upChangeDeg": 2.371,
+        "dirChangeDeg": 0
+      }
+    ]
+  },
+  "3_bottom_transition_continuity": {
+    "steps": 60,
+    "maxUpChangePerStepDeg": 2.495,
+    "maxDirChangePerStepDeg": 1.146,
+    "crossesZoneAtStep": 22,
+    "around": [
+      {
+        "i": 21,
+        "elDeg": -75.37,
+        "upChangeDeg": 0,
+        "dirChangeDeg": 0.224
+      },
+      {
+        "i": 22,
+        "elDeg": -75.04,
+        "upChangeDeg": 0,
+        "dirChangeDeg": 0
+      },
+      {
+        "i": 23,
+        "elDeg": -74.72,
+        "upChangeDeg": 0,
+        "dirChangeDeg": 0
+      },
+      {
+        "i": 24,
+        "elDeg": -74.72,
+        "upChangeDeg": 2.43,
+        "dirChangeDeg": 0
+      },
+      {
+        "i": 25,
+        "elDeg": -74.72,
+        "upChangeDeg": 2.371,
+        "dirChangeDeg": 0
+      }
+    ]
+  },
+  "4_boundary_75deg": {
+    "rows": [
+      {
+        "elStart": 60,
+        "elEnd": 60,
+        "dEl": 0,
+        "dAz": -12,
+        "upChangeDeg": 10.389,
+        "dirChangeDeg": 6.036
+      },
+      {
+        "elStart": 70,
+        "elEnd": 70,
+        "dEl": 0,
+        "dAz": -12,
+        "upChangeDeg": 11.294,
+        "dirChangeDeg": 4.082
+      },
+      {
+        "elStart": 74,
+        "elEnd": 74,
+        "dEl": 0,
+        "dAz": -12,
+        "upChangeDeg": 11.536,
+        "dirChangeDeg": 3.215
+      },
+      {
+        "elStart": 75,
+        "elEnd": 75,
+        "dEl": 0,
+        "dAz": -12,
+        "upChangeDeg": 11.593,
+        "dirChangeDeg": 3.158
+      },
+      {
+        "elStart": 76,
+        "elEnd": 75.55,
+        "dEl": -0.45,
+        "dAz": -14.69,
+        "upChangeDeg": 0,
+        "dirChangeDeg": 3.594
+      },
+      {
+        "elStart": 80,
+        "elEnd": 78.45,
+        "dEl": -1.55,
+        "dAz": -30.39,
+        "upChangeDeg": 0.646,
+        "dirChangeDeg": 5.837
+      },
+      {
+        "elStart": 89,
+        "elEnd": 80.65,
+        "dEl": -8.35,
+        "dAz": -83.91,
+        "upChangeDeg": 0.676,
+        "dirChangeDeg": 9.32
+      },
+      {
+        "elStart": 90,
+        "elEnd": 80.6,
+        "dEl": -9.4,
+        "dAz": -90,
+        "upChangeDeg": 0,
+        "dirChangeDeg": 9.39
+      },
+      {
+        "elStart": -74,
+        "elEnd": -74,
+        "dEl": 0,
+        "dAz": -12,
+        "upChangeDeg": 11.536,
+        "dirChangeDeg": 3.215
+      },
+      {
+        "elStart": -75,
+        "elEnd": -74.99,
+        "dEl": 0.01,
+        "dAz": -12,
+        "upChangeDeg": 11.579,
+        "dirChangeDeg": 3.133
+      },
+      {
+        "elStart": -76,
+        "elEnd": -75.55,
+        "dEl": 0.45,
+        "dAz": -14.69,
+        "upChangeDeg": 0,
+        "dirChangeDeg": 3.594
+      }
+    ],
+    "maxDirChangeDeg": 9.39,
+    "maxUpChangeDeg": 11.593,
+    "constant": "Viewer.POLE_ZONE_DEG"
+  },
+  "5_level_mode_unchanged": {
+    "top_afterHorizontal": {
+      "elDeg": 89.99,
+      "tiltDeg": 0,
+      "sideFacesVisible": 0
+    },
+    "afterVertical": {
+      "elDeg": 90
+    },
+    "startEl": 89.99,
+    "staysAtPoleOnHorizontal": true
+  },
+  "6_other_controls": {
+    "viewButtonRestoresTop": {
+      "el": 89.99,
+      "tilt": 0,
+      "up": [
+        0,
+        0.0001,
+        -1
+      ]
+    },
+    "F": {
+      "tilt": 0
+    },
+    "levelHorizon": {
+      "tilt": 0
+    },
+    "angleInput": {
+      "expectDirOk": true,
+      "tilt": 0
+    },
+    "rotate90": {
+      "tilt": 0
+    },
+    "verticalDrag": {
+      "elBefore": 74.53,
+      "elAfter": 81.47,
+      "changed": true
+    }
+  },
+  "7_shift_drag_at_pole": {
+    "imageMoved": true,
+    "cameraUnchanged": true
+  },
+  "7_click_selects_top": "lid_top",
+  "7_wheel": {
+    "before": 0.41805,
+    "after": 0.32348
+  },
+  "7_space_pan": true,
+  "7_touch_one_finger_door": {
+    "elDeg": 74.54,
+    "sideFacesVisible": 2
+  }
+}

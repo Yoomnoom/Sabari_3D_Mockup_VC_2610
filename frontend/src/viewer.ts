@@ -43,6 +43,10 @@ export class Viewer {
    * camera.up(턴테이블 기준 위쪽)은 건드리지 않고 lookAt 직후의 방향에 롤만 더한다. 그래서 드래그·90° 회전·속도·수평 유지 토글이 값을 바꾸지 않는다.
    */
   roll = 0;
+  /** 극점 구역(윗면·아래 시점 근처)의 "문 돌리기" 가로 드래그가 만든 내부 보정 기울기(rad). 구역 밖 가로 드래그 때 서서히 0으로 줄어든다. 사용자가 보는 "기울기" 값(roll)과 별개이며 화면에 표시하지 않는다. */
+  private upOffset = 0;
+  /** 고도가 ±이 값(도) 이상이면 가로 드래그를 "화면 세로축 기준 회전"으로 적용한다(조정은 이 상수 한 곳). */
+  static readonly POLE_ZONE_DEG = 75;
   /** 회전 가능한 최소/최대 카메라 거리(박스 중심 기준 m). 최소는 박스 안으로 들어가 잘리는 것을 막는다. */
   static readonly MIN_DIST = 0.1;
   static readonly MAX_DIST = 2;
@@ -102,7 +106,7 @@ export class Viewer {
       requestAnimationFrame(loop);
       if (this.dirty) {
         this.dirty = false;
-        if (this.roll !== 0) this.syncCamera();
+        if (this.roll !== 0 || this.upOffset !== 0) this.syncCamera();
         this.renderer.render(this.scene, this.camera);
       }
     };
@@ -203,10 +207,11 @@ export class Viewer {
   /** lookAt 로 방향을 새로 잡고 기울기를 더한다. OrbitControls 의 update 가 lookAt 으로 방향을 덮어쓰므로 렌더·읽기 전에 호출한다. */
   syncCamera() {
     this.camera.lookAt(this.controls.target);
-    if (this.roll !== 0) {
+    const total = THREE.MathUtils.degToRad(this.roll) + this.upOffset;
+    if (total !== 0) {
       const f = this.controls.target.clone().sub(this.camera.position).normalize();
-      // 카메라를 보는 방향 축으로 −roll 만큼 돌리면 화면 속 박스가 +roll(시계 방향)로 기울어 보인다
-      this.camera.quaternion.premultiply(new THREE.Quaternion().setFromAxisAngle(f, -THREE.MathUtils.degToRad(this.roll)));
+      // 카메라를 보는 방향 축으로 −total 만큼 돌리면 화면 속 박스가 +total(시계 방향)로 기울어 보인다
+      this.camera.quaternion.premultiply(new THREE.Quaternion().setFromAxisAngle(f, -total));
     }
     this.camera.updateMatrixWorld(true);
   }
@@ -270,16 +275,66 @@ export class Viewer {
       }
       if (!g || e.pointerId !== g.id || this.imageDragging || this.levelRotate) return;
       const k = this.radPerPx();
-      const dx = e.clientX - g.x, dy = e.clientY - g.y;
+      const dx = e.clientX - g.x, dy = e.clientY - g.y; // 직전 이벤트 이후의 이동량(상태는 매번 카메라에서 읽는다)
+      g.x = e.clientX; g.y = e.clientY;
+      if (dx === 0 && dy === 0) return;
+      const s0 = this.rotState();
+      const el = Math.asin(THREE.MathUtils.clamp(this.camera.position.clone().sub(this.controls.target).normalize().y, -1, 1));
+      const flipped = Math.cos(s0.E) < 0;
+      let A = s0.A;
+      if (dx !== 0 && Math.abs(el) >= THREE.MathUtils.degToRad(Viewer.POLE_ZONE_DEG)) {
+        // 극점 구역: 월드 위쪽 축은 시선과 거의 같아 화면 안에서 빙글 돌기만 하므로, 화면 세로축 기준으로 돌려 옆면이 보이게 한다.
+        // 구역 경계(±75°)에서 턴테이블의 화면 이동 속도(cos 고도)와 같게 시작해 극점으로 갈수록 1배까지 올려, 경계에서 조작 속도가 뚝 바뀌지 않게 한다.
+        const edge = Math.cos(THREE.MathUtils.degToRad(Viewer.POLE_ZONE_DEG));
+        const t = THREE.MathUtils.clamp((Math.abs(el) - THREE.MathUtils.degToRad(Viewer.POLE_ZONE_DEG)) / (Math.PI / 2 - THREE.MathUtils.degToRad(Viewer.POLE_ZONE_DEG)), 0, 1);
+        this.doorTurn(-dx * k * (edge + (1 - edge) * t), flipped);
+        if (dy === 0) return;
+        const s1 = this.rotState();
+        this.applyRot(s1.A, s1.E + dy * k, s1.dist);
+        return;
+      }
       // 뒤집힌 상태(cosE<0)에서는 화면 오른쪽이 월드 기준으로 반대이므로 방위각 방향을 뒤집어 "박스가 손을 따라가게" 한다.
-      const flipped = Math.cos(g.E) < 0;
-      const A = g.A + (flipped ? 1 : -1) * dx * k;
-      const E = g.E + dy * k;
-      this.applyRot(A, E, g.dist);
+      const dA = (flipped ? 1 : -1) * dx * k;
+      A += dA;
+      if (this.upOffset !== 0) { // 구역 밖 가로 드래그: 문 돌리기로 생긴 보정 기울기를 회전한 만큼 서서히 풀어 화면이 휙 돌지 않고 기울기 0으로 돌아가게 한다
+        const dec = Math.min(Math.abs(this.upOffset), Math.abs(dA) + Math.abs(dy * k)); // 가로·세로 어느 쪽 드래그로든 풀린다
+        this.upOffset -= Math.sign(this.upOffset) * dec;
+        if (Math.abs(this.upOffset) < 1e-9) this.upOffset = 0;
+      }
+      this.applyRot(A, s0.E + dy * k, s0.dist);
     });
     const end = (e: PointerEvent) => { touches.delete(e.pointerId); if (touches.size < 2) twist = null; if (rollDrag && e.pointerId === rollDrag.id) rollDrag = null; if (g && e.pointerId === g.id) g = null; };
     dom.addEventListener('pointerup', end);
     dom.addEventListener('pointercancel', end);
+  }
+
+  /**
+   * 화면 세로축(현재 화면 위쪽 벡터) 기준으로 카메라를 θ 만큼 돌린다. 화면 위쪽 벡터는 그대로이므로 전환 순간 화면이 휙 돌지 않는다.
+   * 이후 턴테이블 기준 up(camera.up)을 새 위치에서 다시 계산하고, 둘의 차이를 upOffset 에 담아 화면 방향을 보존한다.
+   */
+  private doorTurn(theta: number, flipped: boolean) {
+    this.syncCamera();
+    const c = this.controls.target;
+    const uAct = new THREE.Vector3(0, 1, 0).applyQuaternion(this.camera.quaternion).normalize();
+    const d = this.camera.position.clone().sub(c);
+    const dist = d.length();
+    d.applyQuaternion(new THREE.Quaternion().setFromAxisAngle(uAct, theta));
+    const el = Math.asin(THREE.MathUtils.clamp(d.y / dist, -1, 1));
+    let A = Math.atan2(d.x, d.z), E = el;
+    if (flipped) { E = Math.PI - el; A += Math.PI; }
+    const sA = Math.sin(A), cA = Math.cos(A), sE = Math.sin(E), cE = Math.cos(E);
+    const upT = new THREE.Vector3(-sE * sA, cE, -sE * cA).normalize();
+    this.camera.position.copy(c).add(d);
+    this.camera.up.copy(upT);
+    this.camera.lookAt(c);
+    this.controls.update();
+    // 실제 화면 위쪽(uAct)이 되도록 필요한 추가 회전 = 턴테이블 up → uAct 의 각도(보는 축 기준), 사용자 기울기(roll)는 따로 더해지므로 뺀다
+    const f = c.clone().sub(this.camera.position).normalize();
+    const ang = Math.atan2(f.dot(new THREE.Vector3().crossVectors(upT, uAct)), upT.dot(uAct));
+    this.upOffset = -ang - THREE.MathUtils.degToRad(this.roll);
+    this.syncCamera();
+    this.dirty = true;
+    this.onCamera?.();
   }
 
   /** 화면에 보여줄 각도(도). az: −180~180, 0=정면(카메라가 +Z), +=카메라가 오른쪽(+X)으로. el: −90~90, 0=수평, +=위에서. flipped: 뒤집혀 보이는지. */
@@ -295,12 +350,14 @@ export class Viewer {
 
   /** 각도를 직접 지정한다(도). 거리·확대·이동은 유지하고 뒤집힘은 풀린다. */
   setAngles(azDeg: number, elDeg: number) {
+    this.upOffset = 0;
     const el = THREE.MathUtils.clamp(elDeg, -90, 90);
     this.applyRot(THREE.MathUtils.degToRad(azDeg), THREE.MathUtils.degToRad(el), this.rotState().dist);
   }
 
   /** 90° 단위 회전. dir: 'left'|'right' = 방위각 ∓90°, 'up'|'down' = 고도 ±90°. 4번 누르면 원래 각도로 돌아온다. */
   rotate90(dir: 'left' | 'right' | 'up' | 'down') {
+    this.upOffset = 0;
     const s = this.rotState();
     const q = Math.PI / 2;
     const flipped = Math.cos(s.E) < -1e-9;
@@ -310,7 +367,8 @@ export class Viewer {
 
   /** 수평 맞추기: 바라보는 방향(카메라 위치)은 그대로 두고 기울기만 바로잡는다. 뒤집혀 있으면 같은 위치에서 위쪽을 세워 똑바로 보이게 한다. */
   levelHorizon() {
-    const hadRoll = this.roll !== 0;
+    const hadRoll = this.roll !== 0 || this.upOffset !== 0;
+    this.upOffset = 0;
     const d = this.camera.position.clone().sub(this.controls.target).normalize();
     const pole = Math.abs(d.y) > 0.9999; // 위·아래 시점: 뒤집힘(up 반전)은 정할 수 없고 기울기 값만 0 으로 한다
     this.roll = 0;
@@ -324,6 +382,7 @@ export class Viewer {
   setLevelRotate(v: boolean) {
     if (v === this.levelRotate) return;
     this.levelRotate = v;
+    this.upOffset = 0;
     this.orbit.enableRotate = v;
     if (v) { this.camera.up.set(0, 1, 0); this.camera.lookAt(this.controls.target); }
     this.orbit.update();
@@ -541,6 +600,7 @@ export class Viewer {
     const d = new THREE.Vector3(...DIRS[name]).normalize();
     this.camera.position.copy(center).addScaledVector(d, dist);
     this.camera.up.set(0, 1, 0);
+    this.upOffset = 0;
     this.roll = 0; // 시점 버튼은 기울기도 0 으로 되돌린다("그 시점" 그대로 보이게)
     this.controls.target.copy(center);
     this.controls.update();
@@ -558,6 +618,7 @@ export class Viewer {
     this.camera.position.copy(center).addScaledVector(d, this.fitDistance(box));
     if (Math.abs(d.y) < 0.9999) this.camera.up.set(0, 1, 0); // 자유 회전으로 뒤집혀 있어도 위쪽 방향을 바로잡는다(바라보는 방향은 유지, 극점은 현재 up 유지)
     this.roll = 0;
+    this.upOffset = 0;
     this.controls.target.copy(center);
     this.updateLimits(box);
     this.controls.update();
@@ -593,6 +654,7 @@ export class Viewer {
     this.camera.position.set(...pos);
     this.camera.up.set(0, 1, 0);
     this.roll = 0;
+    this.upOffset = 0;
     this.controls.target.set(...target);
     this.controls.update();
     this.syncCamera();

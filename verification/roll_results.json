@@ -197,11 +197,11 @@
   },
   "2_drag_60_keeps_roll": {
     "input": 45,
-    "maxDeviationDeg": 0,
-    "finalMeasured": 45,
+    "maxDeviationDeg": 149.29,
+    "finalMeasured": -81.23,
     "fieldShown": "45",
-    "flipTransitions": 9,
-    "minScreenUpY": -0.704
+    "flipTransitions": 7,
+    "minScreenUpY": -0.699
   },
   "3_not_changed_by": {
     "rotLeft": 45,
@@ -349,7 +349,7 @@
       "10",
       "25",
       "40",
-      "60"
+      "55"
     ],
     "finalRoll": 60,
     "clockwisePositive": true,

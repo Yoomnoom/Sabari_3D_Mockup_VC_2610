@@ -33,63 +33,63 @@
       },
       {
         "i": 4,
-        "dirY": -0.948,
-        "dirZ": 0.241,
-        "camUpY": 0.317
+        "dirY": -0.947,
+        "dirZ": 0.243,
+        "camUpY": 0.32
       },
       {
         "i": 5,
-        "dirY": -0.334,
+        "dirY": -0.331,
         "dirZ": 0.716,
-        "camUpY": 0.942
+        "camUpY": 0.944
       },
       {
         "i": 6,
-        "dirY": 0.537,
-        "dirZ": 0.641,
-        "camUpY": 0.844
+        "dirY": 0.54,
+        "dirZ": 0.639,
+        "camUpY": 0.842
       },
       {
         "i": 7,
-        "dirY": 0.995,
-        "dirZ": 0.073,
-        "camUpY": 0.096
+        "dirY": 0.996,
+        "dirZ": 0.071,
+        "camUpY": 0.093
       },
       {
         "i": 8,
-        "dirY": 0.689,
-        "dirZ": -0.55,
-        "camUpY": -0.725
+        "dirY": 0.686,
+        "dirZ": -0.552,
+        "camUpY": -0.727
       },
       {
         "i": 9,
-        "dirY": -0.147,
+        "dirY": -0.151,
         "dirZ": -0.751,
         "camUpY": -0.989
       },
       {
         "i": 10,
-        "dirY": -0.87,
-        "dirZ": -0.374,
-        "camUpY": -0.493
+        "dirY": -0.872,
+        "dirZ": -0.372,
+        "camUpY": -0.49
       },
       {
         "i": 11,
-        "dirY": -0.924,
-        "dirZ": 0.29,
-        "camUpY": 0.382
+        "dirY": -0.923,
+        "dirZ": 0.293,
+        "camUpY": 0.385
       },
       {
         "i": 12,
-        "dirY": -0.268,
+        "dirY": -0.264,
         "dirZ": 0.732,
         "camUpY": 0.964
       },
       {
         "i": 13,
-        "dirY": 0.594,
-        "dirZ": 0.611,
-        "camUpY": 0.804
+        "dirY": 0.597,
+        "dirZ": 0.609,
+        "camUpY": 0.802
       }
     ],
     "boxFlippedUpsideDown": true,
@@ -128,9 +128,9 @@
       0.059
     ],
     "after": [
-      0.026,
-      0.997,
-      -0.074
+      -0.117,
+      0.96,
+      -0.252
     ]
   },
   "2_top_drag": {
@@ -140,16 +140,16 @@
       0
     ],
     "afterHorizontal": [
-      0,
-      1,
-      0
+      -0.259,
+      0.966,
+      -0.009
     ],
     "afterVertical": [
       0,
       0.883,
       -0.469
     ],
-    "hMoved": false,
+    "hMoved": true,
     "vMoved": true
   },
   "2_bottom_drag": {
@@ -159,16 +159,16 @@
       0
     ],
     "afterHorizontal": [
-      0,
-      -1,
-      0
+      -0.259,
+      -0.966,
+      -0.009
     ],
     "afterVertical": [
       0,
       -0.883,
       0.47
     ],
-    "hMoved": false,
+    "hMoved": true,
     "vMoved": true
   },
   "3_restore_up": {
@@ -188,22 +188,22 @@
       "ok": true
     },
     "btnFit": {
-      "flippedBefore": -0.276,
+      "flippedBefore": 0.002,
       "up": [
         0,
         1,
         0
       ],
-      "camUpY": 0.276,
+      "camUpY": 0.17,
       "screenUp": [
-        -0.95,
-        0.28,
-        0.17
+        0.76,
+        0.17,
+        0.63
       ],
       "ok": true
     },
     "front": {
-      "flippedBefore": -0.927,
+      "flippedBefore": -0.961,
       "up": [
         0,
         1,
@@ -218,7 +218,7 @@
       "ok": true
     },
     "back": {
-      "flippedBefore": -0.015,
+      "flippedBefore": 0.056,
       "up": [
         0,
         1,
@@ -233,7 +233,7 @@
       "ok": true
     },
     "left": {
-      "flippedBefore": -0.015,
+      "flippedBefore": 0.056,
       "up": [
         0,
         1,
@@ -248,7 +248,7 @@
       "ok": true
     },
     "right": {
-      "flippedBefore": -0.015,
+      "flippedBefore": 0.056,
       "up": [
         0,
         1,
@@ -263,7 +263,7 @@
       "ok": true
     },
     "top": {
-      "flippedBefore": -0.015,
+      "flippedBefore": 0.056,
       "up": [
         0,
         1,
@@ -400,11 +400,11 @@
     "h": 1800,
     "meanDiff": 2.07
   },
-  "6_flipped_camUpY": -0.382,
+  "6_flipped_camUpY": -0.4,
   "6_png_flipped": {
     "w": 2080,
     "h": 1800,
-    "meanDiff": 1.97
+    "meanDiff": 2.15
   },
   "6_pngs_differ": true,
   "7_touch_one_finger_rotate": {

@@ -1,9 +1,9 @@
 {
   "1_roll_turntable": {
     "drags": 60,
-    "maxAbsRollDeg": 0,
-    "meanAbsRollDeg": 0,
-    "flipTransitions": 9,
+    "maxAbsRollDeg": 23.282,
+    "meanAbsRollDeg": 4.708,
+    "flipTransitions": 7,
     "finalDist": 0.41805
   },
   "2_pole_crossing": {
@@ -41,12 +41,12 @@
       0
     ],
     "hAfterUp": [
-      0.469,
-      0,
-      -0.883
+      0.963,
+      0.27,
+      0
     ],
     "vRotates": true,
-    "rollAfterH": 0,
+    "rollAfterH": 15.673,
     "rollAfterV": 0
   },
   "2_bottom": {
@@ -57,12 +57,12 @@
       0
     ],
     "hAfterUp": [
-      -0.469,
-      0,
-      0.883
+      -0.963,
+      0.27,
+      0
     ],
     "vRotates": true,
-    "rollAfterH": 0,
+    "rollAfterH": -15.673,
     "rollAfterV": 0
   },
   "2_horizontal_drag_direction": {
@@ -73,7 +73,7 @@
     },
     "flipped": {
       "flippedFlag": true,
-      "screenUpY": -0.356,
+      "screenUpY": -0.354,
       "azBefore": -180,
       "azAfter": -160,
       "deltaPositiveXDrag": 20

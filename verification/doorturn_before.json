@@ -1,0 +1,149 @@
+{
+  "1_top": {
+    "start": {
+      "elDeg": 89.99,
+      "up": [
+        0,
+        0.0001,
+        -1
+      ],
+      "visible": [
+        "lid_top"
+      ]
+    },
+    "afterEach60pxDrag": [
+      {
+        "i": 1,
+        "elDeg": 89.99,
+        "azDeg": -12,
+        "upChangeDeg": 12.013,
+        "sideFacesVisible": 0,
+        "visible": [
+          "lid_top"
+        ]
+      },
+      {
+        "i": 2,
+        "elDeg": 89.99,
+        "azDeg": -24,
+        "upChangeDeg": 12.028,
+        "sideFacesVisible": 0,
+        "visible": [
+          "lid_top"
+        ]
+      },
+      {
+        "i": 3,
+        "elDeg": 89.99,
+        "azDeg": -36,
+        "upChangeDeg": 12.019,
+        "sideFacesVisible": 0,
+        "visible": [
+          "lid_top"
+        ]
+      },
+      {
+        "i": 4,
+        "elDeg": 89.99,
+        "azDeg": -48,
+        "upChangeDeg": 12.014,
+        "sideFacesVisible": 0,
+        "visible": [
+          "lid_top"
+        ]
+      }
+    ],
+    "end": {
+      "elDeg": 89.99,
+      "dir": [
+        -0.0001,
+        1,
+        0.0001
+      ],
+      "up": [
+        0.7431,
+        0.0001,
+        -0.6691
+      ],
+      "tiltDeg": 0,
+      "visible": [
+        "lid_top"
+      ]
+    },
+    "reproduced_flatSpinOnly": true
+  },
+  "1_bottom": {
+    "start": {
+      "elDeg": -89.99,
+      "up": [
+        0,
+        0.0001,
+        1
+      ],
+      "visible": [
+        "base_bottom"
+      ]
+    },
+    "afterEach60pxDrag": [
+      {
+        "i": 1,
+        "elDeg": -89.99,
+        "azDeg": -12,
+        "upChangeDeg": 12.013,
+        "sideFacesVisible": 1,
+        "visible": [
+          "base_bottom"
+        ]
+      },
+      {
+        "i": 2,
+        "elDeg": -89.99,
+        "azDeg": -24,
+        "upChangeDeg": 12.028,
+        "sideFacesVisible": 1,
+        "visible": [
+          "base_bottom"
+        ]
+      },
+      {
+        "i": 3,
+        "elDeg": -89.99,
+        "azDeg": -36,
+        "upChangeDeg": 12.019,
+        "sideFacesVisible": 1,
+        "visible": [
+          "base_bottom"
+        ]
+      },
+      {
+        "i": 4,
+        "elDeg": -89.99,
+        "azDeg": -48,
+        "upChangeDeg": 12.014,
+        "sideFacesVisible": 1,
+        "visible": [
+          "base_bottom"
+        ]
+      }
+    ],
+    "end": {
+      "elDeg": -89.99,
+      "dir": [
+        -0.0001,
+        -1,
+        0.0001
+      ],
+      "up": [
+        -0.7431,
+        0.0001,
+        0.6691
+      ],
+      "tiltDeg": 0,
+      "visible": [
+        "base_bottom"
+      ]
+    },
+    "reproduced_flatSpinOnly": false
+  },
+  "errors": []
+}
