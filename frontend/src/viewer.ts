@@ -38,6 +38,11 @@ export class Viewer {
   /** 카메라 각도가 바뀔 때마다(회전·이동·시점 변경·입력) 호출된다. 각도 표시 갱신용. */
   onCamera: (() => void) | null = null;
   private imageDragging = false;
+  /**
+   * 기울기(롤, 도): 보는 방향 축을 기준으로 화면을 돌린 각도. +는 화면(박스)이 시계 방향으로 기울어 보이는 방향, 0 = 수평.
+   * camera.up(턴테이블 기준 위쪽)은 건드리지 않고 lookAt 직후의 방향에 롤만 더한다. 그래서 드래그·90° 회전·속도·수평 유지 토글이 값을 바꾸지 않는다.
+   */
+  roll = 0;
   /** 회전 가능한 최소/최대 카메라 거리(박스 중심 기준 m). 최소는 박스 안으로 들어가 잘리는 것을 막는다. */
   static readonly MIN_DIST = 0.1;
   static readonly MAX_DIST = 2;
@@ -97,6 +102,7 @@ export class Viewer {
       requestAnimationFrame(loop);
       if (this.dirty) {
         this.dirty = false;
+        if (this.roll !== 0) this.syncCamera();
         this.renderer.render(this.scene, this.camera);
       }
     };
@@ -194,6 +200,25 @@ export class Viewer {
     return { A, E, dist };
   }
 
+  /** lookAt 로 방향을 새로 잡고 기울기를 더한다. OrbitControls 의 update 가 lookAt 으로 방향을 덮어쓰므로 렌더·읽기 전에 호출한다. */
+  syncCamera() {
+    this.camera.lookAt(this.controls.target);
+    if (this.roll !== 0) {
+      const f = this.controls.target.clone().sub(this.camera.position).normalize();
+      // 카메라를 보는 방향 축으로 −roll 만큼 돌리면 화면 속 박스가 +roll(시계 방향)로 기울어 보인다
+      this.camera.quaternion.premultiply(new THREE.Quaternion().setFromAxisAngle(f, -THREE.MathUtils.degToRad(this.roll)));
+    }
+    this.camera.updateMatrixWorld(true);
+  }
+
+  /** 기울기를 지정한다(도, −180~180). 방향·거리·확대는 그대로. */
+  setRoll(deg: number) {
+    let r = ((deg + 180) % 360 + 360) % 360 - 180;
+    if (Math.abs(r) < 1e-9) r = 0;
+    this.roll = r;
+    this.syncCamera(); this.dirty = true; this.onCamera?.();
+  }
+
   private applyRot(A: number, E: number, dist: number) {
     const c = this.controls.target;
     const sA = Math.sin(A), cA = Math.cos(A), sE = Math.sin(E), cE = Math.cos(E);
@@ -201,6 +226,7 @@ export class Viewer {
     this.camera.up.set(-sE * sA, cE, -sE * cA).normalize(); // 화면 위쪽 = ∂p/∂E
     this.camera.lookAt(c);
     this.controls.update();
+    this.syncCamera();
     this.dirty = true;
     this.onCamera?.();
   }
@@ -211,9 +237,21 @@ export class Viewer {
   private installTurntable() {
     const dom = this.renderer.domElement;
     let g: { id: number; x: number; y: number; A: number; E: number; dist: number } | null = null;
-    const touches = new Set<number>();
+    const touches = new Map<number, { x: number; y: number }>();
+    let rollDrag: { id: number; x: number; roll: number } | null = null;
+    let twist: number | null = null; // 두 손가락 사이 각도(직전)
+    const twistAngle = () => { const [a, b2] = [...touches.values()]; return Math.atan2(b2.y - a.y, b2.x - a.x); };
     dom.addEventListener('pointerdown', (e) => {
-      if (e.pointerType === 'touch') touches.add(e.pointerId);
+      if (e.pointerType === 'touch') touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (touches.size === 2) twist = twistAngle();
+      // Alt+왼쪽 드래그: 기울기. OrbitControls(수평 유지 모드의 회전 포함)가 같이 반응하지 않도록 여기서 끊는다.
+      // (Shift+드래그는 이미지 이동이라 겹치지 않는다. 단축키 설정과 무관한 마우스 조작이다.)
+      if (e.pointerType !== 'touch' && e.button === 0 && e.altKey && !e.shiftKey && !this.panHeld) {
+        rollDrag = { id: e.pointerId, x: e.clientX, roll: this.roll };
+        e.stopImmediatePropagation(); e.preventDefault();
+        try { dom.setPointerCapture(e.pointerId); } catch { /* 무시 */ }
+        return;
+      }
       if (touches.size > 1) { g = null; return; } // 두 손가락은 OrbitControls 의 확대·이동
       if (this.levelRotate || this.panHeld || this.imageDragging || e.shiftKey && this.slot === 'editor' && this.onDragFace && (this.canDrag?.() ?? true) && this.rayAt(e, [this.faceMeshes.get(this.selected)!], false)[0]) return;
       if (e.pointerType !== 'touch' && e.button !== 0) return;
@@ -221,6 +259,15 @@ export class Viewer {
       g = { id: e.pointerId, x: e.clientX, y: e.clientY, ...st };
     }, true);
     dom.addEventListener('pointermove', (e) => {
+      if (e.pointerType === 'touch' && touches.has(e.pointerId)) touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (rollDrag && e.pointerId === rollDrag.id) { // 오른쪽으로 끌면 시계 방향(+)
+        this.setRoll(rollDrag.roll + THREE.MathUtils.radToDeg((e.clientX - rollDrag.x) * this.radPerPx()));
+        return;
+      }
+      if (touches.size === 2 && twist !== null) { // 두 손가락 비틀기: 시계 방향으로 비틀면 +
+        const a = twistAngle(); let da = a - twist; if (da > Math.PI) da -= 2 * Math.PI; if (da < -Math.PI) da += 2 * Math.PI;
+        twist = a; if (Math.abs(da) > 1e-4) this.setRoll(this.roll + THREE.MathUtils.radToDeg(da));
+      }
       if (!g || e.pointerId !== g.id || this.imageDragging || this.levelRotate) return;
       const k = this.radPerPx();
       const dx = e.clientX - g.x, dy = e.clientY - g.y;
@@ -230,20 +277,20 @@ export class Viewer {
       const E = g.E + dy * k;
       this.applyRot(A, E, g.dist);
     });
-    const end = (e: PointerEvent) => { touches.delete(e.pointerId); if (g && e.pointerId === g.id) g = null; };
+    const end = (e: PointerEvent) => { touches.delete(e.pointerId); if (touches.size < 2) twist = null; if (rollDrag && e.pointerId === rollDrag.id) rollDrag = null; if (g && e.pointerId === g.id) g = null; };
     dom.addEventListener('pointerup', end);
     dom.addEventListener('pointercancel', end);
   }
 
   /** 화면에 보여줄 각도(도). az: −180~180, 0=정면(카메라가 +Z), +=카메라가 오른쪽(+X)으로. el: −90~90, 0=수평, +=위에서. flipped: 뒤집혀 보이는지. */
-  getAngles(): { az: number; el: number; flipped: boolean } {
+  getAngles(): { az: number; el: number; roll: number; flipped: boolean; pole: boolean } {
     const d = this.camera.position.clone().sub(this.controls.target);
     const len = d.length() || 1;
     const el = Math.asin(THREE.MathUtils.clamp(d.y / len, -1, 1));
     const A = Math.abs(d.y / len) > 0.9999 ? this.rotState().A : Math.atan2(d.x, d.z);
     const deg = THREE.MathUtils.radToDeg;
     let az = deg(A); az = ((az + 180) % 360 + 360) % 360 - 180;
-    return { az: +az.toFixed(1), el: +deg(el).toFixed(1), flipped: this.camera.up.y < -1e-6 };
+    return { az: +az.toFixed(1), el: +deg(el).toFixed(1), roll: +this.roll.toFixed(1), flipped: this.camera.up.y < -1e-6, pole: Math.abs(d.y / len) > 0.99985 };
   }
 
   /** 각도를 직접 지정한다(도). 거리·확대·이동은 유지하고 뒤집힘은 풀린다. */
@@ -263,12 +310,14 @@ export class Viewer {
 
   /** 수평 맞추기: 바라보는 방향(카메라 위치)은 그대로 두고 기울기만 바로잡는다. 뒤집혀 있으면 같은 위치에서 위쪽을 세워 똑바로 보이게 한다. */
   levelHorizon() {
+    const hadRoll = this.roll !== 0;
     const d = this.camera.position.clone().sub(this.controls.target).normalize();
-    if (Math.abs(d.y) > 0.9999) return false; // 위·아래 시점은 기울기를 정할 수 없다
-    this.camera.up.set(0, 1, 0);
+    const pole = Math.abs(d.y) > 0.9999; // 위·아래 시점: 뒤집힘(up 반전)은 정할 수 없고 기울기 값만 0 으로 한다
+    this.roll = 0;
+    if (!pole) this.camera.up.set(0, 1, 0); // 뒤집혀 있었다면 같은 위치에서 위쪽을 세운다
     this.camera.lookAt(this.controls.target);
-    this.controls.update(); this.dirty = true; this.onCamera?.();
-    return true;
+    this.controls.update(); this.syncCamera(); this.dirty = true; this.onCamera?.();
+    return !pole || hadRoll;
   }
 
   /** 수평 유지 회전 켜기/끄기. 켜면 위쪽 방향을 바로잡고 극점에서 멈추는 OrbitControls 회전으로 바꾼다. */
@@ -492,8 +541,10 @@ export class Viewer {
     const d = new THREE.Vector3(...DIRS[name]).normalize();
     this.camera.position.copy(center).addScaledVector(d, dist);
     this.camera.up.set(0, 1, 0);
+    this.roll = 0; // 시점 버튼은 기울기도 0 으로 되돌린다("그 시점" 그대로 보이게)
     this.controls.target.copy(center);
     this.controls.update();
+    this.syncCamera();
     this.dirty = true;
     this.onCamera?.();
   }
@@ -506,9 +557,11 @@ export class Viewer {
     if (d.lengthSq() < 0.5) d.set(...DIRS.iso).normalize();
     this.camera.position.copy(center).addScaledVector(d, this.fitDistance(box));
     if (Math.abs(d.y) < 0.9999) this.camera.up.set(0, 1, 0); // 자유 회전으로 뒤집혀 있어도 위쪽 방향을 바로잡는다(바라보는 방향은 유지, 극점은 현재 up 유지)
+    this.roll = 0;
     this.controls.target.copy(center);
     this.updateLimits(box);
     this.controls.update();
+    this.syncCamera();
     this.dirty = true;
     this.onCamera?.();
   }
@@ -539,8 +592,10 @@ export class Viewer {
   setCameraRaw(pos: [number, number, number], target: [number, number, number]) {
     this.camera.position.set(...pos);
     this.camera.up.set(0, 1, 0);
+    this.roll = 0;
     this.controls.target.set(...target);
     this.controls.update();
+    this.syncCamera();
     this.camera.updateMatrixWorld(true);
     this.dirty = true;
   }
@@ -572,6 +627,7 @@ export class Viewer {
   }
 
   private renderToCanvas(scale: number): HTMLCanvasElement {
+    this.syncCamera(); // 기울기가 적용된 현재 화면 그대로 저장한다
     const hl = this.highlight?.visible;
     if (this.highlight) this.highlight.visible = false;
     const pr = this.renderer.getPixelRatio();

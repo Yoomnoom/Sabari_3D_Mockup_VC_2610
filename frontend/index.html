@@ -175,7 +175,10 @@
         <p class="hint">기준: 좌우 0° = 정면(카메라가 앞쪽), +는 오른쪽에서 보는 방향. 상하 0° = 수평, +는 위에서 내려다봄(−는 아래에서 올려다봄).</p>
         <label class="slider">좌우 (°) <input id="azR" type="range" min="-180" max="180" step="1" /><input id="azN" type="number" min="-180" max="180" step="1" /></label>
         <label class="slider">상하 (°) <input id="elR" type="range" min="-90" max="90" step="1" /><input id="elN" type="number" min="-90" max="90" step="1" /></label>
-        <p id="flipInfo" class="notice flip" hidden>⚠ 뒤집힌 상태입니다. 표시 각도는 카메라 위치 기준이며, 값을 입력하면 똑바로 서서 해당 각도로 이동합니다.</p>
+        <label class="slider">기울기 (°) <input id="rlR" type="range" min="-180" max="180" step="1" /><input id="rlN" type="number" min="-180" max="180" step="1" /></label>
+        <p class="hint">기울기 0° = 수평. +는 화면이 시계 방향으로 기울어 보이는 방향이며 보는 방향 축을 기준으로 돌립니다. 마우스는 <kbd>Alt</kbd>+가로 드래그, 터치는 두 손가락 비틀기로도 돌릴 수 있습니다. 드래그·90° 회전·속도는 기울기를 바꾸지 않고, 시점 버튼·위치 초기화·수평 맞추기·기본값 복원은 0°로 되돌립니다.</p>
+        <p id="poleInfo" class="notice flip" hidden>위·아래 시점(상하 ±90°)에서는 좌우와 기울기가 같은 방향 회전으로 겹쳐 보입니다. 좌우를 화면 위쪽 방향의 기준으로 쓰고, 기울기는 그 위에 별도로 더해집니다.</p>
+        <p id="flipInfo" class="notice flip" hidden>⚠ 뒤집힘 — 박스가 거꾸로 보이는 상태입니다. 좌우·상하는 카메라 위치 기준 값이고 기울기는 별도입니다. 좌우·상하를 입력하면 똑바로 서서 이동하고, 수평 맞추기는 같은 위치에서 똑바로 세웁니다.</p>
         <div class="grid4">
           <button id="rotLeft" title="왼쪽으로 90° 회전">◀ 좌 90°</button>
           <button id="rotRight" title="오른쪽으로 90° 회전">우 90° ▶</button>

@@ -733,11 +733,12 @@ async function init() {
   const num = (id: string) => $<HTMLInputElement>(id);
   const syncAngles = () => {
     const a = viewer.getAngles();
-    for (const [k, v] of [['az', a.az], ['el', a.el]] as const) {
+    for (const [k, v] of [['az', a.az], ['el', a.el], ['rl', a.roll]] as const) {
       if (document.activeElement !== num(k + 'N')) num(k + 'N').value = String(Math.round(v));
       num(k + 'R').value = String(Math.round(v));
     }
     $('flipInfo').hidden = !a.flipped;
+    $('poleInfo').hidden = !a.pole;
   };
   viewer.onCamera = syncAngles;
   const fromInputs = (src: HTMLInputElement) => () => {
@@ -748,12 +749,13 @@ async function init() {
     if (Number.isFinite(a) && Number.isFinite(e)) viewer.setAngles(a, e);
   };
   for (const id of ['azR', 'azN', 'elR', 'elN']) { const el = num(id); el.oninput = fromInputs(el); }
+  for (const id of ['rlR', 'rlN']) { const el = num(id); el.oninput = () => { const v = Number(el.value); if (Number.isFinite(v)) viewer.setRoll(Math.min(180, Math.max(-180, v))); }; }
   $('rotLeft').onclick = () => viewer.rotate90('left');
   $('rotRight').onclick = () => viewer.rotate90('right');
   $('rotUp').onclick = () => viewer.rotate90('up');
   $('rotDown').onclick = () => viewer.rotate90('down');
   $('btnLevelHorizon').onclick = () => { if (!viewer.levelHorizon()) msg('위·아래 시점에서는 기울기를 정할 수 없습니다. 먼저 회전해 주세요.'); };
-  $('btnAngleDefault').onclick = () => { const d = viewer.getAngles(); void d; showView('iso'); };
+  $('btnAngleDefault').onclick = () => { showView('iso'); }; // 3/4 시점 + 기울기 0 (setView 가 기울기를 0 으로 되돌린다)
   const setSpeed = (v: number) => { const s = Math.min(8, Math.max(0.5, v)); viewer.rotateSpeed = s; num('spR').value = num('spN').value = String(s); saveUi({ speed: s }); };
   const sp = loadUi().speed;
   setSpeed(typeof sp === 'number' ? sp : 3);

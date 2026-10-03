@@ -6,13 +6,6 @@
     "flipTransitions": 9,
     "finalDist": 0.41805
   },
-  "1_roll_before_trackball": {
-    "drags": 60,
-    "maxAbsRollDeg": 81.769,
-    "meanAbsRollDeg": 38.897,
-    "flipTransitions": 11,
-    "finalDist": 0.41805
-  },
   "2_pole_crossing": {
     "drags": 12,
     "minScreenUpY": -0.997,
@@ -184,7 +177,9 @@
   "3_slider_input": {
     "az": -75,
     "el": 90,
-    "flipped": false
+    "roll": 0,
+    "flipped": false,
+    "pole": true
   },
   "3_live_update_during_drag": {
     "values": [
@@ -214,11 +209,13 @@
   },
   "3_flipped_indicator": {
     "shown": true,
-    "text": "⚠ 뒤집힌 상태입니다. 표시 각도는 카메라 위치 기준이",
+    "text": "⚠ 뒤집힘 — 박스가 거꾸로 보이는 상태입니다. 좌우·",
     "angles": {
       "az": -139.4,
       "el": 85.5,
-      "flipped": true
+      "roll": 0,
+      "flipped": true,
+      "pole": false
     }
   },
   "3_input_while_flipped_uprights": {
@@ -228,7 +225,9 @@
   "3_default_restore": {
     "az": 40.6,
     "el": 28.5,
-    "flipped": false
+    "roll": 0,
+    "flipped": false,
+    "pole": false
   },
   "4_rotate90": {
     "left": {
