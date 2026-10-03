@@ -350,7 +350,7 @@
     "hl": true
   },
   "5a_drag_does_not_select": "lid_front",
-  "5a_background_hides_highlight": true,
+  "5a_background_hides_highlight": false,
   "5b_wheel": {
     "dist": [
       0.4181,
@@ -398,13 +398,13 @@
   "6_png_normal": {
     "w": 2080,
     "h": 1800,
-    "meanDiff": 2.07
+    "meanDiff": 3.74
   },
-  "6_flipped_camUpY": -0.4,
+  "6_flipped_camUpY": -0.435,
   "6_png_flipped": {
     "w": 2080,
     "h": 1800,
-    "meanDiff": 2.15
+    "meanDiff": 3.82
   },
   "6_pngs_differ": true,
   "7_touch_one_finger_rotate": {

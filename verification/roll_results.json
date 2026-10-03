@@ -414,17 +414,17 @@
   "7_png_roll0": {
     "w": 2080,
     "h": 1800,
-    "meanDiff": 2.17
+    "meanDiff": 4.38
   },
   "7_png_roll35": {
     "w": 2080,
     "h": 1800,
-    "meanDiff": 2.31
+    "meanDiff": 4.6
   },
   "7_png_roll_neg120": {
     "w": 2080,
     "h": 1800,
-    "meanDiff": 2.27
+    "meanDiff": 4.53
   },
   "7_pngs_differ": true,
   "8_zoom_with_roll": {

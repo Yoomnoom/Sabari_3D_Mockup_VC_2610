@@ -144,3 +144,11 @@ dialog#splitDlg::backdrop { background: rgba(0, 0, 0, 0.4); }
 /* 각도 · 회전 */
 .grid4 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin: 6px 0; }
 .notice.flip { background: #fff3e8; font-size: 12px; margin: 4px 0; }
+
+/* 조작 모드 · 박스 회전 */
+.modeseg { display: flex; gap: 6px; margin: 8px 0 2px; }
+.modeseg button { flex: 1; font-weight: 600; }
+.rot90 button { min-height: 36px; font-size: 12px; }
+#dragBadge { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); padding: 6px 16px; border-radius: 999px; background: #25231f; color: #fff; font-size: 14px; font-weight: 700; z-index: 4; pointer-events: none; }
+#dragBadge.snap { background: #e8590c; }
+#axisLabel { position: fixed; z-index: 30; padding: 3px 9px; border-radius: 6px; background: #fff; border: 2px solid #25231f; font-size: 13px; font-weight: 700; pointer-events: none; box-shadow: 0 1px 4px rgba(0,0,0,.25); }

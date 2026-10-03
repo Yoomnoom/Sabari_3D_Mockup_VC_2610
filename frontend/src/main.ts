@@ -8,6 +8,7 @@ import { Viewer, ViewName } from './viewer';
 import { Rotation, defaultState } from './transform';
 import { DielineSave, UserError, inspectImage, packProject, unpackProject, OpenedProject } from './project';
 import { Draft, delDraft, getDraft, putDraft } from './draft';
+import { AXIS_LABEL, Axis, SNAP_DEG, nearGimbal } from './boxPose';
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const OPEN_MM = 80;
@@ -23,6 +24,7 @@ let params: BoxParams = cloneParams(DEFAULT_PARAMS);
 /** "원래 사이즈로 되돌리기" 기준: 처음 열었을 때 / 프로젝트를 연 시점 / 마지막으로 저장한 시점의 치수 */
 let baselineParams: BoxParams = cloneParams(DEFAULT_PARAMS);
 let dims: ReturnType<typeof initDimsUi> | null = null;
+let toggleBoxModeRef: () => void = () => {};
 let split: ReturnType<typeof initSplitUi> | null = null;
 /** 마지막으로 올린 칼선 이미지 한 장과 분할 설정(원본 이미지는 .sabari 에 그대로 들어간다) */
 let dieline: DielineSave | null = null;
@@ -729,6 +731,60 @@ async function init() {
   lv.onclick = () => setLevel(lv.getAttribute('aria-pressed') !== 'true');
   if (loadUi().level) setLevel(true);
 
+  // ---- 조작 대상(카메라 / 박스 회전)과 박스 회전 UI
+  const setBoxMode = (on: boolean) => {
+    viewer.setBoxMode(on);
+    $('modeCamera').setAttribute('aria-pressed', String(!on));
+    $('modeBox').setAttribute('aria-pressed', String(on));
+    $('modeHint').textContent = on
+      ? '박스 회전 모드: 박스 위 색 고리를 끌면 그 축으로 박스가 돕니다(X 빨강·Y 초록·Z 파랑). 빈 곳을 끌면 카메라가 돕니다. E 키로 카메라 모드로 돌아갑니다.'
+      : '카메라 모드: 드래그로 카메라를 돌립니다. E 키 또는 위 버튼으로 박스 회전 모드로 바꾸면 박스 위의 색 고리(X 빨강·Y 초록·Z 파랑)를 끌어 박스를 돌릴 수 있습니다.';
+    if (on) { try { if (!localStorage.getItem('sabari-boxhint')) { localStorage.setItem('sabari-boxhint', '1'); msg('박스 회전 모드입니다. 박스 위의 색 고리를 끌어 돌리세요. Ctrl을 누르면 15° 단위로 맞춰집니다.', 'ok'); } } catch { /* 안내만 생략 */ } }
+  };
+  $('modeCamera').onclick = () => setBoxMode(false);
+  $('modeBox').onclick = () => setBoxMode(true);
+  toggleBoxModeRef = () => setBoxMode($('modeBox').getAttribute('aria-pressed') !== 'true');
+  const syncPose = () => {
+    const e = viewer.getBoxEuler();
+    for (const [k, v] of [['X', e.x], ['Y', e.y], ['Z', e.z]] as const) {
+      if (document.activeElement !== $('rb' + k)) $<HTMLInputElement>('rb' + k).value = String(v);
+      $<HTMLInputElement>('rb' + k + 'R').value = String(v);
+    }
+    $('gimbalInfo').hidden = !nearGimbal(viewer.boxQuat);
+  };
+  viewer.onPose = syncPose;
+  for (const k of ['X', 'Y', 'Z']) {
+    const inp = $<HTMLInputElement>('rb' + k), rng = $<HTMLInputElement>('rb' + k + 'R');
+    const apply = (src: HTMLInputElement) => () => {
+      if (src === rng) { inp.value = rng.value; }
+      const [x, y, z] = ['X', 'Y', 'Z'].map((q) => Number($<HTMLInputElement>('rb' + q).value));
+      if ([x, y, z].every(Number.isFinite)) viewer.setBoxEuler(x, y, z);
+    };
+    inp.oninput = apply(inp); rng.oninput = apply(rng);
+  }
+  $('btnBoxReset').onclick = () => viewer.resetBoxPose();
+  $('btnSpace').onclick = () => {
+    const local = $('btnSpace').getAttribute('aria-pressed') !== 'true';
+    viewer.setBoxSpace(local ? 'local' : 'world');
+    $('btnSpace').setAttribute('aria-pressed', String(local));
+    $('btnSpace').textContent = `축 기준: ${local ? '박스(Local)' : '월드'}`;
+  };
+  document.querySelectorAll<HTMLButtonElement>('[data-b90]').forEach((b) => (b.onclick = () => { const [a, s] = b.dataset.b90!.split(','); viewer.rotateBox90(a as Axis, Number(s) as 1 | -1); }));
+  viewer.onCubeView = (v) => showView(v);
+  const dragBadge = $('dragBadge');
+  viewer.onBadge = (text, snapping) => {
+    dragBadge.hidden = !text;
+    if (text) { dragBadge.textContent = snapping ? `${text} · ${SNAP_DEG}° 스냅` : text; dragBadge.classList.toggle('snap', !!snapping); }
+  };
+  const axisLabel = $('axisLabel');
+  const AXIS_TEXT: Record<Axis, string> = { x: 'X축 · 빨강', y: 'Y축 · 초록', z: 'Z축 · 파랑' };
+  viewer.onGizmoHover = (axis, x, y) => {
+    axisLabel.hidden = !axis;
+    if (axis) { axisLabel.textContent = AXIS_TEXT[axis]; axisLabel.style.left = `${x + 14}px`; axisLabel.style.top = `${y - 34}px`; }
+  };
+  void AXIS_LABEL;
+  syncPose();
+
   // 각도 · 회전: 표시는 카메라에서 읽어 실시간 갱신하고, 입력하면 카메라를 그 각도로 옮긴다(거리·확대 유지)
   const num = (id: string) => $<HTMLInputElement>(id);
   const syncAngles = () => {
@@ -850,6 +906,7 @@ async function init() {
     if (k === 'escape') { viewer.setHighlightOn(false); clearMsg(); return; }
     if (!editing) return;
 
+    if (k === 'e') { toggleBoxModeRef(); return; } // 카메라 ↔ 박스 회전 모드 (다른 단축키와 겹치지 않는 키)
     if (k === 'm') { const c = $<HTMLInputElement>('moveMode'); c.checked = !c.checked; c.dispatchEvent(new Event('change')); }
     else if (k === '[') cycleFace(-1);
     else if (k === ']') cycleFace(1);
