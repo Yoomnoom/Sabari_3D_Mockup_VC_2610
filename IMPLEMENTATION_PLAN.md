@@ -191,3 +191,11 @@
 
 - 사용자: `install.bat` 한 번 → `start.bat` → 브라우저(http://127.0.0.1:8765).
 - 개발자: `cd frontend && npm i && npm run build`(dist 갱신), `cd backend && ..\.venv\Scripts\python -m pytest tests`, 서버 실행 후 `node e2e/run.mjs`.
+
+
+## 복원 기록 (2026-10-03)
+
+- 기준: 단계 17 완료본 `6c91656`(2026-10-03 14:02). 회전 실험(단계 18~22)과 후속 재구성(단계 23-0~23-2)이 방향을 잃어 중단하고, 이력을 지우지 않는 복원 커밋(`5a43be3`, 트리가 6c91656과 동일)으로 되돌렸다.
+- 보관(삭제·수정 금지): 브랜치 `archive/before-restore-20261003`(836fe6e, 단계 23-2 끝), `archive/rotation-experiment-20261003`(19fe415), `rebuild/compact-view-submit-angle`(836fe6e); 태그 `archive-step22-ca71e7d`(ca71e7d, 유니티식 회전까지의 main), `archive-step23-tip`(836fe6e), `archive-rotation-experiment-20261003`(19fe415), `pre-step23`·`pre-step23-2` 등.
+- 되돌린 단계: 18(TrackballControls 360° 회전), 19(턴테이블 회전·각도 입력·90° 버튼·회전 속도), 20(기울기), 21(극점 문 돌리기), 22(유니티식 박스 회전·기즈모·뷰 큐브·고급 카메라), 23-0~23-2(보기 UI 정리·박스 놓기·축 고정·제출 각도).
+- 이 복원은 원격에 push하지 않았다.
