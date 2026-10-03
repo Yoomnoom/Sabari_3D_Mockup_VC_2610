@@ -346,10 +346,10 @@
   "5_touch_twist": {
     "twistedDeg": 60,
     "live": [
-      "10",
+      "15",
       "25",
       "40",
-      "55"
+      "60"
     ],
     "finalRoll": 60,
     "clockwisePositive": true,

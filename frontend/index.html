@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
@@ -166,55 +166,44 @@
         <button data-view="left">좌측</button>
         <button data-view="right">우측</button>
         <button data-view="top">윗면</button>
-        <button data-view="bottom" title="아래에서 올려다봅니다 (Shift+7)">아래</button>
+        <button data-view="bottom" title="아래에서 올려다봅니다 (Shift+7)">아랫면</button>
         <button id="btnIso" data-view="iso" title="한 번 더 누르면 반대편 모서리(뒤·왼쪽 날개)로 바뀝니다">3/4 시점</button>
       </div>
-      <button id="btnLevel" class="wide" aria-pressed="false" title="켜면 위쪽 방향이 고정되고 위·아래 끝에서 멈춥니다">수평 유지 회전</button>
-      <div class="seg modeseg" role="group" aria-label="조작 대상">
-        <button id="modeCamera" aria-pressed="true" title="드래그하면 카메라가 돕니다 (E 키로 전환)">카메라</button>
-        <button id="modeBox" aria-pressed="false" title="박스 위 색 고리를 끌면 박스가 돕니다 (E 키로 전환)">박스 회전</button>
+      <div class="vrow" role="group" aria-label="제출 각도">
+        <span class="vlabel">제출 각도</span>
+        <button id="btnSubmitR" title="상단면이 정면, 박스를 세우고 오른쪽 옆면이 좁게 보이는 각도">제출 각도(오른쪽)</button>
+        <button id="btnSubmitL" title="상단면이 정면, 박스를 세우고 왼쪽 옆면이 좁게 보이는 각도">제출 각도(왼쪽)</button>
       </div>
-      <p class="hint" id="modeHint">카메라 모드: 드래그로 카메라를 돌립니다. <kbd>E</kbd> 키 또는 위 버튼으로 박스 회전 모드로 바꾸면 박스 위의 색 고리(X 빨강·Y 초록·Z 파랑)를 끌어 박스를 돌릴 수 있습니다.</p>
-      <details class="grp" id="dBoxRot" open>
-        <summary>박스 회전</summary>
-        <div class="row wrap">
-          <button id="btnSpace" aria-pressed="false" title="고리가 월드 축을 따를지, 박스 축(Local)을 따를지 고릅니다">축 기준: 월드</button>
-          <button id="btnBoxReset" class="grow">박스 자세 초기화</button>
-        </div>
-        <label class="slider">X (°) <input id="rbXR" type="range" min="-180" max="180" step="1" /><input id="rbX" type="number" step="1" /></label>
-        <label class="slider">Y (°) <input id="rbYR" type="range" min="-180" max="180" step="1" /><input id="rbY" type="number" step="1" /></label>
-        <label class="slider">Z (°) <input id="rbZR" type="range" min="-180" max="180" step="1" /><input id="rbZ" type="number" step="1" /></label>
-        <p class="hint">표시 각도 순서는 Unity와 같은 Z → X → Y 적용(three.js 오른손 좌표). 숫자를 입력하면 박스가 그 자세로 바뀝니다. 고리를 끌 때 <kbd>Ctrl</kbd>(Mac은 <kbd>Cmd</kbd>)을 누르고 있으면 15° 단위로 맞춰집니다.</p>
-        <p id="gimbalInfo" class="notice flip" hidden>⚠ X가 ±90°에 가까워 Y·Z 숫자가 서로 얽히며 갑자기 튈 수 있습니다(짐벌 락). 자세 자체는 정상입니다.</p>
-        <div class="grid3 rot90">
-          <button data-b90="x,-1">X −90°</button><button data-b90="y,-1">Y −90°</button><button data-b90="z,-1">Z −90°</button>
-          <button data-b90="x,1">X +90°</button><button data-b90="y,1">Y +90°</button><button data-b90="z,1">Z +90°</button>
-        </div>
-        <p class="hint">90° 돌리기는 위의 축 기준(월드/박스)을 따릅니다. 같은 버튼을 4번 누르면 원래 자세입니다. 박스 자세는 화면 설정이라 파일에 저장되지 않고 GLB 결과에도 영향이 없습니다.</p>
-      </details>
-      <details class="grp" id="dAngle">
-        <summary>고급 카메라</summary>
+      <div class="vrow" role="group" aria-label="박스 놓기">
+        <span class="vlabel">박스 놓기</span>
+        <button id="poseLying" aria-pressed="true" title="기본 자세로 눕힙니다">눕힘</button>
+        <button id="poseStanding" aria-pressed="false" title="상단면이 정면을 향하고 긴 변이 세로로 서게 합니다">세움</button>
+      </div>
+      <div class="vrow" role="group" aria-label="축 고정">
+        <span class="vlabel">축 고정</span>
+        <button data-lock="free" aria-pressed="true" title="드래그하는 대로 자유롭게 돌립니다">자유</button>
+        <button data-lock="az" aria-pressed="false" title="가로 드래그로 좌우 방향만 바뀝니다 (세운 박스는 세로축 기준)">좌우만</button>
+        <button data-lock="el" aria-pressed="false" title="세로 드래그로 위아래 각도만 바뀝니다">위아래만</button>
+      </div>
+      <details class="grp" id="dAdv">
+        <summary>고급</summary>
+        <label class="check"><input id="ringMode" type="checkbox" /> <span>고리로 박스 돌리기 <small>켜면 박스 주위에 X(빨강)·Y(초록)·Z(파랑) 고리가 나타납니다. 고리를 끌어 박스를 돌리고, <kbd>Ctrl</kbd>(Mac은 <kbd>Cmd</kbd>)을 누르면 15° 단위로 맞춰집니다.</small></span></label>
         <p class="hint">기준: 좌우 0° = 정면(카메라가 앞쪽), +는 오른쪽에서 보는 방향. 상하 0° = 수평, +는 위에서 내려다봄(−는 아래에서 올려다봄).</p>
         <label class="slider">좌우 (°) <input id="azR" type="range" min="-180" max="180" step="1" /><input id="azN" type="number" min="-180" max="180" step="1" /></label>
         <label class="slider">상하 (°) <input id="elR" type="range" min="-90" max="90" step="1" /><input id="elN" type="number" min="-90" max="90" step="1" /></label>
         <label class="slider">기울기 (°) <input id="rlR" type="range" min="-180" max="180" step="1" /><input id="rlN" type="number" min="-180" max="180" step="1" /></label>
-        <p class="hint">기울기 0° = 수평. +는 화면이 시계 방향으로 기울어 보이는 방향이며 보는 방향 축을 기준으로 돌립니다. 마우스는 <kbd>Alt</kbd>+가로 드래그, 터치는 두 손가락 비틀기로도 돌릴 수 있습니다. 드래그·90° 회전·속도는 기울기를 바꾸지 않고, 시점 버튼·위치 초기화·수평 맞추기·기본값 복원은 0°로 되돌립니다.</p>
+        <p class="hint">기울기 0° = 수평. +는 화면이 시계 방향으로 기울어 보이는 방향이며 보는 방향 축을 기준으로 돌립니다. 마우스는 <kbd>Alt</kbd>+가로 드래그, 터치는 두 손가락 비틀기로도 돌릴 수 있습니다. 드래그·속도는 기울기를 바꾸지 않고, 시점 버튼·위치 초기화·수평 맞추기·기본값 복원은 0°로 되돌립니다.</p>
         <p id="poleInfo" class="notice flip" hidden>위·아래 시점(상하 ±90°)에서는 좌우와 기울기가 같은 방향 회전으로 겹쳐 보입니다. 좌우를 화면 위쪽 방향의 기준으로 쓰고, 기울기는 그 위에 별도로 더해집니다.</p>
         <p id="flipInfo" class="notice flip" hidden>⚠ 뒤집힘 — 박스가 거꾸로 보이는 상태입니다. 좌우·상하는 카메라 위치 기준 값이고 기울기는 별도입니다. 좌우·상하를 입력하면 똑바로 서서 이동하고, 수평 맞추기는 같은 위치에서 똑바로 세웁니다.</p>
-        <div class="grid4">
-          <button id="rotLeft" title="왼쪽으로 90° 회전">◀ 좌 90°</button>
-          <button id="rotRight" title="오른쪽으로 90° 회전">우 90° ▶</button>
-          <button id="rotUp" title="위로 90° 회전">▲ 위 90°</button>
-          <button id="rotDown" title="아래로 90° 회전">▼ 아래 90°</button>
-        </div>
         <div class="row wrap">
           <button id="btnLevelHorizon" class="grow" title="보는 방향은 그대로 두고 기울기만 바로잡습니다">수평 맞추기</button>
           <button id="btnAngleDefault" class="grow">기본값 복원</button>
         </div>
+        <button id="btnLevel" class="wide" aria-pressed="false" title="켜면 위쪽 방향이 고정되고 위·아래 끝에서 멈춥니다">수평 유지 회전</button>
         <label class="slider">회전 속도 <input id="spR" type="range" min="0.5" max="8" step="0.1" /><input id="spN" type="number" min="0.5" max="8" step="0.1" /></label>
-        <p class="hint">회전 속도 3(기본) = 3D 화면 높이만큼 끌면 180° 회전. 마우스·터치 공통이며 이 브라우저에 기억됩니다.</p>
+        <p class="hint">회전 속도 3(기본) = 3D 화면 높이만큼 끌면 180° 회전. 마우스·터치 공통이며 이 브라우저에 기억됩니다. 박스 자세는 화면 설정이라 파일에 저장되지 않고 GLB 결과에도 영향이 없습니다.</p>
       </details>
-      <p class="hint">시점 버튼은 방향만 바꾸고 확대는 유지합니다. 처음처럼 전체를 보려면 <kbd>F</kbd> 또는 위치 초기화.<br>3/4 시점을 한 번 더 누르면 반대편 모서리로 바뀝니다. <kbd>R</kbd> 앞·오른쪽 날개 / <kbd>L</kbd> 뒤·왼쪽 날개</p>
+      <p class="hint">시점 버튼은 박스의 면 기준으로 방향만 바꾸고 확대는 유지합니다(눕힘 자세에서는 기존과 같음). 처음처럼 전체를 보려면 <kbd>F</kbd> 또는 위치 초기화. 3/4 시점을 한 번 더 누르면 반대편 모서리로 바뀝니다. <kbd>R</kbd> 앞·오른쪽 날개 / <kbd>L</kbd> 뒤·왼쪽 날개</p>
       <p class="hint">드래그: 회전 · 휠: 확대/축소 · Space+드래그: 이동</p>
     </details>
 
@@ -222,8 +211,9 @@
       <h2>저장</h2>
       <div class="col">
         <div class="row">
-          <button id="btnPng" class="grow">현재 화면 PNG 저장</button>
+          <button id="btnPng" class="grow" title="현재 화면 그대로 PNG로 저장">PNG 저장</button>
           <select id="bgSel" aria-label="PNG 배경"><option value="white">흰 배경</option><option value="transparent">투명</option></select>
+          <select id="pngSize" aria-label="PNG 저장 크기"><option value="1">기본 크기</option><option value="2">2배</option><option value="4">4배</option></select>
         </div>
         <span id="editSave">
           <button id="btnGlb">GLB 저장 (이미지 포함)</button>
@@ -290,6 +280,7 @@
   <main id="stage">
     <div id="viewport"></div>
     <div id="dragBadge" role="status" hidden></div>
+    <div id="angleBadge" aria-live="off">좌우 0° / 위아래 0°</div>
     <div id="axisLabel" hidden></div>
     <div id="panBadge" aria-live="polite">손 도구 (Space) — 끌어서 화면 이동</div>
     <div id="overlayTop">

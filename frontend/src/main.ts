@@ -8,7 +8,8 @@ import { Viewer, ViewName } from './viewer';
 import { Rotation, defaultState } from './transform';
 import { DielineSave, UserError, inspectImage, packProject, unpackProject, OpenedProject } from './project';
 import { Draft, delDraft, getDraft, putDraft } from './draft';
-import { AXIS_LABEL, Axis, SNAP_DEG, nearGimbal } from './boxPose';
+import { Axis, SNAP_DEG } from './boxPose';
+import type { DragLock } from './viewPresets';
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const OPEN_MM = 80;
@@ -24,7 +25,6 @@ let params: BoxParams = cloneParams(DEFAULT_PARAMS);
 /** "원래 사이즈로 되돌리기" 기준: 처음 열었을 때 / 프로젝트를 연 시점 / 마지막으로 저장한 시점의 치수 */
 let baselineParams: BoxParams = cloneParams(DEFAULT_PARAMS);
 let dims: ReturnType<typeof initDimsUi> | null = null;
-let toggleBoxModeRef: () => void = () => {};
 let split: ReturnType<typeof initSplitUi> | null = null;
 /** 마지막으로 올린 칼선 이미지 한 장과 분할 설정(원본 이미지는 .sabari 에 그대로 들어간다) */
 let dieline: DielineSave | null = null;
@@ -479,9 +479,11 @@ async function saveGlb() {
 
 async function savePng() {
   await busy(async () => {
-    const blob = await viewer.screenshot($<HTMLSelectElement>('bgSel').value as 'white' | 'transparent');
-    download(blob, '사바리_목업.png');
-    msg('PNG를 저장했습니다.', 'ok');
+    const mult = Number($<HTMLSelectElement>('pngSize').value) || 1;
+    const r = await viewer.screenshotSized($<HTMLSelectElement>('bgSel').value as 'white' | 'transparent', mult);
+    download(r.blob, '사바리_목업.png');
+    if (r.lowered) msg(`PNG를 저장했습니다. 크기 한계(긴 변 ${r.maxSide}px) 때문에 ${mult}배 대신 가능한 최대 크기(${r.w}×${r.h}px)로 낮춰 저장했습니다.`, 'ok');
+    else msg(`PNG를 저장했습니다. (${r.w}×${r.h}px)`, 'ok');
   });
 }
 
@@ -554,7 +556,7 @@ async function handleFile(file: File) {
 // ---------- 화면 설정 (접기·펼치기, 단축키 사용) — 이 브라우저의 localStorage에 기억 ----------
 const UI_KEY = 'sabari-ui';
 let keysEnabled = true;
-const loadUi = (): { open?: Record<string, boolean>; keys?: boolean; level?: boolean; speed?: number } => {
+const loadUi = (): { open?: Record<string, boolean>; keys?: boolean; level?: boolean; speed?: number; lock?: DragLock; png?: number } => {
   try { return JSON.parse(localStorage.getItem(UI_KEY) ?? '{}'); } catch { return {}; }
 };
 const saveUi = (patch: object) => { try { localStorage.setItem(UI_KEY, JSON.stringify({ ...loadUi(), ...patch })); } catch { /* 저장 불가 환경이면 기억만 안 한다 */ } };
@@ -731,45 +733,37 @@ async function init() {
   lv.onclick = () => setLevel(lv.getAttribute('aria-pressed') !== 'true');
   if (loadUi().level) setLevel(true);
 
-  // ---- 조작 대상(카메라 / 박스 회전)과 박스 회전 UI
-  const setBoxMode = (on: boolean) => {
-    viewer.setBoxMode(on);
-    $('modeCamera').setAttribute('aria-pressed', String(!on));
-    $('modeBox').setAttribute('aria-pressed', String(on));
-    $('modeHint').textContent = on
-      ? '박스 회전 모드: 박스 위 색 고리를 끌면 그 축으로 박스가 돕니다(X 빨강·Y 초록·Z 파랑). 빈 곳을 끌면 카메라가 돕니다. E 키로 카메라 모드로 돌아갑니다.'
-      : '카메라 모드: 드래그로 카메라를 돌립니다. E 키 또는 위 버튼으로 박스 회전 모드로 바꾸면 박스 위의 색 고리(X 빨강·Y 초록·Z 파랑)를 끌어 박스를 돌릴 수 있습니다.';
-    if (on) { try { if (!localStorage.getItem('sabari-boxhint')) { localStorage.setItem('sabari-boxhint', '1'); msg('박스 회전 모드입니다. 박스 위의 색 고리를 끌어 돌리세요. Ctrl을 누르면 15° 단위로 맞춰집니다.', 'ok'); } } catch { /* 안내만 생략 */ } }
-  };
-  $('modeCamera').onclick = () => setBoxMode(false);
-  $('modeBox').onclick = () => setBoxMode(true);
-  toggleBoxModeRef = () => setBoxMode($('modeBox').getAttribute('aria-pressed') !== 'true');
+  // ---- 제출 각도 · 박스 놓기 · 축 고정 (보기 기본 노출). 고급: 고리로 박스 돌리기
+  const poseBtn = { lying: $('poseLying'), standing: $('poseStanding') };
   const syncPose = () => {
-    const e = viewer.getBoxEuler();
-    for (const [k, v] of [['X', e.x], ['Y', e.y], ['Z', e.z]] as const) {
-      if (document.activeElement !== $('rb' + k)) $<HTMLInputElement>('rb' + k).value = String(v);
-      $<HTMLInputElement>('rb' + k + 'R').value = String(v);
-    }
-    $('gimbalInfo').hidden = !nearGimbal(viewer.boxQuat);
+    const p = viewer.getBoxPose(); // 고리로 직접 돌려 둘 다 아니면 어느 쪽도 눌린 표시가 없다
+    poseBtn.lying.setAttribute('aria-pressed', String(p === 'lying'));
+    poseBtn.standing.setAttribute('aria-pressed', String(p === 'standing'));
   };
   viewer.onPose = syncPose;
-  for (const k of ['X', 'Y', 'Z']) {
-    const inp = $<HTMLInputElement>('rb' + k), rng = $<HTMLInputElement>('rb' + k + 'R');
-    const apply = (src: HTMLInputElement) => () => {
-      if (src === rng) { inp.value = rng.value; }
-      const [x, y, z] = ['X', 'Y', 'Z'].map((q) => Number($<HTMLInputElement>('rb' + q).value));
-      if ([x, y, z].every(Number.isFinite)) viewer.setBoxEuler(x, y, z);
-    };
-    inp.oninput = apply(inp); rng.oninput = apply(rng);
-  }
-  $('btnBoxReset').onclick = () => viewer.resetBoxPose();
-  $('btnSpace').onclick = () => {
-    const local = $('btnSpace').getAttribute('aria-pressed') !== 'true';
-    viewer.setBoxSpace(local ? 'local' : 'world');
-    $('btnSpace').setAttribute('aria-pressed', String(local));
-    $('btnSpace').textContent = `축 기준: ${local ? '박스(Local)' : '월드'}`;
+  poseBtn.lying.onclick = () => viewer.setBoxPose('lying');
+  poseBtn.standing.onclick = () => viewer.setBoxPose('standing');
+  const submit = (side: 'right' | 'left') => { viewer.applySubmitAngle(side); lastView = null; $('btnIso').setAttribute('aria-pressed', 'false'); };
+  $('btnSubmitR').onclick = () => submit('right');
+  $('btnSubmitL').onclick = () => submit('left');
+  const lockBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-lock]'));
+  const setLock = (v: DragLock, remember = true) => {
+    viewer.dragLock = v;
+    for (const b of lockBtns) b.setAttribute('aria-pressed', String(b.dataset.lock === v));
+    if (remember) saveUi({ lock: v });
   };
-  document.querySelectorAll<HTMLButtonElement>('[data-b90]').forEach((b) => (b.onclick = () => { const [a, s] = b.dataset.b90!.split(','); viewer.rotateBox90(a as Axis, Number(s) as 1 | -1); }));
+  for (const b of lockBtns) b.onclick = () => setLock(b.dataset.lock as DragLock);
+  const savedLock = loadUi().lock;
+  setLock(savedLock === 'az' || savedLock === 'el' ? savedLock : 'free', false);
+  const sizeSel = $<HTMLSelectElement>('pngSize');
+  const savedPng = loadUi().png;
+  if (savedPng === 2 || savedPng === 4) sizeSel.value = String(savedPng);
+  sizeSel.onchange = () => saveUi({ png: Number(sizeSel.value) });
+  const ring = $<HTMLInputElement>('ringMode');
+  ring.onchange = () => {
+    viewer.setRingMode(ring.checked);
+    if (ring.checked) { try { if (!localStorage.getItem('sabari-boxhint')) { localStorage.setItem('sabari-boxhint', '1'); msg('박스 주위의 색 고리를 끌어 돌리세요. Ctrl(Mac은 Cmd)을 누르면 15° 단위로 맞춰집니다.', 'ok'); } } catch { /* 안내만 생략 */ } }
+  };
   viewer.onCubeView = (v) => showView(v);
   const dragBadge = $('dragBadge');
   viewer.onBadge = (text, snapping) => {
@@ -782,7 +776,6 @@ async function init() {
     axisLabel.hidden = !axis;
     if (axis) { axisLabel.textContent = AXIS_TEXT[axis]; axisLabel.style.left = `${x + 14}px`; axisLabel.style.top = `${y - 34}px`; }
   };
-  void AXIS_LABEL;
   syncPose();
 
   // 각도 · 회전: 표시는 카메라에서 읽어 실시간 갱신하고, 입력하면 카메라를 그 각도로 옮긴다(거리·확대 유지)
@@ -793,6 +786,7 @@ async function init() {
       if (document.activeElement !== num(k + 'N')) num(k + 'N').value = String(Math.round(v));
       num(k + 'R').value = String(Math.round(v));
     }
+    $('angleBadge').textContent = `좌우 ${Math.round(a.az)}° / 위아래 ${Math.round(a.el)}°`;
     $('flipInfo').hidden = !a.flipped;
     $('poleInfo').hidden = !a.pole;
   };
@@ -806,10 +800,6 @@ async function init() {
   };
   for (const id of ['azR', 'azN', 'elR', 'elN']) { const el = num(id); el.oninput = fromInputs(el); }
   for (const id of ['rlR', 'rlN']) { const el = num(id); el.oninput = () => { const v = Number(el.value); if (Number.isFinite(v)) viewer.setRoll(Math.min(180, Math.max(-180, v))); }; }
-  $('rotLeft').onclick = () => viewer.rotate90('left');
-  $('rotRight').onclick = () => viewer.rotate90('right');
-  $('rotUp').onclick = () => viewer.rotate90('up');
-  $('rotDown').onclick = () => viewer.rotate90('down');
   $('btnLevelHorizon').onclick = () => { if (!viewer.levelHorizon()) msg('위·아래 시점에서는 기울기를 정할 수 없습니다. 먼저 회전해 주세요.'); };
   $('btnAngleDefault').onclick = () => { showView('iso'); }; // 3/4 시점 + 기울기 0 (setView 가 기울기를 0 으로 되돌린다)
   const setSpeed = (v: number) => { const s = Math.min(8, Math.max(0.5, v)); viewer.rotateSpeed = s; num('spR').value = num('spN').value = String(s); saveUi({ speed: s }); };
@@ -906,7 +896,6 @@ async function init() {
     if (k === 'escape') { viewer.setHighlightOn(false); clearMsg(); return; }
     if (!editing) return;
 
-    if (k === 'e') { toggleBoxModeRef(); return; } // 카메라 ↔ 박스 회전 모드 (다른 단축키와 겹치지 않는 키)
     if (k === 'm') { const c = $<HTMLInputElement>('moveMode'); c.checked = !c.checked; c.dispatchEvent(new Event('change')); }
     else if (k === '[') cycleFace(-1);
     else if (k === ']') cycleFace(1);

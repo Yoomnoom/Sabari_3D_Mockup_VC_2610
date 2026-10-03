@@ -4,7 +4,8 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { FACES, FaceId, groupOf } from './faces';
 import { BoxParams, derive } from './params';
-import { AXIS_LABEL, Axis, Space, axisInWorld, rotateAbout, signedAngleDeg, snap, toEulerDeg, fromEulerDeg } from './boxPose';
+import { AXIS_LABEL, AXIS_VEC, Axis, rotateAbout, signedAngleDeg, snap } from './boxPose';
+import { BoxPose, DragLock, SubmitSide, classifyPose, standingQuat, submitAngles } from './viewPresets';
 import { CubeView, ViewCube } from './viewCube';
 import { RotGizmo } from './rotGizmo';
 import { TEMPLATE_ID, buildParts } from './templateMesh';
@@ -18,6 +19,8 @@ interface Model {
   lid: THREE.Object3D | null;
   base: THREE.Object3D | null;
   lidBaseY: number;
+  /** 눕힌 상태(자세 적용 전)의 가로·세로·높이(m). 세움 자세에서 긴 변을 고르는 데 쓴다. */
+  extent?: THREE.Vector3;
 }
 
 const DIRS: Record<ViewName, [number, number, number]> = {
@@ -48,8 +51,15 @@ export class Viewer {
   readonly pivot = new THREE.Group();
   private readonly shift = new THREE.Group();
   readonly boxQuat = new THREE.Quaternion();
-  boxMode = false;
-  boxSpace: Space = 'world';
+  /** "고리로 박스 돌리기"(고급). 켜면 회전 고리가 보이고 잡을 수 있다. */
+  ringMode = false;
+  /** 드래그 축 고정: 자유 / 좌우만(방위각) / 위아래만(고도). 시점·프리셋·박스 놓기 버튼은 이 값을 바꾸지 않는다. */
+  dragLock: DragLock = 'free';
+  /** 고도 제한(도): 축 고정 "위아래만" 드래그가 넘지 못하는 값 */
+  static readonly EL_LOCK_MAX_DEG = 89;
+  /** PNG 저장 긴 변 최대 픽셀(장치의 최대 렌더 크기가 더 작으면 그쪽을 따른다) */
+  static readonly PNG_MAX_SIDE = 8192;
+  private viewerPivot: THREE.Group | null = null;
   private gizmo: RotGizmo | null = null;
   private readonly cube = new ViewCube();
   /** 박스 자세가 바뀔 때(고리 드래그·숫자 입력·초기화) 호출 */
@@ -268,7 +278,7 @@ export class Viewer {
 
   private installTurntable() {
     const dom = this.renderer.domElement;
-    let g: { id: number; x: number; y: number; A: number; E: number; dist: number } | null = null;
+    let g: { id: number; x: number; y: number; A: number; E: number; dist: number; a0: { az: number; el: number } } | null = null;
     const touches = new Map<number, { x: number; y: number }>();
     let rollDrag: { id: number; x: number; roll: number } | null = null;
     let twist: number | null = null; // 두 손가락 사이 각도(직전)
@@ -288,7 +298,7 @@ export class Viewer {
       if (this.levelRotate || this.panHeld || this.imageDragging || e.shiftKey && this.slot === 'editor' && this.onDragFace && (this.canDrag?.() ?? true) && this.rayAt(e, [this.faceMeshes.get(this.selected)!], false)[0]) return;
       if (e.pointerType !== 'touch' && e.button !== 0) return;
       const st = this.rotState();
-      g = { id: e.pointerId, x: e.clientX, y: e.clientY, ...st };
+      g = { id: e.pointerId, x: e.clientX, y: e.clientY, ...st, a0: this.getAngles() };
     }, true);
     dom.addEventListener('pointermove', (e) => {
       if (e.pointerType === 'touch' && touches.has(e.pointerId)) touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
@@ -304,8 +314,8 @@ export class Viewer {
       const dx = e.clientX - g.x, dy = e.clientY - g.y; // 직전 이벤트 이후의 이동량(상태는 매번 카메라에서 읽는다)
       g.x = e.clientX; g.y = e.clientY;
       if (dx === 0 && dy === 0) return;
-      this.onBadge?.('카메라 돌리기');
       this.cameraDragMove(dx, dy);
+      this.onBadge?.(this.dragBadgeText(g.a0));
     });
     const end = (e: PointerEvent) => { touches.delete(e.pointerId); if (touches.size < 2) twist = null; if (rollDrag && e.pointerId === rollDrag.id) rollDrag = null; if (g && e.pointerId === g.id) { g = null; this.onBadge?.(null); } };
     dom.addEventListener('pointerup', end);
@@ -317,33 +327,61 @@ export class Viewer {
     if (this.gizmo) { this.gizmo.group.removeFromParent(); this.gizmo.group.traverse((o) => { const m = o as THREE.Mesh; if (m.isMesh) { m.geometry.dispose(); (m.material as THREE.Material).dispose(); } }); }
     this.gizmo = new RotGizmo(radius);
     this.gizmo.group.position.copy(this.pivot.position);
-    this.gizmo.group.visible = this.slot === 'editor';
-    this.gizmo.setInteractive(this.boxMode && this.slot === 'editor');
+    this.gizmo.group.visible = this.ringMode && this.slot === 'editor';
+    this.gizmo.setInteractive(this.ringMode && this.slot === 'editor');
     this.scene.add(this.gizmo.group);
-    this.updateGizmoFrame();
   }
 
-  private updateGizmoFrame() {
-    if (!this.gizmo) return;
-    if (this.boxSpace === 'local') this.gizmo.group.quaternion.copy(this.boxQuat); else this.gizmo.group.quaternion.identity();
-    this.gizmo.group.updateMatrixWorld(true);
+  /** 고리로 박스 돌리기 켜기/끄기: 켜면 고리가 보이고, 끄면 사라진다. */
+  setRingMode(v: boolean) {
+    this.ringMode = v;
+    const on = v && this.slot === 'editor';
+    if (this.gizmo) { this.gizmo.group.visible = on; this.gizmo.setInteractive(on); if (!on) { this.gizmo.setHover(null); this.onGizmoHover?.(null, 0, 0); } }
+    this.dirty = true;
   }
-
-  setBoxMode(v: boolean) { this.boxMode = v; this.gizmo?.setInteractive(v && this.slot === 'editor'); this.dirty = true; }
-  setBoxSpace(sp: Space) { this.boxSpace = sp; this.updateGizmoFrame(); this.dirty = true; }
 
   setBoxQuat(q: THREE.Quaternion) {
     this.boxQuat.copy(q).normalize();
     this.pivot.quaternion.copy(this.boxQuat);
-    this.updateGizmoFrame();
+    this.viewerPivot?.quaternion.copy(this.boxQuat);
+    this.cube.setPose(this.boxQuat);
     this.dirty = true;
     this.onPose?.();
   }
-  getBoxEuler() { return toEulerDeg(this.boxQuat); }
-  setBoxEuler(x: number, y: number, z: number) { this.setBoxQuat(fromEulerDeg(x, y, z)); }
-  resetBoxPose() { this.setBoxQuat(new THREE.Quaternion()); }
-  /** 90° 돌리기(축 선택, ±). 현재 월드/로컬 설정을 따른다. */
-  rotateBox90(axis: Axis, sign: 1 | -1) { this.setBoxQuat(rotateAbout(this.boxQuat, axis, 90 * sign, this.boxSpace)); }
+  /** 세움 자세(상단면이 정면, 긴 변이 세로). 현재 슬롯 모델의 눕힌 크기로 긴 변을 고른다. */
+  private standingQ(): THREE.Quaternion {
+    const e = this.cur?.extent ?? this.models.editor?.extent;
+    return standingQuat(e?.x ?? 1, e?.z ?? 1);
+  }
+  /** 박스 놓기: 눕힘(기본 자세) / 세움. 카메라와 축 고정은 건드리지 않는다. */
+  setBoxPose(name: BoxPose) { this.setBoxQuat(name === 'standing' ? this.standingQ() : new THREE.Quaternion()); }
+  /** 지금 자세가 눕힘/세움 중 무엇인지(고리로 직접 돌렸다면 null) */
+  getBoxPose(): BoxPose | null { return classifyPose(this.boxQuat, this.standingQ()); }
+  resetBoxPose() { this.setBoxPose('lying'); }
+
+  /**
+   * 제출 각도: 박스를 세우고 카메라를 프리셋 각도(viewPresets.SUBMIT_ANGLE)로 한 번에 옮긴다.
+   * 거리·이동은 위치 초기화(F)와 같은 규칙(박스를 감싸는 구가 화면에 들어오는 거리, 중심 맞춤)이다. 면 이미지·뚜껑 열림·하단 선택·축 고정은 건드리지 않는다.
+   */
+  applySubmitAngle(side: SubmitSide) {
+    this.setBoxPose('standing');
+    const { az, el } = submitAngles(side);
+    const box = this.bounds();
+    this.upOffset = 0;
+    this.roll = 0;
+    this.controls.target.copy(box.getCenter(new THREE.Vector3()));
+    this.updateLimits(box);
+    this.applyRot(THREE.MathUtils.degToRad(az), THREE.MathUtils.degToRad(el), this.fitDistance(box));
+  }
+
+  /** 드래그 중 배지 문구: 자유 = "카메라 돌리기", 축 고정 = 시작 이후 바뀐 각도("좌우 돌리기 +5°"). */
+  private dragBadgeText(a0: { az: number; el: number }): string {
+    if (this.dragLock === 'free') return '카메라 돌리기';
+    const a = this.getAngles();
+    const wrap = (d: number) => ((d + 180) % 360 + 360) % 360 - 180;
+    const fmt = (d: number) => `${d >= 0 ? '+' : '−'}${Math.abs(Math.round(d * 10) / 10)}°`;
+    return this.dragLock === 'az' ? `좌우 돌리기 ${fmt(wrap(a.az - a0.az))}` : `위아래 ${fmt(a.el - a0.el)}`;
+  }
   /** 박스가 놓이는 높이: 바닥 y=0 에 닿게 하려면 위로 올려야 하는 양(m). 이후 그림자 바닥판 단계가 이 한 곳을 쓴다(지금은 화면에 적용하지 않는다). */
   boxRestY(): number {
     const root = this.models.editor?.root;
@@ -365,27 +403,27 @@ export class Viewer {
   /** 뷰 큐브 클릭·드래그와 회전 기즈모 고리 드래그. 가장 먼저 이벤트를 받도록 다른 입력보다 먼저 등록한다. */
   private installBoxInput() {
     const dom = this.renderer.domElement;
-    let cubeG: { id: number; x: number; y: number; sx: number; sy: number; moved: boolean } | null = null;
-    let ringG: { id: number; axis: Axis; space: Space; q0: THREE.Quaternion; axisW: THREE.Vector3; center: THREE.Vector3; v0: THREE.Vector3 } | null = null;
+    let cubeG: { id: number; x: number; y: number; sx: number; sy: number; moved: boolean; a0: { az: number; el: number } } | null = null;
+    let ringG: { id: number; axis: Axis; q0: THREE.Quaternion; axisW: THREE.Vector3; center: THREE.Vector3; v0: THREE.Vector3 } | null = null;
     dom.addEventListener('pointerdown', (e) => {
       if (e.pointerType !== 'touch' && e.button !== 0) return;
       const rect = dom.getBoundingClientRect();
       if (this.cube.insideRect(e.clientX, e.clientY, rect)) { // 뷰 큐브
-        cubeG = { id: e.pointerId, x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY, moved: false };
+        cubeG = { id: e.pointerId, x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY, moved: false, a0: this.getAngles() };
         e.stopImmediatePropagation(); e.preventDefault();
         try { dom.setPointerCapture(e.pointerId); } catch { /* 무시 */ }
         return;
       }
-      if (this.boxMode && this.slot === 'editor' && !e.shiftKey && !e.altKey && !this.panHeld && this.gizmo) { // 회전 고리
+      if (this.ringMode && this.slot === 'editor' && !e.shiftKey && !e.altKey && !this.panHeld && this.gizmo) { // 회전 고리
         const ray = this.ndcRay(e);
         const axis = this.gizmo.pick(ray);
         if (!axis) return;
         const q0 = this.boxQuat.clone();
-        const axisW = axisInWorld(q0, axis, this.boxSpace);
+        const axisW = AXIS_VEC[axis].clone();
         const center = this.pivot.position.clone();
         const hit = ray.ray.intersectPlane(new THREE.Plane().setFromNormalAndCoplanarPoint(axisW, center), new THREE.Vector3());
         if (!hit) return;
-        ringG = { id: e.pointerId, axis, space: this.boxSpace, q0, axisW, center, v0: hit.sub(center) };
+        ringG = { id: e.pointerId, axis, q0, axisW, center, v0: hit.sub(center) };
         this.gizmo.setActive(axis);
         e.stopImmediatePropagation(); e.preventDefault();
         try { dom.setPointerCapture(e.pointerId); } catch { /* 무시 */ }
@@ -395,7 +433,7 @@ export class Viewer {
     dom.addEventListener('pointermove', (e) => {
       if (cubeG && e.pointerId === cubeG.id) {
         if (!cubeG.moved && Math.hypot(e.clientX - cubeG.sx, e.clientY - cubeG.sy) > 4) cubeG.moved = true;
-        if (cubeG.moved) { this.onBadge?.('카메라 돌리기'); this.cameraDragMove(e.clientX - cubeG.x, e.clientY - cubeG.y); }
+        if (cubeG.moved) { this.cameraDragMove(e.clientX - cubeG.x, e.clientY - cubeG.y); this.onBadge?.(this.dragBadgeText(cubeG.a0)); }
         cubeG.x = e.clientX; cubeG.y = e.clientY;
         return;
       }
@@ -408,7 +446,7 @@ export class Viewer {
         const snapping = e.ctrlKey || e.metaKey;
         if (snapping) ang = snap(ang);
         ang = Math.round(ang * 100) / 100;
-        this.setBoxQuat(rotateAbout(ringG.q0, ringG.axis, ang, ringG.space));
+        this.setBoxQuat(rotateAbout(ringG.q0, ringG.axis, ang));
         this.onBadge?.(`${AXIS_LABEL[ringG.axis]}축 ${ang >= 0 ? '+' : ''}${Math.round(ang * 10) / 10}°`, snapping);
         return;
       }
@@ -418,7 +456,7 @@ export class Viewer {
       const cv = this.cube.pick(e.clientX, e.clientY, rect);
       this.cube.setHover(cv);
       if (this.cube.insideRect(e.clientX, e.clientY, rect)) { dom.style.cursor = cv ? 'pointer' : ''; this.gizmo?.setHover(null); this.onGizmoHover?.(null, 0, 0); this.dirty = true; return; }
-      const axis = this.boxMode && this.slot === 'editor' && this.gizmo ? this.gizmo.pick(this.ndcRay(e)) : null;
+      const axis = this.ringMode && this.slot === 'editor' && this.gizmo ? this.gizmo.pick(this.ndcRay(e)) : null;
       this.gizmo?.setHover(axis);
       dom.style.cursor = axis ? 'pointer' : '';
       this.onGizmoHover?.(axis, e.clientX, e.clientY);
@@ -438,7 +476,8 @@ export class Viewer {
 
   /** 카메라 드래그 한 걸음(직전 이벤트 이후 이동량 dx, dy 픽셀). 턴테이블 회전 + 극점 구역 문 돌리기. */
   cameraDragMove(dx: number, dy: number) {
-  const k = this.radPerPx();
+    const k = this.radPerPx();
+    if (this.dragLock !== 'free') { this.lockedDragMove(dx, dy, k); return; }
     const s0 = this.rotState();
     const el = Math.asin(THREE.MathUtils.clamp(this.camera.position.clone().sub(this.controls.target).normalize().y, -1, 1));
     const flipped = Math.cos(s0.E) < 0;
@@ -463,6 +502,25 @@ export class Viewer {
       if (Math.abs(this.upOffset) < 1e-9) this.upOffset = 0;
     }
     this.applyRot(A, s0.E + dy * k, s0.dist);
+  }
+
+  /**
+   * 축 고정 드래그. 좌우만 = 가로 이동으로 방위각만(월드 세로축 = 세운 박스의 세로축), 위아래만 = 세로 이동으로 고도만(±EL_LOCK_MAX_DEG).
+   * 자유 모드의 턴테이블·극점 문 돌리기와는 별개 경로라 그쪽 동작은 바뀌지 않는다.
+   */
+  private lockedDragMove(dx: number, dy: number, k: number) {
+    const s = this.rotState();
+    if (this.dragLock === 'az') {
+      if (dx === 0) return;
+      const flipped = Math.cos(s.E) < 0;
+      this.applyRot(s.A + (flipped ? 1 : -1) * dx * k, s.E, s.dist);
+      return;
+    }
+    if (dy === 0) return;
+    const a = this.getAngles(); // 뒤집힌 상태에서도 실제 방위각·고도에서 시작해 고도 제한 안으로 돌아온다
+    const lim = THREE.MathUtils.degToRad(Viewer.EL_LOCK_MAX_DEG);
+    const E = THREE.MathUtils.clamp(THREE.MathUtils.degToRad(a.el) + dy * k, -lim, lim);
+    this.applyRot(THREE.MathUtils.degToRad(a.az), E, s.dist);
   }
 
   /**
@@ -510,16 +568,6 @@ export class Viewer {
     this.upOffset = 0;
     const el = THREE.MathUtils.clamp(elDeg, -90, 90);
     this.applyRot(THREE.MathUtils.degToRad(azDeg), THREE.MathUtils.degToRad(el), this.rotState().dist);
-  }
-
-  /** 90° 단위 회전. dir: 'left'|'right' = 방위각 ∓90°, 'up'|'down' = 고도 ±90°. 4번 누르면 원래 각도로 돌아온다. */
-  rotate90(dir: 'left' | 'right' | 'up' | 'down') {
-    this.upOffset = 0;
-    const s = this.rotState();
-    const q = Math.PI / 2;
-    const flipped = Math.cos(s.E) < -1e-9;
-    if (dir === 'left' || dir === 'right') this.applyRot(s.A + ((dir === 'left') !== flipped ? 1 : -1) * q, s.E, s.dist);
-    else this.applyRot(s.A, s.E + (dir === 'up' ? -1 : 1) * q, s.dist);
   }
 
   /** 수평 맞추기: 바라보는 방향(카메라 위치)은 그대로 두고 기울기만 바로잡는다. 뒤집혀 있으면 같은 위치에서 위쪽을 세워 똑바로 보이게 한다. */
@@ -610,7 +658,7 @@ export class Viewer {
       (part.group === 'base' ? base : lid).add(mesh);
       if (part.editable) this.faceMeshes.set(part.name as FaceId, mesh);
     }
-    this.models.editor = { root, lid, base, lidBaseY: 0 };
+    this.models.editor = { root, lid, base, lidBaseY: 0, extent: new THREE.Box3().setFromObject(root).getSize(new THREE.Vector3()) };
     // 박스 중심을 축으로 자세를 적용한다(root 자체의 변환은 건드리지 않는다)
     const dd = derive(p);
     const cy = ((p.baseH + p.board) * MM_) / 2;
@@ -710,8 +758,8 @@ export class Viewer {
 
   setSlot(slot: Slot) {
     this.slot = slot;
-    if (this.gizmo) this.gizmo.group.visible = slot === 'editor';
-    this.gizmo?.setInteractive(this.boxMode && slot === 'editor');
+    if (this.gizmo) this.gizmo.group.visible = this.ringMode && slot === 'editor';
+    this.gizmo?.setInteractive(this.ringMode && slot === 'editor');
     for (const k of ['editor', 'viewer'] as Slot[]) {
       const m = this.models[k];
       if (m) m.root.visible = k === slot;
@@ -741,7 +789,7 @@ export class Viewer {
     const m = this.cur;
     const box = new THREE.Box3();
     if (m) {
-      m.root.updateMatrixWorld(true);
+      m.root.updateWorldMatrix(true, true); // 부모(자세 pivot)까지 갱신해야 박스를 돌린 뒤에도 범위가 맞다
       m.root.traverse((o) => { if ((o as THREE.Mesh).isMesh && o.visible && o.name !== '__highlight') box.expandByObject(o); });
     }
     return box.isEmpty() ? new THREE.Box3(new THREE.Vector3(-0.08, 0, -0.06), new THREE.Vector3(0.08, 0.045, 0.06)) : box;
@@ -763,7 +811,7 @@ export class Viewer {
     const box = this.bounds();
     const center = box.getCenter(new THREE.Vector3());
     const dist = fit ? this.fitDistance(box) : this.camera.position.distanceTo(this.controls.target);
-    const d = new THREE.Vector3(...DIRS[name]).normalize();
+    const d = new THREE.Vector3(...DIRS[name]).normalize().applyQuaternion(this.boxQuat); // 시점 버튼은 박스 면 기준(눕힘 자세에서는 기존과 같다)
     this.camera.position.copy(center).addScaledVector(d, dist);
     this.camera.up.set(0, 1, 0);
     this.upOffset = 0;
@@ -780,7 +828,7 @@ export class Viewer {
     const box = this.bounds();
     const center = box.getCenter(new THREE.Vector3());
     const d = this.camera.position.clone().sub(this.controls.target).normalize();
-    if (d.lengthSq() < 0.5) d.set(...DIRS.iso).normalize();
+    if (d.lengthSq() < 0.5) d.set(...DIRS.iso).normalize().applyQuaternion(this.boxQuat);
     this.camera.position.copy(center).addScaledVector(d, this.fitDistance(box));
     if (Math.abs(d.y) < 0.9999) this.camera.up.set(0, 1, 0); // 자유 회전으로 뒤집혀 있어도 위쪽 방향을 바로잡는다(바라보는 방향은 유지, 극점은 현재 up 유지)
     this.roll = 0;
@@ -831,9 +879,21 @@ export class Viewer {
   async loadExternal(buf: ArrayBuffer) {
     const gltf = await new GLTFLoader().parseAsync(buf, '');
     this.models.viewer?.root.removeFromParent();
+    this.viewerPivot?.removeFromParent();
     const m = this.makeModel(gltf.scene);
     this.models.viewer = m;
-    this.scene.add(m.root);
+    // 편집 모델과 같이 자세(눕힘/세움)를 쓸 수 있도록 중심을 축으로 하는 pivot 아래에 둔다(노드 변환은 건드리지 않는다)
+    const ext = new THREE.Box3().setFromObject(gltf.scene);
+    const c = ext.getCenter(new THREE.Vector3());
+    m.extent = ext.getSize(new THREE.Vector3());
+    const vShift = new THREE.Group();
+    vShift.position.copy(c).negate();
+    vShift.add(m.root);
+    this.viewerPivot = new THREE.Group();
+    this.viewerPivot.position.copy(c);
+    this.viewerPivot.quaternion.copy(this.boxQuat);
+    this.viewerPivot.add(vShift);
+    this.scene.add(this.viewerPivot);
     let meshes = 0, textured = 0;
     m.root.traverse((o) => {
       const mesh = o as THREE.Mesh;
@@ -900,9 +960,21 @@ export class Viewer {
     return { w: cv.width, h: cv.height, data: cv.getContext('2d')!.getImageData(0, 0, cv.width, cv.height).data, names };
   }
 
-  /** 현재 화면 그대로 PNG. 배경은 흰색 또는 투명 (체크무늬 없음). */
-  async screenshot(bg: 'white' | 'transparent'): Promise<Blob> {
-    const c = this.renderToCanvas(2);
+  /**
+   * 현재 화면 그대로 PNG. 배경은 흰색 또는 투명 (체크무늬 없음).
+   * mult = 저장 크기 배율: 1 = 기본(지금까지와 같은 크기 = 화면의 2배 해상도), 2·4 = 그 배수. 구도(프레이밍)는 배율과 무관하게 같다.
+   * 긴 변이 한계(PNG_MAX_SIDE 와 장치 최대 렌더 크기 중 작은 값)를 넘으면 가능한 최대 배율로 낮춰 저장하고 lowered 로 알린다.
+   */
+  async screenshotSized(bg: 'white' | 'transparent', mult = 1): Promise<{ blob: Blob; w: number; h: number; scale: number; wanted: number; lowered: boolean; maxSide: number }> {
+    const gl = this.renderer.getContext();
+    const vp = gl.getParameter(gl.MAX_VIEWPORT_DIMS) as Int32Array;
+    const maxSide = Math.min(Viewer.PNG_MAX_SIDE, gl.getParameter(gl.MAX_RENDERBUFFER_SIZE) as number, vp[0], vp[1]);
+    const pr = Math.max(this.renderer.getPixelRatio(), 1);
+    const longCss = Math.max(this.el.clientWidth, this.el.clientHeight, 1);
+    const wanted = 2 * mult;
+    const cap = Math.floor((maxSide / (longCss * pr)) * 1000) / 1000;
+    const scale = Math.min(wanted, cap);
+    const c = this.renderToCanvas(scale);
     let target = c;
     if (bg === 'white') {
       target = document.createElement('canvas');
@@ -912,8 +984,11 @@ export class Viewer {
       ctx.fillRect(0, 0, c.width, c.height);
       ctx.drawImage(c, 0, 0);
     }
-    return new Promise((res, rej) => target.toBlob((b) => (b ? res(b) : rej(new Error('PNG 생성 실패'))), 'image/png'));
+    const blob = await new Promise<Blob>((res, rej) => target.toBlob((b) => (b ? res(b) : rej(new Error('PNG 생성 실패'))), 'image/png'));
+    return { blob, w: c.width, h: c.height, scale, wanted, lowered: scale < wanted, maxSide };
   }
+
+  async screenshot(bg: 'white' | 'transparent', mult = 1): Promise<Blob> { return (await this.screenshotSized(bg, mult)).blob; }
 
   /** 편집 중인 모델을 GLB로. 텍스처는 면별로 구워진 캔버스가 PNG로 임베드된다. */
   async exportGLB(): Promise<ArrayBuffer> {

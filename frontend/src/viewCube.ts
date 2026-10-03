@@ -42,6 +42,9 @@ export class ViewCube {
     this.scene.add(this.mesh);
   }
 
+  /** 박스 자세를 따라 돌려, 큐브의 면 이름(정면·후면 …)이 박스의 면과 같이 움직이게 한다. */
+  setPose(q: THREE.Quaternion) { this.mesh.quaternion.copy(q); }
+
   /** 메인 카메라와 같은 방향(기울기 포함)으로 보게 한다. */
   syncTo(camera: THREE.Camera) {
     this.camera.quaternion.copy(camera.quaternion);
