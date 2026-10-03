@@ -1,8 +1,0 @@
-file:///F:/ai_%EB%B0%94%EC%9D%B4%EB%B8%8C%EC%BD%94%EB%94%A9/26.10.03_GLB(3D%EB%AA%A9%EC%97%85)%EC%9D%BD%EB%8A%94%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8/e2e/unity_b.mjs:27
-await setEuler(40, 50, 60); await p.click('[data-view=front]'); const f1 = await camState(); const pt2 = await cubeFace('top'); await p.mouse.click(pt2.x, pt2.y); const f2 = await camState();
-                                                                                                                                                        ^
-
-TypeError: Cannot read properties of null (reading 'x')
-    at file:///F:/ai_%EB%B0%94%EC%9D%B4%EB%B8%8C%EC%BD%94%EB%94%A9/26.10.03_GLB(3D%EB%AA%A9%EC%97%85)%EC%9D%BD%EB%8A%94%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8/e2e/unity_b.mjs:27:153
-
-Node.js v24.18.0
