@@ -452,6 +452,32 @@ export class Viewer {
     return out;
   }
 
+  /**
+   * 검증 전용: 메시마다 고유한 단색(ID)으로 칠한 화면을 screenshot 과 같은 크기로 그려 돌려준다.
+   * 조명·텍스처 없이 "각 픽셀에 실제로 어느 메시가 보이는지"를 알려 번짐 측정의 기준이 된다. 앱 동작에는 쓰지 않는다.
+   * ID = 이름 목록(names)의 1부터 시작하는 순번이 R 채널에 들어간다. 0 = 배경.
+   */
+  debugIdMap(): { w: number; h: number; data: Uint8ClampedArray; names: string[] } {
+    const names: string[] = [];
+    const swapped: [THREE.Mesh, THREE.Material | THREE.Material[]][] = [];
+    this.cur!.root.traverse((o) => {
+      const mesh = o as THREE.Mesh;
+      if (!mesh.isMesh || mesh.name === '__highlight') return;
+      names.push(mesh.name);
+      swapped.push([mesh, mesh.material]);
+      const mat = new THREE.MeshBasicMaterial();
+      mat.color.setRGB(names.length / 255, 0, 0, THREE.LinearSRGBColorSpace);
+      mesh.material = mat;
+    });
+    const cs = this.renderer.outputColorSpace;
+    this.renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
+    const cv = this.renderToCanvas(2);
+    this.renderer.outputColorSpace = cs;
+    for (const [mesh, mat] of swapped) { (mesh.material as THREE.Material).dispose(); mesh.material = mat; }
+    this.dirty = true;
+    return { w: cv.width, h: cv.height, data: cv.getContext('2d')!.getImageData(0, 0, cv.width, cv.height).data, names };
+  }
+
   /** 현재 화면 그대로 PNG. 배경은 흰색 또는 투명 (체크무늬 없음). */
   async screenshot(bg: 'white' | 'transparent'): Promise<Blob> {
     const c = this.renderToCanvas(2);

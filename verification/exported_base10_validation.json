@@ -1,6 +1,6 @@
 {
   "file": "verification/exported_base10.glb",
-  "bytes": 703336,
+  "bytes": 703060,
   "validator": {
     "errors": 0,
     "warnings": 0,
@@ -64,7 +64,7 @@
   ],
   "extensionsUsed": [],
   "nodes": [
-    null,
+    "Template",
     "Base",
     "base_front",
     "base_back",
