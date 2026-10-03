@@ -1,0 +1,660 @@
+{
+  "B0_toggle_on": {
+    "on": true,
+    "face": null,
+    "local": null,
+    "world": null,
+    "hint": "박스의 면을 눌러 축을 정하세요",
+    "pressed": "true",
+    "selected": "lid_front"
+  },
+  "B1_faces_10": {
+    "rows": {
+      "lid_top": {
+        "view": "top",
+        "lidShown": true,
+        "lockFace": "lid_top",
+        "local": [
+          0,
+          1,
+          0
+        ],
+        "meshNormal": [
+          0,
+          1,
+          0
+        ],
+        "maxErr": 0,
+        "hint": "상단 기준 축으로 돕니다. 다른 면을 누르면 축이 바뀝니다.",
+        "editSelectedUnchanged": true
+      },
+      "lid_front": {
+        "view": "front",
+        "lidShown": true,
+        "lockFace": "lid_front",
+        "local": [
+          0,
+          0,
+          1
+        ],
+        "meshNormal": [
+          0,
+          0,
+          1
+        ],
+        "maxErr": 0,
+        "hint": "앞날개 기준 축으로 돕니다. 다른 면을 누르면 축이 바뀝니다.",
+        "editSelectedUnchanged": true
+      },
+      "lid_back": {
+        "view": "back",
+        "lidShown": true,
+        "lockFace": "lid_back",
+        "local": [
+          0,
+          0,
+          -1
+        ],
+        "meshNormal": [
+          0,
+          0,
+          -1
+        ],
+        "maxErr": 0,
+        "hint": "뒷날개 기준 축으로 돕니다. 다른 면을 누르면 축이 바뀝니다.",
+        "editSelectedUnchanged": true
+      },
+      "lid_left": {
+        "view": "left",
+        "lidShown": true,
+        "lockFace": "lid_left",
+        "local": [
+          -1,
+          0,
+          0
+        ],
+        "meshNormal": [
+          -1,
+          0,
+          0
+        ],
+        "maxErr": 0,
+        "hint": "왼쪽 날개 기준 축으로 돕니다. 다른 면을 누르면 축이 바뀝니다.",
+        "editSelectedUnchanged": true
+      },
+      "lid_right": {
+        "view": "right",
+        "lidShown": true,
+        "lockFace": "lid_right",
+        "local": [
+          1,
+          0,
+          0
+        ],
+        "meshNormal": [
+          1,
+          0,
+          0
+        ],
+        "maxErr": 0,
+        "hint": "오른쪽 날개 기준 축으로 돕니다. 다른 면을 누르면 축이 바뀝니다.",
+        "editSelectedUnchanged": true
+      },
+      "base_front": {
+        "view": "front",
+        "lidShown": false,
+        "lockFace": "base_front",
+        "local": [
+          0,
+          0,
+          1
+        ],
+        "meshNormal": [
+          0,
+          0,
+          1
+        ],
+        "maxErr": 0,
+        "hint": "하단 앞면 기준 축으로 돕니다. 다른 면을 누르면 축이 바뀝니다.",
+        "editSelectedUnchanged": true
+      },
+      "base_back": {
+        "view": "back",
+        "lidShown": false,
+        "lockFace": "base_back",
+        "local": [
+          0,
+          0,
+          -1
+        ],
+        "meshNormal": [
+          0,
+          0,
+          -1
+        ],
+        "maxErr": 0,
+        "hint": "하단 뒷면 기준 축으로 돕니다. 다른 면을 누르면 축이 바뀝니다.",
+        "editSelectedUnchanged": true
+      },
+      "base_left": {
+        "view": "left",
+        "lidShown": false,
+        "lockFace": "base_left",
+        "local": [
+          -1,
+          0,
+          0
+        ],
+        "meshNormal": [
+          -1,
+          0,
+          0
+        ],
+        "maxErr": 0,
+        "hint": "하단 왼쪽 면 기준 축으로 돕니다. 다른 면을 누르면 축이 바뀝니다.",
+        "editSelectedUnchanged": true
+      },
+      "base_right": {
+        "view": "right",
+        "lidShown": false,
+        "lockFace": "base_right",
+        "local": [
+          1,
+          0,
+          0
+        ],
+        "meshNormal": [
+          1,
+          0,
+          0
+        ],
+        "maxErr": 0,
+        "hint": "하단 오른쪽 면 기준 축으로 돕니다. 다른 면을 누르면 축이 바뀝니다.",
+        "editSelectedUnchanged": true
+      },
+      "base_bottom": {
+        "view": "bottom",
+        "lidShown": false,
+        "lockFace": "base_bottom",
+        "local": [
+          0,
+          -1,
+          0
+        ],
+        "meshNormal": [
+          0,
+          -1,
+          0
+        ],
+        "maxErr": 0,
+        "hint": "하단 바닥 기준 축으로 돕니다. 다른 면을 누르면 축이 바뀝니다.",
+        "editSelectedUnchanged": true
+      }
+    },
+    "selectedBeforeAndAfter": "lid_front",
+    "hintExample": "상단 기준 축으로 돕니다. 다른 면을 누르면 축이 바뀝니다."
+  },
+  "B2_opposite_faces_same_axis": {
+    "rows": [
+      {
+        "pair": [
+          "lid_top",
+          "base_bottom"
+        ],
+        "absDot": 1
+      },
+      {
+        "pair": [
+          "lid_front",
+          "lid_back"
+        ],
+        "absDot": 1
+      },
+      {
+        "pair": [
+          "lid_left",
+          "lid_right"
+        ],
+        "absDot": 1
+      },
+      {
+        "pair": [
+          "base_front",
+          "base_back"
+        ],
+        "absDot": 1
+      },
+      {
+        "pair": [
+          "base_left",
+          "base_right"
+        ],
+        "absDot": 1
+      }
+    ],
+    "all": true
+  },
+  "B3_rotated_pose_uses_current_normal": [
+    {
+      "q": [
+        0.4,
+        0.5,
+        0.3,
+        0.70710678
+      ],
+      "face": "base_bottom",
+      "pickedFace": "base_bottom",
+      "worldAxisVsFaceWorldNormalAbsDot": 1
+    },
+    {
+      "q": [
+        0.1,
+        -0.6,
+        0.5,
+        0.6
+      ],
+      "face": "base_bottom",
+      "pickedFace": "base_bottom",
+      "worldAxisVsFaceWorldNormalAbsDot": 1
+    },
+    {
+      "q": [
+        0.7,
+        0.1,
+        -0.2,
+        0.68
+      ],
+      "face": "lid_front",
+      "pickedFace": "lid_front",
+      "worldAxisVsFaceWorldNormalAbsDot": 1
+    }
+  ],
+  "B4_ignored_clicks": {
+    "background": {
+      "lockFaceUnchanged": true,
+      "hint": "면을 눌러 주세요"
+    },
+    "thicknessAndInner": [
+      {
+        "name": "base_inner",
+        "config": {
+          "lid": false,
+          "base": true,
+          "view": "top"
+        },
+        "found": true,
+        "lockFaceUnchanged": true,
+        "hint": "면을 눌러 주세요"
+      },
+      {
+        "name": "base_rim",
+        "config": {
+          "lid": false,
+          "base": true,
+          "view": "top"
+        },
+        "found": true,
+        "lockFaceUnchanged": true,
+        "hint": "면을 눌러 주세요"
+      },
+      {
+        "name": "lid_inner",
+        "config": {
+          "lid": true,
+          "base": false,
+          "view": "bottom"
+        },
+        "found": true,
+        "lockFaceUnchanged": true,
+        "hint": "면을 눌러 주세요"
+      },
+      {
+        "name": "lid_rim",
+        "config": {
+          "lid": true,
+          "base": false,
+          "view": "bottom"
+        },
+        "found": true,
+        "lockFaceUnchanged": true,
+        "hint": "면을 눌러 주세요"
+      },
+      {
+        "name": "lid_rim",
+        "config": {
+          "lid": true,
+          "base": true,
+          "view": "iso"
+        },
+        "found": false
+      },
+      {
+        "name": "base_rim",
+        "config": {
+          "lid": true,
+          "base": true,
+          "view": "iso"
+        },
+        "found": false
+      }
+    ]
+  },
+  "B5_lock_off_click_selects": {
+    "off": {
+      "on": false,
+      "pressed": "false",
+      "face": null,
+      "hint": ""
+    },
+    "selectedAfterClick": "lid_top"
+  },
+  "C_cycles": {
+    "lid_left": {
+      "lockAxisWorld": [
+        -1,
+        0,
+        0
+      ],
+      "dominantFaceSequence": [
+        "lid_top",
+        "lid_back",
+        "base_bottom",
+        "lid_front",
+        "lid_top"
+      ],
+      "expectedCycleSet": [
+        "lid_top",
+        "lid_front",
+        "base_bottom",
+        "lid_back"
+      ],
+      "visitsAllFour": true,
+      "returnsAfter360DiffDeg": 0,
+      "steps": [
+        {
+          "badge": "왼쪽 날개 축 -90° · 15° 스냅",
+          "angleDeg": 90,
+          "axisAbsDotLockAxis": 1
+        },
+        {
+          "badge": "왼쪽 날개 축 -90° · 15° 스냅",
+          "angleDeg": 90,
+          "axisAbsDotLockAxis": 1
+        },
+        {
+          "badge": "왼쪽 날개 축 -90° · 15° 스냅",
+          "angleDeg": 90,
+          "axisAbsDotLockAxis": 1
+        },
+        {
+          "badge": "왼쪽 날개 축 -90° · 15° 스냅",
+          "angleDeg": 90,
+          "axisAbsDotLockAxis": 1
+        }
+      ],
+      "oneDrag450": {
+        "badge": "왼쪽 날개 축 -450° · 15° 스냅",
+        "relAngleDeg": 90,
+        "expected": 90,
+        "axisAbsDot": 1
+      }
+    },
+    "lid_front": {
+      "lockAxisWorld": [
+        0,
+        0,
+        1
+      ],
+      "dominantFaceSequence": [
+        "lid_top",
+        "lid_left",
+        "base_bottom",
+        "lid_right",
+        "lid_top"
+      ],
+      "expectedCycleSet": [
+        "lid_top",
+        "lid_left",
+        "base_bottom",
+        "lid_right"
+      ],
+      "visitsAllFour": true,
+      "returnsAfter360DiffDeg": 0,
+      "steps": [
+        {
+          "badge": "앞날개 축 -90° · 15° 스냅",
+          "angleDeg": 90,
+          "axisAbsDotLockAxis": 1
+        },
+        {
+          "badge": "앞날개 축 -90° · 15° 스냅",
+          "angleDeg": 90,
+          "axisAbsDotLockAxis": 1
+        },
+        {
+          "badge": "앞날개 축 -90° · 15° 스냅",
+          "angleDeg": 90,
+          "axisAbsDotLockAxis": 1
+        },
+        {
+          "badge": "앞날개 축 -90° · 15° 스냅",
+          "angleDeg": 90,
+          "axisAbsDotLockAxis": 1
+        }
+      ],
+      "oneDrag450": {
+        "badge": "앞날개 축 -450° · 15° 스냅",
+        "relAngleDeg": 90,
+        "expected": 90,
+        "axisAbsDot": 1
+      }
+    }
+  },
+  "C_circle_around_top_axis": {
+    "badge": "상단 축 +360° · 15° 스냅",
+    "circleSteps": 264,
+    "afterReleaseDiffDeg": 0,
+    "lockAxisWorld": [
+      0,
+      1,
+      0
+    ],
+    "dominantAfter": "lid_top"
+  },
+  "D_continuity": {
+    "samples": [
+      {
+        "tiltDeg": 0,
+        "angleDeg": 3.7929,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 3,
+        "angleDeg": 3.718,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 6,
+        "angleDeg": 3.6553,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 9,
+        "angleDeg": 3.6045,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 12,
+        "angleDeg": 3.565,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 15,
+        "angleDeg": 3.5366,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 18,
+        "angleDeg": 3.5189,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 21,
+        "angleDeg": 3.5103,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 24,
+        "angleDeg": 3.5104,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 27,
+        "angleDeg": 3.5209,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 30,
+        "angleDeg": 3.5413,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 33,
+        "angleDeg": 3.5713,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 36,
+        "angleDeg": 3.6107,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 39,
+        "angleDeg": 3.6587,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 42,
+        "angleDeg": 3.7142,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 45,
+        "angleDeg": 3.7758,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 48,
+        "angleDeg": 3.841,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 51,
+        "angleDeg": 3.9059,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 54,
+        "angleDeg": 3.9647,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 57,
+        "angleDeg": 4.0084,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 60,
+        "angleDeg": 4.0231,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 63,
+        "angleDeg": 3.988,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 66,
+        "angleDeg": 3.8716,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 69,
+        "angleDeg": 3.6277,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 72,
+        "angleDeg": 3.19,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 75,
+        "angleDeg": 2.4716,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 78,
+        "angleDeg": 1.3693,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 81,
+        "angleDeg": -0.2078,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 84,
+        "angleDeg": -2.277,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 87,
+        "angleDeg": -4.7046,
+        "axisAbsDot": 1
+      },
+      {
+        "tiltDeg": 90,
+        "angleDeg": -7.1807,
+        "axisAbsDot": 1
+      }
+    ],
+    "maxAdjacentJumpDeg": 2.4761,
+    "maxAngleDeg": 7.1807,
+    "minAngleDeg": 0.2078,
+    "allAxisMatch": true
+  },
+  "E_free_snap": {
+    "rows": [
+      {
+        "dx": 100,
+        "dy": -60,
+        "snappedAboutScreenVerticalDeg": 45,
+        "snappedAboutScreenHorizontalDeg": -30,
+        "badge": "자유 회전 · 좌우 +45° · 위아래 −30° · 15° 스냅",
+        "snapStyle": true,
+        "quatMaxErr": 0
+      },
+      {
+        "dx": 37,
+        "dy": 61,
+        "snappedAboutScreenVerticalDeg": 15,
+        "snappedAboutScreenHorizontalDeg": 30,
+        "badge": "자유 회전 · 좌우 +15° · 위아래 +30° · 15° 스냅",
+        "snapStyle": true,
+        "quatMaxErr": 2.220446049250313e-16
+      },
+      {
+        "dx": -171,
+        "dy": 143,
+        "snappedAboutScreenVerticalDeg": -75,
+        "snappedAboutScreenHorizontalDeg": 60,
+        "badge": "자유 회전 · 좌우 −75° · 위아래 +60° · 15° 스냅",
+        "snapStyle": true,
+        "quatMaxErr": 2.220446049250313e-16
+      }
+    ],
+    "all15": true
+  },
+  "page_errors": []
+}

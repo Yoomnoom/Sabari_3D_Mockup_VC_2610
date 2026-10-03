@@ -222,12 +222,12 @@
   "9_glb": {
     "sha256": {
       "identity": "5c696a1994d8bbcc2ab11a68aa992713b84148e752aeb04df97127b5241035f7",
-      "identityAgain": "d4c834f583d0834239d593ae8092224f6848d879dad2848f4b9ef20bd2e67156",
-      "posed": "3278e0511e759d583214230766d083372e4878a4b941ff93a510ad246ae33124",
-      "posedAgain": "2f7cc80d77383aaf5c56c13a5f1b41c81ad8d0369c82640889c371dbc69c3b29"
+      "identityAgain": "cd2810baa85a47281ebbeab98c0f39f59a322fd5f6972598db1ea433aaa319d8",
+      "posed": "33b703796cab3ed50b0a0585ab32b1f764cb132c0f1a04db7fe13dcc6e749d7f",
+      "posedAgain": "ce20e7e540f3adb5578131a76065baf60f7f1f630d3cec927029baf9e0ee9c16"
     },
     "byteIdenticalEverywhere": false,
-    "byteNote": "같은 자세에서 연속으로 내보내도 파일 바이트가 다르게 관찰됐다(원인 추정: GLTFExporter 가 이미지를 병렬 처리해 images 배열 순서가 바뀜, 미확인). 그래서 노드 변환 전체와 메시별 지오메트리·재질·이미지 해시로 비교한다.",
+    "byteNote": "같은 자세에서 연속으로 내보내도 파일 바이트가 다르게 관찰됐다(원인 추정: GLTFExporter 이미지 병렬 처리 순서, 미확인). 그래서 내용 비교를 쓴다.",
     "nodeTransformsEqual": true,
     "contentEqual_nodes_geometry_materials_images": true,
     "meshCount": 14,
@@ -248,7 +248,6 @@
     "projectHasPose": false,
     "draftHasPose": false,
     "localStorageKeys": [
-      "rotAxis",
       "open"
     ]
   },
@@ -269,9 +268,10 @@
         "axisDotOtherScreenAxis": 0
       },
       "vertical": {
-        "angleDeg": 36,
+        "angleDeg": 48,
         "axisDotOtherScreenAxis": 0
       },
+      "diagonalAngleDeg": 59.353,
       "pinch": {
         "distBefore": 0.3405,
         "distAfter": 0.1166,

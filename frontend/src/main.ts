@@ -553,8 +553,7 @@ async function handleFile(file: File) {
 // ---------- 화면 설정 (접기·펼치기, 단축키 사용) — 이 브라우저의 localStorage에 기억 ----------
 const UI_KEY = 'sabari-ui';
 let keysEnabled = true;
-let toggleRotAxisRef: () => void = () => {};
-const loadUi = (): { open?: Record<string, boolean>; keys?: boolean; rotAxis?: 'horizontal' | 'vertical' } => {
+const loadUi = (): { open?: Record<string, boolean>; keys?: boolean } => {
   try { return JSON.parse(localStorage.getItem(UI_KEY) ?? '{}'); } catch { return {}; }
 };
 const saveUi = (patch: object) => { try { localStorage.setItem(UI_KEY, JSON.stringify({ ...loadUi(), ...patch })); } catch { /* 저장 불가 환경이면 기억만 안 한다 */ } };
@@ -725,18 +724,20 @@ async function init() {
   // 보기
   document.querySelectorAll<HTMLButtonElement>('[data-view]').forEach((b) => (b.onclick = () => showView(b.dataset.view as ViewName)));
   $('btnIso').onclick = toggleIso; // 3/4 시점: 누를 때마다 R ↔ L
-  // 회전 방향(좌우로/위아래로): 버튼·T 키가 같은 상태를 바꾼다. 이 브라우저에만 기억하고 .sabari·임시저장에는 넣지 않는다.
-  const setRotAxis = (a: 'horizontal' | 'vertical', remember = true) => {
-    viewer.setRotateAxis(a);
-    $('rotH').setAttribute('aria-pressed', String(a === 'horizontal'));
-    $('rotV').setAttribute('aria-pressed', String(a === 'vertical'));
-    $('rotDirLabel').textContent = a === 'horizontal' ? '좌우로 돌리기' : '위아래로 돌리기';
-    if (remember) saveUi({ rotAxis: a });
+  // 축 잠금(기본 꺼짐): 켜고 박스 면을 누르면 그 면에 수직인 축으로만 돈다. 화면 전용이라 어디에도 저장하지 않는다(새로고침하면 꺼진다).
+  const lockBtn = $<HTMLButtonElement>('lockToggle'), lockHint = $('lockHint');
+  let lockHintTimer = 0;
+  const renderLock = (s: { on: boolean; face: FaceId | null; available: boolean }) => {
+    lockBtn.setAttribute('aria-pressed', String(s.on));
+    lockBtn.disabled = !s.available;
+    const faceLabel = s.face ? FACES.find((f) => f.id === s.face)?.label : null;
+    const text = !s.available ? '이 GLB는 면을 알 수 없어 축 잠금을 쓸 수 없습니다. 자유 회전만 사용합니다.' : !s.on ? '' : faceLabel ? `${faceLabel} 기준 축으로 돕니다. 다른 면을 누르면 축이 바뀝니다.` : '박스의 면을 눌러 축을 정하세요';
+    lockHint.hidden = !text; lockHint.textContent = text;
   };
-  toggleRotAxisRef = () => setRotAxis(viewer.rotateAxis === 'horizontal' ? 'vertical' : 'horizontal');
-  $('rotH').onclick = () => setRotAxis('horizontal');
-  $('rotV').onclick = () => setRotAxis('vertical');
-  setRotAxis(loadUi().rotAxis === 'vertical' ? 'vertical' : 'horizontal', false);
+  viewer.onLockChange = renderLock;
+  viewer.onLockHint = (t) => { lockHint.hidden = false; lockHint.textContent = t; clearTimeout(lockHintTimer); lockHintTimer = window.setTimeout(() => renderLock({ on: viewer.isLockOn(), face: viewer.getLockFace(), available: viewer.lockAvailable() }), 2500); };
+  lockBtn.onclick = () => viewer.setAxisLock(lockBtn.getAttribute('aria-pressed') !== 'true');
+  renderLock({ on: false, face: null, available: true });
   viewer.onRotateBadge = (text, snapping) => {
     const b = $('rotBadge');
     b.hidden = !text;
@@ -824,7 +825,6 @@ async function init() {
     if (e.code === 'Digit7' || e.code === 'Numpad7') return goView(e.shiftKey ? 'bottom' : 'top'); // 7 윗면 · Shift+7 아래
     if (e.code === 'Digit0' || e.code === 'Numpad0') return toggleIso(); // 0 = 3/4 시점 (누를 때마다 R ↔ L)
     if (k === 'f') return viewer.fit(); // 위치 초기화(화면에 맞추기)
-    if (k === 't') return toggleRotAxisRef(); // 회전 방향 전환(좌우로 ↔ 위아래로)
     if (k === 'r') return goView('iso'); // 3/4 오른쪽
     if (k === 'l') return goView('isoL'); // 3/4 왼쪽
     if (k === 'o' && viewer.hasLid()) return setLift(viewer.getLiftMm() > 0 ? 0 : OPEN_MM);

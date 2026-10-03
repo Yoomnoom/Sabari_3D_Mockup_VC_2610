@@ -1,11 +1,11 @@
-import * as THREE from 'three';
+﻿import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { FACES, FaceId, groupOf } from './faces';
 import { BoxParams } from './params';
 import { TEMPLATE_ID, buildParts } from './templateMesh';
-import { RotateAxis, SNAP_DEG, dragRotation } from './screenRotate';
+import { dragRotation, lockedStep } from './screenRotate';
 
 export type ViewName = 'front' | 'back' | 'left' | 'right' | 'top' | 'iso' | 'isoL' | 'bottom';
 export type Slot = 'editor' | 'viewer';
@@ -18,6 +18,9 @@ interface Model {
   /** 화면 전용 박스 자세. pivot(박스 중심, 자세 회전) → shift(−중심) → root 순이라 root 의 변환은 그대로다(GLB 내보내기 불변). */
   pivot: THREE.Group;
 }
+
+/** 화면에만 보이는 표시(선택선·축 잠금 면 표시·축 선). 선택·범위 계산·내보내기에서 제외한다. */
+const isOverlay = (o: THREE.Object3D) => o.name === '__highlight' || o.name === '__lockhl' || o.name === '__lockaxis';
 
 const DIRS: Record<ViewName, [number, number, number]> = {
   front: [0, 0.12, 1], back: [0, 0.12, -1], left: [-1, 0.12, 0], right: [1, 0.12, 0],
@@ -53,9 +56,18 @@ export class Viewer {
   private imageDragging = false;
   /** 화면 기준 박스 회전: 카메라는 고정하고 박스만 돌린다(화면 세로축·가로축 기준, 제한 없음). 화면 전용이라 파일에 저장하지 않는다. */
   readonly boxQuat = new THREE.Quaternion();
-  /** 드래그 한 번에 반영할 방향: horizontal = 가로 이동만(화면 세로축 기준), vertical = 세로 이동만(화면 가로축 기준) */
-  rotateAxis: RotateAxis = 'horizontal';
   onRotateBadge: ((text: string | null, snapping?: boolean) => void) | null = null;
+  /** 축 잠금(기본 꺼짐): 켜고 박스 면을 누르면 그 면에 수직인 박스 국소 축이 회전축이 된다. 꺼져 있으면 자유 회전. 화면 전용(저장하지 않음). */
+  private lockOn = false;
+  private lockFace: FaceId | null = null;
+  /** 잠근 축(박스 국소 좌표의 단위 법선) */
+  private lockN: THREE.Vector3 | null = null;
+  private lockHl: THREE.LineSegments | null = null;
+  private lockLine: THREE.Line | null = null;
+  /** 앱이 만든 템플릿 GLB(면 이름이 있는 메시)인지: 외부 GLB는 면을 알 수 없어 축 잠금을 쓰지 않는다 */
+  private viewerHasFaces = false;
+  onLockChange: ((s: { on: boolean; face: FaceId | null; available: boolean }) => void) | null = null;
+  onLockHint: ((text: string) => void) | null = null;
 
   constructor(el: HTMLElement) {
     this.el = el;
@@ -122,7 +134,8 @@ export class Viewer {
     const ndc = new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
     const ray = new THREE.Raycaster();
     ray.setFromCamera(ndc, this.camera);
-    return ray.intersectObjects(objs, recursive).filter((h) => h.object.visible && h.object.name !== '__highlight');
+    const shown = (o: THREE.Object3D | null): boolean => { for (let n = o; n; n = n.parent) if (!n.visible) return false; return true; }; // 부모(뚜껑·몸통 그룹)가 숨겨진 메시는 건너뛴다(three 의 raycast 는 부모의 visible 을 보지 않는다)
+    return ray.intersectObjects(objs, recursive).filter((h) => shown(h.object) && !isOverlay(h.object));
   }
 
   private installPicking() {
@@ -155,6 +168,7 @@ export class Viewer {
     dom.addEventListener('pointerup', (e) => {
       if (drag) { drag = null; this.imageDragging = false; this.controls.enabled = true; down = null; return; }
       if (!down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 4 || e.button !== 0) return;
+      if (this.lockOn && this.lockAvailable()) { this.pickLockAxis(e); return; } // 축 잠금 중의 클릭(터치는 탭)은 축을 정하는 용도이며 편집 면 선택은 바뀌지 않는다
       if (this.slot !== 'editor' || !this.onPick) return;
       const hit = this.rayAt(e, [this.models.editor!.root])[0];
       const id = hit && FACES.find((f) => f.id === hit.object.name)?.id;
@@ -172,12 +186,16 @@ export class Viewer {
   }
 
   // ------------------------------------------------------------ 화면 기준 박스 회전
-  /** 왼쪽 드래그(한 손가락 터치 포함) = 박스 회전. 선택한 방향의 이동만 반영하고 다른 방향은 무시한다. Ctrl(Cmd)은 15° 스냅. */
+  /**
+   * 왼쪽 드래그(한 손가락 터치 포함) = 박스 회전. Ctrl(Cmd)은 15° 스냅.
+   * 자유(기본): 가로 이동은 화면 세로축, 세로 이동은 화면 가로축 기준으로 동시에 반영(대각선 포함, 제한 없음).
+   * 축 잠금(면을 눌러 정한 축이 있을 때): 박스 국소 축(그 면의 법선)만 둘레로 돌며, 커서가 면을 따라가도록 트랙볼 구면에서 각을 구한다(screenRotate.lockedStep).
+   */
   private installBoxRotate() {
     const dom = this.renderer.domElement;
     const touches = new Set<number>();
-    let g: { id: number; x: number; y: number; q0: THREE.Quaternion; axis: THREE.Vector3; axisName: RotateAxis } | null = null;
-    const screenAxis = (name: RotateAxis) => new THREE.Vector3(name === 'horizontal' ? 0 : 1, name === 'horizontal' ? 1 : 0, 0).applyQuaternion(this.camera.quaternion);
+    type Drag = { id: number; x: number; y: number; lx: number; ly: number; q0: THREE.Quaternion; up: THREE.Vector3; right: THREE.Vector3; axisW: THREE.Vector3 | null; theta: number; cx: number; cy: number; R: number };
+    let g: Drag | null = null;
     const finish = (e: PointerEvent) => {
       touches.delete(e.pointerId);
       if (g && e.pointerId === g.id) { g = null; this.onRotateBadge?.(null); }
@@ -187,23 +205,98 @@ export class Viewer {
       if (this.panHeld || this.imageDragging) return;
       if (e.pointerType !== 'touch' && (e.button !== 0 || e.shiftKey)) return; // Shift+드래그는 이미지 이동(또는 기존 이동), 다른 버튼은 이동
       this.camera.updateMatrixWorld(true);
-      g = { id: e.pointerId, x: e.clientX, y: e.clientY, q0: this.boxQuat.clone(), axis: screenAxis(this.rotateAxis), axisName: this.rotateAxis };
+      const q = this.camera.quaternion;
+      const lockedAxis = this.lockOn && this.lockAvailable() && this.lockN ? this.lockN.clone().applyQuaternion(this.boxQuat).normalize() : null; // 국소 축 → 지금 자세의 월드 축
+      const rect = dom.getBoundingClientRect();
+      const c = this.cur ? this.cur.pivot.getWorldPosition(new THREE.Vector3()) : new THREE.Vector3();
+      const cs = c.clone().project(this.camera);
+      const dist = this.camera.position.distanceTo(c), rWorld = this.bounds().getBoundingSphere(new THREE.Sphere()).radius;
+      const R = Math.max(20, (rWorld * rect.height) / 2 / (dist * Math.tan(THREE.MathUtils.degToRad(this.camera.fov) / 2)));
+      g = { id: e.pointerId, x: e.clientX, y: e.clientY, lx: e.clientX, ly: e.clientY, q0: this.boxQuat.clone(), up: new THREE.Vector3(0, 1, 0).applyQuaternion(q), right: new THREE.Vector3(1, 0, 0).applyQuaternion(q), axisW: lockedAxis, theta: 0, cx: rect.left + (cs.x * 0.5 + 0.5) * rect.width, cy: rect.top + (-cs.y * 0.5 + 0.5) * rect.height, R };
       if (e.pointerType !== 'touch' && (e.ctrlKey || e.metaKey)) { e.stopImmediatePropagation(); e.preventDefault(); } // Ctrl+드래그가 OrbitControls 의 이동으로 가지 않게
       try { dom.setPointerCapture(e.pointerId); } catch { /* 무시 */ }
     }, true);
     dom.addEventListener('pointermove', (e) => {
       if (!g || e.pointerId !== g.id || this.imageDragging) return;
-      const px = g.axisName === 'horizontal' ? e.clientX - g.x : e.clientY - g.y; // 선택한 방향의 이동만 쓴다
-      const r = dragRotation(px, this.el.clientHeight, e.ctrlKey || e.metaKey);
-      if (px === 0) return;
-      this.setBoxQuat(new THREE.Quaternion().setFromAxisAngle(g.axis, THREE.MathUtils.degToRad(r.deg)).multiply(g.q0));
-      this.onRotateBadge?.(`${g.axisName === 'horizontal' ? '좌우 돌리기' : '위아래 돌리기'} ${r.deg >= 0 ? '+' : ''}${Math.round(r.deg * 10) / 10}°`, r.snapped);
+      const snap = e.ctrlKey || e.metaKey, h = this.el.clientHeight;
+      const sign = (n: number) => `${n >= 0 ? '+' : '−'}${Math.abs(Math.round(n * 10) / 10)}°`;
+      if (!g.axisW) { // 자유 회전: 시작 시점의 화면 축 기준, 가로·세로 이동을 동시에
+        const ax = dragRotation(e.clientX - g.x, h, snap), ay = dragRotation(e.clientY - g.y, h, snap);
+        if (ax.deg === 0 && ay.deg === 0 && e.clientX === g.x && e.clientY === g.y) return;
+        const qa = new THREE.Quaternion().setFromAxisAngle(g.up, THREE.MathUtils.degToRad(ax.deg));
+        const qb = new THREE.Quaternion().setFromAxisAngle(g.right, THREE.MathUtils.degToRad(ay.deg));
+        this.setBoxQuat(qb.multiply(qa).multiply(g.q0));
+        this.onRotateBadge?.(`자유 회전 · 좌우 ${sign(ax.deg)} · 위아래 ${sign(ay.deg)}`, snap);
+        return;
+      }
+      // 축 잠금: 커서 이동을 잠근 축 둘레 각으로 환산해 누적한다
+      const cq = this.camera.quaternion.clone().invert();
+      const ac = g.axisW.clone().applyQuaternion(cq);
+      const s0x = g.lx - g.cx, s0y = -(g.ly - g.cy), s1x = e.clientX - g.cx, s1y = -(e.clientY - g.cy);
+      g.theta += lockedStep([ac.x, ac.y, ac.z], (s0x + s1x) / 2, (s0y + s1y) / 2, s1x - s0x, s1y - s0y, g.R);
+      g.lx = e.clientX; g.ly = e.clientY;
+      let deg = THREE.MathUtils.radToDeg(g.theta);
+      if (snap) deg = Math.round(deg / 15) * 15;
+      this.setBoxQuat(new THREE.Quaternion().setFromAxisAngle(g.axisW, THREE.MathUtils.degToRad(deg)).multiply(g.q0));
+      this.onRotateBadge?.(`${this.lockFace ? FACES.find((f) => f.id === this.lockFace)?.label ?? '' : ''} 축 ${sign(deg)}`.trim(), snap);
     });
     dom.addEventListener('pointerup', finish);
     dom.addEventListener('pointercancel', finish);
   }
 
-  setRotateAxis(a: RotateAxis) { this.rotateAxis = a; }
+  // ------------------------------------------------------------ 축 잠금(면을 눌러 축을 정한다)
+  /** 지금 모델에서 축 잠금을 쓸 수 있는지: 편집 모델은 항상, GLB 뷰어는 앱이 만든 템플릿 GLB(면 이름이 있는 메시)일 때만 */
+  lockAvailable(): boolean { return this.slot === 'editor' ? !!this.models.editor : this.viewerHasFaces; }
+  getLockFace(): FaceId | null { return this.lockFace; }
+  isLockOn(): boolean { return this.lockOn; }
+  /** 잠근 축을 월드 좌표로(지금 자세 기준). 잠근 축이 없으면 null */
+  getLockAxisWorld(): THREE.Vector3 | null { return this.lockN ? this.lockN.clone().applyQuaternion(this.boxQuat).normalize() : null; }
+  getLockAxisLocal(): THREE.Vector3 | null { return this.lockN ? this.lockN.clone() : null; }
+
+  setAxisLock(on: boolean) {
+    this.lockOn = on && this.lockAvailable();
+    if (!this.lockOn) { this.lockFace = null; this.lockN = null; }
+    this.refreshLockVisuals();
+    this.emitLock();
+  }
+
+  private emitLock() { this.onLockChange?.({ on: this.lockOn, face: this.lockFace, available: this.lockAvailable() }); }
+
+  /** 클릭한 면을 축 기준 면으로 정한다. 두께면·안쪽면·배경은 무시하고 안내한다. */
+  private pickLockAxis(e: PointerEvent) {
+    const m = this.cur;
+    const hit = m && this.rayAt(e, [m.root])[0];
+    const id = hit && FACES.find((f) => f.id === hit.object.name)?.id;
+    if (!hit || !id) { this.onLockHint?.('면을 눌러 주세요'); return; }
+    const mesh = hit.object as THREE.Mesh;
+    mesh.updateWorldMatrix(true, false);
+    const n = new THREE.Vector3().fromBufferAttribute(mesh.geometry.getAttribute('normal'), 0).transformDirection(mesh.matrixWorld).applyQuaternion(this.boxQuat.clone().invert()).normalize();
+    for (const k of ['x', 'y', 'z'] as const) if (Math.abs(n[k]) < 1e-6) n[k] = 0; // 수치 잡음 정리
+    this.lockFace = id; this.lockN = n.normalize();
+    this.refreshLockVisuals();
+    this.emitLock();
+  }
+
+  /** 축 잠금 표시: 눌러 정한 면의 테두리(파랑)와 박스 중심을 지나는 축 선. 화면에만 보이고 PNG·GLB에는 넣지 않는다. */
+  private refreshLockVisuals() {
+    this.lockHl?.removeFromParent(); this.lockLine?.removeFromParent();
+    for (const o of [this.lockHl, this.lockLine]) { if (o) { o.geometry.dispose(); (o.material as THREE.Material).dispose(); } }
+    this.lockHl = null; this.lockLine = null;
+    const m = this.cur;
+    if (this.lockOn && this.lockFace && this.lockN && m) {
+      const mesh = m.root.getObjectByName(this.lockFace) as THREE.Mesh | undefined;
+      if (mesh?.isMesh) {
+        this.lockHl = new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry), new THREE.LineBasicMaterial({ color: 0x1c7ed6, depthTest: false }));
+        this.lockHl.name = '__lockhl'; this.lockHl.renderOrder = 11;
+        mesh.add(this.lockHl);
+      }
+      const L = this.bounds().getBoundingSphere(new THREE.Sphere()).radius * 1.3;
+      this.lockLine = new THREE.Line(new THREE.BufferGeometry().setFromPoints([this.lockN.clone().multiplyScalar(-L), this.lockN.clone().multiplyScalar(L)]), new THREE.LineBasicMaterial({ color: 0x1c7ed6, depthTest: false }));
+      this.lockLine.name = '__lockaxis'; this.lockLine.renderOrder = 11;
+      m.pivot.add(this.lockLine);
+    }
+    this.dirty = true;
+  }
 
   /** 화면 전용 박스 자세를 모든 모델에 적용한다. */
   setBoxQuat(q: THREE.Quaternion) {
@@ -297,6 +390,7 @@ export class Viewer {
     if (this.partColors.lid) this.setPartColor('lid', this.partColors.lid);
     if (this.partColors.base) this.setPartColor('base', this.partColors.base);
     this.setSelected(this.selected);
+    this.refreshLockVisuals();
     this.dirty = true;
   }
 
@@ -386,6 +480,7 @@ export class Viewer {
       if (m) m.root.visible = k === slot;
     }
     if (this.highlight) this.highlight.visible = slot === 'editor' && this.hlOn;
+    if (this.lockOn && !this.lockAvailable()) this.setAxisLock(false); else { this.refreshLockVisuals(); this.emitLock(); }
     this.dirty = true;
   }
 
@@ -411,7 +506,7 @@ export class Viewer {
     const box = new THREE.Box3();
     if (m) {
       m.pivot.updateMatrixWorld(true); // 부모(자세 pivot)까지 갱신해야 박스를 돌린 뒤에도 범위가 맞다
-      m.root.traverse((o) => { if ((o as THREE.Mesh).isMesh && o.visible && o.name !== '__highlight') box.expandByObject(o); });
+      m.root.traverse((o) => { if ((o as THREE.Mesh).isMesh && o.visible && !isOverlay(o)) box.expandByObject(o); });
     }
     return box.isEmpty() ? new THREE.Box3(new THREE.Vector3(-0.08, 0, -0.06), new THREE.Vector3(0.08, 0.045, 0.06)) : box;
   }
@@ -483,6 +578,9 @@ export class Viewer {
     const m = this.makeModel(gltf.scene);
     m.pivot = this.mountModel(gltf.scene);
     this.models.viewer = m;
+    this.viewerHasFaces = false;
+    gltf.scene.traverse((o) => { if ((o as THREE.Mesh).isMesh && FACES.some((f) => f.id === o.name)) this.viewerHasFaces = true; });
+    if (this.slot === 'viewer') this.emitLock();
     let meshes = 0, textured = 0;
     m.root.traverse((o) => {
       const mesh = o as THREE.Mesh;
@@ -504,8 +602,10 @@ export class Viewer {
   }
 
   private renderToCanvas(scale: number): HTMLCanvasElement {
-    const hl = this.highlight?.visible;
+    const hl = this.highlight?.visible, lh = this.lockHl?.visible, ll = this.lockLine?.visible;
     if (this.highlight) this.highlight.visible = false;
+    if (this.lockHl) this.lockHl.visible = false;
+    if (this.lockLine) this.lockLine.visible = false;
     const pr = this.renderer.getPixelRatio();
     this.renderer.setPixelRatio(Math.max(pr, 1) * scale);
     this.renderer.render(this.scene, this.camera);
@@ -515,6 +615,8 @@ export class Viewer {
     out.getContext('2d')!.drawImage(src, 0, 0);
     this.renderer.setPixelRatio(pr);
     if (this.highlight) this.highlight.visible = !!hl;
+    if (this.lockHl) this.lockHl.visible = lh !== false;
+    if (this.lockLine) this.lockLine.visible = ll !== false;
     this.dirty = true;
     return out;
   }
@@ -529,7 +631,7 @@ export class Viewer {
     const swapped: [THREE.Mesh, THREE.Material | THREE.Material[]][] = [];
     this.cur!.root.traverse((o) => {
       const mesh = o as THREE.Mesh;
-      if (!mesh.isMesh || mesh.name === '__highlight') return;
+      if (!mesh.isMesh || isOverlay(mesh)) return;
       names.push(mesh.name);
       swapped.push([mesh, mesh.material]);
       const mat = new THREE.MeshBasicMaterial();
@@ -565,7 +667,7 @@ export class Viewer {
     const m = this.models.editor!;
     const saved: [THREE.Object3D, boolean][] = [];
     m.root.traverse((o) => saved.push([o, o.visible]));
-    m.root.traverse((o) => { o.visible = o.name !== '__highlight'; });
+    m.root.traverse((o) => { o.visible = !isOverlay(o); });
     try {
       const r = await new GLTFExporter().parseAsync(m.root, { binary: true, onlyVisible: true });
       return r as ArrayBuffer;

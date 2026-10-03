@@ -100,10 +100,11 @@ await drag([600, 400], [680, 380], 6, { button: 'middle' }); const t2 = await tg
 const mv2 = (a, b) => a.some((x, i) => Math.abs(x - b[i]) > 1e-6); inter.pan = { space: mv2(t0, t1), middle: mv2(t1, t2), right: mv2(t2, t3), poseUnchanged: JSON.stringify(qa) === JSON.stringify(await quat()) }; assert(inter.pan.space && inter.pan.middle && inter.pan.right && inter.pan.poseUnchanged);
 const cdp = await context.newCDPSession(p); const touch = (type, pts) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: pts.map(([x, y], id) => ({ x, y, id })) });
 const touchRows = {};
-for (const mode of ['horizontal', 'vertical']) {
-  await setAxis(mode); const q0 = await quat(), ax = await camAxes(); await touch('touchStart', [[1000, 400]]); for (let i = 1; i <= 10; i++) await touch('touchMove', [[1000 + i * 12, 400 + i * 9]]); await touch('touchEnd', []); await p.waitForTimeout(80);
+for (const mode of ['horizontal', 'vertical']) { // 한 손가락: 가로 이동만 / 세로 이동만 끌면 각각 화면 세로축 / 가로축 회전(자유 회전)
+  const q0 = await quat(), ax = await camAxes(); await touch('touchStart', [[1000, 400]]); for (let i = 1; i <= 10; i++) await touch('touchMove', [mode === 'horizontal' ? [1000 + i * 12, 400] : [1000, 400 + i * 12]]); await touch('touchEnd', []); await p.waitForTimeout(80);
   const r = await rel(q0, await quat()); touchRows[mode] = { angleDeg: +r.angleDeg.toFixed(3), axisDotOtherScreenAxis: +Math.abs(dot(r.axis, ax[mode === 'horizontal' ? 'right' : 'up'])).toFixed(9) }; assert(r.angleDeg > 5 && touchRows[mode].axisDotOtherScreenAxis < 1e-6);
 }
+{ const q0 = await quat(); await touch('touchStart', [[1000, 400]]); for (let i = 1; i <= 10; i++) await touch('touchMove', [[1000 + i * 12, 400 + i * 9]]); await touch('touchEnd', []); await p.waitForTimeout(80); touchRows.diagonalAngleDeg = +(await rel(q0, await quat())).angleDeg.toFixed(3); } // 대각선도 그대로 반영
 const q0t = await quat(), dist0 = await camDist(); // 두 손가락 핀치 = 확대(회전 아님)
 await touch('touchStart', [[900, 450], [1000, 450]]); for (let i = 1; i <= 8; i++) await touch('touchMove', [[900 - i * 12, 450], [1000 + i * 12, 450]]); await touch('touchEnd', []); await p.waitForTimeout(150);
 touchRows.pinch = { distBefore: +dist0.toFixed(4), distAfter: +(await camDist()).toFixed(4), poseUnchanged: JSON.stringify(q0t) === JSON.stringify(await quat()) }; assert(touchRows.pinch.distAfter < touchRows.pinch.distBefore && touchRows.pinch.poseUnchanged);

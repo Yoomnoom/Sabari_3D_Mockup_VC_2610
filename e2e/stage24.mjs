@@ -30,30 +30,25 @@ const rEnd = await rel(qStart, prev);
 rec('2_vertical_cycle', { dominantFacePerQuarterTurn: seq, stepAnglesDeg: steps, allStepsAbout90: steps.every((s) => Math.abs(s - 90) < 0.02), cumulativeDeg: +cum.toFixed(2), angleDiffAfter4TurnsDeg: +rEnd.angleDeg.toFixed(4), cycleRepeats: seq.length === 8 && [0, 1, 2, 3].every((i) => seq[i] === seq[i + 4]), fourDistinctFaces: new Set(seq.slice(0, 4)).size === 4 });
 assert(results['2_vertical_cycle'].allStepsAbout90 && results['2_vertical_cycle'].cycleRepeats && results['2_vertical_cycle'].fourDistinctFaces && results['2_vertical_cycle'].angleDiffAfter4TurnsDeg < 0.01);
 
-// ===== 3. 방향 잠금: 대각선 드래그해도 선택한 방향 외 성분 0
-await reset(); const lock = {};
-for (const [mode, other] of [['horizontal', 'right'], ['vertical', 'up']]) {
-  await setAxis(mode); const rows = [];
-  for (const [dx, dy] of [[180, 140], [-120, 200], [90, -260], [-300, -50]]) {
-    const q0 = await quat(), ax = await camAxes(); await drag([700, 450], [700 + dx, 450 + dy], 12); const r = await rel(q0, await quat());
-    rows.push({ dx, dy, angleDeg: +r.angleDeg.toFixed(3), expectedAbsDeg: +Math.abs((mode === 'horizontal' ? dx : dy) / (await H()) * 360).toFixed(3), axisDotOtherScreenAxis: +Math.abs(dot(r.axis, ax[other])).toFixed(9) });
-  }
-  lock[mode] = { rows, otherComponentZero: rows.every((r) => r.axisDotOtherScreenAxis < 1e-6), angleMatches: rows.every((r) => Math.abs(r.angleDeg - r.expectedAbsDeg) < 0.05) };
-  assert(lock[mode].otherComponentZero && lock[mode].angleMatches, `잠금 ${mode}`);
+// ===== 3. (단계 26) 자유 회전: 대각선 드래그는 가로·세로 성분이 동시에 반영된다 (옛 "방향 잠금" 검증을 대체)
+await reset(); const freeRows = [];
+for (const [dx, dy] of [[180, 140], [-120, 200], [90, -260], [-300, -50]]) {
+  const q0 = await quat(), ax = await camAxes(); await drag([700, 450], [700 + dx, 450 + dy], 12); const q1 = await quat();
+  const expected = await p.evaluate(({ q0, up, right, dx, dy, h }) => { const T = window.__sabari.viewer.boxQuat.constructor, V = window.__sabari.viewer.camera.position.constructor; const qa = new T().setFromAxisAngle(new V(...up), dx / h * 2 * Math.PI), qb = new T().setFromAxisAngle(new V(...right), dy / h * 2 * Math.PI); return qb.multiply(qa).multiply(new T(...q0)).toArray(); }, { q0, up: ax.up, right: ax.right, dx, dy, h: await H() });
+  freeRows.push({ dx, dy, quatMaxErr: Math.max(...q1.map((x, i) => Math.abs(x - expected[i]))) });
 }
-rec('3_direction_lock', lock);
+rec('3_free_diagonal', { rows: freeRows, bothComponentsApplied: freeRows.every((r) => r.quatMaxErr < 1e-6) });
+assert(results['3_free_diagonal'].bothComponentsApplied, '자유 회전 대각선');
 
-// ===== 4. 방향 선택: 버튼·T 키·단축키 설정·새로고침
-const st = async () => ({ h: await p.getAttribute('#rotH', 'aria-pressed'), v: await p.getAttribute('#rotV', 'aria-pressed'), label: await p.textContent('#rotDirLabel'), axis: await p.evaluate(() => window.__sabari.viewer.rotateAxis) });
-const sel = {}; await p.click('#rotH'); sel.afterH = await st(); await p.click('#rotV'); sel.afterV = await st();
-await p.mouse.click(1330, 780); await p.keyboard.press('t'); sel.afterKeyT_fromV = await st(); await p.keyboard.press('t'); sel.afterKeyT_again = await st();
-await p.evaluate(() => { document.getElementById('dHelp').open = true; }); await p.uncheck('#optKeys'); await p.mouse.click(1330, 780); const before = await st(); await p.keyboard.press('t'); sel.keysDisabled_unchanged = { before, after: await st() }; await p.check('#optKeys'); await p.evaluate(() => { document.getElementById('dHelp').open = false; });
-await p.click('#rotV'); await p.reload(); await p.waitForFunction(() => window.__sabari); await p.waitForTimeout(400); sel.afterReload_V = await st(); sel.poseAfterReload = await quat();
-await p.click('#rotH'); await p.reload(); await p.waitForFunction(() => window.__sabari); await p.waitForTimeout(400); sel.afterReload_H = await st();
-rec('4_direction_select', sel);
-assert.equal(sel.afterH.axis, 'horizontal'); assert.equal(sel.afterV.axis, 'vertical'); assert.equal(sel.afterKeyT_fromV.axis, 'horizontal'); assert.equal(sel.afterKeyT_again.axis, 'vertical');
-assert.deepEqual(sel.keysDisabled_unchanged.before, sel.keysDisabled_unchanged.after); assert.equal(sel.afterReload_V.axis, 'vertical'); assert.equal(sel.afterReload_H.axis, 'horizontal');
-assert(sel.poseAfterReload.every((x, i) => Math.abs(x - [0, 0, 0, 1][i]) < 1e-9));
+// ===== 4. (단계 26) 제거 확인: 방향 버튼·방향 표시·T 키 없음, 옛 localStorage 값 무시
+const gone = {}; gone.rotH = await p.locator('#rotH').count(); gone.rotV = await p.locator('#rotV').count(); gone.rotDirLabel = await p.locator('#rotDirLabel').count();
+await p.mouse.click(1330, 780); const qT0 = await quat(); await p.keyboard.press('t'); gone.tKeyChangesNothing = JSON.stringify(qT0) === JSON.stringify(await quat());
+await p.evaluate(() => localStorage.setItem('sabari-ui', JSON.stringify({ rotAxis: 'vertical', keys: true })));
+await p.reload(); await p.waitForFunction(() => window.__sabari); await p.waitForTimeout(400);
+const qOld = await quat(); await drag([700, 450], [700 + 90, 450 + 90], 8); gone.oldKeyIgnored_diagonalRotates = JSON.stringify(qOld) !== JSON.stringify(await quat());
+gone.lockOffAfterReload = (await p.getAttribute('#lockToggle', 'aria-pressed')) === 'false';
+rec('4_removed_direction_controls', gone);
+assert(gone.rotH === 0 && gone.rotV === 0 && gone.rotDirLabel === 0 && gone.tKeyChangesNothing && gone.oldKeyIgnored_diagonalRotates && gone.lockOffAfterReload);
 await colorFaces(); // 새로고침으로 사라진 면 이미지를 다시 넣는다
 
 // ===== 5. 핵심 시나리오: 위아래로 + Ctrl 90° 로 세우고(긴 변이 세로), 좌우로 돌리기
@@ -69,7 +64,7 @@ assert(stand, '세운 자세를 만들지 못함');
 await shot('05_stood_up.png');
 await setAxis('horizontal'); const standRows = [];
 for (const dx of [140, -230, 310, 90, -60]) {
-  const q0 = await quat(), ax = await camAxes(); await drag([700, 450], [700 + dx, 450 + 120], 10); const r = await rel(q0, await quat()), g = await lidTopGeom();
+  const q0 = await quat(), ax = await camAxes(); await drag([700, 450], [700 + dx, 450], 10); const r = await rel(q0, await quat()), g = await lidTopGeom(); // 단계 26: 가로 이동만(세로 이동은 이제 같이 반영되므로)
   standRows.push({ dx, angleDeg: +r.angleDeg.toFixed(3), axisDotScreenUp: +Math.abs(dot(r.axis, ax.up)).toFixed(9), axisDotScreenRight: +Math.abs(dot(r.axis, ax.right)).toFixed(9), longEdgeVsScreenVertical: +g.longVsScreenVertical.toFixed(9) });
 }
 await shot('05_stood_after_horizontal_drags.png');

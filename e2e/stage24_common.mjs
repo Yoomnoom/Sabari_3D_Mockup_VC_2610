@@ -1,4 +1,4 @@
-// 단계 24 검증 공통 도구: 페이지 열기·면별 고유 색 이미지·회전 측정 함수
+﻿// 단계 24 검증 공통 도구: 페이지 열기·면별 고유 색 이미지·회전 측정 함수
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { chromium } from '../frontend/node_modules/playwright/index.mjs';
 export { assert, fs, path };
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-export const OUT = path.join(ROOT, 'verification', 'stage24');
+export const OUT = process.env.STAGE_OUT ? path.resolve(ROOT, process.env.STAGE_OUT) : path.join(ROOT, 'verification', 'stage24'); // 단계 26 은 STAGE_OUT=verification/stage26 으로 쓴다
 export const URL = process.env.SABARI_URL ?? 'http://127.0.0.1:8874/';
 export const COLORS = { lid_top: '#d62828', lid_front: '#1e64dc', lid_back: '#1ea046', lid_left: '#f2c200', lid_right: '#8232be', base_front: '#00a0aa', base_back: '#e8590c', base_left: '#7a5200', base_right: '#555555', base_bottom: '#ff66aa' };
 export const dot = (a, b2) => a.reduce((s, x, i) => s + x * b2[i], 0);
@@ -33,7 +33,8 @@ export async function start() {
     const badge = (await p.isVisible('#rotBadge')) ? await p.textContent('#rotBadge') : null; const snapClass = await p.evaluate(() => document.getElementById('rotBadge').classList.contains('snap'));
     if (opts.ctrl) await p.keyboard.up('Control'); await p.mouse.up(btn); return { badge, snapClass };
   };
-  const setAxis = (a) => p.click(a === 'horizontal' ? '#rotH' : '#rotV');
+  const setAxis = async () => {}; // 단계 26: 방향 선택이 없어졌다(자유 회전). 예전 호출 자리를 유지하기 위한 빈 함수
+
   const reset = async () => { await p.click('[data-view=iso]'); await p.waitForTimeout(60); };
   const visible = () => p.evaluate(() => { const m = window.__sabari.viewer.debugIdMap(), { w, h, data, names } = m; const cnt = {}; let border = 0, sil = 0; const at = (xx, yy) => (xx < 0 || yy < 0 || xx >= w || yy >= h ? -1 : data[(yy * w + xx) * 4]); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const id = data[(y * w + x) * 4]; if (!id) continue; sil++; if (x === 0 || y === 0 || x === w - 1 || y === h - 1) border++; if (at(x - 1, y) === id && at(x + 1, y) === id && at(x, y - 1) === id && at(x, y + 1) === id) { const n = names[id - 1]; cnt[n] = (cnt[n] ?? 0) + 1; } } const faces = Object.entries(cnt).filter(([n, c]) => c > 800 && /^(lid|base)_(top|front|back|left|right|bottom)$/.test(n)).sort((a, b) => b[1] - a[1]); return { faces: faces.map(([n, c]) => `${n}:${c}`), dominant: faces[0]?.[0] ?? null, border, sil }; });
   const shot = (n) => p.screenshot({ path: path.join(OUT, n), clip: { x: 321, y: 0, width: 1039, height: 900 } });
