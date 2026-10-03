@@ -1,0 +1,32 @@
+{
+ "iso": {
+  "editor": 12.393,
+  "viewer": 12.393
+ },
+ "low_oblique": {
+  "editor": 11.508,
+  "viewer": 11.508
+ },
+ "viewerTextures": [
+  {
+   "n": "lid_top",
+   "aniso": 16,
+   "min": 1008,
+   "mag": 1006,
+   "mip": true,
+   "w": 2048,
+   "h": 1427
+  },
+  {
+   "n": "lid_front",
+   "aniso": 16,
+   "min": 1008,
+   "mag": 1006,
+   "mip": true,
+   "w": 2048,
+   "h": 472
+  }
+ ],
+ "editorTexAniso": 16,
+ "maxAniso": 16
+}

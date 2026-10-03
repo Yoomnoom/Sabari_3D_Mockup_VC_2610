@@ -1,0 +1,60 @@
+{
+ "initial_open": {
+  "dFit": true,
+  "dRot": true,
+  "dPos": true,
+  "dColor": true,
+  "dBox": true,
+  "dView": true,
+  "dHelp": false
+ },
+ "no_image_toggle": {
+  "dFit": {
+   "open": false
+  },
+  "dRot": {
+   "open": false
+  },
+  "dPos": {
+   "open": false
+  }
+ },
+ "fit_radio_hidden_when_closed": true,
+ "fit_reopen": true,
+ "pos_keep_checkbox_clickable_without_image": true,
+ "top_sections_closed": [
+  false,
+  false,
+  false
+ ],
+ "panel_height_all_collapsed": 1809,
+ "after_reload": {
+  "dFit": true,
+  "dRot": false,
+  "dPos": true,
+  "dColor": false,
+  "dBox": false,
+  "dView": false,
+  "dHelp": false
+ },
+ "after_ui_reset": {
+  "dFit": true,
+  "dRot": true,
+  "dPos": true,
+  "dColor": true,
+  "dBox": true,
+  "dView": true,
+  "dHelp": false
+ },
+ "help_opened_by_click": true,
+ "help_closed_again": true,
+ "question_opens_help": true,
+ "keys_table_visible": true,
+ "keys_off_m_ignored": true,
+ "keys_off_space_still_pans": true,
+ "keys_option_persisted_off": true,
+ "keys_on_m_works": true,
+ "draft_cleared_load_disabled": true,
+ "draft_gone_after_reload": true,
+ "errors": []
+}

@@ -37,15 +37,17 @@ const before = await cam();
 await p.mouse.click(1000, 700); await p.keyboard.press('f'); const afterF = await cam();
 R.F_key = { before, after: afterF, directionKept: before.dir === afterF.dir, distanceIsFit: Math.abs(afterF.dist - fit0.dist) < 1e-4, targetIsCenter: afterF.tgt === fit0.tgt };
 
-// 위치 초기화 버튼 (보기 섹션이 접힌 상태에서도 동작, 접기 상태는 바뀌지 않음)
+// 보기 섹션이 접힌 상태에서는 F로 초기화, 펼친 뒤 버튼도 같은 결과인지 확인
 await p.mouse.move(840, 430); await p.mouse.wheel(0, -500); await p.waitForTimeout(100);
 await p.click('#dView > summary', { position: { x: 20, y: 10 } }); // 접기
 R.view_collapsed = !(await p.evaluate(() => document.getElementById('dView').open));
 const zoomed = await cam();
-await p.click('#btnFit'); const afterBtn = await cam();
-R.fit_button_while_collapsed = { stillCollapsed: !(await p.evaluate(() => document.getElementById('dView').open)), zoomWas: zoomed.dist, distNow: afterBtn.dist, distanceIsFit: Math.abs(afterBtn.dist - fit0.dist) < 1e-4 };
+await p.mouse.click(1000, 700); await p.keyboard.press('f'); const afterCollapsedF = await cam();
+R.fit_key_while_collapsed = { stillCollapsed: !(await p.evaluate(() => document.getElementById('dView').open)), zoomWas: zoomed.dist, distNow: afterCollapsedF.dist, distanceIsFit: Math.abs(afterCollapsedF.dist - fit0.dist) < 1e-4 };
 await p.click('#dView > summary', { position: { x: 20, y: 10 } }); // 다시 펼침
 R.view_reopened = await p.evaluate(() => document.getElementById('dView').open);
+await p.mouse.move(840, 430); await p.mouse.wheel(0, -300); await p.waitForTimeout(100); await p.click('#btnFit');
+R.fit_button_open = Math.abs((await cam()).dist - fit0.dist) < 1e-4;
 
 // 뚜껑 열린 상태에서 시점 변경도 줌 유지
 await p.mouse.move(840, 430); await p.mouse.wheel(0, -300); await p.waitForTimeout(100);

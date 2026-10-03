@@ -200,5 +200,14 @@
 - 기존 e2e 실행 로그와 종료 코드는 `verification/stage23-0/*.log`, `runs.json`에 보존한다. 종료 코드 0만으로 기능 통과를 판단하지 않고 각 스크립트의 기록값도 확인한다.
 - 회귀 검증의 최종 결과 및 기존 문제는 `verification/stage23-0/REPORT.md`에 기록한다.
 
+### 단계 23-1 — 보기 UI 정리 + 박스 놓기 + 축 고정
+
+- 보기 기본 UI를 `시점 / 박스 놓기 / 축 고정` 세 줄로 정리했다. 제출 각도·PNG 배율·고급 접이식·뷰 큐브·기즈모·회전 숫자 입력은 추가하지 않았다. 배경·그림자·음영·조명도 변경하지 않았다.
+- 박스 자세는 `frontend/src/viewPose.ts`의 쿼터니언 한 곳에서 정의한다. 원본 root는 그대로 두고 중심 기준 화면 전용 pivot만 회전한다. 세움에서 lid_top 법선은 +Z(사용자), 165mm 긴 변(+X)은 +Y(화면 세로)이며 뚜껑 열림의 로컬 +Y도 함께 회전한다.
+- `자유`는 기존 OrbitControls 경로를 그대로 사용한다. `좌우만`·`위아래만`일 때만 포인터를 가로채며 각각 dx·dy 하나만 사용한다. 위아래는 ±89° 제한. PointerEvent 경로를 공유해 마우스와 한 손가락 터치에 같은 규칙을 적용한다.
+- 드래그 배지와 현재 각도 표시는 DOM 오버레이이므로 WebGL PNG와 GLB에 포함되지 않는다. 박스 자세·축 고정은 `sabari-ui` localStorage에만 저장하며 `.sabari` schema와 IndexedDB 임시저장은 바꾸지 않았다.
+- 전용 검증 `e2e/stage23_1.mjs`: 눕힘 7시점, 세움 법선·긴 변, 축별 대각 드래그·반복·±89°, 자유 회전, CDP 합성 터치, 세움 편집·뚜껑·하단 선택, 자세 전후 GLB SHA-256 동일, 오버레이 제외, 저장 경계·새로고침 복원을 확인한다.
+- 결과와 단계 23-0 전후 비교는 `verification/stage23-1/REPORT.md`에 기록한다. 실제 GPU·실제 터치 기기·Edge·사용자 PC·Vercel·조작감은 ⚠️ 미검증이다.
+
 - 사용자: `install.bat` 한 번 → `start.bat` → 브라우저(http://127.0.0.1:8765).
 - 개발자: `cd frontend && npm i && npm run build`(dist 갱신), `cd backend && ..\.venv\Scripts\python -m pytest tests`, 서버 실행 후 `node e2e/run.mjs`.

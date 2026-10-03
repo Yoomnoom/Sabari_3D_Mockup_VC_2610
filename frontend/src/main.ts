@@ -624,7 +624,7 @@ function showView(v: ViewName, fit = false) {
   viewer.setView(v, fit);
   lastView = v;
   const b = $('btnIso');
-  b.textContent = v === 'iso' ? '3/4 시점 R' : v === 'isoL' ? '3/4 시점 L' : '3/4 시점';
+  b.textContent = '3/4';
   b.setAttribute('aria-pressed', String(v === 'iso' || v === 'isoL'));
 }
 const toggleIso = () => showView(lastView === 'iso' ? 'isoL' : 'iso');

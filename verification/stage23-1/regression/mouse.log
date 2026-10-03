@@ -1,0 +1,25 @@
+{
+ "hl_initial": true,
+ "hl_after_background_click": false,
+ "hl_after_face_click": true,
+ "hl_off_again": false,
+ "hl_after_list_click": true,
+ "hl_after_base_click": false,
+ "offset_before": [
+  0,
+  0
+ ],
+ "offset_after_preview_drag": [
+  0.10000002211418704,
+  -0.1999999365919974
+ ],
+ "slider_x_after": "10",
+ "slider_y_after": "-20",
+ "offset_after_3d_shift_drag": [
+  0.1493838168739734,
+  -0.06430004053285299
+ ],
+ "camera_unchanged_during_shift_drag": true,
+ "normal_drag_rotates": true,
+ "errors": []
+}

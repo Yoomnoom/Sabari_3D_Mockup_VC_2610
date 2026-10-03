@@ -1,0 +1,102 @@
+[
+  {
+    "script": "base10",
+    "exit": 0,
+    "seconds": 48.6
+  },
+  {
+    "script": "bleed_id",
+    "exit": 0,
+    "seconds": 16.3
+  },
+  {
+    "script": "closed_click",
+    "exit": 0,
+    "seconds": 2.3
+  },
+  {
+    "script": "collapse",
+    "exit": 0,
+    "seconds": 6.2
+  },
+  {
+    "script": "colors",
+    "exit": 0,
+    "seconds": 3.8
+  },
+  {
+    "script": "dieline",
+    "exit": 0,
+    "seconds": 21.8
+  },
+  {
+    "script": "dims",
+    "exit": 0,
+    "seconds": 44
+  },
+  {
+    "script": "draft",
+    "exit": 0,
+    "seconds": 12.6
+  },
+  {
+    "script": "iso_faces",
+    "exit": 0,
+    "seconds": 3.8
+  },
+  {
+    "script": "legacy_draft",
+    "exit": 0,
+    "seconds": 4.1
+  },
+  {
+    "script": "mouse",
+    "exit": 0,
+    "seconds": 7.7
+  },
+  {
+    "script": "movemode",
+    "exit": 0,
+    "seconds": 6.1
+  },
+  {
+    "script": "ratio",
+    "exit": 0,
+    "seconds": 25
+  },
+  {
+    "script": "run",
+    "exit": 0,
+    "seconds": 24.9
+  },
+  {
+    "script": "scroll_fix",
+    "exit": 0,
+    "seconds": 49.7
+  },
+  {
+    "script": "sharp",
+    "exit": 0,
+    "seconds": 5.6
+  },
+  {
+    "script": "shortcuts",
+    "exit": 0,
+    "seconds": 8.7
+  },
+  {
+    "script": "shot_panel",
+    "exit": 0,
+    "seconds": 2.5
+  },
+  {
+    "script": "space_repro",
+    "exit": 0,
+    "seconds": 3.4
+  },
+  {
+    "script": "viewkeep",
+    "exit": 0,
+    "seconds": 6
+  }
+]

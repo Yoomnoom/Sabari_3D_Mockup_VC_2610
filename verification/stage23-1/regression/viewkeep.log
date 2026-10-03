@@ -1,0 +1,100 @@
+{
+ "fit_front": {
+  "dist": 0.41805,
+  "dir": "0,0.12,0.99",
+  "tgt": "0,0.0225,0"
+ },
+ "user_zoomed_panned": {
+  "dist": 0.30731,
+  "dir": "0,0.12,0.99",
+  "tgt": "-0.0115,0.0301,-0.0009"
+ },
+ "zoom_changed": true,
+ "pan_changed": true,
+ "views": {
+  "back": {
+   "dist": 0.30731,
+   "dir": "0,0.12,-0.99",
+   "tgt": "0,0.0225,0"
+  },
+  "left": {
+   "dist": 0.30731,
+   "dir": "-0.99,0.12,0",
+   "tgt": "0,0.0225,0"
+  },
+  "right": {
+   "dist": 0.30731,
+   "dir": "0.99,0.12,0",
+   "tgt": "0,0.0225,0"
+  },
+  "top": {
+   "dist": 0.30731,
+   "dir": "0,1,0",
+   "tgt": "0,0.0225,0"
+  },
+  "btnIso_first": {
+   "dist": 0.30731,
+   "dir": "0.57,0.48,0.67",
+   "tgt": "0,0.0225,0"
+  },
+  "btnIso_second": {
+   "dist": 0.30731,
+   "dir": "-0.57,0.48,-0.67",
+   "tgt": "0,0.0225,0"
+  },
+  "key1": {
+   "dist": 0.30731,
+   "dir": "0,0.12,0.99",
+   "tgt": "0,0.0225,0"
+  },
+  "keyShift1": {
+   "dist": 0.30731,
+   "dir": "0,0.12,-0.99",
+   "tgt": "0,0.0225,0"
+  },
+  "keyR": {
+   "dist": 0.30731,
+   "dir": "0.57,0.48,0.67",
+   "tgt": "0,0.0225,0"
+  },
+  "keyL": {
+   "dist": 0.30731,
+   "dir": "-0.57,0.48,-0.67",
+   "tgt": "0,0.0225,0"
+  },
+  "key0": {
+   "dist": 0.30731,
+   "dir": "0.57,0.48,0.67",
+   "tgt": "0,0.0225,0"
+  }
+ },
+ "all_distance_kept": true,
+ "all_pan_reset_to_center": true,
+ "F_key": {
+  "before": {
+   "dist": 0.30731,
+   "dir": "0.57,0.48,0.67",
+   "tgt": "0,0.0225,0"
+  },
+  "after": {
+   "dist": 0.41805,
+   "dir": "0.57,0.48,0.67",
+   "tgt": "0,0.0225,0"
+  },
+  "directionKept": true,
+  "distanceIsFit": true,
+  "targetIsCenter": true
+ },
+ "view_collapsed": true,
+ "fit_key_while_collapsed": {
+  "stillCollapsed": true,
+  "zoomWas": 0.32348,
+  "distNow": 0.41805,
+  "distanceIsFit": true
+ },
+ "view_reopened": true,
+ "fit_button_open": true,
+ "open_lid_view_keeps_zoom": true,
+ "tab_switch_refits": true,
+ "errors": []
+}
