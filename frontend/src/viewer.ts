@@ -5,6 +5,7 @@ import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { FACES, FaceId, groupOf } from './faces';
 import { BoxParams } from './params';
 import { TEMPLATE_ID, buildParts } from './templateMesh';
+import { RotateAxis, SNAP_DEG, dragRotation } from './screenRotate';
 
 export type ViewName = 'front' | 'back' | 'left' | 'right' | 'top' | 'iso' | 'isoL' | 'bottom';
 export type Slot = 'editor' | 'viewer';
@@ -14,6 +15,8 @@ interface Model {
   lid: THREE.Object3D | null;
   base: THREE.Object3D | null;
   lidBaseY: number;
+  /** 화면 전용 박스 자세. pivot(박스 중심, 자세 회전) → shift(−중심) → root 순이라 root 의 변환은 그대로다(GLB 내보내기 불변). */
+  pivot: THREE.Group;
 }
 
 const DIRS: Record<ViewName, [number, number, number]> = {
@@ -47,6 +50,12 @@ export class Viewer {
   onWheelFace: ((deltaY: number) => void) | null = null;
   private dirty = true;
   private el: HTMLElement;
+  private imageDragging = false;
+  /** 화면 기준 박스 회전: 카메라는 고정하고 박스만 돌린다(화면 세로축·가로축 기준, 제한 없음). 화면 전용이라 파일에 저장하지 않는다. */
+  readonly boxQuat = new THREE.Quaternion();
+  /** 드래그 한 번에 반영할 방향: horizontal = 가로 이동만(화면 세로축 기준), vertical = 세로 이동만(화면 가로축 기준) */
+  rotateAxis: RotateAxis = 'horizontal';
+  onRotateBadge: ((text: string | null, snapping?: boolean) => void) | null = null;
 
   constructor(el: HTMLElement) {
     this.el = el;
@@ -68,6 +77,7 @@ export class Viewer {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableDamping = false;
     this.controls.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.PAN, RIGHT: THREE.MOUSE.PAN };
+    this.controls.enableRotate = false; // 회전은 박스 자세(installBoxRotate)가 맡고, OrbitControls 는 확대·이동만 한다
     this.controls.addEventListener('change', () => (this.dirty = true));
 
     // 크기 갱신은 프레임당 한 번만, 실제로 바뀐 경우에만 한다. (스크롤바·소수점 크기 때문에 매 프레임 반복되면 캔버스가 계속 지워져 빈 화면이 된다)
@@ -76,6 +86,7 @@ export class Viewer {
     this.resize();
     this.setView('iso');
     this.installPicking();
+    this.installBoxRotate();
     const loop = () => {
       requestAnimationFrame(loop);
       if (this.dirty) {
@@ -128,6 +139,7 @@ export class Viewer {
       const h = mesh && this.rayAt(e, [mesh], false)[0];
       if (h?.uv) {
         drag = h.uv.clone();
+        this.imageDragging = true;
         this.controls.enabled = false;
         dom.setPointerCapture(e.pointerId);
       }
@@ -141,7 +153,7 @@ export class Viewer {
       drag.copy(h.uv);
     });
     dom.addEventListener('pointerup', (e) => {
-      if (drag) { drag = null; this.controls.enabled = true; down = null; return; }
+      if (drag) { drag = null; this.imageDragging = false; this.controls.enabled = true; down = null; return; }
       if (!down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 4 || e.button !== 0) return;
       if (this.slot !== 'editor' || !this.onPick) return;
       const hit = this.rayAt(e, [this.models.editor!.root])[0];
@@ -156,7 +168,62 @@ export class Viewer {
       e.preventDefault(); e.stopImmediatePropagation();
       this.onWheelFace(e.deltaY);
     }, { capture: true, passive: false });
-    dom.addEventListener('pointercancel', () => { drag = null; this.controls.enabled = true; });
+    dom.addEventListener('pointercancel', () => { drag = null; this.imageDragging = false; this.controls.enabled = true; });
+  }
+
+  // ------------------------------------------------------------ 화면 기준 박스 회전
+  /** 왼쪽 드래그(한 손가락 터치 포함) = 박스 회전. 선택한 방향의 이동만 반영하고 다른 방향은 무시한다. Ctrl(Cmd)은 15° 스냅. */
+  private installBoxRotate() {
+    const dom = this.renderer.domElement;
+    const touches = new Set<number>();
+    let g: { id: number; x: number; y: number; q0: THREE.Quaternion; axis: THREE.Vector3; axisName: RotateAxis } | null = null;
+    const screenAxis = (name: RotateAxis) => new THREE.Vector3(name === 'horizontal' ? 0 : 1, name === 'horizontal' ? 1 : 0, 0).applyQuaternion(this.camera.quaternion);
+    const finish = (e: PointerEvent) => {
+      touches.delete(e.pointerId);
+      if (g && e.pointerId === g.id) { g = null; this.onRotateBadge?.(null); }
+    };
+    dom.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'touch') { touches.add(e.pointerId); if (touches.size > 1) { g = null; this.onRotateBadge?.(null); return; } } // 두 손가락은 OrbitControls 의 확대·이동
+      if (this.panHeld || this.imageDragging) return;
+      if (e.pointerType !== 'touch' && (e.button !== 0 || e.shiftKey)) return; // Shift+드래그는 이미지 이동(또는 기존 이동), 다른 버튼은 이동
+      this.camera.updateMatrixWorld(true);
+      g = { id: e.pointerId, x: e.clientX, y: e.clientY, q0: this.boxQuat.clone(), axis: screenAxis(this.rotateAxis), axisName: this.rotateAxis };
+      if (e.pointerType !== 'touch' && (e.ctrlKey || e.metaKey)) { e.stopImmediatePropagation(); e.preventDefault(); } // Ctrl+드래그가 OrbitControls 의 이동으로 가지 않게
+      try { dom.setPointerCapture(e.pointerId); } catch { /* 무시 */ }
+    }, true);
+    dom.addEventListener('pointermove', (e) => {
+      if (!g || e.pointerId !== g.id || this.imageDragging) return;
+      const px = g.axisName === 'horizontal' ? e.clientX - g.x : e.clientY - g.y; // 선택한 방향의 이동만 쓴다
+      const r = dragRotation(px, this.el.clientHeight, e.ctrlKey || e.metaKey);
+      if (px === 0) return;
+      this.setBoxQuat(new THREE.Quaternion().setFromAxisAngle(g.axis, THREE.MathUtils.degToRad(r.deg)).multiply(g.q0));
+      this.onRotateBadge?.(`${g.axisName === 'horizontal' ? '좌우 돌리기' : '위아래 돌리기'} ${r.deg >= 0 ? '+' : ''}${Math.round(r.deg * 10) / 10}°`, r.snapped);
+    });
+    dom.addEventListener('pointerup', finish);
+    dom.addEventListener('pointercancel', finish);
+  }
+
+  setRotateAxis(a: RotateAxis) { this.rotateAxis = a; }
+
+  /** 화면 전용 박스 자세를 모든 모델에 적용한다. */
+  setBoxQuat(q: THREE.Quaternion) {
+    this.boxQuat.copy(q).normalize();
+    for (const m of Object.values(this.models)) if (m) { m.pivot.quaternion.copy(this.boxQuat); m.pivot.updateMatrixWorld(true); }
+    this.dirty = true;
+  }
+  resetBoxPose() { this.setBoxQuat(new THREE.Quaternion()); }
+
+  /** 모델을 자세용 pivot 아래에 둔다(중심 = 현재 모양의 바운딩 박스 중심). root 변환은 건드리지 않는다. */
+  private mountModel(root: THREE.Group): THREE.Group {
+    const c = new THREE.Box3().setFromObject(root).getCenter(new THREE.Vector3());
+    const pivot = new THREE.Group(), shift = new THREE.Group();
+    pivot.position.copy(c);
+    shift.position.copy(c).negate();
+    shift.add(root);
+    pivot.add(shift);
+    pivot.quaternion.copy(this.boxQuat);
+    this.scene.add(pivot);
+    return pivot;
   }
 
   /** 스페이스를 누르는 동안 왼쪽 드래그 = 화면 이동(손 도구). */
@@ -175,7 +242,7 @@ export class Viewer {
   private makeModel(root: THREE.Group): Model {
     const lid = root.getObjectByName('Lid') ?? null;
     // 닫힌 상태 = 뚜껑 y 0 (템플릿 규약). 열린 채 저장된 GLB도 슬라이더에 실제 높이가 표시된다.
-    return { root, lid, base: root.getObjectByName('Base') ?? null, lidBaseY: 0 };
+    return { root, lid, base: root.getObjectByName('Base') ?? null, lidBaseY: 0, pivot: new THREE.Group() };
   }
 
   /** 하이라이트·텍스처를 뺀 모델의 GPU 자원을 해제한다. */
@@ -198,7 +265,7 @@ export class Viewer {
     const old = this.models.editor;
     const lift = old?.lid ? (old.lid.position.y - old.lidBaseY) * 1000 : 0;
     const lidVisible = old?.lid?.visible ?? true, baseVisible = old?.base?.visible ?? true;
-    if (old) { this.highlight?.removeFromParent(); this.scene.remove(old.root); this.disposeModel(old.root); }
+    if (old) { this.highlight?.removeFromParent(); old.pivot.removeFromParent(); this.disposeModel(old.root); }
     for (const t of this.textures.values()) t.dispose(); // 면 크기가 바뀌면 캔버스 크기도 바뀌므로 텍스처를 새로 만든다
     this.textures.clear();
     this.faceMeshes.clear();
@@ -223,8 +290,7 @@ export class Viewer {
       (part.group === 'base' ? base : lid).add(mesh);
       if (part.editable) this.faceMeshes.set(part.name as FaceId, mesh);
     }
-    this.models.editor = { root, lid, base, lidBaseY: 0 };
-    this.scene.add(root);
+    this.models.editor = { root, lid, base, lidBaseY: 0, pivot: this.mountModel(root) }; // 뚜껑을 올리기 전(닫힌 상태)의 중심을 자세 회전 중심으로 쓴다
     root.visible = this.slot === 'editor';
     lid.position.y = lift / 1000;
     lid.visible = lidVisible; base.visible = baseVisible;
@@ -344,7 +410,7 @@ export class Viewer {
     const m = this.cur;
     const box = new THREE.Box3();
     if (m) {
-      m.root.updateMatrixWorld(true);
+      m.pivot.updateMatrixWorld(true); // 부모(자세 pivot)까지 갱신해야 박스를 돌린 뒤에도 범위가 맞다
       m.root.traverse((o) => { if ((o as THREE.Mesh).isMesh && o.visible && o.name !== '__highlight') box.expandByObject(o); });
     }
     return box.isEmpty() ? new THREE.Box3(new THREE.Vector3(-0.08, 0, -0.06), new THREE.Vector3(0.08, 0.045, 0.06)) : box;
@@ -363,6 +429,7 @@ export class Viewer {
    * fit=true면 박스 전체가 보이는 거리로 다시 맞춘다(처음 열기·GLB 불러오기).
    */
   setView(name: ViewName, fit = false) {
+    this.resetBoxPose(); // 시점 버튼은 박스를 기본 자세로 되돌린 뒤 보는 방향을 정한다(단계 17의 시점과 같다)
     const box = this.bounds();
     const center = box.getCenter(new THREE.Vector3());
     const dist = fit ? this.fitDistance(box) : this.camera.position.distanceTo(this.controls.target);
@@ -412,10 +479,10 @@ export class Viewer {
 
   async loadExternal(buf: ArrayBuffer) {
     const gltf = await new GLTFLoader().parseAsync(buf, '');
-    this.models.viewer?.root.removeFromParent();
+    this.models.viewer?.pivot.removeFromParent();
     const m = this.makeModel(gltf.scene);
+    m.pivot = this.mountModel(gltf.scene);
     this.models.viewer = m;
-    this.scene.add(m.root);
     let meshes = 0, textured = 0;
     m.root.traverse((o) => {
       const mesh = o as THREE.Mesh;

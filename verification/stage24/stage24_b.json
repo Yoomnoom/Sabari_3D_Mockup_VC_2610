@@ -1,0 +1,288 @@
+{
+  "7_features_in_poses": {
+    "standing": {
+      "quat": [
+        1.8092862316863812e-16,
+        9.813077866773593e-18,
+        -0.7071067811865475,
+        0.7071067811865476
+      ],
+      "visibleFaces": [
+        "lid_top:1354976"
+      ],
+      "dominant": "lid_top",
+      "select": {
+        "lid_top": "lid_top"
+      },
+      "shiftDrag": {
+        "face": "lid_top",
+        "moved": true,
+        "poseUnchanged": true
+      },
+      "lid": {
+        "moveM": [
+          0.08,
+          0,
+          0
+        ],
+        "alongBoxUp": 1,
+        "mm": 80
+      },
+      "baseQuat": [
+        -0.3931591694112111,
+        0.3089107759659518,
+        -0.6123724356957946,
+        0.6123724356957946
+      ],
+      "base": {
+        "base_front": "base_front"
+      },
+      "png": {
+        "bytes": 128682
+      }
+    },
+    "flipped": {
+      "quat": [
+        0.7592566023652969,
+        0,
+        -0.6507913734559684,
+        6.123233995736767e-17
+      ],
+      "visibleFaces": [
+        "base_bottom:421648",
+        "lid_back:224695",
+        "lid_left:119708",
+        "base_back:43544",
+        "base_left:23450"
+      ],
+      "dominant": "base_bottom",
+      "select": {
+        "lid_back": "lid_back",
+        "lid_left": "lid_left"
+      },
+      "shiftDrag": {
+        "face": "lid_back",
+        "moved": true,
+        "poseUnchanged": true
+      },
+      "lid": {
+        "moveM": [
+          0,
+          -0.08,
+          0
+        ],
+        "alongBoxUp": 1,
+        "mm": 80
+      },
+      "baseQuat": [
+        0.37149672886572976,
+        -0.2383656473113981,
+        -0.8973137682125918,
+        5.551115123125783e-17
+      ],
+      "base": {
+        "base_left": "base_left",
+        "base_bottom": "base_bottom",
+        "base_front": "base_front"
+      },
+      "png": {
+        "bytes": 124295
+      }
+    },
+    "dieline_split_standing": {
+      "movedCss": 30,
+      "appliedFaces": 10
+    }
+  },
+  "8_not_clipped": {
+    "rows": [
+      {
+        "size": "1360x900",
+        "pose": "identity",
+        "borderPixels": 0
+      },
+      {
+        "size": "1360x900",
+        "pose": "x90",
+        "borderPixels": 0
+      },
+      {
+        "size": "1360x900",
+        "pose": "y45",
+        "borderPixels": 0
+      },
+      {
+        "size": "1360x900",
+        "pose": "z90",
+        "borderPixels": 0
+      },
+      {
+        "size": "1360x900",
+        "pose": "diag",
+        "borderPixels": 0
+      },
+      {
+        "size": "1360x900",
+        "pose": "upside",
+        "borderPixels": 0
+      },
+      {
+        "size": "1024x700",
+        "pose": "identity",
+        "borderPixels": 0
+      },
+      {
+        "size": "1024x700",
+        "pose": "x90",
+        "borderPixels": 0
+      },
+      {
+        "size": "1024x700",
+        "pose": "y45",
+        "borderPixels": 0
+      },
+      {
+        "size": "1024x700",
+        "pose": "z90",
+        "borderPixels": 0
+      },
+      {
+        "size": "1024x700",
+        "pose": "diag",
+        "borderPixels": 0
+      },
+      {
+        "size": "1024x700",
+        "pose": "upside",
+        "borderPixels": 0
+      },
+      {
+        "size": "800x640",
+        "pose": "identity",
+        "borderPixels": 0
+      },
+      {
+        "size": "800x640",
+        "pose": "x90",
+        "borderPixels": 0
+      },
+      {
+        "size": "800x640",
+        "pose": "y45",
+        "borderPixels": 0
+      },
+      {
+        "size": "800x640",
+        "pose": "z90",
+        "borderPixels": 0
+      },
+      {
+        "size": "800x640",
+        "pose": "diag",
+        "borderPixels": 0
+      },
+      {
+        "size": "800x640",
+        "pose": "upside",
+        "borderPixels": 0
+      },
+      {
+        "size": "1600x800",
+        "pose": "identity",
+        "borderPixels": 0
+      },
+      {
+        "size": "1600x800",
+        "pose": "x90",
+        "borderPixels": 0
+      },
+      {
+        "size": "1600x800",
+        "pose": "y45",
+        "borderPixels": 0
+      },
+      {
+        "size": "1600x800",
+        "pose": "z90",
+        "borderPixels": 0
+      },
+      {
+        "size": "1600x800",
+        "pose": "diag",
+        "borderPixels": 0
+      },
+      {
+        "size": "1600x800",
+        "pose": "upside",
+        "borderPixels": 0
+      }
+    ],
+    "allZero": true
+  },
+  "9_glb": {
+    "sha256": {
+      "identity": "5c696a1994d8bbcc2ab11a68aa992713b84148e752aeb04df97127b5241035f7",
+      "identityAgain": "d4c834f583d0834239d593ae8092224f6848d879dad2848f4b9ef20bd2e67156",
+      "posed": "3278e0511e759d583214230766d083372e4878a4b941ff93a510ad246ae33124",
+      "posedAgain": "2f7cc80d77383aaf5c56c13a5f1b41c81ad8d0369c82640889c371dbc69c3b29"
+    },
+    "byteIdenticalEverywhere": false,
+    "byteNote": "같은 자세에서 연속으로 내보내도 바이트가 다를 수 있다(이미지 배열 순서). 그래서 내용 비교를 쓴다.",
+    "nodeTransformsEqual": true,
+    "contentEqual_nodes_geometry_materials_images": true,
+    "meshCount": 14,
+    "imageCount": 10,
+    "rootNodeHasTransform": false,
+    "validator": {
+      "errors": 0,
+      "warnings": 0,
+      "infos": 10,
+      "hints": 0
+    }
+  },
+  "9_png_overlay_excluded": {
+    "badgeVisibleDuringCapture": true,
+    "pngEqualWithOverlayHidden": true
+  },
+  "9_storage_boundary": {
+    "projectHasPose": false,
+    "draftHasPose": false,
+    "localStorageKeys": [
+      "rotAxis",
+      "open"
+    ]
+  },
+  "10_interactions": {
+    "wheelZoom": {
+      "before": 0.4181,
+      "after": 0.3405
+    },
+    "pan": {
+      "space": true,
+      "middle": true,
+      "right": true,
+      "poseUnchanged": true
+    },
+    "touch": {
+      "horizontal": {
+        "angleDeg": 48,
+        "axisDotOtherScreenAxis": 0
+      },
+      "vertical": {
+        "angleDeg": 36,
+        "axisDotOtherScreenAxis": 0
+      },
+      "pinch": {
+        "distBefore": 0.3405,
+        "distAfter": 0.1166,
+        "poseUnchanged": true
+      }
+    },
+    "glbViewerMode": {
+      "angleDeg": 40,
+      "visibleCount": 3,
+      "border": 0
+    }
+  },
+  "page_errors": []
+}

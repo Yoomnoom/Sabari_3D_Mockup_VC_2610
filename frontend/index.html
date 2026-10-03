@@ -169,8 +169,12 @@
         <button data-view="bottom" title="아래에서 올려다봅니다 (Shift+7)">아래</button>
         <button id="btnIso" data-view="iso" title="한 번 더 누르면 반대편 모서리(뒤·왼쪽 날개)로 바뀝니다">3/4 시점</button>
       </div>
-      <p class="hint">시점 버튼은 방향만 바꾸고 확대는 유지합니다. 처음처럼 전체를 보려면 <kbd>F</kbd> 또는 위치 초기화.<br>3/4 시점을 한 번 더 누르면 반대편 모서리로 바뀝니다. <kbd>R</kbd> 앞·오른쪽 날개 / <kbd>L</kbd> 뒤·왼쪽 날개</p>
-      <p class="hint">드래그: 회전 · 휠: 확대/축소 · Space+드래그: 이동</p>
+      <div class="rotdir" role="group" aria-label="회전 방향">
+        <button id="rotH" aria-pressed="true" title="가로로 끌면 박스가 좌우로 돕니다 (T 키로 전환)">좌우로 돌리기</button>
+        <button id="rotV" aria-pressed="false" title="세로로 끌면 박스가 위아래로 돕니다 (T 키로 전환)">위아래로 돌리기</button>
+      </div>
+      <p class="hint">시점 버튼은 박스를 기본 자세로 되돌리고 방향만 바꾸며 확대는 유지합니다. 처음처럼 전체를 보려면 <kbd>F</kbd> 또는 위치 초기화.<br>3/4 시점을 한 번 더 누르면 반대편 모서리로 바뀝니다. <kbd>R</kbd> 앞·오른쪽 날개 / <kbd>L</kbd> 뒤·왼쪽 날개</p>
+      <p class="hint">드래그: 박스 회전(선택한 방향만, 제한 없음) · <kbd>Ctrl</kbd>+드래그: 15° 단위 · 휠: 확대/축소 · Space+드래그: 이동</p>
     </details>
 
     <section>
@@ -210,6 +214,7 @@
         <tr><td><kbd>1</kbd> <kbd>Shift+1</kbd> <kbd>3</kbd> <kbd>Shift+3</kbd> <kbd>7</kbd> <kbd>Shift+7</kbd></td><td>정면 · 후면 · 우측 · 좌측 · 윗면 · 아래</td></tr>
         <tr><td><kbd>R</kbd> / <kbd>L</kbd></td><td>3/4 시점: 앞·오른쪽 날개 / 뒤·왼쪽 날개</td></tr>
         <tr><td><kbd>0</kbd></td><td>3/4 시점 (누를 때마다 R ↔ L)</td></tr>
+        <tr><td><kbd>T</kbd></td><td>회전 방향 전환 (좌우로 ↔ 위아래로)</td></tr>
         <tr><td><kbd>F</kbd></td><td>위치 초기화 (확대·이동을 처음 상태로, 방향은 유지)</td></tr>
         <tr><td><kbd>O</kbd></td><td>뚜껑 열기/닫기</td></tr>
         <tr><td><kbd>Esc</kbd></td><td>선택선·안내 닫기</td></tr>
@@ -244,6 +249,8 @@
 
   <main id="stage">
     <div id="viewport"></div>
+    <div id="rotBadge" role="status" hidden></div>
+    <div id="rotDirLabel">좌우로 돌리기</div>
     <div id="panBadge" aria-live="polite">손 도구 (Space) — 끌어서 화면 이동</div>
     <div id="overlayTop">
       <div id="msg" role="alert" hidden><span id="msgText"></span><button id="msgClose" aria-label="닫기">닫기</button></div>

@@ -1,0 +1,336 @@
+{
+  "1_door_turn_top_bottom": {
+    "top": {
+      "before": [
+        "lid_top:1366400"
+      ],
+      "after": [
+        "lid_top:629100",
+        "lid_left:333224",
+        "base_left:34918"
+      ],
+      "angleDeg": 60,
+      "axisDotScreenUp": 1,
+      "axisDotScreenRight": 0,
+      "wingVisibleAfter": true
+    },
+    "bottom": {
+      "before": [
+        "base_bottom:1263792"
+      ],
+      "after": [
+        "base_bottom:580031",
+        "lid_left:323219",
+        "base_left:61903"
+      ],
+      "angleDeg": 60,
+      "axisDotScreenUp": 1,
+      "axisDotScreenRight": 0,
+      "wingVisibleAfter": true
+    }
+  },
+  "2_vertical_cycle": {
+    "dominantFacePerQuarterTurn": [
+      "lid_back",
+      "base_bottom",
+      "lid_front",
+      "lid_top",
+      "lid_back",
+      "base_bottom",
+      "lid_front",
+      "lid_top"
+    ],
+    "stepAnglesDeg": [
+      90,
+      90,
+      90,
+      90,
+      90,
+      90,
+      90,
+      90,
+      90,
+      90,
+      90,
+      90,
+      90,
+      90,
+      90,
+      90
+    ],
+    "allStepsAbout90": true,
+    "cumulativeDeg": 1440,
+    "angleDiffAfter4TurnsDeg": 0,
+    "cycleRepeats": true,
+    "fourDistinctFaces": true
+  },
+  "3_direction_lock": {
+    "horizontal": {
+      "rows": [
+        {
+          "dx": 180,
+          "dy": 140,
+          "angleDeg": 72,
+          "expectedAbsDeg": 72,
+          "axisDotOtherScreenAxis": 0
+        },
+        {
+          "dx": -120,
+          "dy": 200,
+          "angleDeg": 48,
+          "expectedAbsDeg": 48,
+          "axisDotOtherScreenAxis": 0
+        },
+        {
+          "dx": 90,
+          "dy": -260,
+          "angleDeg": 36,
+          "expectedAbsDeg": 36,
+          "axisDotOtherScreenAxis": 0
+        },
+        {
+          "dx": -300,
+          "dy": -50,
+          "angleDeg": 120,
+          "expectedAbsDeg": 120,
+          "axisDotOtherScreenAxis": 0
+        }
+      ],
+      "otherComponentZero": true,
+      "angleMatches": true
+    },
+    "vertical": {
+      "rows": [
+        {
+          "dx": 180,
+          "dy": 140,
+          "angleDeg": 56,
+          "expectedAbsDeg": 56,
+          "axisDotOtherScreenAxis": 0
+        },
+        {
+          "dx": -120,
+          "dy": 200,
+          "angleDeg": 80,
+          "expectedAbsDeg": 80,
+          "axisDotOtherScreenAxis": 0
+        },
+        {
+          "dx": 90,
+          "dy": -260,
+          "angleDeg": 104,
+          "expectedAbsDeg": 104,
+          "axisDotOtherScreenAxis": 0
+        },
+        {
+          "dx": -300,
+          "dy": -50,
+          "angleDeg": 20,
+          "expectedAbsDeg": 20,
+          "axisDotOtherScreenAxis": 0
+        }
+      ],
+      "otherComponentZero": true,
+      "angleMatches": true
+    }
+  },
+  "4_direction_select": {
+    "afterH": {
+      "h": "true",
+      "v": "false",
+      "label": "좌우로 돌리기",
+      "axis": "horizontal"
+    },
+    "afterV": {
+      "h": "false",
+      "v": "true",
+      "label": "위아래로 돌리기",
+      "axis": "vertical"
+    },
+    "afterKeyT_fromV": {
+      "h": "true",
+      "v": "false",
+      "label": "좌우로 돌리기",
+      "axis": "horizontal"
+    },
+    "afterKeyT_again": {
+      "h": "false",
+      "v": "true",
+      "label": "위아래로 돌리기",
+      "axis": "vertical"
+    },
+    "keysDisabled_unchanged": {
+      "before": {
+        "h": "false",
+        "v": "true",
+        "label": "위아래로 돌리기",
+        "axis": "vertical"
+      },
+      "after": {
+        "h": "false",
+        "v": "true",
+        "label": "위아래로 돌리기",
+        "axis": "vertical"
+      }
+    },
+    "afterReload_V": {
+      "h": "false",
+      "v": "true",
+      "label": "위아래로 돌리기",
+      "axis": "vertical"
+    },
+    "poseAfterReload": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "afterReload_H": {
+      "h": "true",
+      "v": "false",
+      "label": "좌우로 돌리기",
+      "axis": "horizontal"
+    }
+  },
+  "5_stand_then_turn_horizontally": {
+    "standing": {
+      "dragSign": 1,
+      "badge": "위아래 돌리기 +90° · 15° 스냅",
+      "snapClass": true,
+      "angleDeg": 90,
+      "visible": [
+        "lid_top:1354976"
+      ],
+      "geom": {
+        "longWorld": [
+          2.523234046611043e-16,
+          -1,
+          -2.94377305437955e-16
+        ],
+        "longVsScreenVertical": 0.992876838486922,
+        "lidTopFacesCamera": 0.992876838486922
+      }
+    },
+    "rows": [
+      {
+        "dx": 140,
+        "angleDeg": 56,
+        "axisDotScreenUp": 1,
+        "axisDotScreenRight": 0,
+        "longEdgeVsScreenVertical": 0.992876838
+      },
+      {
+        "dx": -230,
+        "angleDeg": 92,
+        "axisDotScreenUp": 1,
+        "axisDotScreenRight": 0,
+        "longEdgeVsScreenVertical": 0.992876838
+      },
+      {
+        "dx": 310,
+        "angleDeg": 124,
+        "axisDotScreenUp": 1,
+        "axisDotScreenRight": 0,
+        "longEdgeVsScreenVertical": 0.992876838
+      },
+      {
+        "dx": 90,
+        "angleDeg": 36,
+        "axisDotScreenUp": 1,
+        "axisDotScreenRight": 0,
+        "longEdgeVsScreenVertical": 0.992876838
+      },
+      {
+        "dx": -60,
+        "angleDeg": 24,
+        "axisDotScreenUp": 1,
+        "axisDotScreenRight": 0,
+        "longEdgeVsScreenVertical": 0.992876838
+      }
+    ],
+    "longEdgeConstantVsScreenVertical": true,
+    "longEdgeTiltFromScreenVerticalDeg": 6.843,
+    "longEdgeWithin7DegOfScreenVertical": true,
+    "rotatesOnlyAboutScreenVertical": true,
+    "note": "우측 시점의 카메라 고도(0.12/1 ≈ 6.9°)만큼 화면 세로축이 월드 Y에서 기울어 있어 긴 변은 화면 세로에서 항상 같은 각(≈6.9°)만 벗어난다(드래그해도 변하지 않음 = 화면 세로축 기준 회전). 카메라 고도 0°에서는 정확히 0°."
+  },
+  "6_snap_and_badge": {
+    "snapped": [
+      {
+        "px": 37,
+        "rawDeg": 14.8,
+        "badge": "좌우 돌리기 +15° · 15° 스냅",
+        "badgeDeg": 15,
+        "actualAbsDeg": 15,
+        "multipleOf15": true,
+        "snapStyle": true
+      },
+      {
+        "px": 61,
+        "rawDeg": 24.4,
+        "badge": "좌우 돌리기 +30° · 15° 스냅",
+        "badgeDeg": 30,
+        "actualAbsDeg": 30,
+        "multipleOf15": true,
+        "snapStyle": true
+      },
+      {
+        "px": 100,
+        "rawDeg": 40,
+        "badge": "좌우 돌리기 +45° · 15° 스냅",
+        "badgeDeg": 45,
+        "actualAbsDeg": 45,
+        "multipleOf15": true,
+        "snapStyle": true
+      },
+      {
+        "px": 143,
+        "rawDeg": 57.2,
+        "badge": "좌우 돌리기 +60° · 15° 스냅",
+        "badgeDeg": 60,
+        "actualAbsDeg": 60,
+        "multipleOf15": true,
+        "snapStyle": true
+      },
+      {
+        "px": -52,
+        "rawDeg": -20.8,
+        "badge": "좌우 돌리기 -15° · 15° 스냅",
+        "badgeDeg": -15,
+        "actualAbsDeg": 15,
+        "multipleOf15": true,
+        "snapStyle": true
+      },
+      {
+        "px": -171,
+        "rawDeg": -68.4,
+        "badge": "좌우 돌리기 -75° · 15° 스냅",
+        "badgeDeg": -75,
+        "actualAbsDeg": 75,
+        "multipleOf15": true,
+        "snapStyle": true
+      }
+    ],
+    "plain": [
+      {
+        "px": 37,
+        "badge": "좌우 돌리기 +14.8°",
+        "badgeDeg": 14.8,
+        "actualAbsDeg": 14.8,
+        "snapStyle": false
+      },
+      {
+        "px": -52,
+        "badge": "좌우 돌리기 -20.8°",
+        "badgeDeg": -20.8,
+        "actualAbsDeg": 20.8,
+        "snapStyle": false
+      }
+    ],
+    "badgeMatchesActual": true,
+    "snapAll15": true,
+    "badgeHiddenAfter": true,
+    "stand_dragSign": 1
+  },
+  "page_errors": []
+}
