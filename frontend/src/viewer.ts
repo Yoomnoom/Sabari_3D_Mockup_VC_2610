@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { TrackballControls } from 'three/addons/controls/TrackballControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { FACES, FaceId, groupOf } from './faces';
@@ -27,15 +26,21 @@ export class Viewer {
   scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera(30, 1, 0.005, 20);
   /**
-   * 회전 방식 두 가지를 같은 target·camera 로 둔다. 박스는 월드에 고정이고 카메라만 돈다(이후 바닥 그림자·고정 배경이 박스를 따라 돌지 않게).
-   * - 자유 회전(기본): TrackballControls. 극점(위·아래)에서 멈추지 않고 뒤집을 수 있다. 쿼터니언 직접 구현 대신 three 가 검증한 구현을 써서
-   *   마우스·터치(한 손가락 회전, 두 손가락 확대·이동)를 그대로 지원하고 코드를 줄였다.
-   * - 수평 유지 회전: OrbitControls. 위쪽 방향(up)이 고정되고 극점에서 멈춘다.
+   * 카메라 조작: OrbitControls 는 확대·이동(마우스·터치)과 "수평 유지 회전"에 쓴다.
+   * 자유 회전(기본)은 아래 turntable 코드가 직접 처리한다 — 가로 드래그 = 월드 위쪽 축 기준, 세로 드래그 = 화면 가로축 기준이며
+   * 롤이 쌓이지 않는다. 박스는 월드에 고정이고 카메라만 돈다(이후 바닥 그림자·고정 배경 대비).
    */
   readonly orbit: OrbitControls;
-  readonly track: TrackballControls;
   levelRotate = false;
-  get controls(): OrbitControls | TrackballControls { return this.levelRotate ? this.orbit : this.track; }
+  get controls(): OrbitControls { return this.orbit; }
+  /** 회전 속도 배율(마우스·터치 공통). 3 = 기본: 3D 화면 높이만큼 끌면 180° 돈다. */
+  rotateSpeed = 3;
+  /** 카메라 각도가 바뀔 때마다(회전·이동·시점 변경·입력) 호출된다. 각도 표시 갱신용. */
+  onCamera: (() => void) | null = null;
+  private imageDragging = false;
+  /** 회전 가능한 최소/최대 카메라 거리(박스 중심 기준 m). 최소는 박스 안으로 들어가 잘리는 것을 막는다. */
+  static readonly MIN_DIST = 0.1;
+  static readonly MAX_DIST = 2;
   models: Record<Slot, Model | null> = { editor: null, viewer: null };
   slot: Slot = 'editor';
   faceMeshes = new Map<FaceId, THREE.Mesh>();
@@ -77,27 +82,19 @@ export class Viewer {
 
     this.orbit = new OrbitControls(this.camera, this.renderer.domElement);
     this.orbit.enableDamping = false;
+    this.orbit.enableRotate = false; // 자유 회전은 직접 처리. 수평 유지 회전을 켤 때만 OrbitControls 가 회전한다.
+    this.orbit.minDistance = Viewer.MIN_DIST; this.orbit.maxDistance = Viewer.MAX_DIST;
     this.orbit.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.PAN, RIGHT: THREE.MOUSE.PAN };
-    this.orbit.addEventListener('change', () => (this.dirty = true));
-    this.orbit.enabled = false;
-    this.track = new TrackballControls(this.camera, this.renderer.domElement);
-    this.track.staticMoving = true; // 관성 없이 손을 떼면 바로 멈춘다(기존 OrbitControls 와 같은 느낌)
-    this.track.rotateSpeed = 3;
-    this.track.zoomSpeed = 1.2;
-    this.track.panSpeed = 0.8;
-    this.track.minDistance = 0.02; this.track.maxDistance = 5;
-    this.track.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.PAN, RIGHT: THREE.MOUSE.PAN };
-    this.track.addEventListener('change', () => (this.dirty = true));
+    this.orbit.addEventListener('change', () => { this.dirty = true; this.onCamera?.(); });
 
-    // 크기 갱신은 프레임당 한 번만, 실제로 바뀐 경우에만 한다. (스크롤바·소수점 크기 때문에 매 프레임 반복되면 캔버스가 계속 지워져 빈 화면이 된다)
     let raf = 0;
     new ResizeObserver(() => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; this.resize(); }); }).observe(el);
     this.resize();
     this.setView('iso');
     this.installPicking();
+    this.installTurntable();
     const loop = () => {
       requestAnimationFrame(loop);
-      if (!this.levelRotate) this.track.update(); // TrackballControls 는 매 프레임 갱신이 필요하다
       if (this.dirty) {
         this.dirty = false;
         this.renderer.render(this.scene, this.camera);
@@ -138,6 +135,7 @@ export class Viewer {
     const dom = this.renderer.domElement;
     let down: { x: number; y: number } | null = null;
     let drag: THREE.Vector2 | null = null; // Shift+드래그로 이미지 이동 중일 때 직전 UV
+    const setDrag = (v: THREE.Vector2 | null) => { drag = v; this.imageDragging = v !== null; };
 
     // 캡처 단계: OrbitControls보다 먼저 받아서, Shift+드래그일 때 회전을 막는다.
     dom.addEventListener('pointerdown', (e) => {
@@ -147,7 +145,7 @@ export class Viewer {
       const mesh = this.faceMeshes.get(this.selected);
       const h = mesh && this.rayAt(e, [mesh], false)[0];
       if (h?.uv) {
-        drag = h.uv.clone();
+        setDrag(h.uv.clone());
         this.controls.enabled = false;
         dom.setPointerCapture(e.pointerId);
       }
@@ -161,7 +159,7 @@ export class Viewer {
       drag.copy(h.uv);
     });
     dom.addEventListener('pointerup', (e) => {
-      if (drag) { drag = null; this.controls.enabled = true; down = null; return; }
+      if (drag) { setDrag(null); this.controls.enabled = true; down = null; return; }
       if (!down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 4 || e.button !== 0) return;
       if (this.slot !== 'editor' || !this.onPick) return;
       const hit = this.rayAt(e, [this.models.editor!.root])[0];
@@ -176,26 +174,117 @@ export class Viewer {
       e.preventDefault(); e.stopImmediatePropagation();
       this.onWheelFace(e.deltaY);
     }, { capture: true, passive: false });
-    dom.addEventListener('pointercancel', () => { drag = null; this.controls.enabled = true; });
+    dom.addEventListener('pointercancel', () => { setDrag(null); this.controls.enabled = true; });
+  }
+
+  // ------------------------------------------------------------ 턴테이블형 자유 회전
+  /**
+   * 각도 매개변수: 카메라 위치 = 중심 + 거리·(cosE·sinA, sinE, cosE·cosA). A=좌우(방위각), E=상하(고도, 제한 없음).
+   * E 가 ±90° 를 넘으면 cosE<0 이 되어 박스가 뒤집혀 보인다. 화면 위쪽 = ∂p/∂E 이므로 극점을 지나도 끊기지 않고 롤이 생기지 않는다.
+   */
+  private rotState(): { A: number; E: number; dist: number } {
+    const d = this.camera.position.clone().sub(this.controls.target);
+    const dist = d.length();
+    const el = Math.asin(THREE.MathUtils.clamp(d.y / dist, -1, 1));
+    let A = Math.atan2(d.x, d.z), E = el;
+    if (Math.abs(d.y / dist) > 0.9999) { // 극점: 방위각은 화면 위쪽 방향에서 읽는다
+      const u = this.camera.up;
+      if (Math.hypot(u.x, u.z) > 0.5) A = d.y > 0 ? Math.atan2(-u.x, -u.z) : Math.atan2(u.x, u.z); // up 이 수평이면 거기서, 아니면(up=Y) 시선의 수평 성분에서
+    } else if (this.camera.up.y < -1e-6) { E = Math.PI - el; A += Math.PI; } // 뒤집힌 상태
+    return { A, E, dist };
+  }
+
+  private applyRot(A: number, E: number, dist: number) {
+    const c = this.controls.target;
+    const sA = Math.sin(A), cA = Math.cos(A), sE = Math.sin(E), cE = Math.cos(E);
+    this.camera.position.set(c.x + dist * cE * sA, c.y + dist * sE, c.z + dist * cE * cA);
+    this.camera.up.set(-sE * sA, cE, -sE * cA).normalize(); // 화면 위쪽 = ∂p/∂E
+    this.camera.lookAt(c);
+    this.controls.update();
+    this.dirty = true;
+    this.onCamera?.();
+  }
+
+  /** 드래그 이동량 → 라디안. 기본 속도(3)에서 3D 화면 높이만큼 끌면 180°. */
+  private radPerPx(): number { return (this.rotateSpeed / 3) * Math.PI / Math.max(1, this.el.clientHeight); }
+
+  private installTurntable() {
+    const dom = this.renderer.domElement;
+    let g: { id: number; x: number; y: number; A: number; E: number; dist: number } | null = null;
+    const touches = new Set<number>();
+    dom.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'touch') touches.add(e.pointerId);
+      if (touches.size > 1) { g = null; return; } // 두 손가락은 OrbitControls 의 확대·이동
+      if (this.levelRotate || this.panHeld || this.imageDragging || e.shiftKey && this.slot === 'editor' && this.onDragFace && (this.canDrag?.() ?? true) && this.rayAt(e, [this.faceMeshes.get(this.selected)!], false)[0]) return;
+      if (e.pointerType !== 'touch' && e.button !== 0) return;
+      const st = this.rotState();
+      g = { id: e.pointerId, x: e.clientX, y: e.clientY, ...st };
+    }, true);
+    dom.addEventListener('pointermove', (e) => {
+      if (!g || e.pointerId !== g.id || this.imageDragging || this.levelRotate) return;
+      const k = this.radPerPx();
+      const dx = e.clientX - g.x, dy = e.clientY - g.y;
+      // 뒤집힌 상태(cosE<0)에서는 화면 오른쪽이 월드 기준으로 반대이므로 방위각 방향을 뒤집어 "박스가 손을 따라가게" 한다.
+      const flipped = Math.cos(g.E) < 0;
+      const A = g.A + (flipped ? 1 : -1) * dx * k;
+      const E = g.E + dy * k;
+      this.applyRot(A, E, g.dist);
+    });
+    const end = (e: PointerEvent) => { touches.delete(e.pointerId); if (g && e.pointerId === g.id) g = null; };
+    dom.addEventListener('pointerup', end);
+    dom.addEventListener('pointercancel', end);
+  }
+
+  /** 화면에 보여줄 각도(도). az: −180~180, 0=정면(카메라가 +Z), +=카메라가 오른쪽(+X)으로. el: −90~90, 0=수평, +=위에서. flipped: 뒤집혀 보이는지. */
+  getAngles(): { az: number; el: number; flipped: boolean } {
+    const d = this.camera.position.clone().sub(this.controls.target);
+    const len = d.length() || 1;
+    const el = Math.asin(THREE.MathUtils.clamp(d.y / len, -1, 1));
+    const A = Math.abs(d.y / len) > 0.9999 ? this.rotState().A : Math.atan2(d.x, d.z);
+    const deg = THREE.MathUtils.radToDeg;
+    let az = deg(A); az = ((az + 180) % 360 + 360) % 360 - 180;
+    return { az: +az.toFixed(1), el: +deg(el).toFixed(1), flipped: this.camera.up.y < -1e-6 };
+  }
+
+  /** 각도를 직접 지정한다(도). 거리·확대·이동은 유지하고 뒤집힘은 풀린다. */
+  setAngles(azDeg: number, elDeg: number) {
+    const el = THREE.MathUtils.clamp(elDeg, -90, 90);
+    this.applyRot(THREE.MathUtils.degToRad(azDeg), THREE.MathUtils.degToRad(el), this.rotState().dist);
+  }
+
+  /** 90° 단위 회전. dir: 'left'|'right' = 방위각 ∓90°, 'up'|'down' = 고도 ±90°. 4번 누르면 원래 각도로 돌아온다. */
+  rotate90(dir: 'left' | 'right' | 'up' | 'down') {
+    const s = this.rotState();
+    const q = Math.PI / 2;
+    const flipped = Math.cos(s.E) < -1e-9;
+    if (dir === 'left' || dir === 'right') this.applyRot(s.A + ((dir === 'left') !== flipped ? 1 : -1) * q, s.E, s.dist);
+    else this.applyRot(s.A, s.E + (dir === 'up' ? -1 : 1) * q, s.dist);
+  }
+
+  /** 수평 맞추기: 바라보는 방향(카메라 위치)은 그대로 두고 기울기만 바로잡는다. 뒤집혀 있으면 같은 위치에서 위쪽을 세워 똑바로 보이게 한다. */
+  levelHorizon() {
+    const d = this.camera.position.clone().sub(this.controls.target).normalize();
+    if (Math.abs(d.y) > 0.9999) return false; // 위·아래 시점은 기울기를 정할 수 없다
+    this.camera.up.set(0, 1, 0);
+    this.camera.lookAt(this.controls.target);
+    this.controls.update(); this.dirty = true; this.onCamera?.();
+    return true;
+  }
+
+  /** 수평 유지 회전 켜기/끄기. 켜면 위쪽 방향을 바로잡고 극점에서 멈추는 OrbitControls 회전으로 바꾼다. */
+  setLevelRotate(v: boolean) {
+    if (v === this.levelRotate) return;
+    this.levelRotate = v;
+    this.orbit.enableRotate = v;
+    if (v) { this.camera.up.set(0, 1, 0); this.camera.lookAt(this.controls.target); }
+    this.orbit.update();
+    this.dirty = true; this.onCamera?.();
   }
 
   /** 스페이스를 누르는 동안 왼쪽 드래그 = 화면 이동(손 도구). */
-  /** 수평 유지 회전 켜기/끄기. 켜면 위쪽 방향을 바로잡고 극점에서 멈추는 OrbitControls 로 바꾼다. */
-  setLevelRotate(v: boolean) {
-    if (v === this.levelRotate) return;
-    const target = this.controls.target.clone();
-    this.levelRotate = v;
-    this.orbit.enabled = v; this.track.enabled = !v;
-    this.camera.up.set(0, 1, 0); // 자유 회전으로 뒤집혀 있었다면 위쪽을 되돌린다
-    this.orbit.target.copy(target); this.track.target.copy(target);
-    this.controls.update();
-    this.setPanHeld(this.panHeld);
-    this.dirty = true;
-  }
-
   setPanHeld(v: boolean) {
     this.panHeld = v;
-    for (const c of [this.orbit, this.track]) c.mouseButtons.LEFT = v ? THREE.MOUSE.PAN : THREE.MOUSE.ROTATE;
+    this.orbit.mouseButtons.LEFT = v ? THREE.MOUSE.PAN : THREE.MOUSE.ROTATE;
     this.el.classList.toggle('panning', v);
   }
 
@@ -258,6 +347,7 @@ export class Viewer {
     }
     this.models.editor = { root, lid, base, lidBaseY: 0 };
     this.scene.add(root);
+    this.updateLimits();
     root.visible = this.slot === 'editor';
     lid.position.y = lift / 1000;
     lid.visible = lidVisible; base.visible = baseVisible;
@@ -405,6 +495,7 @@ export class Viewer {
     this.controls.target.copy(center);
     this.controls.update();
     this.dirty = true;
+    this.onCamera?.();
   }
 
   /** 위치 초기화(화면에 맞추기): 지금 보는 방향은 그대로, 확대와 이동만 처음 상태로. */
@@ -414,10 +505,19 @@ export class Viewer {
     const d = this.camera.position.clone().sub(this.controls.target).normalize();
     if (d.lengthSq() < 0.5) d.set(...DIRS.iso).normalize();
     this.camera.position.copy(center).addScaledVector(d, this.fitDistance(box));
-    this.camera.up.set(0, 1, 0); // 자유 회전으로 뒤집혀 있어도 위쪽 방향을 바로잡는다(바라보는 방향은 유지)
+    if (Math.abs(d.y) < 0.9999) this.camera.up.set(0, 1, 0); // 자유 회전으로 뒤집혀 있어도 위쪽 방향을 바로잡는다(바라보는 방향은 유지, 극점은 현재 up 유지)
     this.controls.target.copy(center);
+    this.updateLimits(box);
     this.controls.update();
     this.dirty = true;
+    this.onCamera?.();
+  }
+
+  /** 확대 한계를 박스 크기에서 정한다: 최소 = 박스를 감싸는 구의 반지름(카메라가 박스 안으로 들어가 near plane 에 잘리는 것을 막음), 최대 = 전체 보기 거리의 4배. */
+  private updateLimits(box = this.bounds()) {
+    const r = box.getBoundingSphere(new THREE.Sphere()).radius;
+    this.orbit.minDistance = r * 1.0;
+    this.orbit.maxDistance = Math.max(Viewer.MAX_DIST, this.fitDistance(box) * 4);
   }
 
   /** 검증용: 면 꼭짓점의 화면 좌표(CSS px). 번짐 검사에 쓴다. */

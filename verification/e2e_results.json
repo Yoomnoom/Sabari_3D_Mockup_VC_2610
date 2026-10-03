@@ -105,7 +105,7 @@
   "closed_lift_mm": 0,
   "png_white": {
     "file": "08_export_white.png",
-    "bytes": 618810,
+    "bytes": 657877,
     "pngSignature": true,
     "w": 2080,
     "h": 1720,
@@ -138,7 +138,7 @@
   },
   "png_transparent": {
     "file": "08_export_transparent.png",
-    "bytes": 617880,
+    "bytes": 656361,
     "pngSignature": true,
     "w": 2080,
     "h": 1720,
@@ -173,7 +173,7 @@
   "project_saved_bytes": 146674,
   "error_message_bad_file": "이미지를 읽지 못했습니다. 파일이 손상되지 않았는지 확인해 주세요.",
   "console_errors_edit": [
-    "Nm: 이미지를 읽지 못했습니다. 파일이 손상되지 않았는지 확인해 주세요.\n    at Pm (http://127.0.0.1:8766/assets/index-CdkZ8JEn.js:4234:90395)\n    at async Ch (http://127.0.0.1:8766/assets/index-CdkZ8JEn.js:4234:96774)\n    at async ch (http://127.0.0.1:8766/assets/index-CdkZ8JEn.js:4234:95480)"
+    "rm: 이미지를 읽지 못했습니다. 파일이 손상되지 않았는지 확인해 주세요.\n    at im (http://127.0.0.1:8766/assets/index-Dfz_xIhz.js:4234:90395)\n    at async qm (http://127.0.0.1:8766/assets/index-Dfz_xIhz.js:4234:96774)\n    at async Mm (http://127.0.0.1:8766/assets/index-Dfz_xIhz.js:4234:95480)"
   ],
   "project_reopen_state_equal": true,
   "project_reopen_lift_mm": 80,

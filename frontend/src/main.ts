@@ -552,7 +552,7 @@ async function handleFile(file: File) {
 // ---------- 화면 설정 (접기·펼치기, 단축키 사용) — 이 브라우저의 localStorage에 기억 ----------
 const UI_KEY = 'sabari-ui';
 let keysEnabled = true;
-const loadUi = (): { open?: Record<string, boolean>; keys?: boolean; level?: boolean } => {
+const loadUi = (): { open?: Record<string, boolean>; keys?: boolean; level?: boolean; speed?: number } => {
   try { return JSON.parse(localStorage.getItem(UI_KEY) ?? '{}'); } catch { return {}; }
 };
 const saveUi = (patch: object) => { try { localStorage.setItem(UI_KEY, JSON.stringify({ ...loadUi(), ...patch })); } catch { /* 저장 불가 환경이면 기억만 안 한다 */ } };
@@ -727,7 +727,39 @@ async function init() {
   const lv = $('btnLevel');
   const setLevel = (v: boolean) => { viewer.setLevelRotate(v); lv.setAttribute('aria-pressed', String(v)); saveUi({ level: v }); };
   lv.onclick = () => setLevel(lv.getAttribute('aria-pressed') !== 'true');
-  if ((loadUi() as { level?: boolean }).level) setLevel(true); // 3/4 시점: 누를 때마다 R ↔ L
+  if (loadUi().level) setLevel(true);
+
+  // 각도 · 회전: 표시는 카메라에서 읽어 실시간 갱신하고, 입력하면 카메라를 그 각도로 옮긴다(거리·확대 유지)
+  const num = (id: string) => $<HTMLInputElement>(id);
+  const syncAngles = () => {
+    const a = viewer.getAngles();
+    for (const [k, v] of [['az', a.az], ['el', a.el]] as const) {
+      if (document.activeElement !== num(k + 'N')) num(k + 'N').value = String(Math.round(v));
+      num(k + 'R').value = String(Math.round(v));
+    }
+    $('flipInfo').hidden = !a.flipped;
+  };
+  viewer.onCamera = syncAngles;
+  const fromInputs = (src: HTMLInputElement) => () => {
+    const az = Number(num(src.id.startsWith('az') ? src.id : 'azN').value), el = Number(num('elN').value);
+    const a = src.id.startsWith('az') ? Number(src.value) : viewer.getAngles().az;
+    const e = src.id.startsWith('el') ? Number(src.value) : viewer.getAngles().el;
+    void az; void el;
+    if (Number.isFinite(a) && Number.isFinite(e)) viewer.setAngles(a, e);
+  };
+  for (const id of ['azR', 'azN', 'elR', 'elN']) { const el = num(id); el.oninput = fromInputs(el); }
+  $('rotLeft').onclick = () => viewer.rotate90('left');
+  $('rotRight').onclick = () => viewer.rotate90('right');
+  $('rotUp').onclick = () => viewer.rotate90('up');
+  $('rotDown').onclick = () => viewer.rotate90('down');
+  $('btnLevelHorizon').onclick = () => { if (!viewer.levelHorizon()) msg('위·아래 시점에서는 기울기를 정할 수 없습니다. 먼저 회전해 주세요.'); };
+  $('btnAngleDefault').onclick = () => { const d = viewer.getAngles(); void d; showView('iso'); };
+  const setSpeed = (v: number) => { const s = Math.min(8, Math.max(0.5, v)); viewer.rotateSpeed = s; num('spR').value = num('spN').value = String(s); saveUi({ speed: s }); };
+  const sp = loadUi().speed;
+  setSpeed(typeof sp === 'number' ? sp : 3);
+  num('spR').oninput = () => setSpeed(Number(num('spR').value));
+  num('spN').onchange = () => { const v = Number(num('spN').value); if (Number.isFinite(v)) setSpeed(v); };
+  syncAngles(); // 3/4 시점: 누를 때마다 R ↔ L
   $('btnFit').onclick = (e) => { e.preventDefault(); e.stopPropagation(); viewer.fit(); }; // summary 안의 버튼이라 접기가 같이 눌리지 않게 한다
 
   // 저장 / 열기

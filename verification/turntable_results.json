@@ -1,0 +1,544 @@
+{
+  "1_roll_turntable": {
+    "drags": 60,
+    "maxAbsRollDeg": 0,
+    "meanAbsRollDeg": 0,
+    "flipTransitions": 9,
+    "finalDist": 0.41805
+  },
+  "1_roll_before_trackball": {
+    "drags": 60,
+    "maxAbsRollDeg": 81.769,
+    "meanAbsRollDeg": 38.897,
+    "flipTransitions": 11,
+    "finalDist": 0.41805
+  },
+  "2_pole_crossing": {
+    "drags": 12,
+    "minScreenUpY": -0.997,
+    "hemisphereCrossings": 3,
+    "rollAfter": 0,
+    "dist": 0.41805
+  },
+  "2_flipped": {
+    "dir": [
+      -0.0507,
+      0.997,
+      -0.0592
+    ],
+    "dist": 0.41805,
+    "rollDeg": 0,
+    "screenUpY": -0.078,
+    "camUp": [
+      -0.649,
+      -0.078,
+      -0.757
+    ],
+    "tgt": [
+      0,
+      0.0225,
+      0
+    ]
+  },
+  "2_top": {
+    "hSpinsAroundVertical": true,
+    "hStartUp": [
+      0,
+      1,
+      0
+    ],
+    "hAfterUp": [
+      0.469,
+      0,
+      -0.883
+    ],
+    "vRotates": true,
+    "rollAfterH": 0,
+    "rollAfterV": 0
+  },
+  "2_bottom": {
+    "hSpinsAroundVertical": true,
+    "hStartUp": [
+      0,
+      1,
+      0
+    ],
+    "hAfterUp": [
+      -0.469,
+      0,
+      0.883
+    ],
+    "vRotates": true,
+    "rollAfterH": 0,
+    "rollAfterV": 0
+  },
+  "2_horizontal_drag_direction": {
+    "normal": {
+      "azBefore": 0,
+      "azAfter": -20,
+      "deltaPositiveXDrag": -20
+    },
+    "flipped": {
+      "flippedFlag": true,
+      "screenUpY": -0.356,
+      "azBefore": -180,
+      "azAfter": -160,
+      "deltaPositiveXDrag": 20
+    },
+    "note": "뒤집힌 상태에서는 방위각 방향을 반대로 하여 박스가 손을 따라간다"
+  },
+  "3_angle_input": {
+    "rows": [
+      {
+        "az": 0,
+        "el": 0,
+        "maxDirError": 0,
+        "dist": 0.41805,
+        "rollDeg": 0,
+        "shown": [
+          "0",
+          "0"
+        ]
+      },
+      {
+        "az": 45,
+        "el": 30,
+        "maxDirError": 0,
+        "dist": 0.41805,
+        "rollDeg": 0,
+        "shown": [
+          "45",
+          "30"
+        ]
+      },
+      {
+        "az": -120,
+        "el": 10,
+        "maxDirError": 0,
+        "dist": 0.41805,
+        "rollDeg": 0,
+        "shown": [
+          "-120",
+          "10"
+        ]
+      },
+      {
+        "az": 170,
+        "el": -40,
+        "maxDirError": 0,
+        "dist": 0.41805,
+        "rollDeg": 0,
+        "shown": [
+          "170",
+          "-40"
+        ]
+      },
+      {
+        "az": 90,
+        "el": 80,
+        "maxDirError": 0,
+        "dist": 0.41805,
+        "rollDeg": 0,
+        "shown": [
+          "90",
+          "80"
+        ]
+      },
+      {
+        "az": -30,
+        "el": -89,
+        "maxDirError": 0,
+        "dist": 0.41805,
+        "rollDeg": 0,
+        "shown": [
+          "-30",
+          "-89"
+        ]
+      },
+      {
+        "az": 180,
+        "el": 0,
+        "maxDirError": 0,
+        "dist": 0.41805,
+        "rollDeg": 0,
+        "shown": [
+          "-180",
+          "0"
+        ]
+      },
+      {
+        "az": 0,
+        "el": 90,
+        "maxDirError": 0,
+        "dist": 0.41805,
+        "rollDeg": 0,
+        "shown": [
+          "0",
+          "90"
+        ]
+      }
+    ],
+    "allMatch": true,
+    "distKept": true
+  },
+  "3_slider_input": {
+    "az": -75,
+    "el": 90,
+    "flipped": false
+  },
+  "3_live_update_during_drag": {
+    "values": [
+      [
+        "8",
+        "9"
+      ],
+      [
+        "16",
+        "11"
+      ],
+      [
+        "24",
+        "13"
+      ],
+      [
+        "32",
+        "15"
+      ],
+      [
+        "40",
+        "17"
+      ]
+    ],
+    "changes": 5,
+    "matchesCamera": true
+  },
+  "3_flipped_indicator": {
+    "shown": true,
+    "text": "⚠ 뒤집힌 상태입니다. 표시 각도는 카메라 위치 기준이",
+    "angles": {
+      "az": -139.4,
+      "el": 85.5,
+      "flipped": true
+    }
+  },
+  "3_input_while_flipped_uprights": {
+    "flipped": false,
+    "indicator": false
+  },
+  "3_default_restore": {
+    "az": 40.6,
+    "el": 28.5,
+    "flipped": false
+  },
+  "4_rotate90": {
+    "left": {
+      "start": [
+        0.385,
+        0.5944,
+        0.706
+      ],
+      "after1": [
+        0.706,
+        0.5944,
+        -0.385
+      ],
+      "after4": [
+        0.385,
+        0.5944,
+        0.706
+      ],
+      "changedAfter1": true,
+      "returnsAfter4": true,
+      "upAfter4Y": 0.804,
+      "dist": true
+    },
+    "right": {
+      "start": [
+        -0.385,
+        0.5944,
+        -0.706
+      ],
+      "after1": [
+        0.706,
+        0.5944,
+        -0.385
+      ],
+      "after4": [
+        -0.385,
+        0.5944,
+        -0.706
+      ],
+      "changedAfter1": true,
+      "returnsAfter4": true,
+      "upAfter4Y": 0.804,
+      "dist": true
+    },
+    "up": {
+      "start": [
+        0.385,
+        0.5944,
+        0.706
+      ],
+      "after1": [
+        0.2846,
+        -0.8041,
+        0.5219
+      ],
+      "after4": [
+        0.385,
+        0.5944,
+        0.706
+      ],
+      "changedAfter1": true,
+      "returnsAfter4": true,
+      "upAfter4Y": 0.804,
+      "dist": true
+    },
+    "down": {
+      "start": [
+        -0.385,
+        0.5944,
+        -0.706
+      ],
+      "after1": [
+        0.2846,
+        0.8041,
+        0.5219
+      ],
+      "after4": [
+        -0.385,
+        0.5944,
+        -0.706
+      ],
+      "changedAfter1": true,
+      "returnsAfter4": true,
+      "upAfter4Y": 0.804,
+      "dist": true
+    }
+  },
+  "4_rotate90_while_flipped": {
+    "flippedBefore": true,
+    "returns": true
+  },
+  "4_arrow_keys_not_rotating_camera": true,
+  "5_level_tilted": {
+    "tiltBeforeDeg": -24.09,
+    "rollBefore": -24.095,
+    "rollAfter": 0,
+    "positionSame": true
+  },
+  "5_level_flipped": {
+    "flippedBefore": true,
+    "afterScreenUpY": 0.078,
+    "camUp": [
+      0,
+      1,
+      0
+    ],
+    "positionSame": true,
+    "note": "뒤집힘: 카메라 위치는 그대로 두고 위쪽을 세워 똑바로 보이게 함(화면이 180° 돌아 보임)"
+  },
+  "5_level_at_pole": {
+    "msg": "위·아래 시점에서는 기울기를 정할 수 없습니다. 먼저 회전해 주세요.",
+    "visible": true
+  },
+  "6_speed": {
+    "measured": {
+      "3": {
+        "mouseDeg": 20,
+        "touchDeg": 20
+      },
+      "6": {
+        "mouseDeg": 40,
+        "touchDeg": 40
+      },
+      "1.5": {
+        "mouseDeg": 10,
+        "touchDeg": 10
+      }
+    },
+    "doubles": true,
+    "halves": true,
+    "defaultFullHeightDeg": "speed 3: 100px 드래그가 화면 높이(900)의 11% → 약 20°"
+  },
+  "6_stored": 5,
+  "6_after_reload": {
+    "field": "5",
+    "viewer": 5
+  },
+  "6_clamped": 8,
+  "7_zoom_limits": {
+    "rows": [
+      {
+        "label": "iso:min-zoom",
+        "dist": 0.103,
+        "insideBox": false,
+        "nearestToBoxSurfaceM": 0.031,
+        "near": 0.005,
+        "cornersBehindNear": 0
+      },
+      {
+        "label": "iso:max-zoom",
+        "dist": 2,
+        "insideBox": false,
+        "nearestToBoxSurfaceM": 1.9051,
+        "near": 0.005,
+        "cornersBehindNear": 0
+      },
+      {
+        "label": "front:min-zoom",
+        "dist": 0.103,
+        "insideBox": false,
+        "nearestToBoxSurfaceM": 0.0455,
+        "near": 0.005,
+        "cornersBehindNear": 0
+      },
+      {
+        "label": "front:max-zoom",
+        "dist": 2,
+        "insideBox": false,
+        "nearestToBoxSurfaceM": 1.9425,
+        "near": 0.005,
+        "cornersBehindNear": 0
+      },
+      {
+        "label": "top:min-zoom",
+        "dist": 0.103,
+        "insideBox": false,
+        "nearestToBoxSurfaceM": 0.0805,
+        "near": 0.005,
+        "cornersBehindNear": 0
+      },
+      {
+        "label": "top:max-zoom",
+        "dist": 2,
+        "insideBox": false,
+        "nearestToBoxSurfaceM": 1.9775,
+        "near": 0.005,
+        "cornersBehindNear": 0
+      },
+      {
+        "label": "below:min-zoom",
+        "dist": 0.103,
+        "insideBox": false,
+        "nearestToBoxSurfaceM": 0.0667,
+        "near": 0.005,
+        "cornersBehindNear": 0
+      },
+      {
+        "label": "below:max-zoom",
+        "dist": 2,
+        "insideBox": false,
+        "nearestToBoxSurfaceM": 1.9366,
+        "near": 0.005,
+        "cornersBehindNear": 0
+      },
+      {
+        "label": "flip:min-zoom",
+        "dist": 0.103,
+        "insideBox": false,
+        "nearestToBoxSurfaceM": 0.0805,
+        "near": 0.005,
+        "cornersBehindNear": 0
+      },
+      {
+        "label": "flip:max-zoom",
+        "dist": 2,
+        "insideBox": false,
+        "nearestToBoxSurfaceM": 1.9775,
+        "near": 0.005,
+        "cornersBehindNear": 0
+      }
+    ],
+    "anyInsideBox": false,
+    "anyCornerBehindNear": false,
+    "minDist": 0.103,
+    "maxDist": 2
+  },
+  "7_dist_const_while_rotating": {
+    "start": 2,
+    "distinctDistances": 1,
+    "all": [
+      2
+    ]
+  },
+  "7_F_shows_whole_box": [
+    {
+      "name": "iso",
+      "allCornersVisible": true,
+      "up": [
+        0,
+        1,
+        0
+      ],
+      "dist": 0.4181
+    },
+    {
+      "name": "flip",
+      "allCornersVisible": true,
+      "up": [
+        0,
+        1,
+        0
+      ],
+      "dist": 0.4181
+    },
+    {
+      "name": "top",
+      "allCornersVisible": true,
+      "up": [
+        0,
+        1,
+        0
+      ],
+      "dist": 0.4181
+    }
+  ],
+  "8_level_toggle": {
+    "pressed": "true",
+    "maxDirY": 1,
+    "minDirY": -1,
+    "screenUpYMin": 0,
+    "rollDeg": 0,
+    "stopsAtPoles": true
+  },
+  "8_free_again": "false",
+  "8_view_buttons_restore": {
+    "front": {
+      "rollDeg": 0,
+      "screenUpY": 0.993,
+      "upright": true
+    },
+    "back": {
+      "rollDeg": 0,
+      "screenUpY": 0.993,
+      "upright": true
+    },
+    "left": {
+      "rollDeg": 0,
+      "screenUpY": 0.993,
+      "upright": true
+    },
+    "right": {
+      "rollDeg": 0,
+      "screenUpY": 0.993,
+      "upright": true
+    },
+    "top": {
+      "rollDeg": 0,
+      "screenUpY": 0,
+      "upright": true
+    },
+    "bottom": {
+      "rollDeg": 0,
+      "screenUpY": 0,
+      "upright": true
+    },
+    "iso": {
+      "rollDeg": 0,
+      "screenUpY": 0.879,
+      "upright": true
+    }
+  },
+  "errors": []
+}

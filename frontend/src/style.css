@@ -140,3 +140,7 @@ dialog#splitDlg::backdrop { background: rgba(0, 0, 0, 0.4); }
 .split-row.active { border-color: var(--accent); background: #fff3e8; }
 .split-row .chip { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
 .split-row select { height: 28px; }
+
+/* 각도 · 회전 */
+.grid4 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin: 6px 0; }
+.notice.flip { background: #fff3e8; font-size: 12px; margin: 4px 0; }

@@ -9,111 +9,111 @@
     "trace": [
       {
         "i": 0,
-        "dirY": 0.911,
-        "dirZ": -0.314,
-        "camUpY": -0.413
+        "dirY": 0.986,
+        "dirZ": 0.126,
+        "camUpY": 0.166
       },
       {
         "i": 1,
-        "dirY": -0.348,
-        "dirZ": -0.712,
-        "camUpY": -0.938
+        "dirY": 0.738,
+        "dirZ": -0.513,
+        "camUpY": -0.675
       },
       {
         "i": 2,
-        "dirY": -0.96,
-        "dirZ": 0.213,
-        "camUpY": 0.281
-      },
-      {
-        "i": 3,
-        "dirY": 0.212,
-        "dirZ": 0.742,
-        "camUpY": 0.977
-      },
-      {
-        "i": 4,
-        "dirY": 0.99,
-        "dirZ": -0.108,
-        "camUpY": -0.142
-      },
-      {
-        "i": 5,
-        "dirY": -0.072,
+        "dirY": -0.078,
         "dirZ": -0.757,
         "camUpY": -0.997
       },
       {
+        "i": 3,
+        "dirY": -0.834,
+        "dirZ": -0.419,
+        "camUpY": -0.552
+      },
+      {
+        "i": 4,
+        "dirY": -0.948,
+        "dirZ": 0.241,
+        "camUpY": 0.317
+      },
+      {
+        "i": 5,
+        "dirY": -0.334,
+        "dirZ": 0.716,
+        "camUpY": 0.942
+      },
+      {
         "i": 6,
-        "dirY": -1,
-        "dirZ": 0.001,
-        "camUpY": 0.001
+        "dirY": 0.537,
+        "dirZ": 0.641,
+        "camUpY": 0.844
       },
       {
         "i": 7,
-        "dirY": -0.069,
-        "dirZ": 0.757,
-        "camUpY": 0.998
+        "dirY": 0.995,
+        "dirZ": 0.073,
+        "camUpY": 0.096
       },
       {
         "i": 8,
-        "dirY": 0.99,
-        "dirZ": 0.106,
-        "camUpY": 0.14
+        "dirY": 0.689,
+        "dirZ": -0.55,
+        "camUpY": -0.725
       },
       {
         "i": 9,
-        "dirY": 0.209,
-        "dirZ": -0.742,
-        "camUpY": -0.978
+        "dirY": -0.147,
+        "dirZ": -0.751,
+        "camUpY": -0.989
       },
       {
         "i": 10,
-        "dirY": -0.961,
-        "dirZ": -0.211,
-        "camUpY": -0.278
+        "dirY": -0.87,
+        "dirZ": -0.374,
+        "camUpY": -0.493
       },
       {
         "i": 11,
-        "dirY": -0.345,
-        "dirZ": 0.713,
-        "camUpY": 0.938
+        "dirY": -0.924,
+        "dirZ": 0.29,
+        "camUpY": 0.382
       },
       {
         "i": 12,
-        "dirY": 0.912,
-        "dirZ": 0.312,
-        "camUpY": 0.411
+        "dirY": -0.268,
+        "dirZ": 0.732,
+        "camUpY": 0.964
       },
       {
         "i": 13,
-        "dirY": 0.474,
-        "dirZ": -0.668,
-        "camUpY": -0.88
+        "dirY": 0.594,
+        "dirZ": 0.611,
+        "camUpY": 0.804
       }
     ],
     "boxFlippedUpsideDown": true,
     "minCameraUpY": -0.997,
-    "cameraCrossedHemisphere": 6,
+    "cameraCrossedHemisphere": 4,
     "dist": 0.4181
   },
   "1_flipped_sample": {
     "dir": [
-      0.48,
-      0.675,
-      0.56
+      0.051,
+      0.997,
+      0.059
     ],
     "dist": 0.4181,
     "up": [
-      0.615,
-      -0.327,
-      0.718
+      0.649,
+      -0.078,
+      0.757
     ],
-    "camUpY": -0.738,
+    "camUpY": -0.078,
     "screenUp": [
-      0.44,
-      -0.74,
-      0.51
+      0.65,
+      -0.08,
+      0.76
     ],
     "tgt": [
       0,
@@ -123,14 +123,14 @@
   },
   "1_horizontal_spins": {
     "before": [
-      0.48,
-      0.675,
-      0.56
+      0.051,
+      0.997,
+      0.059
     ],
     "after": [
-      0.865,
-      0.194,
-      -0.463
+      0.026,
+      0.997,
+      -0.074
     ]
   },
   "2_top_drag": {
@@ -140,16 +140,16 @@
       0
     ],
     "afterHorizontal": [
-      -0.723,
-      0.691,
+      0,
+      1,
       0
     ],
     "afterVertical": [
       0,
-      0.691,
-      -0.723
+      0.883,
+      -0.469
     ],
-    "hMoved": true,
+    "hMoved": false,
     "vMoved": true
   },
   "2_bottom_drag": {
@@ -159,51 +159,51 @@
       0
     ],
     "afterHorizontal": [
-      -0.723,
-      -0.691,
+      0,
+      -1,
       0
     ],
     "afterVertical": [
       0,
-      -0.691,
-      0.723
+      -0.883,
+      0.47
     ],
-    "hMoved": true,
+    "hMoved": false,
     "vMoved": true
   },
   "3_restore_up": {
     "F": {
-      "flippedBefore": 0.417,
+      "flippedBefore": 0.927,
       "up": [
         0,
         1,
         0
       ],
-      "camUpY": 0.962,
+      "camUpY": 0.927,
       "screenUp": [
-        0.27,
-        0.96,
-        -0.04
+        0.24,
+        0.93,
+        -0.29
       ],
       "ok": true
     },
     "btnFit": {
-      "flippedBefore": -0.82,
+      "flippedBefore": -0.276,
       "up": [
         0,
         1,
         0
       ],
-      "camUpY": 1,
+      "camUpY": 0.276,
       "screenUp": [
-        -0.01,
-        1,
-        0.03
+        -0.95,
+        0.28,
+        0.17
       ],
       "ok": true
     },
     "front": {
-      "flippedBefore": -0.679,
+      "flippedBefore": -0.927,
       "up": [
         0,
         1,
@@ -218,7 +218,7 @@
       "ok": true
     },
     "back": {
-      "flippedBefore": -0.736,
+      "flippedBefore": -0.015,
       "up": [
         0,
         1,
@@ -233,7 +233,7 @@
       "ok": true
     },
     "left": {
-      "flippedBefore": -0.736,
+      "flippedBefore": -0.015,
       "up": [
         0,
         1,
@@ -248,7 +248,7 @@
       "ok": true
     },
     "right": {
-      "flippedBefore": -0.736,
+      "flippedBefore": -0.015,
       "up": [
         0,
         1,
@@ -263,7 +263,7 @@
       "ok": true
     },
     "top": {
-      "flippedBefore": -0.736,
+      "flippedBefore": -0.015,
       "up": [
         0,
         1,
@@ -278,7 +278,7 @@
       "ok": true
     },
     "bottom": {
-      "flippedBefore": -0.945,
+      "flippedBefore": -0.995,
       "up": [
         0,
         1,
@@ -293,7 +293,7 @@
       "ok": true
     },
     "iso": {
-      "flippedBefore": 0.945,
+      "flippedBefore": 0.995,
       "up": [
         0,
         1,
@@ -354,8 +354,8 @@
   "5b_wheel": {
     "dist": [
       0.4181,
-      0.3553,
-      0.4513
+      0.3235,
+      0.5133
     ],
     "zoomsIn": true,
     "zoomsOut": true
@@ -398,13 +398,13 @@
   "6_png_normal": {
     "w": 2080,
     "h": 1800,
-    "meanDiff": 2.2
+    "meanDiff": 2.07
   },
-  "6_flipped_camUpY": -0.905,
+  "6_flipped_camUpY": -0.382,
   "6_png_flipped": {
     "w": 2080,
     "h": 1800,
-    "meanDiff": 1.83
+    "meanDiff": 1.97
   },
   "6_pngs_differ": true,
   "7_touch_one_finger_rotate": {
@@ -413,8 +413,8 @@
     "tgtSame": true
   },
   "7_touch_pinch_zoom": {
-    "before": 0.4513,
-    "after": 0.2256,
+    "before": 0.5133,
+    "after": 0.2566,
     "zoomedIn": true
   },
   "7_touch_two_finger_pan": {
