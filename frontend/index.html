@@ -159,18 +159,18 @@
     </div>
 
     <details class="sec" id="dView" open>
-      <summary>보기 <button id="btnFit" class="link fit" title="확대·이동을 처음 상태로 (F)">위치 초기화 (F)</button></summary>
-      <div class="grid3">
-        <button data-view="front">정면</button>
-        <button data-view="back">후면</button>
-        <button data-view="left">좌측</button>
-        <button data-view="right">우측</button>
-        <button data-view="top">윗면</button>
-        <button data-view="bottom" title="아래에서 올려다봅니다 (Shift+7)">아래</button>
-        <button id="btnIso" data-view="iso" title="한 번 더 누르면 반대편 모서리(뒤·왼쪽 날개)로 바뀝니다">3/4 시점</button>
+      <summary>보기</summary>
+      <div class="view-row">
+        <b>시점</b>
+        <div class="view-buttons">
+          <button data-view="front">정면</button><button data-view="back">후면</button><button data-view="left">좌측</button><button data-view="right">우측</button>
+          <button data-view="top">윗면</button><button data-view="bottom" title="아래에서 올려다봅니다 (Shift+7)">아랫면</button>
+          <button id="btnIso" data-view="iso" title="한 번 더 누르면 반대편 모서리로 바뀝니다">3/4</button>
+          <button id="btnFit" title="확대·이동을 처음 상태로 (F)">위치 초기화(F)</button>
+        </div>
       </div>
-      <p class="hint">시점 버튼은 방향만 바꾸고 확대는 유지합니다. 처음처럼 전체를 보려면 <kbd>F</kbd> 또는 위치 초기화.<br>3/4 시점을 한 번 더 누르면 반대편 모서리로 바뀝니다. <kbd>R</kbd> 앞·오른쪽 날개 / <kbd>L</kbd> 뒤·왼쪽 날개</p>
-      <p class="hint">드래그: 회전 · 휠: 확대/축소 · Space+드래그: 이동</p>
+      <div class="view-row"><b>박스 놓기</b><div class="view-buttons"><button id="poseLying" aria-pressed="true">눕힘</button><button id="poseStanding" aria-pressed="false">세움</button></div></div>
+      <div class="view-row"><b>축 고정</b><div class="view-buttons"><button id="lockFree" aria-pressed="true">자유</button><button id="lockHorizontal" aria-pressed="false">좌우만</button><button id="lockVertical" aria-pressed="false">위아래만</button></div></div>
     </details>
 
     <section>
@@ -245,6 +245,8 @@
   <main id="stage">
     <div id="viewport"></div>
     <div id="panBadge" aria-live="polite">손 도구 (Space) — 끌어서 화면 이동</div>
+    <div id="rotationBadge" aria-live="polite" hidden></div>
+    <div id="viewAngles">좌우 0° / 위아래 0°</div>
     <div id="overlayTop">
       <div id="msg" role="alert" hidden><span id="msgText"></span><button id="msgClose" aria-label="닫기">닫기</button></div>
       <div id="ratioBanner" role="status" hidden>

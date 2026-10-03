@@ -5,12 +5,14 @@ import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { FACES, FaceId, groupOf } from './faces';
 import { BoxParams } from './params';
 import { TEMPLATE_ID, buildParts } from './templateMesh';
+import { AxisLock, BoxPose, boxPoseQuaternion } from './viewPose';
 
 export type ViewName = 'front' | 'back' | 'left' | 'right' | 'top' | 'iso' | 'isoL' | 'bottom';
 export type Slot = 'editor' | 'viewer';
 
 interface Model {
   root: THREE.Group;
+  pivot: THREE.Group;
   lid: THREE.Object3D | null;
   base: THREE.Object3D | null;
   lidBaseY: number;
@@ -47,6 +49,10 @@ export class Viewer {
   onWheelFace: ((deltaY: number) => void) | null = null;
   private dirty = true;
   private el: HTMLElement;
+  boxPose: BoxPose = 'lying';
+  axisLock: AxisLock = 'free';
+  onRotationBadge: ((text: string | null) => void) | null = null;
+  onViewAngles: ((horizontal: number, vertical: number) => void) | null = null;
 
   constructor(el: HTMLElement) {
     this.el = el;
@@ -68,7 +74,7 @@ export class Viewer {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableDamping = false;
     this.controls.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.PAN, RIGHT: THREE.MOUSE.PAN };
-    this.controls.addEventListener('change', () => (this.dirty = true));
+    this.controls.addEventListener('change', () => { this.dirty = true; this.emitAngles(); });
 
     // 크기 갱신은 프레임당 한 번만, 실제로 바뀐 경우에만 한다. (스크롤바·소수점 크기 때문에 매 프레임 반복되면 캔버스가 계속 지워져 빈 화면이 된다)
     let raf = 0;
@@ -118,6 +124,7 @@ export class Viewer {
     const dom = this.renderer.domElement;
     let down: { x: number; y: number } | null = null;
     let drag: THREE.Vector2 | null = null; // Shift+드래그로 이미지 이동 중일 때 직전 UV
+    let locked: { id: number; x: number; y: number; az: number; el: number; dist: number; moved: boolean } | null = null;
 
     // 캡처 단계: OrbitControls보다 먼저 받아서, Shift+드래그일 때 회전을 막는다.
     dom.addEventListener('pointerdown', (e) => {
@@ -132,7 +139,30 @@ export class Viewer {
         dom.setPointerCapture(e.pointerId);
       }
     }, true);
+    dom.addEventListener('pointerdown', (e) => {
+      const selected = this.faceMeshes.get(this.selected);
+      const imageDrag = this.moveMode && this.slot === 'editor' && (!this.canDrag || this.canDrag()) && !!selected && !!this.rayAt(e, [selected], false)[0];
+      if (this.axisLock === 'free' || this.panHeld || e.button !== 0 || e.shiftKey || imageDrag) return;
+      const a = this.getAngles();
+      locked = { id: e.pointerId, x: e.clientX, y: e.clientY, az: THREE.MathUtils.degToRad(a.horizontal), el: THREE.MathUtils.degToRad(a.vertical), dist: this.camera.position.distanceTo(this.controls.target), moved: false };
+      this.controls.enabled = false;
+      dom.setPointerCapture(e.pointerId);
+      e.preventDefault(); e.stopImmediatePropagation();
+    }, true);
     dom.addEventListener('pointermove', (e) => {
+      if (locked?.id === e.pointerId) {
+        const dx = e.clientX - locked.x, dy = e.clientY - locked.y;
+        if (Math.hypot(dx, dy) > 3) locked.moved = true;
+        const k = 0.005;
+        const az = this.axisLock === 'horizontal' ? locked.az - dx * k : locked.az;
+        const lim = THREE.MathUtils.degToRad(89);
+        const el = this.axisLock === 'vertical' ? THREE.MathUtils.clamp(locked.el + dy * k, -lim, lim) : locked.el;
+        this.setOrbit(az, el, locked.dist);
+        const delta = THREE.MathUtils.radToDeg(this.axisLock === 'horizontal' ? az - locked.az : el - locked.el);
+        this.onRotationBadge?.(`${this.axisLock === 'horizontal' ? '좌우' : '위아래'} 돌리기 ${delta >= 0 ? '+' : ''}${Math.round(delta)}°`);
+        e.preventDefault(); e.stopImmediatePropagation();
+        return;
+      }
       if (!drag) return;
       const mesh = this.faceMeshes.get(this.selected)!;
       const h = this.rayAt(e, [mesh], false)[0];
@@ -141,6 +171,17 @@ export class Viewer {
       drag.copy(h.uv);
     });
     dom.addEventListener('pointerup', (e) => {
+      if (locked?.id === e.pointerId) {
+        const moved = locked.moved;
+        locked = null; this.controls.enabled = true; this.onRotationBadge?.(null); down = null;
+        if (!moved && this.slot === 'editor' && this.onPick) {
+          const hit = this.rayAt(e, [this.models.editor!.root])[0];
+          const id = hit && FACES.find((f) => f.id === hit.object.name)?.id;
+          if (id && (!this.pickFilter || this.pickFilter(id))) this.onPick(id); else this.setHighlightOn(false);
+        }
+        e.preventDefault(); e.stopImmediatePropagation();
+        return;
+      }
       if (drag) { drag = null; this.controls.enabled = true; down = null; return; }
       if (!down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 4 || e.button !== 0) return;
       if (this.slot !== 'editor' || !this.onPick) return;
@@ -156,8 +197,26 @@ export class Viewer {
       e.preventDefault(); e.stopImmediatePropagation();
       this.onWheelFace(e.deltaY);
     }, { capture: true, passive: false });
-    dom.addEventListener('pointercancel', () => { drag = null; this.controls.enabled = true; });
+    dom.addEventListener('pointercancel', () => { drag = null; locked = null; this.controls.enabled = true; this.onRotationBadge?.(null); });
   }
+
+  private setOrbit(az: number, el: number, dist: number) {
+    const c = Math.cos(el);
+    this.camera.position.copy(this.controls.target).add(new THREE.Vector3(Math.sin(az) * c, Math.sin(el), Math.cos(az) * c).multiplyScalar(dist));
+    this.camera.up.set(0, 1, 0);
+    this.camera.lookAt(this.controls.target);
+    this.dirty = true;
+    this.emitAngles();
+  }
+
+  getAngles() {
+    const d = this.camera.position.clone().sub(this.controls.target).normalize();
+    return { horizontal: THREE.MathUtils.radToDeg(Math.atan2(d.x, d.z)), vertical: THREE.MathUtils.radToDeg(Math.asin(THREE.MathUtils.clamp(d.y, -1, 1))) };
+  }
+
+  private emitAngles() { const a = this.getAngles(); this.onViewAngles?.(a.horizontal, a.vertical); }
+
+  setAxisLock(lock: AxisLock) { this.axisLock = lock; }
 
   /** 스페이스를 누르는 동안 왼쪽 드래그 = 화면 이동(손 도구). */
   setPanHeld(v: boolean) {
@@ -174,8 +233,11 @@ export class Viewer {
 
   private makeModel(root: THREE.Group): Model {
     const lid = root.getObjectByName('Lid') ?? null;
+    const center = new THREE.Box3().setFromObject(root).getCenter(new THREE.Vector3());
+    const holder = new THREE.Group(); holder.position.copy(center).negate(); holder.add(root);
+    const pivot = new THREE.Group(); pivot.position.copy(center); pivot.quaternion.copy(boxPoseQuaternion(this.boxPose)); pivot.add(holder);
     // 닫힌 상태 = 뚜껑 y 0 (템플릿 규약). 열린 채 저장된 GLB도 슬라이더에 실제 높이가 표시된다.
-    return { root, lid, base: root.getObjectByName('Base') ?? null, lidBaseY: 0 };
+    return { root, pivot, lid, base: root.getObjectByName('Base') ?? null, lidBaseY: 0 };
   }
 
   /** 하이라이트·텍스처를 뺀 모델의 GPU 자원을 해제한다. */
@@ -198,7 +260,7 @@ export class Viewer {
     const old = this.models.editor;
     const lift = old?.lid ? (old.lid.position.y - old.lidBaseY) * 1000 : 0;
     const lidVisible = old?.lid?.visible ?? true, baseVisible = old?.base?.visible ?? true;
-    if (old) { this.highlight?.removeFromParent(); this.scene.remove(old.root); this.disposeModel(old.root); }
+    if (old) { this.highlight?.removeFromParent(); this.scene.remove(old.pivot); this.disposeModel(old.root); }
     for (const t of this.textures.values()) t.dispose(); // 면 크기가 바뀌면 캔버스 크기도 바뀌므로 텍스처를 새로 만든다
     this.textures.clear();
     this.faceMeshes.clear();
@@ -223,9 +285,9 @@ export class Viewer {
       (part.group === 'base' ? base : lid).add(mesh);
       if (part.editable) this.faceMeshes.set(part.name as FaceId, mesh);
     }
-    this.models.editor = { root, lid, base, lidBaseY: 0 };
-    this.scene.add(root);
-    root.visible = this.slot === 'editor';
+    this.models.editor = this.makeModel(root);
+    this.scene.add(this.models.editor.pivot);
+    this.models.editor.pivot.visible = this.slot === 'editor';
     lid.position.y = lift / 1000;
     lid.visible = lidVisible; base.visible = baseVisible;
     if (this.partColors.lid) this.setPartColor('lid', this.partColors.lid);
@@ -317,13 +379,19 @@ export class Viewer {
     this.slot = slot;
     for (const k of ['editor', 'viewer'] as Slot[]) {
       const m = this.models[k];
-      if (m) m.root.visible = k === slot;
+      if (m) m.pivot.visible = k === slot;
     }
     if (this.highlight) this.highlight.visible = slot === 'editor' && this.hlOn;
     this.dirty = true;
   }
 
   private get cur(): Model | null { return this.models[this.slot]; }
+
+  setBoxPose(pose: BoxPose) {
+    this.boxPose = pose;
+    for (const m of Object.values(this.models)) if (m) m.pivot.quaternion.copy(boxPoseQuaternion(pose));
+    this.dirty = true;
+  }
 
   hasLid(): boolean { return !!this.cur?.lid; }
   getLiftMm(): number { const m = this.cur; return m?.lid ? (m.lid.position.y - m.lidBaseY) * 1000 : 0; }
@@ -344,7 +412,7 @@ export class Viewer {
     const m = this.cur;
     const box = new THREE.Box3();
     if (m) {
-      m.root.updateMatrixWorld(true);
+      m.pivot.updateMatrixWorld(true);
       m.root.traverse((o) => { if ((o as THREE.Mesh).isMesh && o.visible && o.name !== '__highlight') box.expandByObject(o); });
     }
     return box.isEmpty() ? new THREE.Box3(new THREE.Vector3(-0.08, 0, -0.06), new THREE.Vector3(0.08, 0.045, 0.06)) : box;
@@ -371,6 +439,7 @@ export class Viewer {
     this.camera.up.set(0, 1, 0);
     this.controls.target.copy(center);
     this.controls.update();
+    this.emitAngles();
     this.dirty = true;
   }
 
@@ -383,6 +452,7 @@ export class Viewer {
     this.camera.position.copy(center).addScaledVector(d, this.fitDistance(box));
     this.controls.target.copy(center);
     this.controls.update();
+    this.emitAngles();
     this.dirty = true;
   }
 
@@ -412,10 +482,10 @@ export class Viewer {
 
   async loadExternal(buf: ArrayBuffer) {
     const gltf = await new GLTFLoader().parseAsync(buf, '');
-    this.models.viewer?.root.removeFromParent();
+    this.models.viewer?.pivot.removeFromParent();
     const m = this.makeModel(gltf.scene);
     this.models.viewer = m;
-    this.scene.add(m.root);
+    this.scene.add(m.pivot);
     let meshes = 0, textured = 0;
     m.root.traverse((o) => {
       const mesh = o as THREE.Mesh;

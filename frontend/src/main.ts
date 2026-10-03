@@ -8,6 +8,7 @@ import { Viewer, ViewName } from './viewer';
 import { Rotation, defaultState } from './transform';
 import { DielineSave, UserError, inspectImage, packProject, unpackProject, OpenedProject } from './project';
 import { Draft, delDraft, getDraft, putDraft } from './draft';
+import { AxisLock, BoxPose } from './viewPose';
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const OPEN_MM = 80;
@@ -552,7 +553,7 @@ async function handleFile(file: File) {
 // ---------- 화면 설정 (접기·펼치기, 단축키 사용) — 이 브라우저의 localStorage에 기억 ----------
 const UI_KEY = 'sabari-ui';
 let keysEnabled = true;
-const loadUi = (): { open?: Record<string, boolean>; keys?: boolean } => {
+const loadUi = (): { open?: Record<string, boolean>; keys?: boolean; boxPose?: BoxPose; axisLock?: AxisLock } => {
   try { return JSON.parse(localStorage.getItem(UI_KEY) ?? '{}'); } catch { return {}; }
 };
 const saveUi = (patch: object) => { try { localStorage.setItem(UI_KEY, JSON.stringify({ ...loadUi(), ...patch })); } catch { /* 저장 불가 환경이면 기억만 안 한다 */ } };
@@ -637,6 +638,26 @@ async function init() {
     return;
   }
   initUiPrefs();
+  const savedUi = loadUi();
+  const setPose = (pose: BoxPose) => {
+    viewer.setBoxPose(pose);
+    for (const [id, value] of [['poseLying', 'lying'], ['poseStanding', 'standing']] as const) $(id).setAttribute('aria-pressed', String(pose === value));
+    saveUi({ boxPose: pose });
+    if (pose === 'standing') showView('front', true); else { showView('iso', true); }
+  };
+  const setLock = (lock: AxisLock) => {
+    viewer.setAxisLock(lock);
+    for (const [id, value] of [['lockFree', 'free'], ['lockHorizontal', 'horizontal'], ['lockVertical', 'vertical']] as const) $(id).setAttribute('aria-pressed', String(lock === value));
+    saveUi({ axisLock: lock });
+  };
+  viewer.onRotationBadge = (text) => { const badge = $('rotationBadge'); badge.textContent = text ?? ''; badge.hidden = !text; };
+  viewer.onViewAngles = (horizontal, vertical) => { $('viewAngles').textContent = `좌우 ${Math.round(horizontal)}° / 위아래 ${Math.round(vertical)}°`; };
+  $('poseLying').onclick = () => setPose('lying');
+  $('poseStanding').onclick = () => setPose('standing');
+  $('lockFree').onclick = () => setLock('free');
+  $('lockHorizontal').onclick = () => setLock('horizontal');
+  $('lockVertical').onclick = () => setLock('vertical');
+  setLock(savedUi.axisLock === 'horizontal' || savedUi.axisLock === 'vertical' ? savedUi.axisLock : 'free');
   $('viewport').addEventListener('pointerdown', () => {
     const a = document.activeElement as HTMLElement | null;
     if (a && ['INPUT', 'SELECT', 'TEXTAREA'].includes(a.tagName)) a.blur();
@@ -828,6 +849,7 @@ async function init() {
   applyFaceSizes(faceSizes(params));
   resizeFaceCanvases();
   viewer.setTemplate(params);
+  setPose(savedUi.boxPose === 'standing' ? 'standing' : 'lying');
   dims = initDimsUi({
     get: () => params,
     apply: (p) => { applyParams(p, true); },
