@@ -1,0 +1,40 @@
+{
+ "default": {
+  "viewer": 0.3,
+  "r": "30",
+  "n": "30",
+  "shadeSaved": null
+ },
+ "afterZero": {
+  "viewer": 0,
+  "r": "0",
+  "n": "0",
+  "shadeSaved": 0
+ },
+ "afterReload": {
+  "viewer": 0,
+  "r": "0",
+  "n": "0",
+  "shadeSaved": 0
+ },
+ "set55": {
+  "viewer": 0.55,
+  "r": "55",
+  "n": "55",
+  "shadeSaved": 55
+ },
+ "clamp250": {
+  "viewer": 1,
+  "r": "100",
+  "n": "100",
+  "shadeSaved": 100
+ },
+ "restore30": {
+  "viewer": 0.3,
+  "r": "30",
+  "n": "30",
+  "shadeSaved": 30
+ },
+ "note": "값은 localStorage sabari-ui.shade 에만 저장된다(브라우저별). project.ts·draft.ts 는 shade 를 읽거나 쓰지 않는다.",
+ "page_errors": []
+}
