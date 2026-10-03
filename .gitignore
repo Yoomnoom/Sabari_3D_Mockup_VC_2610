@@ -17,3 +17,16 @@ inputs/
 화면 공유*
 public/*_validation.json
 assets/templates/*_validation.json
+
+# 고객 시안·참고 이미지와 그것에서 나온 결과물은 커밋·push 하지 않는다 (보호 목록: 2026-10-04 백업 작업)
+verification-private/
+real_*
+reference_angle*
+사바리_프로젝트*.sabari
+사바리_목업*.glb
+*영원*
+verification/dieline_render.png
+verification/stage23-2/reference_normalized.png
+verification/stage23-2/reference_metrics.json
+verification/stage23-2/submit_angle_*.png
+verification/dieline-real/
