@@ -4,7 +4,7 @@
     "face": null,
     "local": null,
     "world": null,
-    "hint": "박스의 면을 눌러 축을 정하세요",
+    "hint": "회전축 버튼을 누르거나 박스의 면을 눌러 축을 정하세요",
     "pressed": "true",
     "selected": "lid_front"
   },
@@ -25,7 +25,7 @@
           0
         ],
         "maxErr": 0,
-        "hint": "상단 기준 축으로 돕니다. 다른 면을 누르면 축이 바뀝니다.",
+        "hint": "상단 기준 축으로 돕니다. 다른 면을 누르거나 회전축 버튼을 누르면 축이 바뀝니다.",
         "editSelectedUnchanged": true
       },
       "lid_front": {
@@ -43,7 +43,7 @@
           1
         ],
         "maxErr": 0,
-        "hint": "앞날개 기준 축으로 돕니다. 다른 면을 누르면 축이 바뀝니다.",
+        "hint": "앞날개 기준 축으로 돕니다. 다른 면을 누르거나 회전축 버튼을 누르면 축이 바뀝니다.",
         "editSelectedUnchanged": true
       },
       "lid_back": {
@@ -61,7 +61,7 @@
           -1
         ],
         "maxErr": 0,
-        "hint": "뒷날개 기준 축으로 돕니다. 다른 면을 누르면 축이 바뀝니다.",
+        "hint": "뒷날개 기준 축으로 돕니다. 다른 면을 누르거나 회전축 버튼을 누르면 축이 바뀝니다.",
         "editSelectedUnchanged": true
       },
       "lid_left": {
@@ -79,7 +79,7 @@
           0
         ],
         "maxErr": 0,
-        "hint": "왼쪽 날개 기준 축으로 돕니다. 다른 면을 누르면 축이 바뀝니다.",
+        "hint": "왼쪽 날개 기준 축으로 돕니다. 다른 면을 누르거나 회전축 버튼을 누르면 축이 바뀝니다.",
         "editSelectedUnchanged": true
       },
       "lid_right": {
@@ -97,7 +97,7 @@
           0
         ],
         "maxErr": 0,
-        "hint": "오른쪽 날개 기준 축으로 돕니다. 다른 면을 누르면 축이 바뀝니다.",
+        "hint": "오른쪽 날개 기준 축으로 돕니다. 다른 면을 누르거나 회전축 버튼을 누르면 축이 바뀝니다.",
         "editSelectedUnchanged": true
       },
       "base_front": {
@@ -115,7 +115,7 @@
           1
         ],
         "maxErr": 0,
-        "hint": "하단 앞면 기준 축으로 돕니다. 다른 면을 누르면 축이 바뀝니다.",
+        "hint": "하단 앞면 기준 축으로 돕니다. 다른 면을 누르거나 회전축 버튼을 누르면 축이 바뀝니다.",
         "editSelectedUnchanged": true
       },
       "base_back": {
@@ -133,7 +133,7 @@
           -1
         ],
         "maxErr": 0,
-        "hint": "하단 뒷면 기준 축으로 돕니다. 다른 면을 누르면 축이 바뀝니다.",
+        "hint": "하단 뒷면 기준 축으로 돕니다. 다른 면을 누르거나 회전축 버튼을 누르면 축이 바뀝니다.",
         "editSelectedUnchanged": true
       },
       "base_left": {
@@ -151,7 +151,7 @@
           0
         ],
         "maxErr": 0,
-        "hint": "하단 왼쪽 면 기준 축으로 돕니다. 다른 면을 누르면 축이 바뀝니다.",
+        "hint": "하단 왼쪽 면 기준 축으로 돕니다. 다른 면을 누르거나 회전축 버튼을 누르면 축이 바뀝니다.",
         "editSelectedUnchanged": true
       },
       "base_right": {
@@ -169,7 +169,7 @@
           0
         ],
         "maxErr": 0,
-        "hint": "하단 오른쪽 면 기준 축으로 돕니다. 다른 면을 누르면 축이 바뀝니다.",
+        "hint": "하단 오른쪽 면 기준 축으로 돕니다. 다른 면을 누르거나 회전축 버튼을 누르면 축이 바뀝니다.",
         "editSelectedUnchanged": true
       },
       "base_bottom": {
@@ -187,12 +187,12 @@
           0
         ],
         "maxErr": 0,
-        "hint": "하단 바닥 기준 축으로 돕니다. 다른 면을 누르면 축이 바뀝니다.",
+        "hint": "하단 바닥 기준 축으로 돕니다. 다른 면을 누르거나 회전축 버튼을 누르면 축이 바뀝니다.",
         "editSelectedUnchanged": true
       }
     },
     "selectedBeforeAndAfter": "lid_front",
-    "hintExample": "상단 기준 축으로 돕니다. 다른 면을 누르면 축이 바뀝니다."
+    "hintExample": "상단 기준 축으로 돕니다. 다른 면을 누르거나 회전축 버튼을 누르면 축이 바뀝니다."
   },
   "B2_opposite_faces_same_axis": {
     "rows": [

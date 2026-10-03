@@ -169,7 +169,14 @@
         <button data-view="bottom" title="아래에서 올려다봅니다 (Shift+7)">아래</button>
         <button id="btnIso" data-view="iso" title="한 번 더 누르면 반대편 모서리(뒤·왼쪽 날개)로 바뀝니다">3/4 시점</button>
       </div>
-      <div class="rotdir"><button id="lockToggle" aria-pressed="false" title="켜고 박스의 면을 누르면 그 면에 수직인 축으로만 돕니다">축 잠금</button></div>
+      <div class="rotdir"><button id="lockToggle" aria-pressed="false" title="켜고 회전축 버튼을 누르거나 박스의 면을 누르면 그 축으로만 돕니다">축 잠금</button></div>
+      <div class="axisrow" id="axisRow" role="group" aria-label="회전축" hidden>
+        <b>회전축</b><span class="axishint">(그 방향을 바라보는 선)</span>
+        <div class="view-buttons">
+          <button data-axis="front" aria-pressed="false">정면</button><button data-axis="back" aria-pressed="false">후면</button><button data-axis="left" aria-pressed="false">좌측</button><button data-axis="right" aria-pressed="false">우측</button>
+          <button data-axis="top" aria-pressed="false">윗면</button><button data-axis="bottom" aria-pressed="false">아래</button><button data-axis="iso" aria-pressed="false">3/4</button>
+        </div>
+      </div>
       <p class="hint" id="lockHint" hidden></p>
       <p class="hint">시점 버튼은 박스를 기본 자세로 되돌리고 방향만 바꾸며 확대는 유지합니다. 처음처럼 전체를 보려면 <kbd>F</kbd> 또는 위치 초기화.<br>3/4 시점을 한 번 더 누르면 반대편 모서리로 바뀝니다. <kbd>R</kbd> 앞·오른쪽 날개 / <kbd>L</kbd> 뒤·왼쪽 날개</p>
       <p class="hint">드래그: 박스 자유 회전(제한 없음) · <kbd>Ctrl</kbd>+드래그: 15° 단위 · 휠: 확대/축소 · Space+드래그: 이동</p>

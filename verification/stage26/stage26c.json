@@ -1,0 +1,1150 @@
+{
+  "1_row_visibility": {
+    "beforeOn": {
+      "rowHidden": true,
+      "on": false
+    },
+    "afterOn": {
+      "rowHidden": false,
+      "on": true,
+      "hint": "회전축 버튼을 누르거나 박스의 면을 눌러 축을 정하세요",
+      "pressed": {
+        "front": false,
+        "back": false,
+        "left": false,
+        "right": false,
+        "top": false,
+        "bottom": false,
+        "iso": false
+      },
+      "hls": [],
+      "line": false
+    }
+  },
+  "1_row_title": "회전축(그 방향을 바라보는 선) 정면후면좌측우측 윗면아래3/4",
+  "2_axis_buttons": {
+    "expectedLocalAxes": {
+      "front": [
+        0,
+        0,
+        1
+      ],
+      "back": [
+        0,
+        0,
+        1
+      ],
+      "left": [
+        1,
+        0,
+        0
+      ],
+      "right": [
+        1,
+        0,
+        0
+      ],
+      "top": [
+        0,
+        1,
+        0
+      ],
+      "bottom": [
+        0,
+        1,
+        0
+      ],
+      "iso": [
+        0.5720775535473553,
+        0.4767312946227962,
+        0.6674238124719146
+      ]
+    },
+    "rows": [
+      {
+        "view": "front",
+        "pose": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "back",
+          "front"
+        ],
+        "expectedPressed": [
+          "back",
+          "front"
+        ],
+        "highlightedFaces": [
+          "base_back",
+          "base_front",
+          "lid_back",
+          "lid_front"
+        ],
+        "cameraUnchanged": true,
+        "lockViewName": "front",
+        "hint": "'정면' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "front",
+        "pose": [
+          0.4,
+          0.5,
+          0.3,
+          0.71
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "back",
+          "front"
+        ],
+        "expectedPressed": [
+          "back",
+          "front"
+        ],
+        "highlightedFaces": [
+          "base_back",
+          "base_front",
+          "lid_back",
+          "lid_front"
+        ],
+        "cameraUnchanged": true,
+        "lockViewName": "front",
+        "hint": "'정면' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "front",
+        "pose": [
+          0.1,
+          -0.6,
+          0.5,
+          0.6
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "back",
+          "front"
+        ],
+        "expectedPressed": [
+          "back",
+          "front"
+        ],
+        "highlightedFaces": [
+          "base_back",
+          "base_front",
+          "lid_back",
+          "lid_front"
+        ],
+        "cameraUnchanged": true,
+        "lockViewName": "front",
+        "hint": "'정면' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "front",
+        "pose": [
+          0.7,
+          0.1,
+          -0.2,
+          0.68
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "back",
+          "front"
+        ],
+        "expectedPressed": [
+          "back",
+          "front"
+        ],
+        "highlightedFaces": [
+          "base_back",
+          "base_front",
+          "lid_back",
+          "lid_front"
+        ],
+        "cameraUnchanged": true,
+        "lockViewName": "front",
+        "hint": "'정면' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "back",
+        "pose": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "back",
+          "front"
+        ],
+        "expectedPressed": [
+          "back",
+          "front"
+        ],
+        "highlightedFaces": [
+          "base_back",
+          "base_front",
+          "lid_back",
+          "lid_front"
+        ],
+        "cameraUnchanged": true,
+        "lockViewName": "back",
+        "hint": "'후면' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "back",
+        "pose": [
+          0.4,
+          0.5,
+          0.3,
+          0.71
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "back",
+          "front"
+        ],
+        "expectedPressed": [
+          "back",
+          "front"
+        ],
+        "highlightedFaces": [
+          "base_back",
+          "base_front",
+          "lid_back",
+          "lid_front"
+        ],
+        "cameraUnchanged": true,
+        "lockViewName": "back",
+        "hint": "'후면' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "back",
+        "pose": [
+          0.1,
+          -0.6,
+          0.5,
+          0.6
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "back",
+          "front"
+        ],
+        "expectedPressed": [
+          "back",
+          "front"
+        ],
+        "highlightedFaces": [
+          "base_back",
+          "base_front",
+          "lid_back",
+          "lid_front"
+        ],
+        "cameraUnchanged": true,
+        "lockViewName": "back",
+        "hint": "'후면' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "back",
+        "pose": [
+          0.7,
+          0.1,
+          -0.2,
+          0.68
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "back",
+          "front"
+        ],
+        "expectedPressed": [
+          "back",
+          "front"
+        ],
+        "highlightedFaces": [
+          "base_back",
+          "base_front",
+          "lid_back",
+          "lid_front"
+        ],
+        "cameraUnchanged": true,
+        "lockViewName": "back",
+        "hint": "'후면' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "left",
+        "pose": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "left",
+          "right"
+        ],
+        "expectedPressed": [
+          "left",
+          "right"
+        ],
+        "highlightedFaces": [
+          "base_left",
+          "base_right",
+          "lid_left",
+          "lid_right"
+        ],
+        "cameraUnchanged": true,
+        "lockViewName": "left",
+        "hint": "'좌측' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "left",
+        "pose": [
+          0.4,
+          0.5,
+          0.3,
+          0.71
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "left",
+          "right"
+        ],
+        "expectedPressed": [
+          "left",
+          "right"
+        ],
+        "highlightedFaces": [
+          "base_left",
+          "base_right",
+          "lid_left",
+          "lid_right"
+        ],
+        "cameraUnchanged": true,
+        "lockViewName": "left",
+        "hint": "'좌측' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "left",
+        "pose": [
+          0.1,
+          -0.6,
+          0.5,
+          0.6
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "left",
+          "right"
+        ],
+        "expectedPressed": [
+          "left",
+          "right"
+        ],
+        "highlightedFaces": [
+          "base_left",
+          "base_right",
+          "lid_left",
+          "lid_right"
+        ],
+        "cameraUnchanged": true,
+        "lockViewName": "left",
+        "hint": "'좌측' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "left",
+        "pose": [
+          0.7,
+          0.1,
+          -0.2,
+          0.68
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "left",
+          "right"
+        ],
+        "expectedPressed": [
+          "left",
+          "right"
+        ],
+        "highlightedFaces": [
+          "base_left",
+          "base_right",
+          "lid_left",
+          "lid_right"
+        ],
+        "cameraUnchanged": true,
+        "lockViewName": "left",
+        "hint": "'좌측' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "right",
+        "pose": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "left",
+          "right"
+        ],
+        "expectedPressed": [
+          "left",
+          "right"
+        ],
+        "highlightedFaces": [
+          "base_left",
+          "base_right",
+          "lid_left",
+          "lid_right"
+        ],
+        "cameraUnchanged": true,
+        "lockViewName": "right",
+        "hint": "'우측' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "right",
+        "pose": [
+          0.4,
+          0.5,
+          0.3,
+          0.71
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "left",
+          "right"
+        ],
+        "expectedPressed": [
+          "left",
+          "right"
+        ],
+        "highlightedFaces": [
+          "base_left",
+          "base_right",
+          "lid_left",
+          "lid_right"
+        ],
+        "cameraUnchanged": true,
+        "lockViewName": "right",
+        "hint": "'우측' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "right",
+        "pose": [
+          0.1,
+          -0.6,
+          0.5,
+          0.6
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "left",
+          "right"
+        ],
+        "expectedPressed": [
+          "left",
+          "right"
+        ],
+        "highlightedFaces": [
+          "base_left",
+          "base_right",
+          "lid_left",
+          "lid_right"
+        ],
+        "cameraUnchanged": true,
+        "lockViewName": "right",
+        "hint": "'우측' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "right",
+        "pose": [
+          0.7,
+          0.1,
+          -0.2,
+          0.68
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "left",
+          "right"
+        ],
+        "expectedPressed": [
+          "left",
+          "right"
+        ],
+        "highlightedFaces": [
+          "base_left",
+          "base_right",
+          "lid_left",
+          "lid_right"
+        ],
+        "cameraUnchanged": true,
+        "lockViewName": "right",
+        "hint": "'우측' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "top",
+        "pose": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "bottom",
+          "top"
+        ],
+        "expectedPressed": [
+          "bottom",
+          "top"
+        ],
+        "highlightedFaces": [
+          "base_bottom",
+          "lid_top"
+        ],
+        "cameraUnchanged": true,
+        "lockViewName": "top",
+        "hint": "'윗면' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "top",
+        "pose": [
+          0.4,
+          0.5,
+          0.3,
+          0.71
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "bottom",
+          "top"
+        ],
+        "expectedPressed": [
+          "bottom",
+          "top"
+        ],
+        "highlightedFaces": [
+          "base_bottom",
+          "lid_top"
+        ],
+        "cameraUnchanged": true,
+        "lockViewName": "top",
+        "hint": "'윗면' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "top",
+        "pose": [
+          0.1,
+          -0.6,
+          0.5,
+          0.6
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "bottom",
+          "top"
+        ],
+        "expectedPressed": [
+          "bottom",
+          "top"
+        ],
+        "highlightedFaces": [
+          "base_bottom",
+          "lid_top"
+        ],
+        "cameraUnchanged": true,
+        "lockViewName": "top",
+        "hint": "'윗면' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "top",
+        "pose": [
+          0.7,
+          0.1,
+          -0.2,
+          0.68
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "bottom",
+          "top"
+        ],
+        "expectedPressed": [
+          "bottom",
+          "top"
+        ],
+        "highlightedFaces": [
+          "base_bottom",
+          "lid_top"
+        ],
+        "cameraUnchanged": true,
+        "lockViewName": "top",
+        "hint": "'윗면' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "bottom",
+        "pose": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "bottom",
+          "top"
+        ],
+        "expectedPressed": [
+          "bottom",
+          "top"
+        ],
+        "highlightedFaces": [
+          "base_bottom",
+          "lid_top"
+        ],
+        "cameraUnchanged": true,
+        "lockViewName": "bottom",
+        "hint": "'아래' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "bottom",
+        "pose": [
+          0.4,
+          0.5,
+          0.3,
+          0.71
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "bottom",
+          "top"
+        ],
+        "expectedPressed": [
+          "bottom",
+          "top"
+        ],
+        "highlightedFaces": [
+          "base_bottom",
+          "lid_top"
+        ],
+        "cameraUnchanged": true,
+        "lockViewName": "bottom",
+        "hint": "'아래' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "bottom",
+        "pose": [
+          0.1,
+          -0.6,
+          0.5,
+          0.6
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "bottom",
+          "top"
+        ],
+        "expectedPressed": [
+          "bottom",
+          "top"
+        ],
+        "highlightedFaces": [
+          "base_bottom",
+          "lid_top"
+        ],
+        "cameraUnchanged": true,
+        "lockViewName": "bottom",
+        "hint": "'아래' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "bottom",
+        "pose": [
+          0.7,
+          0.1,
+          -0.2,
+          0.68
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "bottom",
+          "top"
+        ],
+        "expectedPressed": [
+          "bottom",
+          "top"
+        ],
+        "highlightedFaces": [
+          "base_bottom",
+          "lid_top"
+        ],
+        "cameraUnchanged": true,
+        "lockViewName": "bottom",
+        "hint": "'아래' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "iso",
+        "pose": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "iso"
+        ],
+        "expectedPressed": [
+          "iso"
+        ],
+        "highlightedFaces": [],
+        "cameraUnchanged": true,
+        "lockViewName": "iso",
+        "hint": "'3/4' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "iso",
+        "pose": [
+          0.4,
+          0.5,
+          0.3,
+          0.71
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "iso"
+        ],
+        "expectedPressed": [
+          "iso"
+        ],
+        "highlightedFaces": [],
+        "cameraUnchanged": true,
+        "lockViewName": "iso",
+        "hint": "'3/4' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "iso",
+        "pose": [
+          0.1,
+          -0.6,
+          0.5,
+          0.6
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "iso"
+        ],
+        "expectedPressed": [
+          "iso"
+        ],
+        "highlightedFaces": [],
+        "cameraUnchanged": true,
+        "lockViewName": "iso",
+        "hint": "'3/4' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      },
+      {
+        "view": "iso",
+        "pose": [
+          0.7,
+          0.1,
+          -0.2,
+          0.68
+        ],
+        "maxDiffLocal": 0,
+        "maxDiffWorld": 0,
+        "pressed": [
+          "iso"
+        ],
+        "expectedPressed": [
+          "iso"
+        ],
+        "highlightedFaces": [],
+        "cameraUnchanged": true,
+        "lockViewName": "iso",
+        "hint": "'3/4' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다."
+      }
+    ],
+    "note": "3/4 축 = 3/4 시점(iso)의 시선 방향, 정면·후면 등은 시점 방향에서 카메라 고도 성분을 뺀 주축(마주 보는 시점은 같은 선)"
+  },
+  "2_iso_axis_equals_view_direction": {
+    "isoViewDir": [
+      -0.572078,
+      0.476731,
+      -0.667424
+    ],
+    "axisLocal": [
+      0.572078,
+      0.476731,
+      0.667424
+    ],
+    "maxDiff": 1.334847625
+  },
+  "3_view_buttons_only_move_camera": {
+    "front": {
+      "cameraMoved": true,
+      "lockStillOn": true,
+      "axisSame": true,
+      "lockView": "left"
+    },
+    "top": {
+      "cameraMoved": true,
+      "lockStillOn": true,
+      "axisSame": true,
+      "lockView": "left"
+    },
+    "bottom": {
+      "cameraMoved": true,
+      "lockStillOn": true,
+      "axisSame": true,
+      "lockView": "left"
+    },
+    "iso": {
+      "cameraMoved": true,
+      "lockStillOn": true,
+      "axisSame": true,
+      "lockView": "left"
+    }
+  },
+  "4_cycles": {
+    "front": {
+      "lockAxisWorld": [
+        0,
+        0,
+        1
+      ],
+      "dominantFaceSequence": [
+        "lid_top",
+        "lid_left",
+        "base_bottom",
+        "lid_right",
+        "lid_top"
+      ],
+      "expectedSet": [
+        "lid_top",
+        "lid_left",
+        "base_bottom",
+        "lid_right"
+      ],
+      "visitsExpected": true,
+      "returnsAfter360DiffDeg": 0,
+      "steps": [
+        {
+          "badgeDeg": -90,
+          "angleDeg": 90,
+          "axisAbsDot": 1
+        },
+        {
+          "badgeDeg": -90,
+          "angleDeg": 90,
+          "axisAbsDot": 1
+        },
+        {
+          "badgeDeg": -90,
+          "angleDeg": 90,
+          "axisAbsDot": 1
+        },
+        {
+          "badgeDeg": -90,
+          "angleDeg": 90,
+          "axisAbsDot": 1
+        }
+      ],
+      "oneDrag450": {
+        "badgeDeg": -450,
+        "relAngleDeg": 90
+      }
+    },
+    "left": {
+      "lockAxisWorld": [
+        1,
+        0,
+        0
+      ],
+      "dominantFaceSequence": [
+        "lid_top",
+        "lid_back",
+        "base_bottom",
+        "lid_front",
+        "lid_top"
+      ],
+      "expectedSet": [
+        "lid_top",
+        "lid_front",
+        "base_bottom",
+        "lid_back"
+      ],
+      "visitsExpected": true,
+      "returnsAfter360DiffDeg": 0,
+      "steps": [
+        {
+          "badgeDeg": 90,
+          "angleDeg": 90,
+          "axisAbsDot": 1
+        },
+        {
+          "badgeDeg": 90,
+          "angleDeg": 90,
+          "axisAbsDot": 1
+        },
+        {
+          "badgeDeg": 90,
+          "angleDeg": 90,
+          "axisAbsDot": 1
+        },
+        {
+          "badgeDeg": 90,
+          "angleDeg": 90,
+          "axisAbsDot": 1
+        }
+      ],
+      "oneDrag450": {
+        "badgeDeg": 450,
+        "relAngleDeg": 90
+      }
+    },
+    "top": {
+      "lockAxisWorld": [
+        0,
+        1,
+        0
+      ],
+      "circleBadgeDeg": 360,
+      "afterReleaseDiffDeg": 0,
+      "dominantAfter": "lid_top"
+    }
+  },
+  "5_face_click_and_buttons_share_state": {
+    "button_right": {
+      "view": "right",
+      "face": null,
+      "pressed": [
+        "left",
+        "right"
+      ]
+    },
+    "thenFaceClick_lid_front": {
+      "view": null,
+      "face": "lid_front",
+      "pressed": [
+        "back",
+        "front"
+      ],
+      "local": [
+        0,
+        0,
+        1
+      ],
+      "hint": "앞날개 기준 축으로 돕니다. 다른 면을 누르거나 회전축 버튼을 누르면 축이 바뀝니다.",
+      "selectedEditFace": "lid_right"
+    },
+    "button_iso": {
+      "view": "iso",
+      "face": null,
+      "pressed": [
+        "iso"
+      ]
+    },
+    "thenFaceClick_lid_top": {
+      "view": null,
+      "face": "lid_top",
+      "pressed": [
+        "bottom",
+        "top"
+      ],
+      "hint": "상단 기준 축으로 돕니다. 다른 면을 누르거나 회전축 버튼을 누르면 축이 바뀝니다."
+    }
+  },
+  "6_kept_across_views_and_F": {
+    "views": [
+      {
+        "view": "front",
+        "lockOn": true,
+        "lockView": "front",
+        "pressed": [
+          "back",
+          "front"
+        ],
+        "poseIdentity": true,
+        "worldAxis": [
+          0,
+          0,
+          1
+        ]
+      },
+      {
+        "view": "left",
+        "lockOn": true,
+        "lockView": "front",
+        "pressed": [
+          "back",
+          "front"
+        ],
+        "poseIdentity": true,
+        "worldAxis": [
+          0,
+          0,
+          1
+        ]
+      },
+      {
+        "view": "top",
+        "lockOn": true,
+        "lockView": "front",
+        "pressed": [
+          "back",
+          "front"
+        ],
+        "poseIdentity": true,
+        "worldAxis": [
+          0,
+          0,
+          1
+        ]
+      },
+      {
+        "view": "bottom",
+        "lockOn": true,
+        "lockView": "front",
+        "pressed": [
+          "back",
+          "front"
+        ],
+        "poseIdentity": true,
+        "worldAxis": [
+          0,
+          0,
+          1
+        ]
+      },
+      {
+        "view": "iso",
+        "lockOn": true,
+        "lockView": "front",
+        "pressed": [
+          "back",
+          "front"
+        ],
+        "poseIdentity": true,
+        "worldAxis": [
+          0,
+          0,
+          1
+        ]
+      }
+    ],
+    "F": {
+      "lockOn": true,
+      "lockView": "front",
+      "worldAxisMatchesPose": true,
+      "poseKept": true
+    }
+  },
+  "6_toggle_off": {
+    "rowHidden": true,
+    "on": false,
+    "view": null,
+    "hls": [],
+    "line": false,
+    "hint": "",
+    "freeRotationAfterOff": true
+  },
+  "6_reload": {
+    "on": false,
+    "rowHidden": true,
+    "view": null
+  },
+  "7_overlays_excluded": {
+    "visualsOn": {
+      "hls": [
+        "base_back",
+        "base_front",
+        "lid_back",
+        "lid_front"
+      ],
+      "line": true
+    },
+    "visualsOff": {
+      "hls": [],
+      "line": false
+    },
+    "pngBytesEqual": true,
+    "glbNodesEqual": true,
+    "meshCountEqual": true,
+    "overlayNames": [],
+    "validator": {
+      "errors": 0,
+      "warnings": 0,
+      "infos": 10,
+      "hints": 0
+    }
+  },
+  "8_glb_viewer_mode": {
+    "template": {
+      "rowShown": true,
+      "rowEnabled": true,
+      "axisAfterFront": [
+        0,
+        0,
+        1
+      ],
+      "pressed": [
+        "back",
+        "front"
+      ],
+      "lockedRotation": {
+        "angleDeg": 3.102,
+        "axisAbsDot": 1
+      }
+    },
+    "external": {
+      "toggleDisabled": true,
+      "lockOn": false,
+      "rowShownDisabled": true,
+      "hint": "이 GLB는 면을 알 수 없어 축 잠금을 쓸 수 없습니다. 자유 회전만 사용합니다."
+    },
+    "backToEditor": {
+      "toggleEnabled": true,
+      "lockOn": false,
+      "rowHidden": true
+    }
+  },
+  "page_errors": []
+}

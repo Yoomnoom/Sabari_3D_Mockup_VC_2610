@@ -6,8 +6,9 @@ import { FACES, FaceId, groupOf } from './faces';
 import { BoxParams } from './params';
 import { TEMPLATE_ID, buildParts } from './templateMesh';
 import { dragRotation, lockedStep } from './screenRotate';
+import { AXIS_VIEW_NAMES, DIRS, ViewName, viewAxisLocal } from './viewDirs';
+export type { ViewName } from './viewDirs';
 
-export type ViewName = 'front' | 'back' | 'left' | 'right' | 'top' | 'iso' | 'isoL' | 'bottom';
 export type Slot = 'editor' | 'viewer';
 
 interface Model {
@@ -22,10 +23,6 @@ interface Model {
 /** 화면에만 보이는 표시(선택선·축 잠금 면 표시·축 선). 선택·범위 계산·내보내기에서 제외한다. */
 const isOverlay = (o: THREE.Object3D) => o.name === '__highlight' || o.name === '__lockhl' || o.name === '__lockaxis';
 
-const DIRS: Record<ViewName, [number, number, number]> = {
-  front: [0, 0.12, 1], back: [0, 0.12, -1], left: [-1, 0.12, 0], right: [1, 0.12, 0],
-  top: [0, 1, 0.0001], iso: [0.9, 0.75, 1.05], isoL: [-0.9, 0.75, -1.05], bottom: [0, -1, 0.0001], // bottom: 아래에서 올려다봄(화면 위쪽 = 앞) // R = 앞·오른쪽 날개가 보이는 모서리, L = 그 반대 모서리(뒤·왼쪽 날개)
-};
 
 export class Viewer {
   renderer: THREE.WebGLRenderer;
@@ -62,11 +59,14 @@ export class Viewer {
   private lockFace: FaceId | null = null;
   /** 잠근 축(박스 국소 좌표의 단위 법선) */
   private lockN: THREE.Vector3 | null = null;
-  private lockHl: THREE.LineSegments | null = null;
+  /** 회전축 버튼으로 정한 축의 시점 이름(면 클릭으로 정했으면 null) */
+  private lockView: ViewName | null = null;
+  /** 선택한 축에 수직인 면(마주 보는 면들)의 약한 테두리 표시 */
+  private lockHls: THREE.LineSegments[] = [];
   private lockLine: THREE.Line | null = null;
   /** 앱이 만든 템플릿 GLB(면 이름이 있는 메시)인지: 외부 GLB는 면을 알 수 없어 축 잠금을 쓰지 않는다 */
   private viewerHasFaces = false;
-  onLockChange: ((s: { on: boolean; face: FaceId | null; available: boolean }) => void) | null = null;
+  onLockChange: ((s: { on: boolean; face: FaceId | null; view: ViewName | null; views: ViewName[]; available: boolean }) => void) | null = null;
   onLockHint: ((text: string) => void) | null = null;
 
   constructor(el: HTMLElement) {
@@ -248,6 +248,9 @@ export class Viewer {
   /** 지금 모델에서 축 잠금을 쓸 수 있는지: 편집 모델은 항상, GLB 뷰어는 앱이 만든 템플릿 GLB(면 이름이 있는 메시)일 때만 */
   lockAvailable(): boolean { return this.slot === 'editor' ? !!this.models.editor : this.viewerHasFaces; }
   getLockFace(): FaceId | null { return this.lockFace; }
+  getLockView(): ViewName | null { return this.lockView; }
+  /** 지금 축과 같은 선인 회전축 버튼들(마주 보는 버튼은 함께 표시된다) */
+  lockPressedViews(): ViewName[] { const n = this.lockN; return n ? AXIS_VIEW_NAMES.filter((a) => Math.abs(viewAxisLocal(a).dot(n)) > 1 - 1e-6) : []; }
   isLockOn(): boolean { return this.lockOn; }
   /** 잠근 축을 월드 좌표로(지금 자세 기준). 잠근 축이 없으면 null */
   getLockAxisWorld(): THREE.Vector3 | null { return this.lockN ? this.lockN.clone().applyQuaternion(this.boxQuat).normalize() : null; }
@@ -255,12 +258,20 @@ export class Viewer {
 
   setAxisLock(on: boolean) {
     this.lockOn = on && this.lockAvailable();
-    if (!this.lockOn) { this.lockFace = null; this.lockN = null; }
+    if (!this.lockOn) { this.lockFace = null; this.lockN = null; this.lockView = null; }
     this.refreshLockVisuals();
     this.emitLock();
   }
 
-  private emitLock() { this.onLockChange?.({ on: this.lockOn, face: this.lockFace, available: this.lockAvailable() }); }
+  /** 회전축 버튼으로 축을 정한다(시점 버튼과 달리 카메라는 움직이지 않는다). 면 클릭으로 정한 축과 같은 상태를 쓰며 마지막 선택이 우선이다. */
+  setLockView(name: ViewName) {
+    if (!this.lockOn || !this.lockAvailable()) return;
+    this.lockView = name; this.lockFace = null; this.lockN = viewAxisLocal(name);
+    this.refreshLockVisuals();
+    this.emitLock();
+  }
+
+  private emitLock() { this.onLockChange?.({ on: this.lockOn, face: this.lockFace, view: this.lockView, views: this.lockPressedViews(), available: this.lockAvailable() }); }
 
   /** 클릭한 면을 축 기준 면으로 정한다. 두께면·안쪽면·배경은 무시하고 안내한다. */
   private pickLockAxis(e: PointerEvent) {
@@ -272,23 +283,30 @@ export class Viewer {
     mesh.updateWorldMatrix(true, false);
     const n = new THREE.Vector3().fromBufferAttribute(mesh.geometry.getAttribute('normal'), 0).transformDirection(mesh.matrixWorld).applyQuaternion(this.boxQuat.clone().invert()).normalize();
     for (const k of ['x', 'y', 'z'] as const) if (Math.abs(n[k]) < 1e-6) n[k] = 0; // 수치 잡음 정리
-    this.lockFace = id; this.lockN = n.normalize();
+    this.lockFace = id; this.lockView = null; this.lockN = n.normalize();
     this.refreshLockVisuals();
     this.emitLock();
   }
 
-  /** 축 잠금 표시: 눌러 정한 면의 테두리(파랑)와 박스 중심을 지나는 축 선. 화면에만 보이고 PNG·GLB에는 넣지 않는다. */
+  /** 축 잠금 표시: 박스 중심을 지나는 축 선과, 그 축에 수직인 면(마주 보는 면들)의 약한 테두리. 화면에만 보이고 PNG·GLB에는 넣지 않는다. 3/4 처럼 수직인 면이 없는 축은 축 선만 보인다. */
   private refreshLockVisuals() {
-    this.lockHl?.removeFromParent(); this.lockLine?.removeFromParent();
-    for (const o of [this.lockHl, this.lockLine]) { if (o) { o.geometry.dispose(); (o.material as THREE.Material).dispose(); } }
-    this.lockHl = null; this.lockLine = null;
+    for (const o of this.lockHls) { o.removeFromParent(); o.geometry.dispose(); (o.material as THREE.Material).dispose(); }
+    this.lockHls = [];
+    this.lockLine?.removeFromParent();
+    if (this.lockLine) { this.lockLine.geometry.dispose(); (this.lockLine.material as THREE.Material).dispose(); }
+    this.lockLine = null;
     const m = this.cur;
-    if (this.lockOn && this.lockFace && this.lockN && m) {
-      const mesh = m.root.getObjectByName(this.lockFace) as THREE.Mesh | undefined;
-      if (mesh?.isMesh) {
-        this.lockHl = new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry), new THREE.LineBasicMaterial({ color: 0x1c7ed6, depthTest: false }));
-        this.lockHl.name = '__lockhl'; this.lockHl.renderOrder = 11;
-        mesh.add(this.lockHl);
+    if (this.lockOn && this.lockN && m) {
+      const inv = this.boxQuat.clone().invert();
+      for (const f of FACES) {
+        const mesh = m.root.getObjectByName(f.id) as THREE.Mesh | undefined;
+        if (!mesh?.isMesh) continue;
+        mesh.updateWorldMatrix(true, false);
+        const n = new THREE.Vector3().fromBufferAttribute(mesh.geometry.getAttribute('normal'), 0).transformDirection(mesh.matrixWorld).applyQuaternion(inv);
+        if (Math.abs(n.dot(this.lockN)) < 1 - 1e-6) continue;
+        const hl = new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry), new THREE.LineBasicMaterial({ color: 0x1c7ed6, transparent: true, opacity: 0.45, depthTest: false }));
+        hl.name = '__lockhl'; hl.renderOrder = 11;
+        mesh.add(hl); this.lockHls.push(hl);
       }
       const L = this.bounds().getBoundingSphere(new THREE.Sphere()).radius * 1.3;
       this.lockLine = new THREE.Line(new THREE.BufferGeometry().setFromPoints([this.lockN.clone().multiplyScalar(-L), this.lockN.clone().multiplyScalar(L)]), new THREE.LineBasicMaterial({ color: 0x1c7ed6, depthTest: false }));
@@ -602,9 +620,9 @@ export class Viewer {
   }
 
   private renderToCanvas(scale: number): HTMLCanvasElement {
-    const hl = this.highlight?.visible, lh = this.lockHl?.visible, ll = this.lockLine?.visible;
+    const hl = this.highlight?.visible, lh = this.lockHls.map((o) => o.visible), ll = this.lockLine?.visible;
     if (this.highlight) this.highlight.visible = false;
-    if (this.lockHl) this.lockHl.visible = false;
+    for (const o of this.lockHls) o.visible = false;
     if (this.lockLine) this.lockLine.visible = false;
     const pr = this.renderer.getPixelRatio();
     this.renderer.setPixelRatio(Math.max(pr, 1) * scale);
@@ -615,7 +633,7 @@ export class Viewer {
     out.getContext('2d')!.drawImage(src, 0, 0);
     this.renderer.setPixelRatio(pr);
     if (this.highlight) this.highlight.visible = !!hl;
-    if (this.lockHl) this.lockHl.visible = lh !== false;
+    this.lockHls.forEach((o, i) => { o.visible = lh[i] !== false; });
     if (this.lockLine) this.lockLine.visible = ll !== false;
     this.dirty = true;
     return out;

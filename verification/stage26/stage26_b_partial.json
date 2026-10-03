@@ -181,26 +181,5 @@
     "lidOpenKeepsLock": true,
     "dimsChangeKeepsLockVisuals": true,
     "baseSelectWhenLockOff": "base_bottom"
-  },
-  "I_glb_viewer_mode": {
-    "template_toggleEnabled": true,
-    "template_pickedFace": "lid_top",
-    "template_hint": "상단 기준 축으로 돕니다. 다른 면을 누르거나 회전축 버튼을 누르면 축이 바뀝니다.",
-    "template_lockedRotation": {
-      "angleDeg": 4.988,
-      "axisAbsDot": 1
-    },
-    "external": {
-      "toggleDisabled": true,
-      "lockOn": false,
-      "hint": "이 GLB는 면을 알 수 없어 축 잠금을 쓸 수 없습니다. 자유 회전만 사용합니다.",
-      "pressed": "false",
-      "freeRotationWorks": true
-    },
-    "backToEditor": {
-      "toggleEnabled": true,
-      "lockOn": false
-    }
-  },
-  "page_errors": []
+  }
 }

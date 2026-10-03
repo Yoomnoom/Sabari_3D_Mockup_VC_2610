@@ -1,0 +1,50 @@
+{
+ "defaultState": {
+  "sidebarControls": 90,
+  "viewSectionControls": 10,
+  "viewButtons": [
+   "보기 위치 초기화 (F)",
+   "위치 초기화 (F)",
+   "정면",
+   "후면",
+   "좌측",
+   "우측",
+   "윗면",
+   "아래",
+   "3/4 시점 R",
+   "축 잠금"
+  ]
+ },
+ "lockOn": {
+  "sidebarControls": 90,
+  "viewSectionControls": 10,
+  "viewButtons": [
+   "보기 위치 초기화 (F)",
+   "위치 초기화 (F)",
+   "정면",
+   "후면",
+   "좌측",
+   "우측",
+   "윗면",
+   "아래",
+   "3/4 시점 R",
+   "축 잠금"
+  ]
+ },
+ "lockOffAgain": {
+  "sidebarControls": 90,
+  "viewSectionControls": 10,
+  "viewButtons": [
+   "보기 위치 초기화 (F)",
+   "위치 초기화 (F)",
+   "정면",
+   "후면",
+   "좌측",
+   "우측",
+   "윗면",
+   "아래",
+   "3/4 시점 R",
+   "축 잠금"
+  ]
+ }
+}

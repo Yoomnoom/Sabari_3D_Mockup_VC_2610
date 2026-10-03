@@ -148,3 +148,9 @@ dialog#splitDlg::backdrop { background: rgba(0, 0, 0, 0.4); }
 .rotdir button:disabled { opacity: 0.5; cursor: not-allowed; }
 #rotBadge { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); padding: 6px 16px; border-radius: 999px; background: #25231f; color: #fff; font-size: 14px; font-weight: 700; z-index: 4; pointer-events: none; }
 #rotBadge.snap { background: #e8590c; }
+.axisrow { margin: 6px 0 2px; }
+.axisrow > b { font-size: 12px; }
+.axisrow .axishint { font-size: 11px; color: #6b665e; margin-left: 4px; }
+.axisrow .view-buttons { margin-top: 4px; }
+.axisrow button[aria-pressed='true']::before { content: '✓ '; }
+.axisrow button:disabled { opacity: 0.5; cursor: not-allowed; }

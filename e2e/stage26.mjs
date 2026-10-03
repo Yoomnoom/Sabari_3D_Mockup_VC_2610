@@ -1,4 +1,4 @@
-// 단계 26 축 잠금(면을 눌러 축을 정한다) 검증 (1/2): 축 선택·잠금 회전·순환·연속성·스냅. 결과: verification/stage26/stage26.json
+﻿// 단계 26 축 잠금(면을 눌러 축을 정한다) 검증 (1/2): 축 선택·잠금 회전·순환·연속성·스냅. 결과: verification/stage26/stage26.json
 // 사용: STAGE_OUT=verification/stage26 SABARI_URL=http://127.0.0.1:8874/ node e2e/stage26.mjs   (이어서 e2e/stage26_b.mjs)
 import { assert, dot, start } from './stage24_common.mjs';
 const { p, rec, results, H, quat, rel, drag, reset, visible, shot, faceCenter, colorFaces, finish } = await start();
@@ -23,7 +23,7 @@ const dragSnap = async (from, dir, target, { step = 5, max = 900 } = {}) => {
 // ===== B. 축 선택: 면 10개 · 마주 보는 면 · 자세가 돌아 있어도 · 무시되는 곳 · 편집 면 선택 불변
 await p.click('#faceList button[data-face=lid_front]'); const selected0 = (await lockState()).selected;
 await p.click('#lockToggle'); const onState = await lockState();
-rec('B0_toggle_on', onState); assert(onState.on && onState.pressed === 'true' && onState.hint === '박스의 면을 눌러 축을 정하세요' && onState.face === null);
+rec('B0_toggle_on', onState); assert(onState.on && onState.pressed === 'true' && onState.hint === '회전축 버튼을 누르거나 박스의 면을 눌러 축을 정하세요' && onState.face === null);
 const plan = [['lid_top', 'top', true, true], ['lid_front', 'front', true, true], ['lid_back', 'back', true, true], ['lid_left', 'left', true, true], ['lid_right', 'right', true, true], ['base_front', 'front', false, true], ['base_back', 'back', false, true], ['base_left', 'left', false, true], ['base_right', 'right', false, true], ['base_bottom', 'bottom', false, true]];
 const faceRows = {}, localAxes = {};
 for (const [id, view, lid] of plan) {
@@ -31,7 +31,7 @@ for (const [id, view, lid] of plan) {
   const st = await pickFace(id), n = await meshNormal(id);
   localAxes[id] = st.local;
   faceRows[id] = { view, lidShown: lid, lockFace: st.face, local: st.local?.map((x) => +x.toFixed(6)), meshNormal: n.map((x) => +x.toFixed(6)), maxErr: st.local ? Math.max(...st.local.map((x, i) => Math.abs(x - n[i]))) : null, hint: st.hint, editSelectedUnchanged: st.selected === selected0 };
-  assert(st.face === id && faceRows[id].maxErr < 1e-6 && st.selected === selected0 && st.hint.includes('기준 축으로 돕니다. 다른 면을 누르면 축이 바뀝니다.'), `면 ${id}`);
+  assert(st.face === id && faceRows[id].maxErr < 1e-6 && st.selected === selected0 && st.hint.includes('기준 축으로 돕니다.'), `면 ${id}`);
 }
 await setLid(true);
 const pairs = [['lid_top', 'base_bottom'], ['lid_front', 'lid_back'], ['lid_left', 'lid_right'], ['base_front', 'base_back'], ['base_left', 'base_right']];

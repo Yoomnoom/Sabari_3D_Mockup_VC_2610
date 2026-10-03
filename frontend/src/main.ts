@@ -727,17 +727,22 @@ async function init() {
   // 축 잠금(기본 꺼짐): 켜고 박스 면을 누르면 그 면에 수직인 축으로만 돈다. 화면 전용이라 어디에도 저장하지 않는다(새로고침하면 꺼진다).
   const lockBtn = $<HTMLButtonElement>('lockToggle'), lockHint = $('lockHint');
   let lockHintTimer = 0;
-  const renderLock = (s: { on: boolean; face: FaceId | null; available: boolean }) => {
+  const axisRow = $('axisRow');
+  const AXIS_LABEL: Record<string, string> = { front: '정면', back: '후면', left: '좌측', right: '우측', top: '윗면', bottom: '아래', iso: '3/4' };
+  const renderLock = (s: { on: boolean; face: FaceId | null; view: ViewName | null; views: ViewName[]; available: boolean }) => {
     lockBtn.setAttribute('aria-pressed', String(s.on));
     lockBtn.disabled = !s.available;
+    axisRow.hidden = !(s.on || !s.available); // 켜면 나타나고, 쓸 수 없는 GLB에서는 비활성으로 보여 준다
+    axisRow.querySelectorAll<HTMLButtonElement>('[data-axis]').forEach((b) => { b.disabled = !s.available; b.setAttribute('aria-pressed', String(s.views.includes(b.dataset.axis as ViewName))); });
     const faceLabel = s.face ? FACES.find((f) => f.id === s.face)?.label : null;
-    const text = !s.available ? '이 GLB는 면을 알 수 없어 축 잠금을 쓸 수 없습니다. 자유 회전만 사용합니다.' : !s.on ? '' : faceLabel ? `${faceLabel} 기준 축으로 돕니다. 다른 면을 누르면 축이 바뀝니다.` : '박스의 면을 눌러 축을 정하세요';
+    const text = !s.available ? '이 GLB는 면을 알 수 없어 축 잠금을 쓸 수 없습니다. 자유 회전만 사용합니다.' : !s.on ? '' : faceLabel ? `${faceLabel} 기준 축으로 돕니다. 다른 면을 누르거나 회전축 버튼을 누르면 축이 바뀝니다.` : s.view ? `'${AXIS_LABEL[s.view]}' 방향 축으로 돕니다. 다른 회전축 버튼이나 박스의 면을 누르면 축이 바뀝니다.` : '회전축 버튼을 누르거나 박스의 면을 눌러 축을 정하세요';
     lockHint.hidden = !text; lockHint.textContent = text;
   };
   viewer.onLockChange = renderLock;
-  viewer.onLockHint = (t) => { lockHint.hidden = false; lockHint.textContent = t; clearTimeout(lockHintTimer); lockHintTimer = window.setTimeout(() => renderLock({ on: viewer.isLockOn(), face: viewer.getLockFace(), available: viewer.lockAvailable() }), 2500); };
+  viewer.onLockHint = (t) => { lockHint.hidden = false; lockHint.textContent = t; clearTimeout(lockHintTimer); lockHintTimer = window.setTimeout(() => renderLock({ on: viewer.isLockOn(), face: viewer.getLockFace(), view: viewer.getLockView(), views: viewer.lockPressedViews(), available: viewer.lockAvailable() }), 2500); };
   lockBtn.onclick = () => viewer.setAxisLock(lockBtn.getAttribute('aria-pressed') !== 'true');
-  renderLock({ on: false, face: null, available: true });
+  axisRow.querySelectorAll<HTMLButtonElement>('[data-axis]').forEach((b) => (b.onclick = () => viewer.setLockView(b.dataset.axis as ViewName)));
+  renderLock({ on: false, face: null, view: null, views: [], available: true });
   viewer.onRotateBadge = (text, snapping) => {
     const b = $('rotBadge');
     b.hidden = !text;
