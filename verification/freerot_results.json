@@ -1,0 +1,424 @@
+{
+  "0_default_free": {
+    "pressed": "false",
+    "label": "수평 유지 회전",
+    "levelRotate": false
+  },
+  "1_vertical_drags": {
+    "count": 14,
+    "trace": [
+      {
+        "i": 0,
+        "dirY": 0.911,
+        "dirZ": -0.314,
+        "camUpY": -0.413
+      },
+      {
+        "i": 1,
+        "dirY": -0.348,
+        "dirZ": -0.712,
+        "camUpY": -0.938
+      },
+      {
+        "i": 2,
+        "dirY": -0.96,
+        "dirZ": 0.213,
+        "camUpY": 0.281
+      },
+      {
+        "i": 3,
+        "dirY": 0.212,
+        "dirZ": 0.742,
+        "camUpY": 0.977
+      },
+      {
+        "i": 4,
+        "dirY": 0.99,
+        "dirZ": -0.108,
+        "camUpY": -0.142
+      },
+      {
+        "i": 5,
+        "dirY": -0.072,
+        "dirZ": -0.757,
+        "camUpY": -0.997
+      },
+      {
+        "i": 6,
+        "dirY": -1,
+        "dirZ": 0.001,
+        "camUpY": 0.001
+      },
+      {
+        "i": 7,
+        "dirY": -0.069,
+        "dirZ": 0.757,
+        "camUpY": 0.998
+      },
+      {
+        "i": 8,
+        "dirY": 0.99,
+        "dirZ": 0.106,
+        "camUpY": 0.14
+      },
+      {
+        "i": 9,
+        "dirY": 0.209,
+        "dirZ": -0.742,
+        "camUpY": -0.978
+      },
+      {
+        "i": 10,
+        "dirY": -0.961,
+        "dirZ": -0.211,
+        "camUpY": -0.278
+      },
+      {
+        "i": 11,
+        "dirY": -0.345,
+        "dirZ": 0.713,
+        "camUpY": 0.938
+      },
+      {
+        "i": 12,
+        "dirY": 0.912,
+        "dirZ": 0.312,
+        "camUpY": 0.411
+      },
+      {
+        "i": 13,
+        "dirY": 0.474,
+        "dirZ": -0.668,
+        "camUpY": -0.88
+      }
+    ],
+    "boxFlippedUpsideDown": true,
+    "minCameraUpY": -0.997,
+    "cameraCrossedHemisphere": 6,
+    "dist": 0.4181
+  },
+  "1_flipped_sample": {
+    "dir": [
+      0.48,
+      0.675,
+      0.56
+    ],
+    "dist": 0.4181,
+    "up": [
+      0.615,
+      -0.327,
+      0.718
+    ],
+    "camUpY": -0.738,
+    "screenUp": [
+      0.44,
+      -0.74,
+      0.51
+    ],
+    "tgt": [
+      0,
+      0.0225,
+      0
+    ]
+  },
+  "1_horizontal_spins": {
+    "before": [
+      0.48,
+      0.675,
+      0.56
+    ],
+    "after": [
+      0.865,
+      0.194,
+      -0.463
+    ]
+  },
+  "2_top_drag": {
+    "start": [
+      0,
+      1,
+      0
+    ],
+    "afterHorizontal": [
+      -0.723,
+      0.691,
+      0
+    ],
+    "afterVertical": [
+      0,
+      0.691,
+      -0.723
+    ],
+    "hMoved": true,
+    "vMoved": true
+  },
+  "2_bottom_drag": {
+    "start": [
+      0,
+      -1,
+      0
+    ],
+    "afterHorizontal": [
+      -0.723,
+      -0.691,
+      0
+    ],
+    "afterVertical": [
+      0,
+      -0.691,
+      0.723
+    ],
+    "hMoved": true,
+    "vMoved": true
+  },
+  "3_restore_up": {
+    "F": {
+      "flippedBefore": 0.417,
+      "up": [
+        0,
+        1,
+        0
+      ],
+      "camUpY": 0.962,
+      "screenUp": [
+        0.27,
+        0.96,
+        -0.04
+      ],
+      "ok": true
+    },
+    "btnFit": {
+      "flippedBefore": -0.82,
+      "up": [
+        0,
+        1,
+        0
+      ],
+      "camUpY": 1,
+      "screenUp": [
+        -0.01,
+        1,
+        0.03
+      ],
+      "ok": true
+    },
+    "front": {
+      "flippedBefore": -0.679,
+      "up": [
+        0,
+        1,
+        0
+      ],
+      "camUpY": 0.993,
+      "screenUp": [
+        0,
+        0.99,
+        -0.12
+      ],
+      "ok": true
+    },
+    "back": {
+      "flippedBefore": -0.736,
+      "up": [
+        0,
+        1,
+        0
+      ],
+      "camUpY": 0.993,
+      "screenUp": [
+        0,
+        0.99,
+        0.12
+      ],
+      "ok": true
+    },
+    "left": {
+      "flippedBefore": -0.736,
+      "up": [
+        0,
+        1,
+        0
+      ],
+      "camUpY": 0.993,
+      "screenUp": [
+        0.12,
+        0.99,
+        0
+      ],
+      "ok": true
+    },
+    "right": {
+      "flippedBefore": -0.736,
+      "up": [
+        0,
+        1,
+        0
+      ],
+      "camUpY": 0.993,
+      "screenUp": [
+        -0.12,
+        0.99,
+        0
+      ],
+      "ok": true
+    },
+    "top": {
+      "flippedBefore": -0.736,
+      "up": [
+        0,
+        1,
+        0
+      ],
+      "camUpY": 0,
+      "screenUp": [
+        0,
+        0,
+        -1
+      ],
+      "ok": true
+    },
+    "bottom": {
+      "flippedBefore": -0.945,
+      "up": [
+        0,
+        1,
+        0
+      ],
+      "camUpY": 0,
+      "screenUp": [
+        0,
+        0,
+        1
+      ],
+      "ok": true
+    },
+    "iso": {
+      "flippedBefore": 0.945,
+      "up": [
+        0,
+        1,
+        0
+      ],
+      "camUpY": 0.879,
+      "screenUp": [
+        -0.31,
+        0.88,
+        -0.36
+      ],
+      "ok": true
+    }
+  },
+  "3_all_restored": true,
+  "4_level_pressed": "true",
+  "4_level_limits": {
+    "maxDirY": 1,
+    "minDirY": -1,
+    "up": [
+      0,
+      1,
+      0
+    ],
+    "camUpY": 0,
+    "neverUpsideDown": true
+  },
+  "4_level_pole_blocked": {
+    "topAfterDragPast": [
+      0,
+      1,
+      0
+    ],
+    "bottomAfterDragPast": [
+      0,
+      -1,
+      0
+    ],
+    "topStaysAtPole": true,
+    "bottomStaysAtPole": true
+  },
+  "4_remembered": true,
+  "4_after_reload_pressed": "true",
+  "4_toggle_back_free": {
+    "pressed": "false",
+    "up": [
+      0,
+      1,
+      0
+    ]
+  },
+  "5a_click_selects_top": {
+    "sel": "lid_top",
+    "hl": true
+  },
+  "5a_drag_does_not_select": "lid_front",
+  "5a_background_hides_highlight": true,
+  "5b_wheel": {
+    "dist": [
+      0.4181,
+      0.3553,
+      0.4513
+    ],
+    "zoomsIn": true,
+    "zoomsOut": true
+  },
+  "5b_view_keeps_zoom": true,
+  "5c_space_pan": {
+    "targetMoved": true,
+    "dirSame": true
+  },
+  "5c_middle_pan": {
+    "targetMoved": true,
+    "dirSame": true
+  },
+  "5c_right_pan": {
+    "targetMoved": true,
+    "dirSame": true
+  },
+  "5d_shift_drag": {
+    "imageMoved": true,
+    "cameraRotated": false
+  },
+  "5d_move_mode_drag": {
+    "imageMoved": true,
+    "cameraRotated": false
+  },
+  "5d_mode_off_rotates_again": true,
+  "5e_RL": {
+    "R": [
+      0.572,
+      0.477,
+      0.667
+    ],
+    "L": [
+      -0.572,
+      0.477,
+      -0.667
+    ],
+    "ok": true
+  },
+  "6_png_normal": {
+    "w": 2080,
+    "h": 1800,
+    "meanDiff": 2.2
+  },
+  "6_flipped_camUpY": -0.905,
+  "6_png_flipped": {
+    "w": 2080,
+    "h": 1800,
+    "meanDiff": 1.83
+  },
+  "6_pngs_differ": true,
+  "7_touch_one_finger_rotate": {
+    "moved": true,
+    "distSame": true,
+    "tgtSame": true
+  },
+  "7_touch_pinch_zoom": {
+    "before": 0.4513,
+    "after": 0.2256,
+    "zoomedIn": true
+  },
+  "7_touch_two_finger_pan": {
+    "targetMoved": true
+  },
+  "errors": []
+}

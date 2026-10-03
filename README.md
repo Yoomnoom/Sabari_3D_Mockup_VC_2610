@@ -24,6 +24,10 @@
 - 템플릿(3D 메시·UV)은 브라우저에서 파라미터로 생성합니다. `backend/app/template_gen.py`는 로컬 실행·테스트용으로 남기며, 기본값에서 TypeScript 생성물과 바이트 단위로 같은지 vitest가 확인합니다.
 - 검증 스크립트: `e2e/dims.mjs`, `ratio.mjs`, `dieline.mjs`, `bleed_id.mjs`, 칼선 샘플 대조는 `tools/measure_dieline.py` → `tools/compare_dieline.py`.
 
+## 3D 회전
+
+기본은 360도 자유 회전(TrackballControls)이며 극점에서 멈추지 않습니다. `보기`의 `수평 유지 회전`을 켜면 OrbitControls로 바뀌어 위쪽 방향이 고정됩니다. 박스는 월드에 고정이고 카메라만 돕니다. 검증: `node e2e/freerot.mjs`.
+
 ## 구성
 
 ```

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { TrackballControls } from 'three/addons/controls/TrackballControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { FACES, FaceId, groupOf } from './faces';
@@ -25,7 +26,16 @@ export class Viewer {
   renderer: THREE.WebGLRenderer;
   scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera(30, 1, 0.005, 20);
-  controls: OrbitControls;
+  /**
+   * 회전 방식 두 가지를 같은 target·camera 로 둔다. 박스는 월드에 고정이고 카메라만 돈다(이후 바닥 그림자·고정 배경이 박스를 따라 돌지 않게).
+   * - 자유 회전(기본): TrackballControls. 극점(위·아래)에서 멈추지 않고 뒤집을 수 있다. 쿼터니언 직접 구현 대신 three 가 검증한 구현을 써서
+   *   마우스·터치(한 손가락 회전, 두 손가락 확대·이동)를 그대로 지원하고 코드를 줄였다.
+   * - 수평 유지 회전: OrbitControls. 위쪽 방향(up)이 고정되고 극점에서 멈춘다.
+   */
+  readonly orbit: OrbitControls;
+  readonly track: TrackballControls;
+  levelRotate = false;
+  get controls(): OrbitControls | TrackballControls { return this.levelRotate ? this.orbit : this.track; }
   models: Record<Slot, Model | null> = { editor: null, viewer: null };
   slot: Slot = 'editor';
   faceMeshes = new Map<FaceId, THREE.Mesh>();
@@ -65,10 +75,19 @@ export class Viewer {
     this.camera.add(head);
     this.scene.add(this.camera);
 
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.enableDamping = false;
-    this.controls.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.PAN, RIGHT: THREE.MOUSE.PAN };
-    this.controls.addEventListener('change', () => (this.dirty = true));
+    this.orbit = new OrbitControls(this.camera, this.renderer.domElement);
+    this.orbit.enableDamping = false;
+    this.orbit.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.PAN, RIGHT: THREE.MOUSE.PAN };
+    this.orbit.addEventListener('change', () => (this.dirty = true));
+    this.orbit.enabled = false;
+    this.track = new TrackballControls(this.camera, this.renderer.domElement);
+    this.track.staticMoving = true; // 관성 없이 손을 떼면 바로 멈춘다(기존 OrbitControls 와 같은 느낌)
+    this.track.rotateSpeed = 3;
+    this.track.zoomSpeed = 1.2;
+    this.track.panSpeed = 0.8;
+    this.track.minDistance = 0.02; this.track.maxDistance = 5;
+    this.track.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.PAN, RIGHT: THREE.MOUSE.PAN };
+    this.track.addEventListener('change', () => (this.dirty = true));
 
     // 크기 갱신은 프레임당 한 번만, 실제로 바뀐 경우에만 한다. (스크롤바·소수점 크기 때문에 매 프레임 반복되면 캔버스가 계속 지워져 빈 화면이 된다)
     let raf = 0;
@@ -78,6 +97,7 @@ export class Viewer {
     this.installPicking();
     const loop = () => {
       requestAnimationFrame(loop);
+      if (!this.levelRotate) this.track.update(); // TrackballControls 는 매 프레임 갱신이 필요하다
       if (this.dirty) {
         this.dirty = false;
         this.renderer.render(this.scene, this.camera);
@@ -160,9 +180,22 @@ export class Viewer {
   }
 
   /** 스페이스를 누르는 동안 왼쪽 드래그 = 화면 이동(손 도구). */
+  /** 수평 유지 회전 켜기/끄기. 켜면 위쪽 방향을 바로잡고 극점에서 멈추는 OrbitControls 로 바꾼다. */
+  setLevelRotate(v: boolean) {
+    if (v === this.levelRotate) return;
+    const target = this.controls.target.clone();
+    this.levelRotate = v;
+    this.orbit.enabled = v; this.track.enabled = !v;
+    this.camera.up.set(0, 1, 0); // 자유 회전으로 뒤집혀 있었다면 위쪽을 되돌린다
+    this.orbit.target.copy(target); this.track.target.copy(target);
+    this.controls.update();
+    this.setPanHeld(this.panHeld);
+    this.dirty = true;
+  }
+
   setPanHeld(v: boolean) {
     this.panHeld = v;
-    this.controls.mouseButtons.LEFT = v ? THREE.MOUSE.PAN : THREE.MOUSE.ROTATE;
+    for (const c of [this.orbit, this.track]) c.mouseButtons.LEFT = v ? THREE.MOUSE.PAN : THREE.MOUSE.ROTATE;
     this.el.classList.toggle('panning', v);
   }
 
@@ -381,6 +414,7 @@ export class Viewer {
     const d = this.camera.position.clone().sub(this.controls.target).normalize();
     if (d.lengthSq() < 0.5) d.set(...DIRS.iso).normalize();
     this.camera.position.copy(center).addScaledVector(d, this.fitDistance(box));
+    this.camera.up.set(0, 1, 0); // 자유 회전으로 뒤집혀 있어도 위쪽 방향을 바로잡는다(바라보는 방향은 유지)
     this.controls.target.copy(center);
     this.controls.update();
     this.dirty = true;
@@ -404,6 +438,7 @@ export class Viewer {
   /** 검증용: 카메라를 직접 지정. */
   setCameraRaw(pos: [number, number, number], target: [number, number, number]) {
     this.camera.position.set(...pos);
+    this.camera.up.set(0, 1, 0);
     this.controls.target.set(...target);
     this.controls.update();
     this.camera.updateMatrixWorld(true);

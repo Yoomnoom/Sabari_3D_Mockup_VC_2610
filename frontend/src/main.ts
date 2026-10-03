@@ -552,7 +552,7 @@ async function handleFile(file: File) {
 // ---------- 화면 설정 (접기·펼치기, 단축키 사용) — 이 브라우저의 localStorage에 기억 ----------
 const UI_KEY = 'sabari-ui';
 let keysEnabled = true;
-const loadUi = (): { open?: Record<string, boolean>; keys?: boolean } => {
+const loadUi = (): { open?: Record<string, boolean>; keys?: boolean; level?: boolean } => {
   try { return JSON.parse(localStorage.getItem(UI_KEY) ?? '{}'); } catch { return {}; }
 };
 const saveUi = (patch: object) => { try { localStorage.setItem(UI_KEY, JSON.stringify({ ...loadUi(), ...patch })); } catch { /* 저장 불가 환경이면 기억만 안 한다 */ } };
@@ -722,7 +722,12 @@ async function init() {
 
   // 보기
   document.querySelectorAll<HTMLButtonElement>('[data-view]').forEach((b) => (b.onclick = () => showView(b.dataset.view as ViewName)));
-  $('btnIso').onclick = toggleIso; // 3/4 시점: 누를 때마다 R ↔ L
+  $('btnIso').onclick = toggleIso;
+  // 수평 유지 회전 (기본 꺼짐 = 자유 회전). 이 브라우저에 기억한다(.sabari 형식은 바꾸지 않는다).
+  const lv = $('btnLevel');
+  const setLevel = (v: boolean) => { viewer.setLevelRotate(v); lv.setAttribute('aria-pressed', String(v)); saveUi({ level: v }); };
+  lv.onclick = () => setLevel(lv.getAttribute('aria-pressed') !== 'true');
+  if ((loadUi() as { level?: boolean }).level) setLevel(true); // 3/4 시점: 누를 때마다 R ↔ L
   $('btnFit').onclick = (e) => { e.preventDefault(); e.stopPropagation(); viewer.fit(); }; // summary 안의 버튼이라 접기가 같이 눌리지 않게 한다
 
   // 저장 / 열기
