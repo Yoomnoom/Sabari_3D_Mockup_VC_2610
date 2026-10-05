@@ -374,3 +374,37 @@
 - 보관(삭제·수정 금지): 브랜치 `archive/before-restore-20261003`(836fe6e, 단계 23-2 끝), `archive/rotation-experiment-20261003`(19fe415), `rebuild/compact-view-submit-angle`(836fe6e); 태그 `archive-step22-ca71e7d`(ca71e7d, 유니티식 회전까지의 main), `archive-step23-tip`(836fe6e), `archive-rotation-experiment-20261003`(19fe415), `pre-step23`·`pre-step23-2` 등.
 - 되돌린 단계: 18(TrackballControls 360° 회전), 19(턴테이블 회전·각도 입력·90° 버튼·회전 속도), 20(기울기), 21(극점 문 돌리기), 22(유니티식 박스 회전·기즈모·뷰 큐브·고급 카메라), 23-0~23-2(보기 UI 정리·박스 놓기·축 고정·제출 각도).
 - 이 복원은 원격에 push하지 않았다.
+## 배포 v0.8.0 (후보 검증 기록, 2026-10-05)
+
+- 상태: **⚠️ 사용자 승인 대기** — 이 기록 시점에 main·태그는 push하지 않았다(origin/main = `5998721`, 버전 0.8.0).
+- 후보: `deploy/candidate-3`, 검증 기준 소스·dist 커밋 `83ea425`(전체 `83ea4259065badcf9ea19546ec494c349cfe9ffd`). 이 문서 커밋은 문서만 바꾸며 `frontend/src`·`frontend/dist`·`backend`는 `83ea425`와 동일하다.
+- 포함 작업: 11(그림자 보임), 12(UI 개편 1), 13(배경), 14(경계 점검), 15(조명), 16(템플릿), 17(대화상자), 18(마무리), 21(칼선 확대·이동), 22(축 선 보기), 19(임시저장 알림), 20(깨끗한 화면). 작업 24는 이 배포 준비.
+- dist: `index-DnxpqYda.js`, `index-CWz-8kl2.css`. 최종 소스 재빌드(`SABARI_BUILD_HASH=558eab2 SABARI_BUILD_DATE=2026-10-05`)와 파일명·git blob 해시가 모두 일치한다.
+
+### 검증 결과(임시 worktree, 시험은 한 번에 하나씩)
+
+| 항목 | 결과 |
+|---|---|
+| tsc | 오류 0 |
+| Vitest | 95 통과 + 1 건너뜀(12개 파일) |
+| pytest | 13 통과 |
+| e2e 전체(run_regression.mjs, 56개 스크립트) | 1차 50개 통과·6개 실패 → 아래 원인 분석 후 모두 해소 또는 환경 한계로 분류 |
+| 창 크기·배율 36조합(scroll_fix) | 36 시험, 불량 0 |
+| 큰 이미지(6209×4122px, dieline_pan_task21·dieline_real_b) | 통과 |
+| 4배 PNG(png_scale_task7) | 통과 |
+| 경계 픽셀(bleed_id, 기존 캔버스 1040×900 재현) | 면 간 번짐 43(기본 치수)·14(변경 치수), 비면 메시 번짐 0/0 (현재 새 레이아웃 캔버스에서는 6/13, 비면 0/0) |
+| GLB validator | 오류 0 / 경고 0 (4개 파일) |
+| ui_parity | 사라짐 0, 텍스트 변경(미설명) 0, 매핑 이동·통합 16 |
+| 이전 단계 전용 검증(24, 26, 26b, 26c, 27a, 28~30, 세운 3/4, PNG 배율, 그림자, 작업 11, 21, 22, 19, 20) | 모두 통과(아래 예외 설명 참조) |
+
+### 1차 실패 6건의 원인(앱 버그 아님)
+- `dieline_real`, `dieline_real_b`: 후보에 합성 아트보드(`verification/dieline-real/synth_art_*.png`)가 포함되지 않아 발생. `tools/make_synth_artboard.py`로 다시 생성한 뒤 통과.
+- `stage27a`, `stage26c_count`, `bleed_id`: 시험 도구가 러너의 탭 호환 장치(`tab_shim.mjs`)를 전제로 한다. 러너와 같은 조건으로 실행해 통과(`stage26c_count`는 출력 경로 인자가 필요한 집계 도구라 통과/실패 대상이 아니며 기본 화면 컨트롤 31).
+- `draft_toast_task19`: 탭 호환 장치를 켜면 "저장하지 않은 변경 확인" 항목이 실패하고, 장치 없이(작성 당시 방식) 실행하면 16개 항목 전부 통과한다. `post-19` 빌드에서도 같은 조건에서 같은 결과여서 후보에서 생긴 회귀가 아니다.
+- `dieline_real_check`: 시안(`inputs/real_dieline_crop.png`)이 필요하다. 후보에는 시안이 없으므로 임시 worktree에 사본을 잠시 놓고 실행해 통과한 뒤 삭제했다(결과 커밋 없음).
+- 러너가 제외하는 도구: `dieline_pan_measure_task21.mjs`(수정 전후 비교용 측정표 도구, 판정 없음), `glb_png_invariance_task12.mjs`(UI 개편 전·후 빌드 두 개를 비교하는 도구라 단일 빌드 판정 불가), `stage26c_count.mjs`(집계 도구).
+- 이전에 통과하던 항목이 후보에서 새로 실패한 것은 없어 태그 이분 탐색은 하지 않았다.
+
+### 환경 한계·미검증
+- 시험은 SwiftShader(소프트웨어 렌더링) 기준이다. **실제 GPU, 실제 PC·터치 기기, Vercel 배포본, 시안 시각 승인은 미검증.**
+- 시안 보호 점검: `origin/main..deploy/candidate-3`의 모든 커밋과 트리에 `inputs/`·`verification-private/`·`real_*`·`사바리_프로젝트*.sabari`·`사바리_목업*.glb`·`reference_angle*` 0건, 비밀정보 0건, 50MB 초과 0건. `inputs/` 원본과 해시가 같은 파일 0건. `origin/main` 이력에 이미 있는 `verification/dieline_render.png`는 건드리지 않았다.
