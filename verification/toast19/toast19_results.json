@@ -1,0 +1,195 @@
+{
+ "sizes": [
+  {
+   "win": [
+    1920,
+    1080
+   ],
+   "toast": {
+    "l": 432,
+    "t": 895,
+    "r": 768.984375,
+    "b": 996,
+    "w": 336.984375,
+    "h": 101
+   },
+   "widthRatioOfStage": 0.271,
+   "insideStage": true,
+   "overlapFloat": false,
+   "overlapPanel": false,
+   "overlapTabRail": false,
+   "scrollX": false,
+   "scrollY": false
+  },
+  {
+   "win": [
+    1366,
+    768
+   ],
+   "toast": {
+    "l": 432,
+    "t": 583,
+    "r": 768.984375,
+    "b": 684,
+    "w": 336.984375,
+    "h": 101
+   },
+   "widthRatioOfStage": 0.488,
+   "insideStage": true,
+   "overlapFloat": false,
+   "overlapPanel": false,
+   "overlapTabRail": false,
+   "scrollX": false,
+   "scrollY": false
+  },
+  {
+   "win": [
+    1024,
+    768
+   ],
+   "toast": {
+    "l": 432,
+    "t": 583,
+    "r": 768.984375,
+    "b": 684,
+    "w": 336.984375,
+    "h": 101
+   },
+   "widthRatioOfStage": 0.836,
+   "insideStage": true,
+   "overlapFloat": false,
+   "overlapPanel": false,
+   "overlapTabRail": false,
+   "scrollX": false,
+   "scrollY": false
+  },
+  {
+   "win": [
+    390,
+    844
+   ],
+   "toast": {
+    "l": 19.5,
+    "t": 254.84375,
+    "r": 370.5,
+    "b": 355.84375,
+    "w": 351,
+    "h": 101
+   },
+   "widthRatioOfStage": 0.9,
+   "insideStage": true,
+   "overlapFloat": false,
+   "overlapPanel": false,
+   "overlapTabRail": false,
+   "scrollX": false,
+   "scrollY": false
+  }
+ ],
+ "checks": {
+  "layoutUnchanged": true,
+  "content": true,
+  "geometry": true,
+  "a11y": true,
+  "noScrollbars": true,
+  "sizesOk": true,
+  "mobileWidth": true,
+  "close": true,
+  "timer": true,
+  "hover": true,
+  "focus": true,
+  "load": true,
+  "dirtyConfirm": true,
+  "external": true,
+  "projectOpenHides": true,
+  "noPageErrors": true
+ },
+ "shown": {
+  "title": "이전 임시저장이 있습니다",
+  "text": "2026. 10. 5. 오후 6:24:38에 자동 보관된 작업입니다.",
+  "role": "status",
+  "live": "polite",
+  "btns": [
+   "불러오기",
+   "닫기"
+  ],
+  "topStrip": false,
+  "focusInToast": false,
+  "pos": "absolute",
+  "noOldHint": true,
+  "canvasWith": {
+   "l": 416,
+   "t": 56,
+   "r": 1100,
+   "b": 860,
+   "w": 684,
+   "h": 804
+  },
+  "canvasWithout": {
+   "l": 416,
+   "t": 56,
+   "r": 1100,
+   "b": 860,
+   "w": 684,
+   "h": 804
+  },
+  "toastRect": {
+   "l": 432,
+   "t": 675,
+   "r": 768.984375,
+   "b": 776,
+   "w": 336.984375,
+   "h": 101
+  },
+  "stageRect": {
+   "l": 416,
+   "t": 56,
+   "r": 1100,
+   "b": 860,
+   "w": 684,
+   "h": 804
+  },
+  "toastFromStageLeft": 16,
+  "toastFromStageBottom": 84,
+  "toastWidth": 336.984375,
+  "scrollWith": {
+   "x": false,
+   "y": false
+  }
+ },
+ "close": {
+  "hidden": true,
+  "dot": true,
+  "date": "2026. 10. 5. 오후 6:24:38",
+  "loadEnabled": true,
+  "notShownAgainInSession": true
+ },
+ "timer": {
+  "visibleAt10s": true,
+  "visibleAt13_5s": false,
+  "dotAfterTimeout": true
+ },
+ "hover": {
+  "keptWhileHover14s": true,
+  "hiddenAfterLeave": true
+ },
+ "focus": {
+  "tabFromLoadGoesToClose": true,
+  "keptWhileFocused13s": true,
+  "escClosed": true
+ },
+ "load": {
+  "hidden": true,
+  "dotGone": true,
+  "confirmOpen": false,
+  "img": true
+ },
+ "dirtyLoad": {
+  "confirmOpen": true,
+  "text": "\n    임시저장 불러오기\n    현재 작업을 임시저장된 내용으로 바꿉니"
+ },
+ "external": {
+  "hiddenInExternal": true,
+  "shownAfterReturn": true
+ },
+ "errors": []
+}

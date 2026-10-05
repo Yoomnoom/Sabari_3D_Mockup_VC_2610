@@ -1,0 +1,180 @@
+[
+ {
+  "batch": 1,
+  "script": "ratio.mjs",
+  "exit": 0,
+  "sec": 27,
+  "tail": "{\"0_initial_no_alert\":{\"banner\":false,\"bannerText\":\"\",\"badges\":[],\"note\":\"\",\"selected\":\"lid_front\"},\"1_small_change_no_alert\":{\"banner\":false,\"bannerText\":\"\",\"badges\":[],\"note\":\"\",\"selected\":\"lid_front\"},\"1_face_size_still_updates\":\"면 크기 162×43mm (비율 3.77:1)\",\"2_not_yet_during_debounce\":false,\"2_aft"
+ },
+ {
+  "batch": 1,
+  "script": "run.mjs",
+  "exit": 0,
+  "sec": 18,
+  "tail": "viewer_lid_slider_visible \"removed_in_task4\" | viewer_mode_png_saved true | external_requests_blocked []"
+ },
+ {
+  "batch": 1,
+  "script": "scroll_fix.mjs",
+  "exit": 0,
+  "sec": 50,
+  "tail": "{\"tested\":36,\"bad\":[]}"
+ },
+ {
+  "batch": 1,
+  "script": "shadow_default_compare.mjs",
+  "exit": 0,
+  "sec": 36,
+  "tail": "ok shadow_default_compare.json default_after_change, visible_shadow_table, restore_button, page_errors"
+ },
+ {
+  "batch": 1,
+  "script": "sharp.mjs",
+  "exit": 0,
+  "sec": 4,
+  "tail": " \"editorTexAniso\": 16, |  \"maxAniso\": 16 | }"
+ },
+ {
+  "batch": 1,
+  "script": "shortcuts.mjs",
+  "exit": 0,
+  "sec": 7,
+  "tail": " \"typing_in_number_field_ignored\": false, |  \"errors\": [] | }"
+ },
+ {
+  "batch": 1,
+  "script": "shot_panel.mjs",
+  "exit": 0,
+  "sec": 2,
+  "tail": "2244"
+ },
+ {
+  "batch": 2,
+  "script": "sidebar_task8.mjs",
+  "exit": 0,
+  "sec": 13,
+  "tail": "ok sidebar_task8.json readout_in_view_section, readout_front, drag, readout_vs_quat, after_view_buttons, lock_no_axis, lock_axis, lock_plus5, lock_drag, unlock, collapse, collapsed_after_reload, localStorage, expanded_again, collapse_expand_roundtrip_same, window_sizes, page_errors"
+ },
+ {
+  "batch": 2,
+  "script": "space_repro.mjs",
+  "exit": 0,
+  "sec": 2,
+  "tail": "{\"A_number_field_focused\":true,\"B_select_focused\":true,\"C_button_focused\":true,\"D_after_canvas_click\":true,\"E_ime_process_key\":true,\"F_badge_visible\":true,\"F_space_not_typed_into_field\":true,\"F_pan_moved_target\":true,\"F_badge_hidden_after\":true,\"G_panel_hover_no_pan\":true,\"H_R_key\":{\"dir\":\"0.28,0.23"
+ },
+ {
+  "batch": 2,
+  "script": "split_zoom_check.mjs",
+  "exit": 0,
+  "sec": 12,
+  "tail": " }, |  \"errs\": [] | }"
+ },
+ {
+  "batch": 2,
+  "script": "standing_view_task6.mjs",
+  "exit": 0,
+  "sec": 10,
+  "tail": "ok standing_task6.json measure_table, symmetry, fov_after_front_button, saved_slot_roundtrip, fov_after_keyF, fov_after_iso, fov_after_top, alt6_left, axis_lock_kept, drag_after_standing_rotates, glb_nodes_unchanged, glb_validator, png_bytes, page_errors"
+ },
+ {
+  "batch": 2,
+  "script": "template_task16.mjs",
+  "exit": 0,
+  "sec": 19,
+  "tail": "ok template_task16"
+ },
+ {
+  "batch": 2,
+  "script": "ui_dialogs_task17.mjs",
+  "exit": 0,
+  "sec": 63,
+  "tail": "ok ui_dialogs_task17"
+ },
+ {
+  "batch": 2,
+  "script": "ui_tabs_task12.mjs",
+  "exit": 0,
+  "sec": 19,
+  "tail": "ok ui_tabs_task12 {\"topBar\":19,\"tabRail\":4,\"facePanel\":2,\"floating\":4,\"tab_design\":36,\"tab_box\":52,\"tab_view\":98,\"tab_export\":13}"
+ },
+ {
+  "batch": 2,
+  "script": "viewkeep.mjs",
+  "exit": 0,
+  "sec": 4,
+  "tail": " \"edit_section_reenabled_after_return\": true, |  \"errors\": [] | }"
+ },
+ {
+  "batch": 3,
+  "script": "png_scale_task7.mjs",
+  "exit": 0,
+  "sec": 14,
+  "tail": "ok png_scale_task7.json device_limits_large_viewport, large_viewport, small_canvas, small_viewport, texture_density_input, persist_after_reload, localStorage_keys, page_errors"
+ },
+ {
+  "batch": 4,
+  "script": "stage24.mjs",
+  "exit": 0,
+  "sec": 18,
+  "tail": "ok stage24.json 1_door_turn_top_bottom, 2_vertical_cycle, 3_free_diagonal, 4_removed_direction_controls, 5_stand_then_turn_horizontally, 6_snap_and_badge, page_errors"
+ },
+ {
+  "batch": 5,
+  "script": "stage24_b.mjs",
+  "exit": 0,
+  "sec": 32,
+  "tail": "ok stage24_b.json 7_features_in_poses, 8_not_clipped, 9_glb, 9_png_overlay_excluded, 9_storage_boundary, 10_interactions, page_errors"
+ },
+ {
+  "batch": 6,
+  "script": "stage24_views.mjs",
+  "exit": 0,
+  "sec": 3,
+  "tail": "saved views.json"
+ },
+ {
+  "batch": 7,
+  "script": "stage26.mjs",
+  "exit": 0,
+  "sec": 42,
+  "tail": "ok stage26.json B0_toggle_on, B1_faces_10, B2_opposite_faces_same_axis, B3_rotated_pose_uses_current_normal, B4_ignored_clicks, B5_lock_off_click_selects, C_cycles, C_circle_around_top_axis, D_continuity, E_free_snap, page_errors"
+ },
+ {
+  "batch": 8,
+  "script": "stage26_b.mjs",
+  "exit": 0,
+  "sec": 26,
+  "tail": "ok stage26_b.json F_overlays_excluded, H_lock_kept_across_views, H_reload_lock_off, K_other_interactions, I_glb_viewer_mode, page_errors"
+ },
+ {
+  "batch": 9,
+  "script": "stage26c.mjs",
+  "exit": 0,
+  "sec": 68,
+  "tail": "ok stage26c.json 1_row_visibility, 1_row_title, 2_axis_buttons, 2_iso_axis_equals_view_direction, 3_view_buttons_only_move_camera, 4_cycles, 5_face_click_and_buttons_share_state, 6_kept_across_views_and_F, 6_toggle_off, 6_reload, 7_overlays_excluded, 8_glb_viewer_mode, page_errors"
+ },
+ {
+  "batch": 10,
+  "script": "stage26c_count.mjs",
+  "exit": 1,
+  "sec": 2,
+  "tail": "}\r | \r | Node.js v24.18.0",
+  "firstExit": 1,
+  "firstTail": "}\r | \r | Node.js v24.18.0",
+  "retried": true
+ },
+ {
+  "batch": 11,
+  "script": "stage27a.mjs",
+  "exit": 0,
+  "sec": 8,
+  "tail": "ok stage27a.json 1_seven_axis_buttons_rotate, 2_split_dialog, 3_after_apply_lock_state, 3_rotate_after_apply, page_errors"
+ },
+ {
+  "batch": 12,
+  "script": "stage30.mjs",
+  "exit": 0,
+  "sec": 24,
+  "tail": "ok stage30.json A0_axis_select_is_zero, A_plus30, B_zero_matches_baseline, C_delta_buttons, D_number_input, E_drag_sync, F_ctrl_snap_sync, G_axis_change_resets, H1_lock_off_disables_rotated, H2_lock_off_disables_from_top, I0_slot0_saved_state_card, I_round_trip_slot0, J_overwrite_slot3, J_rename_slo"
+ }
+]

@@ -1,0 +1,8 @@
+[
+ {
+  "script": "png_scale_task7.mjs",
+  "exit": 0,
+  "sec": 14,
+  "tail": "ok png_scale_task7.json device_limits_large_viewport, large_viewport, small_canvas, small_viewport, texture_density_input, persist_after_reload, localStorage_keys, page_errors"
+ }
+]

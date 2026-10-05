@@ -1,6 +1,6 @@
 {
-  "file": "verification/base10_default_off.glb",
-  "bytes": 311568,
+  "file": "verification\\base10_default_off.glb",
+  "bytes": 311292,
   "validator": {
     "errors": 0,
     "warnings": 0,
@@ -39,7 +39,7 @@
   ],
   "extensionsUsed": [],
   "nodes": [
-    null,
+    "Template",
     "Base",
     "base_front",
     "base_back",

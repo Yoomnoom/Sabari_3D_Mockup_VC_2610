@@ -1,0 +1,167 @@
+[
+ {
+  "pose": "front",
+  "bg": "magenta",
+  "edgePx": 3273,
+  "meanAbsDiff": 0.614,
+  "maxAbsDiff": 1.1647058823529335,
+  "haloPx": 0,
+  "haloMax": 0,
+  "interiorGaps": 0,
+  "opaquePx": 594122
+ },
+ {
+  "pose": "front",
+  "bg": "black",
+  "edgePx": 3273,
+  "meanAbsDiff": 0.216,
+  "maxAbsDiff": 0.3764705882352928,
+  "haloPx": 0,
+  "haloMax": 0,
+  "interiorGaps": 0,
+  "opaquePx": 594122
+ },
+ {
+  "pose": "front",
+  "bg": "white",
+  "edgePx": 3273,
+  "meanAbsDiff": 0.614,
+  "maxAbsDiff": 1.1647058823529335,
+  "haloPx": 0,
+  "haloMax": 0,
+  "interiorGaps": 0,
+  "opaquePx": 594122
+ },
+ {
+  "pose": "iso",
+  "bg": "magenta",
+  "edgePx": 2842,
+  "meanAbsDiff": 0.576,
+  "maxAbsDiff": 1.3764705882352928,
+  "haloPx": 0,
+  "haloMax": 0,
+  "interiorGaps": 0,
+  "opaquePx": 912422
+ },
+ {
+  "pose": "iso",
+  "bg": "black",
+  "edgePx": 2842,
+  "meanAbsDiff": 0.18,
+  "maxAbsDiff": 0.3764705882352928,
+  "haloPx": 0,
+  "haloMax": 0,
+  "interiorGaps": 0,
+  "opaquePx": 912422
+ },
+ {
+  "pose": "iso",
+  "bg": "white",
+  "edgePx": 2842,
+  "meanAbsDiff": 0.702,
+  "maxAbsDiff": 1.3764705882352928,
+  "haloPx": 0,
+  "haloMax": 0,
+  "interiorGaps": 0,
+  "opaquePx": 912422
+ },
+ {
+  "pose": "lid_open",
+  "bg": "magenta",
+  "edgePx": 3717,
+  "meanAbsDiff": 0.578,
+  "maxAbsDiff": 1.3764705882352928,
+  "haloPx": 0,
+  "haloMax": 0,
+  "interiorGaps": 0,
+  "opaquePx": 1639439
+ },
+ {
+  "pose": "lid_open",
+  "bg": "black",
+  "edgePx": 3717,
+  "meanAbsDiff": 0.191,
+  "maxAbsDiff": 0.3764705882352928,
+  "haloPx": 0,
+  "haloMax": 0,
+  "interiorGaps": 0,
+  "opaquePx": 1639439
+ },
+ {
+  "pose": "lid_open",
+  "bg": "white",
+  "edgePx": 3717,
+  "meanAbsDiff": 0.633,
+  "maxAbsDiff": 1.3764705882352928,
+  "haloPx": 0,
+  "haloMax": 0,
+  "interiorGaps": 0,
+  "opaquePx": 1639439
+ },
+ {
+  "pose": "flipped",
+  "bg": "magenta",
+  "edgePx": 2821,
+  "meanAbsDiff": 0.723,
+  "maxAbsDiff": 1.3764705882352928,
+  "haloPx": 0,
+  "haloMax": 0,
+  "interiorGaps": 0,
+  "opaquePx": 924055
+ },
+ {
+  "pose": "flipped",
+  "bg": "black",
+  "edgePx": 2821,
+  "meanAbsDiff": 0.213,
+  "maxAbsDiff": 0.3764705882352928,
+  "haloPx": 0,
+  "haloMax": 0,
+  "interiorGaps": 0,
+  "opaquePx": 924055
+ },
+ {
+  "pose": "flipped",
+  "bg": "white",
+  "edgePx": 2821,
+  "meanAbsDiff": 0.726,
+  "maxAbsDiff": 1.3764705882352928,
+  "haloPx": 0,
+  "haloMax": 0,
+  "interiorGaps": 0,
+  "opaquePx": 924055
+ },
+ {
+  "pose": "standing",
+  "bg": "magenta",
+  "edgePx": 3030,
+  "meanAbsDiff": 0.595,
+  "maxAbsDiff": 1.3764705882352928,
+  "haloPx": 0,
+  "haloMax": 0,
+  "interiorGaps": 0,
+  "opaquePx": 1031077
+ },
+ {
+  "pose": "standing",
+  "bg": "black",
+  "edgePx": 3030,
+  "meanAbsDiff": 0.213,
+  "maxAbsDiff": 0.3764705882352928,
+  "haloPx": 0,
+  "haloMax": 0,
+  "interiorGaps": 0,
+  "opaquePx": 1031077
+ },
+ {
+  "pose": "standing",
+  "bg": "white",
+  "edgePx": 3030,
+  "meanAbsDiff": 0.606,
+  "maxAbsDiff": 1.3764705882352928,
+  "haloPx": 0,
+  "haloMax": 0,
+  "interiorGaps": 0,
+  "opaquePx": 1031077
+ }
+]

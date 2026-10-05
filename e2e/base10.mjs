@@ -93,11 +93,14 @@ await p.waitForTimeout(900); await p.keyboard.press('Control+z'); rec('2_ctrlz_b
 await p.locator('#moveMode').scrollIntoViewIfNeeded(); await p.check('#moveMode');
 await p.evaluate(() => window.__sabari.viewer.setCameraRaw([0, 0.03, 0.3], [0, 0.03, 0])); await p.waitForTimeout(150);
 const x0 = await p.evaluate(() => window.__sabari.faces.base_front.state.offsetX);
-await p.mouse.move(840, 450); await p.mouse.down(); await p.mouse.move(900, 450, { steps: 6 }); await p.mouse.up();
+const bf = await p.evaluate(() => { const c = window.__sabari.viewer.faceCorners('base_front'), r = document.querySelector('#viewport canvas').getBoundingClientRect(); return [r.left + c.reduce((t, q) => t + q[0], 0) / c.length, r.top + c.reduce((t, q) => t + q[1], 0) / c.length]; }); // 하단 앞면 중심(레이아웃에 의존하는 고정 좌표 대신)
+await p.mouse.move(bf[0], bf[1]); await p.mouse.down(); await p.mouse.move(bf[0] + 60, bf[1], { steps: 6 }); await p.mouse.up();
 rec('2_move_mode_drag_changes_base', (await p.evaluate(() => window.__sabari.faces.base_front.state.offsetX)) !== x0);
 await p.uncheck('#moveMode');
 // 단축키 [ ] 가 하단 면을 순회, Shift+7 = 아래
-await p.mouse.click(1000, 800); const seq = []; for (let i = 0; i < 11; i++) { await p.keyboard.press(']'); seq.push(await p.evaluate(() => window.__sabari.viewer.selected)); }
+// 3D 화면 위에 마우스를 올려(눌러서 면 선택이 바뀌지 않게) 단축키가 3D 화면에서 동작하게 한다(레이아웃에 의존하는 고정 좌표 대신)
+await p.click('#faceList button[data-face=base_front]'); // 순회의 시작 면을 하단 앞면으로 고정(기존 화면에서는 직전 3D 클릭이 이 면을 골랐다)
+{ const cb = await p.locator('#viewport canvas').boundingBox(); await p.mouse.move(cb.x + cb.width / 2, cb.y + cb.height - 12); } const seq = []; for (let i = 0; i < 11; i++) { await p.keyboard.press(']'); seq.push(await p.evaluate(() => window.__sabari.viewer.selected)); }
 rec('2_bracket_cycle', seq);
 await p.keyboard.press('Shift+7'); rec('2_shift7_below', await p.evaluate(() => { const v = window.__sabari.viewer, t = v.controls.target; return v.camera.position.toArray().map((n, i) => +(n - t.toArray()[i]).toFixed(2)).join(','); }));
 // 확대 유지 규칙: 아래 시점도 거리 유지
@@ -150,7 +153,6 @@ await ctx2.close();
 
 // ===== 7. GLB 재로드(GLB 뷰어): 10면 GLB + 기존 5면 GLB =====
 const ctx3 = await b.newContext({ viewport: { width: 1360, height: 900 } }); const p3 = await newPage(ctx3);
-await p3.click('#tabView');
 for (const [name, f] of [['glb10', glb10], ['legacy5', path.join(FX, 'legacy_5face.glb')], ['default_off5', glb5]]) {
   await p3.setInputFiles('#fileGlb', f); await p3.waitForFunction(() => document.getElementById('glbInfo').textContent.includes('메시')); await p3.waitForTimeout(300);
   rec('7_viewer_' + name, await p3.textContent('#glbInfo'));
@@ -162,11 +164,10 @@ await ctx3.close();
 // ===== 8. 끄기: 하단 이미지가 있을 때 확인 창 + 실행 취소 =====
 const ctx4 = await b.newContext({ viewport: { width: 1360, height: 900 } }); const p4 = await newPage(ctx4);
 await p4.setInputFiles('#fileProj', proj10); await p4.waitForFunction(() => Object.values(window.__sabari.faces).every((f) => f.img));
-let dialogs = []; p4.on('dialog', async (d) => { dialogs.push(d.message()); await d.dismiss(); });
-await p4.uncheck('#useBase').catch(() => {}); await p4.waitForTimeout(200);
+// 작업 17: 브라우저 confirm 대신 앱의 확인 대화상자(#msgDlg)를 쓴다
+await p4.uncheck('#useBase').catch(() => {}); await p4.waitForSelector('#msgDlg[open]'); let dialogs = [await p4.textContent('#msgDlgText')]; await p4.click('#msgDlgCancel'); await p4.waitForTimeout(200);
 rec('8_cancel_keeps_everything', { dialogMsg: dialogs[0], switchStillOn: await p4.isChecked('#useBase'), baseImages: (await imgs(p4, BASE)).length });
-p4.removeAllListeners('dialog'); p4.on('dialog', async (d) => { dialogs.push(d.message()); await d.accept(); });
-await p4.uncheck('#useBase'); await p4.waitForTimeout(250);
+await p4.uncheck('#useBase'); await p4.waitForSelector('#msgDlg[open]'); dialogs.push(await p4.textContent('#msgDlgText')); await p4.click('#msgDlgOk'); await p4.waitForTimeout(250);
 rec('8_confirm_removes', { switchOff: !(await p4.isChecked('#useBase')), baseImages: (await imgs(p4, BASE)).length, lidImages: (await imgs(p4, LID)).length, tabsHidden: await p4.isHidden('#faceTabs'), listIsLidOnly: (await faceBtns(p4)).every((id) => id.startsWith('lid_')) });
 await p4.mouse.click(1000, 800); await p4.keyboard.press('Control+z'); await p4.waitForTimeout(250);
 rec('8_ctrl_z_restores', { switchOn: await p4.isChecked('#useBase'), baseImages: (await imgs(p4, BASE)).length, tabs: await p4.isVisible('#faceTabs') });

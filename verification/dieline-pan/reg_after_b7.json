@@ -1,0 +1,8 @@
+[
+ {
+  "script": "stage26.mjs",
+  "exit": 0,
+  "sec": 42,
+  "tail": "ok stage26.json B0_toggle_on, B1_faces_10, B2_opposite_faces_same_axis, B3_rotated_pose_uses_current_normal, B4_ignored_clicks, B5_lock_off_click_selects, C_cycles, C_circle_around_top_axis, D_continuity, E_free_snap, page_errors"
+ }
+]

@@ -1,0 +1,8 @@
+[
+ {
+  "script": "glb_png_invariance_task12.mjs",
+  "exit": 1,
+  "sec": 0,
+  "tail": "}\r | \r | Node.js v24.18.0"
+ }
+]

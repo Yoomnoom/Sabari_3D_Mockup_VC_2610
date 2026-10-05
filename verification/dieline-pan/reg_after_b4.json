@@ -1,0 +1,8 @@
+[
+ {
+  "script": "stage24.mjs",
+  "exit": 0,
+  "sec": 18,
+  "tail": "ok stage24.json 1_door_turn_top_bottom, 2_vertical_cycle, 3_free_diagonal, 4_removed_direction_controls, 5_stand_then_turn_horizontally, 6_snap_and_badge, page_errors"
+ }
+]

@@ -1,0 +1,213 @@
+{
+ "ui": {
+  "pressed": "true",
+  "label": "음영 숨기기",
+  "sliderEnabled": true,
+  "az": true,
+  "el": true,
+  "shadowCtlHidden": true,
+  "hint": "빛 방향은 바닥 그림자에 적용됩니다. 면 음영은 항상 카메라 기준이라, 카메라를 마주 보는 면은 입력 색 그대로 보입니다.",
+  "lightDefault": true,
+  "shadeLevel": "30"
+ },
+ "color_table": {
+  "on30": {
+   "faceOn": {
+    "lid_top": [
+     200,
+     60,
+     60,
+     255
+    ],
+    "lid_front": [
+     40,
+     120,
+     220,
+     255
+    ],
+    "lid_right": [
+     60,
+     170,
+     90,
+     255
+    ]
+   },
+   "oblique": {
+    "lid_top": [
+     185,
+     55,
+     55,
+     255
+    ],
+    "lid_front": [
+     38,
+     114,
+     210,
+     255
+    ],
+    "lid_right": [
+     56,
+     160,
+     84,
+     255
+    ]
+   }
+  },
+  "on100": {
+   "faceOn": {
+    "lid_top": [
+     200,
+     60,
+     60,
+     255
+    ],
+    "lid_front": [
+     40,
+     120,
+     219,
+     255
+    ],
+    "lid_right": [
+     60,
+     169,
+     90,
+     255
+    ]
+   },
+   "oblique": {
+    "lid_top": [
+     143,
+     40,
+     40,
+     255
+    ],
+    "lid_front": [
+     32,
+     99,
+     184,
+     255
+    ],
+    "lid_right": [
+     45,
+     132,
+     68,
+     255
+    ]
+   }
+  },
+  "off": {
+   "faceOn": {
+    "lid_top": [
+     200,
+     60,
+     60,
+     255
+    ],
+    "lid_front": [
+     40,
+     120,
+     220,
+     255
+    ],
+    "lid_right": [
+     60,
+     170,
+     90,
+     255
+    ]
+   },
+   "oblique": {
+    "lid_top": [
+     200,
+     60,
+     60,
+     255
+    ],
+    "lid_front": [
+     40,
+     120,
+     220,
+     255
+    ],
+    "lid_right": [
+     60,
+     170,
+     90,
+     255
+    ]
+   }
+  },
+  "max_faceon_error": 1,
+  "on100_darker_than_flat": [
+   "lid_top",
+   "lid_front",
+   "lid_right"
+  ]
+ },
+ "off_state": {
+  "pressed": "false",
+  "label": "음영 보기",
+  "rDisabled": true,
+  "nDisabled": true,
+  "level": "100",
+  "strength": 0,
+  "stored": {
+   "open": {
+    "dLight": true
+   },
+   "shade": 100,
+   "shadeOn": false
+  }
+ },
+ "off_after_reload": {
+  "pressed": "false",
+  "strength": 0
+ },
+ "on_again": {
+  "pressed": "true",
+  "strength": 1,
+  "rDisabled": false
+ },
+ "dir_independent_colors": {
+  "0": [
+   185,
+   55,
+   55,
+   255
+  ],
+  "90": [
+   185,
+   55,
+   55,
+   255
+  ],
+  "225": [
+   185,
+   55,
+   55,
+   255
+  ]
+ },
+ "shadow_px": {
+  "az225": 224496,
+  "az90": 31872
+ },
+ "light_default": {
+  "on": true,
+  "strength": 0.7,
+  "soft": 0.5,
+  "az": 225,
+  "el": 65
+ },
+ "shadow_default": {
+  "on": true,
+  "strength": 0.4,
+  "soft": 0.5,
+  "az": 225,
+  "el": 65
+ },
+ "glb_same": true,
+ "sabari_has_shade": false,
+ "external_requests": [],
+ "errors": []
+}

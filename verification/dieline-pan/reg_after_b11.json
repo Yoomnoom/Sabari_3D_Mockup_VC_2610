@@ -1,0 +1,8 @@
+[
+ {
+  "script": "stage27a.mjs",
+  "exit": 0,
+  "sec": 8,
+  "tail": "ok stage27a.json 1_seven_axis_buttons_rotate, 2_split_dialog, 3_after_apply_lock_state, 3_rotate_after_apply, page_errors"
+ }
+]

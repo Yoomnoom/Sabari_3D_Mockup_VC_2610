@@ -1,0 +1,8 @@
+[
+ {
+  "script": "stage26c_count.mjs",
+  "exit": 1,
+  "sec": 2,
+  "tail": "}\r | \r | Node.js v24.18.0"
+ }
+]

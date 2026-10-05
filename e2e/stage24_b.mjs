@@ -109,9 +109,9 @@ const q0t = await quat(), dist0 = await camDist(); // 두 손가락 핀치 = 확
 await touch('touchStart', [[900, 450], [1000, 450]]); for (let i = 1; i <= 8; i++) await touch('touchMove', [[900 - i * 12, 450], [1000 + i * 12, 450]]); await touch('touchEnd', []); await p.waitForTimeout(150);
 touchRows.pinch = { distBefore: +dist0.toFixed(4), distAfter: +(await camDist()).toFixed(4), poseUnchanged: JSON.stringify(q0t) === JSON.stringify(await quat()) }; assert(touchRows.pinch.distAfter < touchRows.pinch.distBefore && touchRows.pinch.poseUnchanged);
 inter.touch = touchRows;
-await p.click('#tabView'); await p.setInputFiles('#fileGlb', path.join(OUT, 'glb_identity.glb')); await p.waitForFunction(() => document.getElementById('glbInfo').textContent.includes('메')); await p.evaluate(() => window.__sabari.viewer.resetBoxPose()); await setAxis('horizontal');
+await p.setInputFiles('#fileGlb', path.join(OUT, 'glb_identity.glb')); await p.waitForFunction(() => document.getElementById('glbInfo').textContent.includes('메')); await p.evaluate(() => window.__sabari.viewer.resetBoxPose()); await setAxis('horizontal');
 const qv0 = await quat(); await drag([700, 450], [800, 450], 8); const rv = await rel(qv0, await quat()), vv = await visible(); await shot('10_glb_viewer_rotated.png');
 inter.glbViewerMode = { angleDeg: +rv.angleDeg.toFixed(3), visibleCount: vv.faces.length, border: vv.border }; assert(rv.angleDeg > 5 && vv.border === 0);
-await p.click('#tabEdit');
+await p.click('#btnExtGlbBack');
 rec('10_interactions', inter);
 await finish('stage24_b.json');

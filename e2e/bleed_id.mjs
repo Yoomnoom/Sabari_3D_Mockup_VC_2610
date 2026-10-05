@@ -14,7 +14,7 @@ const errs = []; p.on('pageerror', (e) => errs.push(String(e)));
 await p.goto(URL); await p.waitForFunction(() => window.__sabari); await p.waitForTimeout(250);
 await p.check('#useBase');
 for (const f of FACES) { await p.evaluate((id) => window.__sabari.setCurrent(id), f); await p.setInputFiles('#filePick', path.join(S, `sample_${f}.png`)); await p.waitForFunction((id) => window.__sabari.faces[id].img, f); }
-await p.click('#btnOpen'); await p.mouse.click(1330, 880); // 선택선 해제
+await p.click('#btnOpen'); await p.mouse.click(...(await p.bgPoint())); // 선택선 해제
 
 // 카메라: 박스 중심에서 방향 × 거리. (앞서 A 단계에서 큰 값이 나온 from_below_oblique 를 포함)
 const DIRS = {

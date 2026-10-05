@@ -26,7 +26,7 @@ const before = await snap();
 
 // 새로고침(같은 브라우저 프로필) → 빈 상태, 임시저장 안내
 await p.reload(); await p.waitForFunction(() => window.__sabari); await p.waitForTimeout(500);
-R.after_reload_msg = await p.textContent('#msgText');
+R.after_reload_msg = await p.textContent('#draftToast'); // 작업 19: 상단 띠(#msgText) 대신 3D 화면 안 알림(#draftToast)
 R.after_reload_empty = (await snap()).names.every((n) => n === null);
 await p.waitForTimeout(3000); // 빈 상태가 기존 임시저장을 덮어쓰지 않아야 한다
 R.after_reload_info_after_3s = await p.textContent('#draftInfo');

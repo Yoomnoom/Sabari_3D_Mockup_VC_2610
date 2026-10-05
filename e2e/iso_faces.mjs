@@ -10,7 +10,7 @@ for (const f of ['lid_top', 'lid_front', 'lid_back', 'lid_left', 'lid_right']) {
   await p.setInputFiles('#filePick', path.join(ROOT, `assets/samples/sample_${f}.png`));
   await p.waitForFunction((id) => window.__sabari.faces[id].img, f);
 }
-await p.mouse.click(1330, 840); // 선택선 해제
+await p.mouse.click(...(await p.bgPoint())); // 선택선 해제
 const visible = () => p.evaluate(() => {
   const v = window.__sabari.viewer, cam = v.camera.position, out = [];
   for (const [id, mesh] of v.faceMeshes) {

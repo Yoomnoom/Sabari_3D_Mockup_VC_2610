@@ -1,0 +1,61 @@
+{
+  "1_seven_axis_buttons_rotate": [
+    {
+      "axis": "front",
+      "rotated": true,
+      "axisParallelToLock": 1
+    },
+    {
+      "axis": "back",
+      "rotated": true,
+      "axisParallelToLock": 1
+    },
+    {
+      "axis": "left",
+      "rotated": true,
+      "axisParallelToLock": 1
+    },
+    {
+      "axis": "right",
+      "rotated": true,
+      "axisParallelToLock": 1
+    },
+    {
+      "axis": "top",
+      "rotated": true,
+      "axisParallelToLock": 1
+    },
+    {
+      "axis": "bottom",
+      "rotated": true,
+      "axisParallelToLock": 1
+    },
+    {
+      "axis": "iso",
+      "rotated": true,
+      "axisParallelToLock": 1
+    }
+  ],
+  "2_split_dialog": {
+    "open": true,
+    "mode": "artboard",
+    "regions": 5,
+    "listItems": 5,
+    "bleed": "0"
+  },
+  "3_after_apply_lock_state": {
+    "on": true,
+    "view": "front",
+    "local": [
+      0,
+      0,
+      1
+    ],
+    "rowHidden": false
+  },
+  "3_rotate_after_apply": {
+    "axis": "left",
+    "axisParallelToLock": 1
+  },
+  "page_errors": []
+}

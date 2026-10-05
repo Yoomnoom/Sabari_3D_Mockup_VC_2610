@@ -33,7 +33,7 @@ R.on_wheel_up = { image: await st(), cameraMoved: c0 !== await cam() };
 await p.mouse.wheel(0, 800); await p.waitForTimeout(150);
 R.on_wheel_down = await st();
 // 선택된 면 밖에서 휠 = 일반 확대/축소(카메라 이동)
-const c1 = await cam(); await p.mouse.move(1300, 800); await p.mouse.wheel(0, -300); await p.waitForTimeout(150);
+const c1 = await cam(); await p.mouse.move(...(await p.bgPoint())); await p.mouse.wheel(0, -300); await p.waitForTimeout(150);
 R.wheel_outside_face_zooms_camera = c1 !== await cam();
 // 이미지 없는 면에서는 끌면 회전 (이동 모드여도)
 await p.click('#faceList button[data-face=lid_front]');

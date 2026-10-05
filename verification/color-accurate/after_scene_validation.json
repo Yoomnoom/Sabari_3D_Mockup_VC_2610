@@ -1,0 +1,46 @@
+{
+  "file": "verification/color-accurate/after_scene.glb",
+  "bytes": 23192,
+  "validator": {
+    "errors": 0,
+    "warnings": 0,
+    "infos": 8,
+    "hints": 0
+  },
+  "messages": [],
+  "images": [
+    {
+      "mime": "image/png",
+      "embedded": true
+    },
+    {
+      "mime": "image/png",
+      "embedded": true
+    }
+  ],
+  "texturedMaterials": [
+    "lid_top",
+    "lid_front"
+  ],
+  "extensionsUsed": [],
+  "nodes": [
+    "Template",
+    "Base",
+    "base_front",
+    "base_back",
+    "base_left",
+    "base_right",
+    "base_bottom",
+    "base_rim",
+    "base_inner",
+    "Lid",
+    "lid_top",
+    "lid_front",
+    "lid_back",
+    "lid_left",
+    "lid_right",
+    "lid_rim",
+    "lid_inner"
+  ],
+  "externalUris": 0
+}

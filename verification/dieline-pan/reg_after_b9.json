@@ -1,0 +1,8 @@
+[
+ {
+  "script": "stage26c.mjs",
+  "exit": 0,
+  "sec": 68,
+  "tail": "ok stage26c.json 1_row_visibility, 1_row_title, 2_axis_buttons, 2_iso_axis_equals_view_direction, 3_view_buttons_only_move_camera, 4_cycles, 5_face_click_and_buttons_share_state, 6_kept_across_views_and_F, 6_toggle_off, 6_reload, 7_overlays_excluded, 8_glb_viewer_mode, page_errors"
+ }
+]

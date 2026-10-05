@@ -1,0 +1,464 @@
+{
+  "A0_axis_select_is_zero": {
+    "angleDegAtSelect": 0
+  },
+  "A_plus30": {
+    "angleDeg": 29.999999999999993,
+    "axisDot": 1.0000000000000007
+  },
+  "B_zero_matches_baseline": {
+    "maxAbsDiff": 0
+  },
+  "C_delta_buttons": {
+    "afterPlus5": {
+      "ui": "5.0",
+      "actual": 4.999999999999906
+    },
+    "afterPlus1": {
+      "ui": "6.0",
+      "actual": 5.999999999999603
+    },
+    "afterMinus1": {
+      "ui": "5.0",
+      "actual": 4.999999999999906
+    },
+    "afterMinus5": {
+      "ui": "0.0",
+      "actual": 0
+    }
+  },
+  "D_number_input": {
+    "ui": {
+      "r": "45",
+      "n": "45.0"
+    },
+    "actual": 45.00000000000001
+  },
+  "E_drag_sync": {
+    "ui": "9.3",
+    "actual": 9.324087950650233
+  },
+  "F_ctrl_snap_sync": {
+    "badge": "축 −30° · 15° 스냅",
+    "snapClass": true,
+    "ui": "-30.0",
+    "actual": -29.999999999999993,
+    "multipleOf15": true
+  },
+  "G_axis_change_resets": {
+    "poseUnchanged": true,
+    "ui": "0.0"
+  },
+  "H1_lock_off_disables_rotated": {
+    "hintHidden": false,
+    "sliderHidden": true,
+    "btnHidden": true
+  },
+  "H2_lock_off_disables_from_top": {
+    "hintHidden": false,
+    "sliderHidden": true,
+    "btnHidden": true
+  },
+  "I0_slot0_saved_state_card": {
+    "card": {
+      "filled": true,
+      "name": "시점 1",
+      "thumbDisabled": false,
+      "saveDisabled": false,
+      "delDisabled": false,
+      "delHidden": false,
+      "nameDisabled": false,
+      "imgHidden": false,
+      "imgSrcIsBlob": true
+    },
+    "want": {
+      "quat": [
+        0.1045284632676535,
+        0,
+        0,
+        0.9945218953682735
+      ],
+      "camPos": [
+        -0.011556837226765983,
+        0.0686908072959362,
+        0.32025811424253514
+      ],
+      "target": [
+        -0.011556837226765983,
+        0.030149678233149263,
+        -0.0009179612806895495
+      ],
+      "fov": 30,
+      "lockOn": true,
+      "lockView": "left",
+      "angleDeg": 12.000000000000002,
+      "liftMm": 40,
+      "axisWorld": [
+        1,
+        0,
+        0
+      ],
+      "center": [
+        0,
+        0.04232284266168364,
+        0.005380918973171524
+      ],
+      "fit": 0.47521513916713976
+    }
+  },
+  "I_round_trip_slot0": {
+    "quatDiff": 2.220446049250313e-16,
+    "camDiff": 0,
+    "targetDiff": 3.2526065174565133e-19,
+    "fovDiff": 0,
+    "lockOn": true,
+    "lockView": "left",
+    "angleDeg": 12.000000000000002,
+    "liftDiff": 0
+  },
+  "J_overwrite_slot3": {
+    "differsFromFirstSave": true
+  },
+  "J_rename_slot1": {
+    "name": "내 시점 1"
+  },
+  "J_delete_slot2": {
+    "before": {
+      "filled": true,
+      "name": "시점 3",
+      "thumbDisabled": false,
+      "saveDisabled": false,
+      "delDisabled": false,
+      "delHidden": false,
+      "nameDisabled": false,
+      "imgHidden": false,
+      "imgSrcIsBlob": true
+    },
+    "after": {
+      "filled": false,
+      "name": "시점 3",
+      "thumbDisabled": true,
+      "saveDisabled": false,
+      "delDisabled": false,
+      "delHidden": true,
+      "nameDisabled": false,
+      "imgHidden": true,
+      "imgSrcIsBlob": true
+    }
+  },
+  "J_thumbnails": {
+    "0": {
+      "filled": true,
+      "name": "시점 1",
+      "thumbDisabled": false,
+      "saveDisabled": false,
+      "delDisabled": false,
+      "delHidden": false,
+      "nameDisabled": false,
+      "imgHidden": false,
+      "imgSrcIsBlob": true
+    },
+    "1": {
+      "filled": true,
+      "name": "내 시점 1",
+      "thumbDisabled": false,
+      "saveDisabled": false,
+      "delDisabled": false,
+      "delHidden": false,
+      "nameDisabled": false,
+      "imgHidden": false,
+      "imgSrcIsBlob": true
+    },
+    "3": {
+      "filled": true,
+      "name": "시점 4",
+      "thumbDisabled": false,
+      "saveDisabled": false,
+      "delDisabled": false,
+      "delHidden": false,
+      "nameDisabled": false,
+      "imgHidden": false,
+      "imgSrcIsBlob": true
+    },
+    "4": {
+      "filled": true,
+      "name": "시점 5",
+      "thumbDisabled": false,
+      "saveDisabled": false,
+      "delDisabled": false,
+      "delHidden": false,
+      "nameDisabled": false,
+      "imgHidden": false,
+      "imgSrcIsBlob": true
+    }
+  },
+  "K_dimension_change_keeps_framing": {
+    "ratioBefore": 0.6653630039386712,
+    "ratioAfter": 0.6653630039386712,
+    "axisDot": 0.9999999999999999,
+    "quatSame": true
+  },
+  "L_external_glb_disables": {
+    "filledSlot": {
+      "filled": true,
+      "name": "시점 1",
+      "thumbDisabled": true,
+      "saveDisabled": true,
+      "delDisabled": true,
+      "delHidden": false,
+      "nameDisabled": true,
+      "imgHidden": false,
+      "imgSrcIsBlob": true
+    },
+    "emptySlot": {
+      "filled": false,
+      "name": "시점 3",
+      "thumbDisabled": true,
+      "saveDisabled": true,
+      "delDisabled": true,
+      "delHidden": true,
+      "nameDisabled": true,
+      "imgHidden": true,
+      "imgSrcIsBlob": true
+    }
+  },
+  "L_return_reenables": {
+    "filled": true,
+    "name": "시점 1",
+    "thumbDisabled": false,
+    "saveDisabled": false,
+    "delDisabled": false,
+    "delHidden": false,
+    "nameDisabled": false,
+    "imgHidden": false,
+    "imgSrcIsBlob": true
+  },
+  "M_alt1_loads_slot0": {
+    "camDiff": 0
+  },
+  "M_alt_on_empty_slot_noop": {
+    "unchanged": true
+  },
+  "N_sabari_schema": {
+    "schemaVersion": 5,
+    "slots": [
+      {
+        "slot": 0,
+        "name": "시점 1",
+        "hasThumbFile": true
+      },
+      {
+        "slot": 1,
+        "name": "내 시점 1",
+        "hasThumbFile": true
+      },
+      {
+        "slot": 3,
+        "name": "시점 4",
+        "hasThumbFile": true
+      },
+      {
+        "slot": 4,
+        "name": "시점 5",
+        "hasThumbFile": true
+      }
+    ],
+    "allThumbFilesInZip": true,
+    "projectJsonBytes": 3330
+  },
+  "O_draft_round_trip": {
+    "cards": {
+      "0": {
+        "filled": true,
+        "name": "시점 1",
+        "thumbDisabled": false,
+        "saveDisabled": false,
+        "delDisabled": false,
+        "delHidden": false,
+        "nameDisabled": false,
+        "imgHidden": false,
+        "imgSrcIsBlob": true
+      },
+      "1": {
+        "filled": true,
+        "name": "내 시점 1",
+        "thumbDisabled": false,
+        "saveDisabled": false,
+        "delDisabled": false,
+        "delHidden": false,
+        "nameDisabled": false,
+        "imgHidden": false,
+        "imgSrcIsBlob": true
+      },
+      "2": {
+        "filled": false,
+        "name": "시점 3",
+        "thumbDisabled": true,
+        "saveDisabled": false,
+        "delDisabled": false,
+        "delHidden": true,
+        "nameDisabled": false,
+        "imgHidden": true,
+        "imgSrcIsBlob": false
+      },
+      "3": {
+        "filled": true,
+        "name": "시점 4",
+        "thumbDisabled": false,
+        "saveDisabled": false,
+        "delDisabled": false,
+        "delHidden": false,
+        "nameDisabled": false,
+        "imgHidden": false,
+        "imgSrcIsBlob": true
+      },
+      "4": {
+        "filled": true,
+        "name": "시점 5",
+        "thumbDisabled": false,
+        "saveDisabled": false,
+        "delDisabled": false,
+        "delHidden": false,
+        "nameDisabled": false,
+        "imgHidden": false,
+        "imgSrcIsBlob": true
+      }
+    },
+    "camDiff": 0
+  },
+  "P_sabari_reopen_round_trip": {
+    "cards": {
+      "0": {
+        "filled": true,
+        "name": "시점 1",
+        "thumbDisabled": false,
+        "saveDisabled": false,
+        "delDisabled": false,
+        "delHidden": false,
+        "nameDisabled": false,
+        "imgHidden": false,
+        "imgSrcIsBlob": true
+      },
+      "1": {
+        "filled": true,
+        "name": "내 시점 1",
+        "thumbDisabled": false,
+        "saveDisabled": false,
+        "delDisabled": false,
+        "delHidden": false,
+        "nameDisabled": false,
+        "imgHidden": false,
+        "imgSrcIsBlob": true
+      },
+      "2": {
+        "filled": false,
+        "name": "시점 3",
+        "thumbDisabled": true,
+        "saveDisabled": false,
+        "delDisabled": false,
+        "delHidden": true,
+        "nameDisabled": false,
+        "imgHidden": true,
+        "imgSrcIsBlob": false
+      },
+      "3": {
+        "filled": true,
+        "name": "시점 4",
+        "thumbDisabled": false,
+        "saveDisabled": false,
+        "delDisabled": false,
+        "delHidden": false,
+        "nameDisabled": false,
+        "imgHidden": false,
+        "imgSrcIsBlob": true
+      },
+      "4": {
+        "filled": true,
+        "name": "시점 5",
+        "thumbDisabled": false,
+        "saveDisabled": false,
+        "delDisabled": false,
+        "delHidden": false,
+        "nameDisabled": false,
+        "imgHidden": false,
+        "imgSrcIsBlob": true
+      }
+    },
+    "camDiff": 0
+  },
+  "Q_legacy_file_empty_presets": {
+    "cards": {
+      "0": {
+        "filled": false,
+        "name": "시점 1",
+        "thumbDisabled": true,
+        "saveDisabled": false,
+        "delDisabled": false,
+        "delHidden": true,
+        "nameDisabled": false,
+        "imgHidden": true,
+        "imgSrcIsBlob": false
+      },
+      "1": {
+        "filled": false,
+        "name": "시점 2",
+        "thumbDisabled": true,
+        "saveDisabled": false,
+        "delDisabled": false,
+        "delHidden": true,
+        "nameDisabled": false,
+        "imgHidden": true,
+        "imgSrcIsBlob": false
+      },
+      "2": {
+        "filled": false,
+        "name": "시점 3",
+        "thumbDisabled": true,
+        "saveDisabled": false,
+        "delDisabled": false,
+        "delHidden": true,
+        "nameDisabled": false,
+        "imgHidden": true,
+        "imgSrcIsBlob": false
+      },
+      "3": {
+        "filled": false,
+        "name": "시점 4",
+        "thumbDisabled": true,
+        "saveDisabled": false,
+        "delDisabled": false,
+        "delHidden": true,
+        "nameDisabled": false,
+        "imgHidden": true,
+        "imgSrcIsBlob": false
+      },
+      "4": {
+        "filled": false,
+        "name": "시점 5",
+        "thumbDisabled": true,
+        "saveDisabled": false,
+        "delDisabled": false,
+        "delHidden": true,
+        "nameDisabled": false,
+        "imgHidden": true,
+        "imgSrcIsBlob": false
+      }
+    },
+    "msg": "프로젝트를 열었습니다."
+  },
+  "R_future_version_rejected": {
+    "msg": "이 프로젝트는 현재 버전에서 열 수 없습니다. 앱을 업데이트해 주세요.",
+    "pageErrors": []
+  },
+  "S_glb_png_invariant": {
+    "validator": {
+      "errors": 0,
+      "warnings": 0,
+      "infos": 10,
+      "hints": 0
+    },
+    "glbBytes": 586348,
+    "pngBytes": 219227
+  },
+  "page_errors": []
+}

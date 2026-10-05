@@ -1,0 +1,8 @@
+[
+ {
+  "script": "stage24_views.mjs",
+  "exit": 0,
+  "sec": 3,
+  "tail": "saved views.json"
+ }
+]

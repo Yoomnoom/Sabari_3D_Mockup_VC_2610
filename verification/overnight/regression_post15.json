@@ -1,0 +1,308 @@
+[
+ {
+  "script": "base10.mjs",
+  "exit": 0,
+  "sec": 34,
+  "tail": "{\"1_default_switch_off\":true,\"1_tabs_hidden\":true,\"1_face_list\":[\"lid_top\",\"lid_front\",\"lid_back\",\"lid_left\",\"lid_right\"],\"1_base_select_blocked_by_code\":\"lid_top\",\"1_below_view_available_while_off\":false,\"1_below_view_dir\":\"0,-0.51,0\",\"1_lid_images\":5,\"2_tabs_visible\":true,\"2_base_list\":[\"base_fron"
+ },
+ {
+  "script": "bleed_id.mjs",
+  "exit": 0,
+  "sec": 11,
+  "tail": "{\"default_dims\":{\"classified\":281273,\"strictBleedToOtherFace\":6,\"bleedOntoNonFaceMesh\":0,\"edgeOrBackground\":65,\"polygonMethodFlagged\":117},\"changed_dims\":{\"params\":{\"baseW\":200,\"baseD\":130,\"baseH\":60,\"lidH\":50,\"board\":2,\"lidClearance\":0.5,\"wrapMargin\":2.4,\"tuck\":19.3,\"bleed\":3}},\"changed_dims_200x13"
+ },
+ {
+  "script": "closed_click.mjs",
+  "exit": 0,
+  "sec": 3,
+  "tail": "{\"off_closed_click_base_front\":{\"sel\":\"lid_front\",\"lift\":0},\"on_closed_click_base_front\":{\"sel\":\"lid_front\",\"lift\":0},\"on_closed_notice\":{\"visible\":false,\"text\":\"뚜껑을 열어야 보입니다.\",\"liftStillClosed\":true},\"on_closed_click_base_bottom_from_below\":{\"sel\":\"base_bottom\",\"lift\":0}}"
+ },
+ {
+  "script": "collapse.mjs",
+  "exit": 0,
+  "sec": 6,
+  "tail": " \"draft_gone_after_reload\": true, |  \"errors\": [] | }"
+ },
+ {
+  "script": "color_accuracy.mjs",
+  "exit": 0,
+  "sec": 45,
+  "tail": "done after solid max err 0 image max err 0 errors 0"
+ },
+ {
+  "script": "color_compare_shot.mjs",
+  "exit": 0,
+  "sec": 4,
+  "tail": "shots after"
+ },
+ {
+  "script": "color_export.mjs",
+  "exit": 0,
+  "sec": 3,
+  "tail": "done after png white ink/bg [3,3,3,255] [28,28,28,255] transparent ink/bg [3,3,3,255] [28,28,28,255] screen [3,3,3,255] corner(transp) [0,0,0,0] errors 0"
+ },
+ {
+  "script": "color_slider.mjs",
+  "exit": 0,
+  "sec": 4,
+  "tail": "{\"def\":0.3,\"zero\":0,\"reload\":0,\"s55\":0.55,\"clamp\":1,\"back\":0.3,\"errors\":0}"
+ },
+ {
+  "script": "color_viewer.mjs",
+  "exit": 0,
+  "sec": 4,
+  "tail": "after {\"app\":[[200,60,60],true],\"ext\":[[255,255,255],[30,100,220],true,true],\"errors\":0}"
+ },
+ {
+  "script": "colors.mjs",
+  "exit": 0,
+  "sec": 4,
+  "tail": " ], |  \"errors\": [] | }"
+ },
+ {
+  "script": "dieline.mjs",
+  "exit": 0,
+  "sec": 20,
+  "tail": "{\"0_disclaimer_in_panel\":true,\"1_svg_lid_default\":{\"file\":\"app_dieline_lid_default.svg\",\"widthMm\":238,\"heightMm\":288,\"viewBox\":[-3,-3,238,288],\"cutWidthMm\":232,\"cutHeightMm\":282,\"bleedMm\":3,\"oneToOne\":true,\"layers\":true,\"disclaimer\":true,\"hasScript\":false,\"dashedFold\":true,\"solidCut\":true},\"1_svg_li"
+ },
+ {
+  "script": "dieline_real.mjs",
+  "exit": 0,
+  "sec": 12,
+  "tail": "ok part1"
+ },
+ {
+  "script": "dieline_real2.mjs",
+  "exit": 0,
+  "sec": 19,
+  "tail": "ok dieline_real2"
+ },
+ {
+  "script": "dieline_real_b.mjs",
+  "exit": 0,
+  "sec": 24,
+  "tail": "ok part2 C_blank_body, C_errors, D_save_restore, E_large_image, F_real_image"
+ },
+ {
+  "script": "dieline_real_check.mjs",
+  "exit": 0,
+  "sec": 7,
+  "tail": "  } |  } | }"
+ },
+ {
+  "script": "dieline_transparency.mjs",
+  "exit": 0,
+  "sec": 8,
+  "tail": "OK {\"all_ok\":true,\"errs\":[]}"
+ },
+ {
+  "script": "dims.mjs",
+  "exit": 0,
+  "sec": 37,
+  "tail": "{\"0_default_params\":{\"baseW\":160,\"baseD\":110,\"baseH\":43,\"lidH\":38,\"board\":2,\"lidClearance\":0.5,\"wrapMargin\":2.4,\"tuck\":19.3,\"bleed\":3},\"0_default_fields\":[\"160\",\"110\",\"43\",\"38\",\"2\",\"0.5\"],\"0_derived_text\":\"뚜껑 외경 165×115×38mm · 닫힌 높이 45mm\\n싸바리지: 뚜껑 167.4×117.4 · 몸통 162.4×112.4mm\",\"0_assume_note_shown"
+ },
+ {
+  "script": "draft.mjs",
+  "exit": 0,
+  "sec": 13,
+  "tail": " \"second_tab_info\": \"임시저장 있음 · 2026. 10. 5. 오전 6:46:40\", |  \"errors\": [] | }"
+ },
+ {
+  "script": "background_task13.mjs",
+  "exit": 0,
+  "sec": 45,
+  "tail": "ok background_task13"
+ },
+ {
+  "script": "edge_inspect_task14.mjs",
+  "exit": 0,
+  "sec": 13,
+  "tail": "ok edge_inspect_task14"
+ },
+ {
+  "script": "iso_faces.mjs",
+  "exit": 0,
+  "sec": 4,
+  "tail": "{\"start_label\":\"3/4 시점 L\",\"after_click_L\":{\"label\":\"3/4 시점 L\",\"visible\":[\"base_back\",\"base_left\",\"lid_back\",\"lid_left\",\"lid_top\"]},\"after_click_R\":{\"label\":\"3/4 시점 R\",\"visible\":[\"base_front\",\"base_right\",\"lid_front\",\"lid_right\",\"lid_top\"]},\"key_l\":[\"base_back\",\"base_left\",\"lid_back\",\"lid_left\",\"lid_"
+ },
+ {
+  "script": "legacy_draft.mjs",
+  "exit": 0,
+  "sec": 4,
+  "tail": "{\"notice\":\"이전 임시저장(2026. 10. 4. 오전 6:47:53)이 있습니다. 왼쪽 아래 \\\"임시저장 불러오기\\\"로 이어서 작업할 수 있습니다.\",\"loadEnabled\":true,\"after\":{\"switchOn\":false,\"tabsVisible\":false,\"lid\":5,\"base\":0,\"top\":{\"fit\":\"contain\",\"rotationDeg\":180,\"flipX\":false,\"flipY\":false,\"scale\":1.2,\"offsetX\":0,\"offsetY\":0},\"lift\":80,\"list\":[\"lid_"
+ },
+ {
+  "script": "lighting_task15.mjs",
+  "exit": 0,
+  "sec": 27,
+  "tail": "ok lighting_task15"
+ },
+ {
+  "script": "mouse.mjs",
+  "exit": 0,
+  "sec": 8,
+  "tail": " \"normal_drag_rotates\": true, |  \"errors\": [] | }"
+ },
+ {
+  "script": "movemode.mjs",
+  "exit": 0,
+  "sec": 6,
+  "tail": "{\"off_drag\":{\"image\":{\"x\":0,\"y\":0,\"s\":1},\"cameraMoved\":false,\"boxRotated\":true},\"checked\":true,\"on_drag\":{\"image\":{\"x\":0.188,\"y\":-0.081,\"s\":1},\"cameraMoved\":false},\"on_wheel_up\":{\"image\":{\"x\":0.188,\"y\":-0.081,\"s\":1.492},\"cameraMoved\":false},\"on_wheel_down\":{\"x\":0.188,\"y\":-0.081,\"s\":0.67},\"wheel_outs"
+ },
+ {
+  "script": "png_scale_task7.mjs",
+  "exit": 0,
+  "sec": 16,
+  "tail": "ok png_scale_task7.json device_limits_large_viewport, large_viewport, small_canvas, small_viewport, texture_density_input, persist_after_reload, localStorage_keys, page_errors"
+ },
+ {
+  "script": "ratio.mjs",
+  "exit": 0,
+  "sec": 26,
+  "tail": "{\"0_initial_no_alert\":{\"banner\":false,\"bannerText\":\"\",\"badges\":[],\"note\":\"\",\"selected\":\"lid_front\"},\"1_small_change_no_alert\":{\"banner\":false,\"bannerText\":\"\",\"badges\":[],\"note\":\"\",\"selected\":\"lid_front\"},\"1_face_size_still_updates\":\"면 크기 162×43mm (비율 3.77:1)\",\"2_not_yet_during_debounce\":false,\"2_aft"
+ },
+ {
+  "script": "run.mjs",
+  "exit": 0,
+  "sec": 20,
+  "tail": "viewer_lid_slider_visible \"removed_in_task4\" | viewer_mode_png_saved true | external_requests_blocked []"
+ },
+ {
+  "script": "scroll_fix.mjs",
+  "exit": 0,
+  "sec": 51,
+  "tail": "{\"tested\":36,\"bad\":[]}"
+ },
+ {
+  "script": "sharp.mjs",
+  "exit": 0,
+  "sec": 5,
+  "tail": " \"editorTexAniso\": 16, |  \"maxAniso\": 16 | }"
+ },
+ {
+  "script": "shortcuts.mjs",
+  "exit": 0,
+  "sec": 8,
+  "tail": " \"typing_in_number_field_ignored\": false, |  \"errors\": [] | }"
+ },
+ {
+  "script": "shot_panel.mjs",
+  "exit": 0,
+  "sec": 3,
+  "tail": "2244"
+ },
+ {
+  "script": "space_repro.mjs",
+  "exit": 0,
+  "sec": 4,
+  "tail": "{\"A_number_field_focused\":true,\"B_select_focused\":true,\"C_button_focused\":true,\"D_after_canvas_click\":true,\"E_ime_process_key\":true,\"F_badge_visible\":true,\"F_space_not_typed_into_field\":true,\"F_pan_moved_target\":true,\"F_badge_hidden_after\":true,\"G_panel_hover_no_pan\":true,\"H_R_key\":{\"dir\":\"0.28,0.23"
+ },
+ {
+  "script": "split_zoom_check.mjs",
+  "exit": 0,
+  "sec": 13,
+  "tail": " }, |  \"errs\": [] | }"
+ },
+ {
+  "script": "ui_dialogs_task17.mjs",
+  "exit": 0,
+  "sec": 65,
+  "tail": "ok ui_dialogs_task17"
+ },
+ {
+  "script": "ui_tabs_task12.mjs",
+  "exit": 0,
+  "sec": 20,
+  "tail": "ok ui_tabs_task12 {\"topBar\":19,\"tabRail\":4,\"facePanel\":2,\"floating\":4,\"tab_design\":36,\"tab_box\":48,\"tab_view\":98,\"tab_export\":13}"
+ },
+ {
+  "script": "viewkeep.mjs",
+  "exit": 0,
+  "sec": 5,
+  "tail": " \"edit_section_reenabled_after_return\": true, |  \"errors\": [] | }"
+ },
+ {
+  "script": "floor_shadow_task9.mjs",
+  "exit": 0,
+  "sec": 150,
+  "tail": "ok floor_shadow_task9.json default_off, after_on, effects_vs_off, softness_edge, shadow_centroids, contact_height, shadow_by_part_state, box_pixels_unchanged_with_shadow_on, flipped_pose_view_from_below, glb, localStorage_shadow_mentions, reload_restore, default_restore_button, frame_time_headless, "
+ },
+ {
+  "script": "png_overlay_task11.mjs",
+  "exit": 0,
+  "sec": 13,
+  "tail": "ok png_overlay_task11.json state_with_selection_line, state_with_lock_lines, page_errors"
+ },
+ {
+  "script": "shadow_default_compare.mjs",
+  "exit": 0,
+  "sec": 37,
+  "tail": "ok shadow_default_compare.json default_after_change, visible_shadow_table, restore_button, page_errors"
+ },
+ {
+  "script": "sidebar_task8.mjs",
+  "exit": 0,
+  "sec": 14,
+  "tail": "ok sidebar_task8.json readout_in_view_section, readout_front, drag, readout_vs_quat, after_view_buttons, lock_no_axis, lock_axis, lock_plus5, lock_drag, unlock, collapse, collapsed_after_reload, localStorage, expanded_again, collapse_expand_roundtrip_same, window_sizes, page_errors"
+ },
+ {
+  "script": "stage24.mjs",
+  "exit": 0,
+  "sec": 20,
+  "tail": "ok stage24.json 1_door_turn_top_bottom, 2_vertical_cycle, 3_free_diagonal, 4_removed_direction_controls, 5_stand_then_turn_horizontally, 6_snap_and_badge, page_errors"
+ },
+ {
+  "script": "stage24_b.mjs",
+  "exit": 0,
+  "sec": 35,
+  "tail": "ok stage24_b.json 7_features_in_poses, 8_not_clipped, 9_glb, 9_png_overlay_excluded, 9_storage_boundary, 10_interactions, page_errors"
+ },
+ {
+  "script": "stage24_views.mjs",
+  "exit": 0,
+  "sec": 4,
+  "tail": "saved views.json"
+ },
+ {
+  "script": "stage26.mjs",
+  "exit": 0,
+  "sec": 44,
+  "tail": "ok stage26.json B0_toggle_on, B1_faces_10, B2_opposite_faces_same_axis, B3_rotated_pose_uses_current_normal, B4_ignored_clicks, B5_lock_off_click_selects, C_cycles, C_circle_around_top_axis, D_continuity, E_free_snap, page_errors"
+ },
+ {
+  "script": "stage26_b.mjs",
+  "exit": 0,
+  "sec": 29,
+  "tail": "ok stage26_b.json F_overlays_excluded, H_lock_kept_across_views, H_reload_lock_off, K_other_interactions, I_glb_viewer_mode, page_errors"
+ },
+ {
+  "script": "stage26c.mjs",
+  "exit": 0,
+  "sec": 67,
+  "tail": "ok stage26c.json 1_row_visibility, 1_row_title, 2_axis_buttons, 2_iso_axis_equals_view_direction, 3_view_buttons_only_move_camera, 4_cycles, 5_face_click_and_buttons_share_state, 6_kept_across_views_and_F, 6_toggle_off, 6_reload, 7_overlays_excluded, 8_glb_viewer_mode, page_errors"
+ },
+ {
+  "script": "stage27a.mjs",
+  "exit": 0,
+  "sec": 10,
+  "tail": "ok stage27a.json 1_seven_axis_buttons_rotate, 2_split_dialog, 3_after_apply_lock_state, 3_rotate_after_apply, page_errors"
+ },
+ {
+  "script": "stage30.mjs",
+  "exit": 0,
+  "sec": 26,
+  "tail": "ok stage30.json A0_axis_select_is_zero, A_plus30, B_zero_matches_baseline, C_delta_buttons, D_number_input, E_drag_sync, F_ctrl_snap_sync, G_axis_change_resets, H1_lock_off_disables_rotated, H2_lock_off_disables_from_top, I0_slot0_saved_state_card, I_round_trip_slot0, J_overwrite_slot3, J_rename_slo"
+ },
+ {
+  "script": "standing_view_task6.mjs",
+  "exit": 0,
+  "sec": 11,
+  "tail": "ok standing_task6.json measure_table, symmetry, fov_after_front_button, saved_slot_roundtrip, fov_after_keyF, fov_after_iso, fov_after_top, alt6_left, axis_lock_kept, drag_after_standing_rotates, glb_nodes_unchanged, glb_validator, png_bytes, page_errors"
+ },
+ {
+  "script": "stage26c_count.mjs",
+  "exit": 0,
+  "sec": 2,
+  "tail": "집계 도구 — 새 UI에서는 ui_tabs_task12 표가 대신함"
+ }
+]

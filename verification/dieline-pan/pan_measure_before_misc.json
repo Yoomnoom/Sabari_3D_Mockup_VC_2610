@@ -1,0 +1,139 @@
+{
+ "label": "before",
+ "images": {
+  "2739x3343": {
+   "size": [
+    2739,
+    3343
+   ],
+   "zoomMethods": [],
+   "focusSpace": [
+    {
+     "button": "＋",
+     "focusedBefore": "btnZoomIn",
+     "zoomBefore": 2.6,
+     "zoomAfter": 2.6,
+     "panMoved": true,
+     "zoomChangedByRelease": false,
+     "resetToFit": false
+    },
+    {
+     "button": "－",
+     "focusedBefore": "btnZoomOut",
+     "zoomBefore": 1.538,
+     "zoomAfter": 1.538,
+     "panMoved": true,
+     "zoomChangedByRelease": false,
+     "resetToFit": false
+    },
+    {
+     "button": "맞춤",
+     "focusedBefore": "btnZoomFit",
+     "zoomBefore": 0.15,
+     "zoomAfter": 0.15,
+     "panMoved": true,
+     "zoomChangedByRelease": false,
+     "resetToFit": false
+    },
+    {
+     "button": "100%",
+     "focusedBefore": "btnZoom100",
+     "zoomBefore": 1,
+     "zoomAfter": 1,
+     "panMoved": true,
+     "zoomChangedByRelease": false,
+     "resetToFit": false
+    },
+    {
+     "button": "200%",
+     "focusedBefore": "btnZoom200",
+     "zoomBefore": 2,
+     "zoomAfter": 2,
+     "panMoved": true,
+     "zoomChangedByRelease": false,
+     "resetToFit": false
+    },
+    {
+     "button": "칼선 종류 select",
+     "zoomBefore": 2,
+     "zoomAfter": 2,
+     "panMoved": false,
+     "valueAfter": "lid"
+    }
+   ],
+   "regionCover": {
+    "plainDragPannedView": false,
+    "statusBefore": "배율 15% · 커서 1295, 1612px (112.5, 138.8mm) · 선택 영역 2171×3142px (188.7×270.7mm)",
+    "statusAfter": "배율 15% · 커서 1769, 1938px (153.7, 166.9mm) · 선택 영역 2171×3142px (188.7×270.7mm)",
+    "handToolButton": false
+   },
+   "corners": {
+    "Space 드래그": {
+     "좌상": true,
+     "우상": true,
+     "좌하": true,
+     "우하": true
+    },
+    "가운데 버튼 드래그": {
+     "좌상": true,
+     "우상": true,
+     "좌하": true,
+     "우하": true
+    },
+    "스크롤바": {
+     "좌상": "수단 없음",
+     "우상": "수단 없음",
+     "좌하": "수단 없음",
+     "우하": "수단 없음"
+    },
+    "방향키": {
+     "좌상": "수단 없음",
+     "우상": "수단 없음",
+     "좌하": "수단 없음",
+     "우하": "수단 없음"
+    }
+   },
+   "timing": {
+    "wheel20Ms": 698,
+    "spaceDragMs": 158
+   },
+   "initial": {
+    "fitZoom": 0.150165,
+    "vw": 960,
+    "vh": 502,
+    "dialogScroll": {
+     "scrollH": 931,
+     "clientH": 844,
+     "pageScroll": false
+    }
+   },
+   "handles": [
+    {
+     "zoom": 2,
+     "expectedDxImg": 12,
+     "gotDwImg": 0,
+     "expectedDyImg": 9,
+     "gotDhImg": 0,
+     "handleScreenPx": 18
+    },
+    {
+     "zoom": 7.051,
+     "expectedDxImg": 3.4,
+     "gotDwImg": 0,
+     "expectedDyImg": 2.55,
+     "gotDhImg": 0,
+     "handleScreenPx": 18
+    },
+    {
+     "zoom": 16,
+     "expectedDxImg": 1.5,
+     "gotDwImg": 0,
+     "expectedDyImg": 1.13,
+     "gotDhImg": 0,
+     "handleScreenPx": 18
+    }
+   ]
+  }
+ },
+ "errors": []
+}

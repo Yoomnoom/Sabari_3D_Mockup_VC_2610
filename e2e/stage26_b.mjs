@@ -28,7 +28,7 @@ for (const [name, sel] of [['front', '[data-view=front]'], ['back', '[data-view=
   await p.click(sel); await p.waitForTimeout(80); const st = await lockState(), q = await quat();
   hs.push({ view: name, lockOn: st.on, face: st.face, poseIdentity: q.every((x, i) => Math.abs(x - [0, 0, 0, 1][i]) < 1e-9), axisWorldAfterView: st.world.map((x) => +x.toFixed(6)), axisWorldBeforeView: rotatedAxis.map((x) => +x.toFixed(4)) });
 }
-await p.evaluate(() => { const v = window.__sabari.viewer; v.setBoxQuat(new v.boxQuat.constructor(0.5, 0.2, -0.4, 0.74)); }); await p.mouse.click(1330, 780); await p.keyboard.press('f'); await p.waitForTimeout(100);
+await p.evaluate(() => { const v = window.__sabari.viewer; v.setBoxQuat(new v.boxQuat.constructor(0.5, 0.2, -0.4, 0.74)); }); await p.mouse.click(...(await p.bgPoint())); await p.keyboard.press('f'); await p.waitForTimeout(100);
 const afterF = await lockState(), qF = await quat(), expectW = await p.evaluate(() => { const v = window.__sabari.viewer; return v.getLockAxisLocal().clone().applyQuaternion(v.boxQuat).toArray(); });
 rec('H_lock_kept_across_views', { rows: hs, F: { lockOn: afterF.on, face: afterF.face, poseKept: qF.some((x, i) => Math.abs(x - [0, 0, 0, 1][i]) > 1e-3), axisWorldMatchesPose: Math.max(...afterF.world.map((x, i) => Math.abs(x - expectW[i]))) < 1e-9 } });
 assert(hs.every((r) => r.lockOn && r.face === 'lid_top' && r.poseIdentity && Math.abs(r.axisWorldAfterView[1] - 1) < 1e-9)); assert(afterF.on && afterF.face === 'lid_top' && results.H_lock_kept_across_views.F.poseKept && results.H_lock_kept_across_views.F.axisWorldMatchesPose);
@@ -65,14 +65,14 @@ assert(kk.touchTapKeepsAxis && kk.touchTapPicksAxis === 'lid_front' && kk.touchD
 await reset(); const exported = path.join(OUT, 'viewer_template.glb'); const [dl] = await Promise.all([p.waitForEvent('download'), p.click('#btnGlb')]); await dl.saveAs(exported);
 const raw = fs.readFileSync(exported), jl = raw.readUInt32LE(12); let json = raw.subarray(20, 20 + jl).toString('utf8'); json = json.replace(/"name":"lid_/g, '"name":"xid_').replace(/"name":"base_/g, '"name":"xase_'); // 같은 길이로 면 이름만 바꿔 "면을 알 수 없는" 외부 GLB를 만든다
 const ext = Buffer.concat([raw.subarray(0, 20), Buffer.from(json, 'utf8'), raw.subarray(20 + jl)]); fs.writeFileSync(path.join(OUT, 'viewer_external.glb'), ext);
-const vm = {}; await p.click('#tabView'); await p.setInputFiles('#fileGlb', exported); await p.waitForFunction(() => document.getElementById('glbInfo').textContent.includes('메')); await p.waitForTimeout(300);
+const vm = {}; await p.setInputFiles('#fileGlb', exported); await p.waitForFunction(() => document.getElementById('glbInfo').textContent.includes('메')); await p.waitForTimeout(300);
 vm.template_toggleEnabled = !(await lockState()).disabled; await p.click('#lockToggle'); const topPt = await scanFace('lid_top'); await p.mouse.click(...topPt); const ts = await lockState(); vm.template_pickedFace = ts.face; vm.template_hint = ts.hint;
 const qv0 = await quat(); const [cx, cy] = await p.evaluate(() => { const v = window.__sabari.viewer, c = v.models.viewer.pivot.getWorldPosition(v.camera.position.clone()).project(v.camera), r = v.renderer.domElement.getBoundingClientRect(); return [r.left + (c.x * 0.5 + 0.5) * r.width, r.top + (-c.y * 0.5 + 0.5) * r.height]; });
 await drag([cx + 50, cy + 20], [cx + 90, cy + 70], 8); const rv = await rel(qv0, await quat()); vm.template_lockedRotation = { angleDeg: +rv.angleDeg.toFixed(3), axisAbsDot: +Math.abs(dot(rv.axis, ts.world)).toFixed(9) }; await shot('I_viewer_template_locked.png');
 await p.setInputFiles('#fileGlb', path.join(OUT, 'viewer_external.glb')); await p.waitForFunction(() => document.getElementById('glbInfo').textContent.includes('메')); await p.waitForTimeout(300);
 const es = await lockState(); vm.external = { toggleDisabled: es.disabled, lockOn: es.on, hint: es.hint, pressed: es.pressed };
 const qe0 = await quat(); await drag([700, 450], [790, 520], 8); vm.external.freeRotationWorks = JSON.stringify(qe0) !== JSON.stringify(await quat()); await shot('I_viewer_external_free.png');
-await p.click('#tabEdit'); const back = await lockState(); vm.backToEditor = { toggleEnabled: !back.disabled, lockOn: back.on };
+await p.click('#btnExtGlbBack'); const back = await lockState(); vm.backToEditor = { toggleEnabled: !back.disabled, lockOn: back.on };
 rec('I_glb_viewer_mode', vm);
 assert(vm.template_toggleEnabled && vm.template_pickedFace === 'lid_top' && vm.template_lockedRotation.angleDeg > 3 && vm.template_lockedRotation.axisAbsDot > 1 - 1e-6);
 assert(vm.external.toggleDisabled && !vm.external.lockOn && vm.external.hint.includes('면을 알 수 없어') && vm.external.freeRotationWorks && vm.backToEditor.toggleEnabled);

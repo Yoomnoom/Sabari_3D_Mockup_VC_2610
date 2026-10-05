@@ -1,0 +1,345 @@
+{
+ "default": {
+  "kind": "white",
+  "pngOption": "white",
+  "corner": [
+   255,
+   255,
+   255,
+   255
+  ]
+ },
+ "match": {
+  "solid_검정": {
+   "screen": [
+    0,
+    0,
+    0,
+    255
+   ],
+   "png": [
+    0,
+    0,
+    0,
+    255
+   ],
+   "diff": 0
+  },
+  "solid_흰색": {
+   "screen": [
+    255,
+    255,
+    255,
+    255
+   ],
+   "png": [
+    255,
+    255,
+    255,
+    255
+   ],
+   "diff": 0
+  },
+  "solid_회색": {
+   "screen": [
+    128,
+    128,
+    128,
+    255
+   ],
+   "png": [
+    128,
+    128,
+    128,
+    255
+   ],
+   "diff": 0
+  },
+  "solid_마젠타": {
+   "screen": [
+    255,
+    0,
+    255,
+    255
+   ],
+   "png": [
+    255,
+    0,
+    255,
+    255
+   ],
+   "diff": 0
+  },
+  "solid_초록": {
+   "screen": [
+    0,
+    176,
+    80,
+    255
+   ],
+   "png": [
+    0,
+    176,
+    80,
+    255
+   ],
+   "diff": 0
+  },
+  "solid_파랑": {
+   "screen": [
+    0,
+    112,
+    255,
+    255
+   ],
+   "png": [
+    0,
+    112,
+    255,
+    255
+   ],
+   "diff": 0
+  },
+  "custom_color": [
+   51,
+   102,
+   153,
+   255
+  ],
+  "white": {
+   "diff": 0
+  },
+  "big": {
+   "diff": 1,
+   "ms": 1378
+  }
+ },
+ "chips": [
+  [
+   "검정",
+   "#000000"
+  ],
+  [
+   "흰색",
+   "#ffffff"
+  ],
+  [
+   "회색",
+   "#808080"
+  ],
+  [
+   "마젠타",
+   "#ff00ff"
+  ],
+  [
+   "초록",
+   "#00b050"
+  ],
+  [
+   "파랑",
+   "#0070ff"
+  ]
+ ],
+ "transparent": {
+  "screenDistinctColors": 2,
+  "light": [
+   [
+    255,
+    255,
+    255,
+    255
+   ],
+   [
+    255,
+    255,
+    255,
+    255
+   ],
+   [
+    228,
+    228,
+    228,
+    255
+   ]
+  ],
+  "darkSample": [
+   122,
+   122,
+   122,
+   255
+  ],
+  "screen": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "transparent": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ "samples": {
+  "0": {
+   "diff": 0,
+   "corner": [
+    254,
+    163,
+    164,
+    255
+   ]
+  },
+  "1": {
+   "diff": 0,
+   "corner": [
+    176,
+    149,
+    213,
+    255
+   ]
+  },
+  "2": {
+   "diff": 0,
+   "corner": [
+    134,
+    244,
+    187,
+    255
+   ]
+  },
+  "3": {
+   "diff": 1,
+   "corner": [
+    246,
+    190,
+    159,
+    255
+   ]
+  },
+  "4": {
+   "diff": 1,
+   "corner": [
+    211,
+    195,
+    252,
+    255
+   ]
+  },
+  "5": {
+   "diff": 1,
+   "corner": [
+    48,
+    175,
+    191,
+    255
+   ]
+  }
+ },
+ "big_png_bytes": 33996602,
+ "big_ms": 1378,
+ "big_info": "sabari_bg13_big.png · 표시용 4096×2560px",
+ "image_controls": {
+  "coverVsContain": true,
+  "xChanges": true,
+  "scaleChanges": true
+ },
+ "after_remove": {
+  "kind": "white",
+  "removeDisabled": true,
+  "pngOption": "white"
+ },
+ "bad_format": "처리할 수 없습니다",
+ "b_cycle_no_image": [
+  "transparent",
+  "solid",
+  "white",
+  "transparent"
+ ],
+ "b_cycle_with_image": [
+  "transparent",
+  "solid",
+  "image",
+  "white"
+ ],
+ "b_off": true,
+ "fixed_when_rotating": 0,
+ "box_pixels_independent_of_bg": true,
+ "glb_same": true,
+ "glb_validator": {
+  "errors": 0,
+  "warnings": 0,
+  "infos": 10,
+  "hints": 0
+ },
+ "shadow_over_bg_darker_px": 224612,
+ "external": {
+  "kind": "solid",
+  "corner": [
+   0,
+   176,
+   80,
+   255
+  ]
+ },
+ "sabari": {
+  "schemaVersion": 6,
+  "bg": {
+   "kind": "image",
+   "color": "#00b050",
+   "checkerDark": true,
+   "image": {
+    "fit": "contain",
+    "x": -20,
+    "y": 0,
+    "scale": 120,
+    "sample": null
+   },
+   "imageFile": "images/background.png",
+   "originalName": "sabari_bg13_big.png"
+  },
+  "entries": 3,
+  "originalBytesSame": true
+ },
+ "reopen": {
+  "kind": "image",
+  "fit": "contain",
+  "x": "-20",
+  "scale": "120",
+  "info": "sabari_bg13_big.png · 표시용 4096×2560px",
+  "pngOption": "screen"
+ },
+ "legacy_default_bg": {
+  "kind": "white",
+  "corner": [
+   255,
+   255,
+   255,
+   255
+  ]
+ },
+ "future": {
+  "kind": "error",
+  "text": "이 프로젝트는 현재 버전에서 열 수 없습니다. 앱을 업데이트해 주세요."
+ },
+ "after_reload_before_load": "white",
+ "draft_restored": [
+  0,
+  112,
+  255,
+  255
+ ],
+ "external_requests": [],
+ "errors": [
+  "Km: 이미지를 읽지 못했습니다. 파일이 손상되지 않았는지 확인해 주세요.\n    at qm (http://127.0.0.1:8881/assets/index-DberuYo9.js:4237:93029)\n    at async Rm (http://127.0.0.1:8881/assets/index-DberuYo9.js:4237:91209)\n    at async"
+ ]
+}

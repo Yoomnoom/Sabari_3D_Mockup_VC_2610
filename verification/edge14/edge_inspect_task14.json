@@ -1,0 +1,81 @@
+{
+ "default": {
+  "pressed": "false",
+  "label": "경계 점검 켜기",
+  "ctlHidden": true,
+  "loupeHidden": true,
+  "maskHidden": true
+ },
+ "on": {
+  "pressed": "true",
+  "label": "경계 점검 끄기",
+  "ctlVisible": true
+ },
+ "loupe4": {
+  "hidden": false,
+  "label": "4배",
+  "hash": 870332796,
+  "nonWhite": 11468,
+  "gray": true
+ },
+ "loupe8": {
+  "hidden": false,
+  "label": "8배",
+  "hash": -1506859392,
+  "nonWhite": 11594,
+  "gray": true
+ },
+ "loupe_off_box": true,
+ "alpha": {
+  "mask": {
+   "hidden": false,
+   "w": 1648,
+   "h": 1688,
+   "black": 1866560,
+   "white": 912422,
+   "gray": 2842,
+   "corner": 0,
+   "center": 255
+  },
+  "loupe": {
+   "hidden": false,
+   "label": "8배 · 알파",
+   "hash": -491556448,
+   "nonWhite": 28902,
+   "gray": true
+  }
+ },
+ "refresh": {
+  "white": [
+   912422,
+   1373686
+  ],
+  "changed": true
+ },
+ "outputs_unchanged": {
+  "pngWhite": true,
+  "pngTransparent": true,
+  "glb": true
+ },
+ "sabari_has_edge": false,
+ "localStorage_edge": [],
+ "off": {
+  "loupeHidden": true,
+  "maskHidden": true,
+  "pressed": "false"
+ },
+ "camera_unchanged_by_toggle": true,
+ "after_reload": "false",
+ "external_loupe": {
+  "hidden": false,
+  "label": "4배",
+  "hash": -598517824,
+  "nonWhite": 40000,
+  "gray": false
+ },
+ "controls": {
+  "count": 4,
+  "hint": true
+ },
+ "errors": []
+}

@@ -3,95 +3,93 @@
     "cameras": {
       "from_below_oblique": {
         "stats": {
-          "classified": 133765,
-          "strictBleedToOtherFace": 7,
+          "classified": 87668,
+          "strictBleedToOtherFace": 6,
           "bleedOntoNonFaceMesh": 0,
-          "edgeOrBackground": 43
+          "edgeOrBackground": 33
         },
         "offenders": {
           "base_front → base_right": 4,
-          "lid_top → base_right": 3
+          "lid_top → base_right": 2
         },
         "polyFlagged": {
-          "base_right": 43,
-          "base_front": 8,
-          "base_bottom": 3
+          "base_right": 32,
+          "lid_front": 1,
+          "base_front": 9,
+          "base_bottom": 2
         },
         "polyFlaggedButIdConsistent": {
-          "base_right:edge": 41,
-          "base_right:id_says_same_face": 2,
-          "base_front:id_says_same_face": 2,
-          "base_bottom:id_says_same_face": 3,
-          "base_front:edge": 2
+          "base_right:edge": 31,
+          "lid_front:id_says_same_face": 1,
+          "base_front:id_says_same_face": 3,
+          "base_right:id_says_same_face": 1,
+          "base_front:edge": 2,
+          "base_bottom:id_says_same_face": 2
         }
       },
       "from_below_oblique_2": {
         "stats": {
-          "classified": 111407,
+          "classified": 69458,
           "strictBleedToOtherFace": 0,
           "bleedOntoNonFaceMesh": 0,
-          "edgeOrBackground": 5
+          "edgeOrBackground": 3
         },
         "offenders": {},
         "polyFlagged": {
-          "base_left": 2,
-          "base_front": 41,
-          "base_bottom": 4
+          "lid_front": 2,
+          "base_front": 35,
+          "base_left": 1
         },
         "polyFlaggedButIdConsistent": {
-          "base_left:id_says_same_face": 2,
-          "base_front:id_says_same_face": 40,
-          "base_front:edge": 1,
-          "base_bottom:edge": 4
+          "lid_front:id_says_same_face": 2,
+          "base_front:edge": 2,
+          "base_front:id_says_same_face": 33,
+          "base_left:edge": 1
         }
       },
       "open_iso_front_right": {
         "stats": {
-          "classified": 111009,
+          "classified": 67399,
           "strictBleedToOtherFace": 0,
           "bleedOntoNonFaceMesh": 0,
           "edgeOrBackground": 27
         },
         "offenders": {},
         "polyFlagged": {
-          "lid_front": 9,
-          "lid_right": 28,
-          "base_front": 2
+          "lid_front": 5,
+          "lid_right": 27,
+          "base_front": 1
         },
         "polyFlaggedButIdConsistent": {
-          "lid_front:id_says_same_face": 9,
+          "lid_front:id_says_same_face": 4,
           "lid_right:id_says_same_face": 1,
-          "lid_right:edge": 27,
-          "base_front:id_says_same_face": 2
+          "lid_right:edge": 26,
+          "lid_front:edge": 1,
+          "base_front:id_says_same_face": 1
         }
       },
       "low_left": {
         "stats": {
-          "classified": 90901,
-          "strictBleedToOtherFace": 36,
+          "classified": 56748,
+          "strictBleedToOtherFace": 0,
           "bleedOntoNonFaceMesh": 0,
-          "edgeOrBackground": 4
+          "edgeOrBackground": 2
         },
-        "offenders": {
-          "base_front → base_left": 35,
-          "base_right → base_left": 1
-        },
+        "offenders": {},
         "polyFlagged": {
-          "base_left": 4,
-          "base_front": 35,
-          "base_right": 1
+          "base_left": 2
         },
         "polyFlaggedButIdConsistent": {
-          "base_left:edge": 4
+          "base_left:edge": 2
         }
       }
     },
     "totals": {
-      "classified": 447082,
-      "strictBleedToOtherFace": 43,
+      "classified": 281273,
+      "strictBleedToOtherFace": 6,
       "bleedOntoNonFaceMesh": 0,
-      "edgeOrBackground": 79,
-      "polygonMethodFlagged": 180
+      "edgeOrBackground": 65,
+      "polygonMethodFlagged": 117
     }
   },
   "changed_dims": {
@@ -111,63 +109,62 @@
     "cameras": {
       "from_below_oblique": {
         "stats": {
-          "classified": 137377,
-          "strictBleedToOtherFace": 8,
+          "classified": 91621,
+          "strictBleedToOtherFace": 5,
           "bleedOntoNonFaceMesh": 0,
-          "edgeOrBackground": 24
+          "edgeOrBackground": 28
         },
         "offenders": {
           "base_front → base_right": 4,
-          "lid_top → base_right": 4
+          "lid_top → base_right": 1
         },
         "polyFlagged": {
-          "base_right": 24,
+          "base_right": 27,
           "base_front": 4,
-          "base_bottom": 2
+          "base_bottom": 1
         },
         "polyFlaggedButIdConsistent": {
-          "base_right:edge": 24,
-          "base_bottom:id_says_same_face": 2
+          "base_right:edge": 27,
+          "base_bottom:edge": 1
         }
       },
       "from_below_oblique_2": {
         "stats": {
-          "classified": 118646,
+          "classified": 75088,
           "strictBleedToOtherFace": 0,
           "bleedOntoNonFaceMesh": 0,
-          "edgeOrBackground": 53
+          "edgeOrBackground": 47
         },
         "offenders": {},
         "polyFlagged": {
-          "base_front": 52,
-          "base_bottom": 1
+          "base_front": 47
         },
         "polyFlaggedButIdConsistent": {
-          "base_front:edge": 52,
-          "base_bottom:edge": 1
+          "base_front:edge": 47
         }
       },
       "open_iso_front_right": {
         "stats": {
-          "classified": 123402,
-          "strictBleedToOtherFace": 6,
+          "classified": 77036,
+          "strictBleedToOtherFace": 8,
           "bleedOntoNonFaceMesh": 0,
-          "edgeOrBackground": 23
+          "edgeOrBackground": 19
         },
         "offenders": {
-          "base_front → lid_top": 6
+          "base_front → lid_top": 6,
+          "base_front → lid_right": 2
         },
         "polyFlagged": {
-          "base_front": 6,
-          "lid_right": 23
+          "base_front": 8,
+          "lid_right": 19
         },
         "polyFlaggedButIdConsistent": {
-          "lid_right:edge": 23
+          "lid_right:edge": 19
         }
       },
       "low_left": {
         "stats": {
-          "classified": 116392,
+          "classified": 72200,
           "strictBleedToOtherFace": 0,
           "bleedOntoNonFaceMesh": 0,
           "edgeOrBackground": 0
@@ -178,11 +175,11 @@
       }
     },
     "totals": {
-      "classified": 495817,
-      "strictBleedToOtherFace": 14,
+      "classified": 315945,
+      "strictBleedToOtherFace": 13,
       "bleedOntoNonFaceMesh": 0,
-      "edgeOrBackground": 100,
-      "polygonMethodFlagged": 112
+      "edgeOrBackground": 94,
+      "polygonMethodFlagged": 106
     }
   },
   "errors": []

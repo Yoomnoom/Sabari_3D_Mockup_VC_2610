@@ -1,0 +1,159 @@
+{
+  "0_opens_at_fit": {
+    "zoomLabel": "42%",
+    "expectFit": 42,
+    "bmp": [
+      2000,
+      1300
+    ],
+    "viewport": [
+      968,
+      542
+    ]
+  },
+  "1_wheel_cursor_anchor": {
+    "before": [
+      568.2657470703125,
+      429.3357849121094
+    ],
+    "after": [
+      568.2656860351562,
+      429.3357849121094
+    ],
+    "errPx": 0.00006103515625,
+    "pass": true,
+    "zoomAfter": "176%"
+  },
+  "2_zoom_limits": {
+    "maxZ": "1600%",
+    "minZ": "25%",
+    "passMax": true,
+    "passMin": true
+  },
+  "3_100pct_1to1": {
+    "cssW": 2000,
+    "bmpW": 2000,
+    "pass": true
+  },
+  "4_handle_drag_200": {
+    "zoom": "200%",
+    "before": {
+      "x": 516.8067226890756,
+      "y": 277.6041666666667,
+      "w": 966.3865546218487,
+      "h": 744.7916666666667
+    },
+    "after": {
+      "x": 516.8067226890756,
+      "y": 277.6041666666667,
+      "w": 966.3865546218487,
+      "h": 744.7916666666667
+    },
+    "expectDW": 15,
+    "expectDH": 10,
+    "actualDW": 0,
+    "actualDH": 0,
+    "errW": 15,
+    "errH": 10
+  },
+  "4_handle_drag_800": {
+    "zoom": "1600%",
+    "before": {
+      "x": 516.8067226890756,
+      "y": 277.6041666666667,
+      "w": 966.3865546218487,
+      "h": 744.7916666666667
+    },
+    "after": {
+      "x": 516.8067226890756,
+      "y": 277.6041666666667,
+      "w": 966.3865546218487,
+      "h": 744.7916666666667
+    },
+    "expectDW": 1.25,
+    "expectDH": 0.9375,
+    "actualDW": 0,
+    "actualDH": 0,
+    "errW": 1.25,
+    "errH": 0.9375
+  },
+  "5_opacity_zero": {
+    "fillOpacities": [
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+    ],
+    "pass": true
+  },
+  "6_toggle_visibility": {
+    "hiddenCount": 0,
+    "shownCount": 5,
+    "pass": true
+  },
+  "7_pinch_zoom": {
+    "zoomBeforePinch": 42,
+    "zoomAfterPinch": 83,
+    "pass": true
+  },
+  "8_apply_zoom_independent": {
+    "zoomedPct": "620%",
+    "identical": true,
+    "hashFit": {
+      "lid_top": {
+        "len": 23364,
+        "hash": 2585172166
+      },
+      "lid_front": {
+        "len": 8025,
+        "hash": 1263284061
+      },
+      "lid_back": {
+        "len": 8011,
+        "hash": 633215766
+      },
+      "lid_left": {
+        "len": 5453,
+        "hash": 1812950242
+      },
+      "lid_right": {
+        "len": 5379,
+        "hash": 2352199416
+      },
+      "base_front": null,
+      "base_back": null,
+      "base_left": null,
+      "base_right": null,
+      "base_bottom": null
+    },
+    "hashZoomed": {
+      "lid_top": {
+        "len": 23364,
+        "hash": 2585172166
+      },
+      "lid_front": {
+        "len": 8025,
+        "hash": 1263284061
+      },
+      "lid_back": {
+        "len": 8011,
+        "hash": 633215766
+      },
+      "lid_left": {
+        "len": 5453,
+        "hash": 1812950242
+      },
+      "lid_right": {
+        "len": 5379,
+        "hash": 2352199416
+      },
+      "base_front": null,
+      "base_back": null,
+      "base_left": null,
+      "base_right": null,
+      "base_bottom": null
+    }
+  },
+  "errs": []
+}

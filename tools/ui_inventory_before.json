@@ -1,0 +1,6869 @@
+{
+ "generatedFor": "ui-inventory",
+ "fixturesUsed": [
+  "glb",
+  "dieline"
+ ],
+ "count": 410,
+ "items": [
+  {
+   "id": "panel",
+   "tag": "aside",
+   "type": null,
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "h1",
+   "type": null,
+   "text": "사바리 목업 스튜디오",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "panelTabs",
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "className": "tabs",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "tabPanelEdit",
+   "tag": "button",
+   "type": "submit",
+   "text": "편집",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "tabPanelView",
+   "tag": "button",
+   "type": "submit",
+   "text": "뷰어",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "panelBody",
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "editSection",
+   "tag": "details",
+   "type": null,
+   "text": null,
+   "className": "split-sec",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "summary",
+   "type": null,
+   "text": "편집",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "h2",
+   "type": null,
+   "text": "1. 면 선택",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "useBase",
+   "tag": "input",
+   "type": "checkbox",
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "span",
+   "type": null,
+   "text": "하단 몸통 디자인 사용",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "small",
+   "type": null,
+   "text": "켜면 하단 5면(앞·뒤·왼쪽·오른쪽·바닥)도 편집합니다. 하단은 뚜껑을 열어야 보입니다.",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "faceTabs",
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "className": "subtabs",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "tab_lid",
+   "tag": "button",
+   "type": "submit",
+   "text": "뚜껑 (0/5)",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "tab_base",
+   "tag": "button",
+   "type": "submit",
+   "text": "하단 (0/5)",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "p",
+   "type": null,
+   "text": "버튼 또는 3D 박스의 면을 클릭",
+   "className": "hint",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "faceList",
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "className": "facelist",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "span",
+   "type": null,
+   "text": "상단",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "small",
+   "type": null,
+   "text": "비어 있음",
+   "className": "",
+   "states": [
+    "default",
+    "default",
+    "default",
+    "default",
+    "default",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "span",
+   "type": null,
+   "text": "앞날개",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "span",
+   "type": null,
+   "text": "뒷날개",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "span",
+   "type": null,
+   "text": "왼쪽 날개",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "span",
+   "type": null,
+   "text": "오른쪽 날개",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "faceSection",
+   "tag": "section",
+   "type": null,
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "h2",
+   "type": null,
+   "text": "2. 이미지",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "faceTitle",
+   "tag": "span",
+   "type": null,
+   "text": "상단",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "faceSize",
+   "tag": "p",
+   "type": null,
+   "text": "면 크기 165×115mm (비율 1.43:1)",
+   "className": "hint",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "ratioNote",
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "className": "notice ratio",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "ratioNoteText",
+   "tag": "span",
+   "type": null,
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnRatioAck",
+   "tag": "button",
+   "type": "submit",
+   "text": "확인했어요",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "openNotice",
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "className": "notice",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "openNoticeText",
+   "tag": "span",
+   "type": null,
+   "text": "뚜껑을 열어야 보입니다.",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnNoticeOpen",
+   "tag": "button",
+   "type": "submit",
+   "text": "뚜껑 열기",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnNoticeBottom",
+   "tag": "button",
+   "type": "submit",
+   "text": "아래에서 보기",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnPick",
+   "tag": "button",
+   "type": "submit",
+   "text": "이미지 선택",
+   "className": "primary",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "filePick",
+   "tag": "input",
+   "type": "file",
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "fileInfo",
+   "tag": "p",
+   "type": null,
+   "text": "이미지 없음",
+   "className": "info",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "p",
+   "type": null,
+   "text": "미리보기를 끌어 위치를 옮길 수 있습니다.",
+   "className": "hint",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "faceControls",
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "className": "disabled",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dFit",
+   "tag": "details",
+   "type": null,
+   "text": null,
+   "className": "grp",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "summary",
+   "type": null,
+   "text": "맞춤 방식",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "이미지 전체 보이기",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "면 전체 채우기",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dRot",
+   "tag": "details",
+   "type": null,
+   "text": null,
+   "className": "grp",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "summary",
+   "type": null,
+   "text": "회전 · 반전",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "rotL",
+   "tag": "button",
+   "type": "submit",
+   "text": "90° 왼쪽",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "rotR",
+   "tag": "button",
+   "type": "submit",
+   "text": "90° 오른쪽",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "rot180",
+   "tag": "button",
+   "type": "submit",
+   "text": "180°",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "flipX",
+   "tag": "button",
+   "type": "submit",
+   "text": "좌우 반전",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "flipY",
+   "tag": "button",
+   "type": "submit",
+   "text": "상하 반전",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "p",
+   "type": null,
+   "text": "현재 회전:",
+   "className": "info",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "rotText",
+   "tag": "b",
+   "type": null,
+   "text": "0°",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dPos",
+   "tag": "details",
+   "type": null,
+   "text": null,
+   "className": "grp",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "summary",
+   "type": null,
+   "text": "크기 · 위치",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "moveMode",
+   "tag": "input",
+   "type": "checkbox",
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "span",
+   "type": null,
+   "text": "3D 화면에서 마우스로 이동",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "small",
+   "type": null,
+   "text": "휠: 확대·축소 · 끄면 끌어서 회전",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "배율 (%)",
+   "className": "slider",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "scaleR",
+   "tag": "input",
+   "type": "range",
+   "text": null,
+   "range": "25~300/1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "scaleN",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "range": "25~300/1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "X 위치 (%)",
+   "className": "slider",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "xR",
+   "tag": "input",
+   "type": "range",
+   "text": null,
+   "range": "-100~100/1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "xN",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "range": "-100~100/1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "Y 위치 (%)",
+   "className": "slider",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "yR",
+   "tag": "input",
+   "type": "range",
+   "text": null,
+   "range": "-100~100/1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "yN",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "range": "-100~100/1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnRemove",
+   "tag": "button",
+   "type": "submit",
+   "text": "이미지 제거",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnReset",
+   "tag": "button",
+   "type": "submit",
+   "text": "초기화",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnUndo",
+   "tag": "button",
+   "type": "submit",
+   "text": "되돌리기",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dDims",
+   "tag": "details",
+   "type": null,
+   "text": null,
+   "className": "sec",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "summary",
+   "type": null,
+   "text": "박스 치수",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "p",
+   "type": null,
+   "text": "목업용 치수입니다.",
+   "className": "hint",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "b",
+   "type": null,
+   "text": "가정값(싸바리지 여유·접어 넣는 폭·재단 여분)은 제조 규격이 아닙니다.",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "aria-label": "입력 기준",
+   "className": "seg",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "완성 외경",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "싸바리지(전개) 크기",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dimsOuterRows",
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "몸통 가로 (mm)",
+   "className": "slider",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "input",
+   "type": "range",
+   "text": null,
+   "range": "40~400/0.1",
+   "className": "",
+   "states": [
+    "default",
+    "default",
+    "default",
+    "default",
+    "default",
+    "default",
+    "default",
+    "default",
+    "default",
+    "default",
+    "default",
+    "default",
+    "default",
+    "default",
+    "default",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dim_outer_baseW",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "aria-label": "몸통 가로 (mm)",
+   "range": "~/0.1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "몸통 세로 (mm)",
+   "className": "slider",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dim_outer_baseD",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "aria-label": "몸통 세로 (mm)",
+   "range": "~/0.1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "몸통 높이 (mm)",
+   "className": "slider",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dim_outer_baseH",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "aria-label": "몸통 높이 (mm)",
+   "range": "~/0.1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "뚜껑 높이 (mm)",
+   "className": "slider",
+   "states": [
+    "default",
+    "default",
+    "use-base",
+    "use-base",
+    "use-base-faces",
+    "use-base-faces",
+    "lock-on",
+    "lock-on",
+    "ratio-changed",
+    "ratio-changed",
+    "external-glb",
+    "external-glb",
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dim_outer_lidH",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "aria-label": "뚜껑 높이 (mm)",
+   "range": "~/0.1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "합지 두께 (mm)",
+   "className": "slider",
+   "states": [
+    "default",
+    "default",
+    "use-base",
+    "use-base",
+    "use-base-faces",
+    "use-base-faces",
+    "lock-on",
+    "lock-on",
+    "ratio-changed",
+    "ratio-changed",
+    "external-glb",
+    "external-glb",
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dim_outer_board",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "aria-label": "합지 두께 (mm)",
+   "range": "~/0.1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "뚜껑 여유, 편측 (mm)",
+   "className": "slider",
+   "states": [
+    "default",
+    "default",
+    "use-base",
+    "use-base",
+    "use-base-faces",
+    "use-base-faces",
+    "lock-on",
+    "lock-on",
+    "ratio-changed",
+    "ratio-changed",
+    "external-glb",
+    "external-glb",
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dim_outer_lidClearance",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "aria-label": "뚜껑 여유, 편측 (mm)",
+   "range": "~/0.1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dimsWrapRows",
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "뚜껑 싸바리지 긴 변 (mm)",
+   "className": "slider",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dim_wrap_lidWrapW",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "aria-label": "뚜껑 싸바리지 긴 변 (mm)",
+   "range": "~/0.1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "뚜껑 싸바리지 짧은 변 (mm)",
+   "className": "slider",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dim_wrap_lidWrapD",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "aria-label": "뚜껑 싸바리지 짧은 변 (mm)",
+   "range": "~/0.1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "뚜껑 날개 깊이 (mm)",
+   "className": "slider",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dim_wrap_lidWingDepth",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "aria-label": "뚜껑 날개 깊이 (mm)",
+   "range": "~/0.1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "몸통 날개 깊이 (mm)",
+   "className": "slider",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dim_wrap_baseWingDepth",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "aria-label": "몸통 날개 깊이 (mm)",
+   "range": "~/0.1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dim_wrap_board",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "aria-label": "합지 두께 (mm)",
+   "range": "~/0.1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dim_wrap_lidClearance",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "aria-label": "뚜껑 여유, 편측 (mm)",
+   "range": "~/0.1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dAssume",
+   "tag": "details",
+   "type": null,
+   "text": null,
+   "className": "grp",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "summary",
+   "type": null,
+   "text": "가정값 (제조 규격 아님)",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dimsAssumeRows",
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "싸바리지 여유 (mm)",
+   "className": "slider",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dim_assume_wrapMargin",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "aria-label": "싸바리지 여유 (mm)",
+   "range": "~/0.1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "접어 넣는 폭 (mm)",
+   "className": "slider",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dim_assume_tuck",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "aria-label": "접어 넣는 폭 (mm)",
+   "range": "~/0.1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "재단 여분 (mm)",
+   "className": "slider",
+   "states": [
+    "default",
+    "default",
+    "use-base",
+    "use-base",
+    "use-base-faces",
+    "use-base-faces",
+    "lock-on",
+    "lock-on",
+    "ratio-changed",
+    "ratio-changed",
+    "external-glb",
+    "external-glb",
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dim_assume_bleed",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "aria-label": "재단 여분 (mm)",
+   "range": "~/0.1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "p",
+   "type": null,
+   "text": "칼선 샘플(뚜껑 117.4×167.4, 날개 깊이 38)에서 읽은 값입니다. 인쇄소 규격에 맞게 바꾸세요.",
+   "className": "hint",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dimsDerived",
+   "tag": "p",
+   "type": null,
+   "text": "뚜껑 외경 165×115×38mm · 닫힌 높이 45mm 싸바리지: 뚜껑 167.4×117.4 · 몸통 162.4×112.4mm",
+   "className": "info",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dimsError",
+   "tag": "p",
+   "type": null,
+   "text": null,
+   "className": "err",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnDimsDefault",
+   "tag": "button",
+   "type": "submit",
+   "text": "기본값 복원",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnDimsBaseline",
+   "tag": "button",
+   "type": "submit",
+   "text": "원래 사이즈로 되돌리기",
+   "title": "처음 열었을 때 또는 마지막으로 저장한 치수로",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dDie",
+   "tag": "details",
+   "type": null,
+   "text": null,
+   "className": "sec",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "summary",
+   "type": null,
+   "text": "칼선 (디자인 가이드)",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "p",
+   "type": null,
+   "text": "최종 칼선은 인쇄소 템플릿을 사용하세요.",
+   "className": "hint",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "b",
+   "type": null,
+   "text": "디자인 가이드용, 제조 칼선 아님.",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnDieLid",
+   "tag": "button",
+   "type": "submit",
+   "text": "뚜껑 칼선 SVG",
+   "className": "grow",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnDieBase",
+   "tag": "button",
+   "type": "submit",
+   "text": "하단 칼선 SVG",
+   "className": "grow",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "p",
+   "type": null,
+   "text": "현재 치수로 만든 1:1(mm) SVG입니다. 재단선(빨강 실선)·접는선(파랑 점선)·안내선(초록 점선)이 레이어로 나뉩니다.",
+   "className": "hint",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnSplitPick",
+   "tag": "button",
+   "type": "submit",
+   "text": "칼선 이미지 한 장 올리기",
+   "className": "grow",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "fileDieline",
+   "tag": "input",
+   "type": "file",
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dielineInfo",
+   "tag": "p",
+   "type": null,
+   "text": "올린 칼선 이미지 없음",
+   "className": "info",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnSplitEdit",
+   "tag": "button",
+   "type": "submit",
+   "text": "분할 영역 조정",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "p",
+   "type": null,
+   "text": "칼선 위에서 만든 디자인 한 장(PNG/JPG)을 면별로 자동으로 나눕니다. 접어 넣는 영역과 모서리 탭은 면에 포함되지 않습니다. 인쇄소 칼선 프리셋(아트보드 전체 이미지)은 재단 여분 0 기준입니다.",
+   "className": "hint",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "b",
+   "type": null,
+   "text": "내보낼 때 칼선·안내선 레이어를 숨기고 sRGB PNG로 내보내세요.",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dColor",
+   "tag": "details",
+   "type": null,
+   "text": null,
+   "className": "sec",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "summary",
+   "type": null,
+   "text": "목업 색상",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "colFace",
+   "tag": "input",
+   "type": "color",
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "span",
+   "type": null,
+   "text": "면 바탕",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "colLid",
+   "tag": "input",
+   "type": "color",
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "span",
+   "type": null,
+   "text": "뚜껑",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "colBase",
+   "tag": "input",
+   "type": "color",
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "span",
+   "type": null,
+   "text": "몸통",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "p",
+   "type": null,
+   "text": "면 바탕 = 이미지 없는 면·여백 / 뚜껑 = 테두리·안쪽",
+   "className": "hint",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnColorReset",
+   "tag": "button",
+   "type": "submit",
+   "text": "색상 기본값",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "panelSplitter",
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "aria-label": "편집·뷰어 영역 크기 조절",
+   "title": "끌어서 크기 조절 (더블클릭: 기본 비율)",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "viewSection",
+   "tag": "details",
+   "type": null,
+   "text": null,
+   "className": "split-sec",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "summary",
+   "type": null,
+   "text": "뷰어",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dView",
+   "tag": "details",
+   "type": null,
+   "text": null,
+   "className": "sec",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "summary",
+   "type": null,
+   "text": "보기",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnFit",
+   "tag": "button",
+   "type": "submit",
+   "text": "위치 초기화 (F)",
+   "title": "확대·이동을 처음 상태로 (F)",
+   "className": "link fit",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "button",
+   "type": "submit",
+   "text": "정면",
+   "className": "",
+   "states": [
+    "default",
+    "default",
+    "use-base",
+    "use-base",
+    "use-base-faces",
+    "use-base-faces",
+    "lock-on",
+    "lock-on",
+    "ratio-changed",
+    "ratio-changed",
+    "external-glb",
+    "external-glb",
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "button",
+   "type": "submit",
+   "text": "후면",
+   "className": "",
+   "states": [
+    "default",
+    "default",
+    "use-base",
+    "use-base",
+    "use-base-faces",
+    "use-base-faces",
+    "lock-on",
+    "lock-on",
+    "ratio-changed",
+    "ratio-changed",
+    "external-glb",
+    "external-glb",
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "button",
+   "type": "submit",
+   "text": "좌측",
+   "className": "",
+   "states": [
+    "default",
+    "default",
+    "use-base",
+    "use-base",
+    "use-base-faces",
+    "use-base-faces",
+    "lock-on",
+    "lock-on",
+    "ratio-changed",
+    "ratio-changed",
+    "external-glb",
+    "external-glb",
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "button",
+   "type": "submit",
+   "text": "우측",
+   "className": "",
+   "states": [
+    "default",
+    "default",
+    "use-base",
+    "use-base",
+    "use-base-faces",
+    "use-base-faces",
+    "lock-on",
+    "lock-on",
+    "ratio-changed",
+    "ratio-changed",
+    "external-glb",
+    "external-glb",
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "button",
+   "type": "submit",
+   "text": "윗면",
+   "className": "",
+   "states": [
+    "default",
+    "default",
+    "use-base",
+    "use-base",
+    "use-base-faces",
+    "use-base-faces",
+    "lock-on",
+    "lock-on",
+    "ratio-changed",
+    "ratio-changed",
+    "external-glb",
+    "external-glb",
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "button",
+   "type": "submit",
+   "text": "아래",
+   "title": "아래에서 올려다봅니다 (Shift+7)",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnIso",
+   "tag": "button",
+   "type": "submit",
+   "text": "3/4 시점 R",
+   "title": "한 번 더 누르면 반대편 모서리(뒤·왼쪽 날개)로 바뀝니다",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "rotReadout",
+   "tag": "p",
+   "type": null,
+   "text": null,
+   "className": "rotread",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "b",
+   "type": null,
+   "text": "회전 상태",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "rotReadoutText",
+   "tag": "span",
+   "type": null,
+   "text": "자유 회전 · 좌우 +0.0° · 위아래 +0.0°",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "viewPresets",
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "className": "viewpresets",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "b",
+   "type": null,
+   "text": "저장된 시점",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "vpGrid",
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "className": "vp-grid",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "button",
+   "type": "button",
+   "text": null,
+   "title": "눌러서 이 시점 불러오기",
+   "className": "vp-thumb",
+   "states": [
+    "default",
+    "default",
+    "default",
+    "default",
+    "default",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "span",
+   "type": null,
+   "text": "빈 슬롯",
+   "className": "vp-empty",
+   "states": [
+    "default",
+    "default",
+    "default",
+    "default",
+    "default",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "input",
+   "type": "text",
+   "text": null,
+   "aria-label": "시점 이름",
+   "className": "vp-name",
+   "states": [
+    "default",
+    "default",
+    "default",
+    "default",
+    "default",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "button",
+   "type": "button",
+   "text": "저장",
+   "title": "현재 시점 저장/덮어쓰기",
+   "className": "vp-save",
+   "states": [
+    "default",
+    "default",
+    "default",
+    "default",
+    "default",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "button",
+   "type": "button",
+   "text": "삭제",
+   "title": "삭제",
+   "className": "vp-del",
+   "states": [
+    "default",
+    "default",
+    "default",
+    "default",
+    "default",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "aria-label": "기본 제공 시점",
+   "className": "vp-fixedrow",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "button",
+   "type": "button",
+   "text": "세운 3/4 · 왼쪽 옆면",
+   "title": "박스를 세워 왼쪽 옆면이 보이게 합니다 (Alt+6)",
+   "className": "vp-fixed",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "button",
+   "type": "button",
+   "text": "세운 3/4 · 오른쪽 옆면",
+   "title": "박스를 세워 오른쪽 옆면이 보이게 합니다",
+   "className": "vp-fixed",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "p",
+   "type": null,
+   "text": "카드 클릭: 불러오기 · 저장: 지금 시점으로 덮어쓰기 · 외부 GLB를 보는 중에는 쓸 수 없습니다. 바꿀 수 있으면 ~ .",
+   "className": "hint",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "Alt+1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "Alt+5",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "lockToggle",
+   "tag": "button",
+   "type": "submit",
+   "text": "축 잠금",
+   "title": "켜고 회전축 버튼을 누르거나 박스의 면을 누르면 그 축으로만 돕니다",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "axisRow",
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "aria-label": "회전축",
+   "className": "axisrow",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "b",
+   "type": null,
+   "text": "회전축",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "span",
+   "type": null,
+   "text": "(그 방향을 바라보는 선)",
+   "className": "axishint",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "button",
+   "type": "submit",
+   "text": "아래",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "button",
+   "type": "submit",
+   "text": "3/4",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dAngle",
+   "tag": "details",
+   "type": null,
+   "text": null,
+   "className": "grp",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "summary",
+   "type": null,
+   "text": "미세 조절",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "angleDisabledHint",
+   "tag": "p",
+   "type": null,
+   "text": "축 잠금을 켜고 축을 먼저 정하세요.",
+   "className": "hint",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "angleSliderRow",
+   "tag": "label",
+   "type": null,
+   "text": "각도 (°)",
+   "className": "slider",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "angleR",
+   "tag": "input",
+   "type": "range",
+   "text": null,
+   "range": "-180~180/0.1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "angleN",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "range": "-180~180/0.1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "angleBtnRow",
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "className": "row wrap",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "button",
+   "type": "submit",
+   "text": "−5°",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "button",
+   "type": "submit",
+   "text": "−1°",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "button",
+   "type": "submit",
+   "text": "+1°",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "button",
+   "type": "submit",
+   "text": "+5°",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "angleZero",
+   "tag": "button",
+   "type": "submit",
+   "text": "0°로",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "angleRebase",
+   "tag": "button",
+   "type": "submit",
+   "text": "기준 다시 잡기",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "lockHint",
+   "tag": "p",
+   "type": null,
+   "text": null,
+   "className": "hint",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "p",
+   "type": null,
+   "text": "시점 버튼은 박스를 기본 자세로 되돌리고 방향만 바꾸며 확대는 유지합니다. 처음처럼 전체를 보려면 또는 위치 초기화. 3/4 시점을 한 번 더 누르면 반대편 모서리로 바뀝니다. 앞·오른쪽 날개 / 뒤·왼쪽 날개",
+   "className": "hint",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "F",
+   "className": "",
+   "states": [
+    "default",
+    "default",
+    "use-base",
+    "use-base",
+    "use-base-faces",
+    "use-base-faces",
+    "lock-on",
+    "lock-on",
+    "ratio-changed",
+    "ratio-changed",
+    "external-glb",
+    "external-glb",
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "R",
+   "className": "",
+   "states": [
+    "default",
+    "default",
+    "use-base",
+    "use-base",
+    "use-base-faces",
+    "use-base-faces",
+    "lock-on",
+    "lock-on",
+    "ratio-changed",
+    "ratio-changed",
+    "external-glb",
+    "external-glb",
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "L",
+   "className": "",
+   "states": [
+    "default",
+    "default",
+    "use-base",
+    "use-base",
+    "use-base-faces",
+    "use-base-faces",
+    "lock-on",
+    "lock-on",
+    "ratio-changed",
+    "ratio-changed",
+    "external-glb",
+    "external-glb",
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "p",
+   "type": null,
+   "text": "드래그: 박스 자유 회전(제한 없음) · +드래그: 15° 단위 · 휠: 확대/축소 · Space+드래그: 이동",
+   "className": "hint",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "Ctrl",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dLight",
+   "tag": "details",
+   "type": null,
+   "text": null,
+   "className": "grp",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "summary",
+   "type": null,
+   "text": "조명 (음영)",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "음영 세기 (%)",
+   "className": "slider",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "shadeR",
+   "tag": "input",
+   "type": "range",
+   "text": null,
+   "range": "0~100/1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "shadeN",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "range": "0~100/1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "p",
+   "type": null,
+   "text": "넣은 색은 카메라를 마주 보는 면에서 그대로 보입니다. 음영은 비스듬한 면을 어둡게만 하고 색을 밝히지 않으며, 0%면 모든 각도에서 평면 색 그대로입니다. 이 설정은 이 브라우저에만 기억되고 파일(.sabari·GLB·임시저장)에는 저장되지 않습니다.",
+   "className": "hint",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "shadowToggle",
+   "tag": "button",
+   "type": "button",
+   "text": "바닥 그림자 보기",
+   "className": "grow",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "shadowCtl",
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "세기 (%)",
+   "className": "slider",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "shStrR",
+   "tag": "input",
+   "type": "range",
+   "text": null,
+   "range": "0~100/1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "shStrN",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "range": "0~100/1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "부드러움 (%)",
+   "className": "slider",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "shSoftR",
+   "tag": "input",
+   "type": "range",
+   "text": null,
+   "range": "0~100/1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "shSoftN",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "range": "0~100/1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "빛 방향 좌우 (°)",
+   "className": "slider",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "shAzR",
+   "tag": "input",
+   "type": "range",
+   "text": null,
+   "range": "0~360/1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "shAzN",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "range": "0~360/1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "빛 높이 (°)",
+   "className": "slider",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "shElR",
+   "tag": "input",
+   "type": "range",
+   "text": null,
+   "range": "20~80/1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "shElN",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "range": "20~80/1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "shDefault",
+   "tag": "button",
+   "type": "button",
+   "text": "기본값 복원",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "p",
+   "type": null,
+   "text": "그림자는 화면과 PNG에만 반영되고 GLB에는 들어가지 않습니다. 꺼 두면 화면은 그대로입니다.",
+   "className": "hint",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dBox",
+   "tag": "details",
+   "type": null,
+   "text": null,
+   "className": "sec",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "summary",
+   "type": null,
+   "text": "박스",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnClose",
+   "tag": "button",
+   "type": "submit",
+   "text": "닫힌 상태",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnOpen",
+   "tag": "button",
+   "type": "submit",
+   "text": "열린 상태",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "liftR",
+   "tag": "input",
+   "type": "range",
+   "text": null,
+   "range": "0~150/1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "liftN",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "range": "0~150/1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "뚜껑 표시",
+   "className": "check",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "showLid",
+   "tag": "input",
+   "type": "checkbox",
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "몸통 표시",
+   "className": "check",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "showBase",
+   "tag": "input",
+   "type": "checkbox",
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "h2",
+   "type": null,
+   "text": "PNG 저장",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnPng",
+   "tag": "button",
+   "type": "submit",
+   "text": "현재 화면 PNG 저장",
+   "className": "grow",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "bgSel",
+   "tag": "select",
+   "type": "select-one",
+   "text": null,
+   "aria-label": "PNG 배경",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "option",
+   "type": null,
+   "text": "흰 배경",
+   "value": "white",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "option",
+   "type": null,
+   "text": "투명",
+   "value": "transparent",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "pngScale",
+   "tag": "select",
+   "type": "select-one",
+   "text": null,
+   "aria-label": "PNG 저장 크기",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "option",
+   "type": null,
+   "text": "화면 크기",
+   "value": "1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "option",
+   "type": null,
+   "text": "2배",
+   "value": "2",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "option",
+   "type": null,
+   "text": "4배",
+   "value": "4",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "h2",
+   "type": null,
+   "text": "GLB 열기",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "p",
+   "type": null,
+   "text": "이 앱에서 내보낸 GLB(또는 다른 GLB)를 불러와 봅니다. 파일을 3D 화면에 끌어놓아도 됩니다.",
+   "className": "hint",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnOpenGlb",
+   "tag": "button",
+   "type": "submit",
+   "text": "GLB 파일 열기",
+   "className": "primary",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "fileGlb",
+   "tag": "input",
+   "type": "file",
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "glbInfo",
+   "tag": "p",
+   "type": null,
+   "text": "불러온 파일 없음",
+   "className": "info",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "saveBar",
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnGlb",
+   "tag": "button",
+   "type": "submit",
+   "text": "GLB 저장 (이미지 포함)",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnProjSave",
+   "tag": "button",
+   "type": "submit",
+   "text": "프로젝트 저장",
+   "className": "grow",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnProjOpen",
+   "tag": "button",
+   "type": "submit",
+   "text": "프로젝트 열기",
+   "className": "grow",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "fileProj",
+   "tag": "input",
+   "type": "file",
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnDraftSave",
+   "tag": "button",
+   "type": "submit",
+   "text": "임시저장",
+   "className": "grow",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnDraftLoad",
+   "tag": "button",
+   "type": "submit",
+   "text": "불러오기",
+   "className": "grow",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "draftInfo",
+   "tag": "p",
+   "type": null,
+   "text": "임시저장 없음",
+   "className": "info",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "p",
+   "type": null,
+   "text": "변경 후 자동 보관 · 이 브라우저에만 저장됩니다. 파일로 보관하려면 프로젝트 저장(.sabari)을 쓰세요.",
+   "className": "hint",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "p",
+   "type": null,
+   "text": "파일은 브라우저 다운로드 폴더에 저장됩니다.",
+   "className": "hint",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dHelp",
+   "tag": "details",
+   "type": null,
+   "text": null,
+   "className": "sec",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "summary",
+   "type": null,
+   "text": "설정 · 도움말",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "h3",
+   "type": null,
+   "text": "설정",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "optKeys",
+   "tag": "input",
+   "type": "checkbox",
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "span",
+   "type": null,
+   "text": "단축키 사용",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "small",
+   "type": null,
+   "text": "한글 입력기 등과 키가 겹치면 끄세요. (Space 화면 이동은 항상 사용)",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnDraftClear",
+   "tag": "button",
+   "type": "submit",
+   "text": "임시저장 삭제",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnUiReset",
+   "tag": "button",
+   "type": "submit",
+   "text": "접기·펼치기 상태 초기화",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "h3",
+   "type": null,
+   "text": "단축키 · 마우스 조작",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "th",
+   "type": null,
+   "text": "화면",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "td",
+   "type": null,
+   "text": "누른 채 드래그",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "Space",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "td",
+   "type": null,
+   "text": "화면 이동 (손 도구)",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "td",
+   "type": null,
+   "text": "가운데 버튼 / 오른쪽 드래그",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "td",
+   "type": null,
+   "text": "화면 이동",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "td",
+   "type": null,
+   "text": "왼쪽 드래그 / 휠",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "td",
+   "type": null,
+   "text": "회전 / 확대·축소",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "Shift+1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "3",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "Shift+3",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "7",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "Shift+7",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "td",
+   "type": null,
+   "text": "정면 · 후면 · 우측 · 좌측 · 윗면 · 아래",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "td",
+   "type": null,
+   "text": "/",
+   "className": "",
+   "states": [
+    "default",
+    "default",
+    "default",
+    "use-base",
+    "use-base",
+    "use-base",
+    "use-base-faces",
+    "use-base-faces",
+    "use-base-faces",
+    "lock-on",
+    "lock-on",
+    "lock-on",
+    "ratio-changed",
+    "ratio-changed",
+    "ratio-changed",
+    "external-glb",
+    "external-glb",
+    "external-glb",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "td",
+   "type": null,
+   "text": "3/4 시점: 앞·오른쪽 날개 / 뒤·왼쪽 날개",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "0",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "td",
+   "type": null,
+   "text": "3/4 시점 (누를 때마다 R ↔ L)",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "td",
+   "type": null,
+   "text": "위치 초기화 (확대·이동을 처음 상태로, 방향은 유지)",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "O",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "td",
+   "type": null,
+   "text": "뚜껑 열기/닫기",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "Esc",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "td",
+   "type": null,
+   "text": "선택선·안내 닫기",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "th",
+   "type": null,
+   "text": "편집",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "[",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "]",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "td",
+   "type": null,
+   "text": "이전 / 다음 면 선택 (하단 몸통 디자인을 켠 경우 하단 면 포함)",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "←",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "↑",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "→",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "↓",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "td",
+   "type": null,
+   "text": "이미지 1% 이동 ( = 5%)",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "Shift",
+   "className": "",
+   "states": [
+    "default",
+    "default",
+    "use-base",
+    "use-base",
+    "use-base-faces",
+    "use-base-faces",
+    "lock-on",
+    "lock-on",
+    "ratio-changed",
+    "ratio-changed",
+    "external-glb",
+    "external-glb",
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "+",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "-",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "td",
+   "type": null,
+   "text": "이미지 확대 / 축소",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "M",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "td",
+   "type": null,
+   "text": "3D에서 마우스로 이미지 이동 켜기/끄기",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "td",
+   "type": null,
+   "text": "이동 모드 + 휠",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "td",
+   "type": null,
+   "text": "선택한 면 위에서 이미지 확대·축소",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "td",
+   "type": null,
+   "text": "+ 3D 드래그",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "td",
+   "type": null,
+   "text": "이미지 이동 (모드와 관계없이)",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "Delete",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "td",
+   "type": null,
+   "text": "이미지 제거",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "Ctrl+Z",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "Ctrl+Y",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "td",
+   "type": null,
+   "text": "되돌리기 / 다시 실행 (최대 50단계)",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "Ctrl+S",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "Ctrl+O",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "td",
+   "type": null,
+   "text": "프로젝트 저장 / 열기",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "kbd",
+   "type": null,
+   "text": "?",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "td",
+   "type": null,
+   "text": "이 설명 열기",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "splitDlg",
+   "tag": "dialog",
+   "type": null,
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "splitTitle",
+   "tag": "h2",
+   "type": null,
+   "text": "칼선 이미지 분할",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "p",
+   "type": null,
+   "text": "사각형을 끌면 위치가, 모서리를 끌면 크기가 바뀝니다. 면 목록에서 회전을 바꿀 수 있습니다. 원본 이미지는 그대로 보존됩니다.",
+   "className": "hint",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "p",
+   "type": null,
+   "text": "투명 영역은 면 바탕색으로 채워집니다. 이전에 분할한 면 이미지는 투명 영역이 흰색으로 저장되어 있을 수 있습니다. 칼선을 다시 분할하세요.",
+   "className": "hint",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnZoomOut",
+   "tag": "button",
+   "type": "button",
+   "text": "－",
+   "title": "축소 (-)",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "zoomLabel",
+   "tag": "span",
+   "type": null,
+   "text": "100%",
+   "className": "zoom-label",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnZoomIn",
+   "tag": "button",
+   "type": "button",
+   "text": "＋",
+   "title": "확대 (+)",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnZoomFit",
+   "tag": "button",
+   "type": "button",
+   "text": "맞춤",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnZoom100",
+   "tag": "button",
+   "type": "button",
+   "text": "100%",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnZoom200",
+   "tag": "button",
+   "type": "button",
+   "text": "200%",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "영역 채움 투명도",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "splitOpacity",
+   "tag": "input",
+   "type": "range",
+   "text": null,
+   "range": "0~60/1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "영역 표시",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "splitShowRegions",
+   "tag": "input",
+   "type": "checkbox",
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "칼선 기준",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "splitMode",
+   "tag": "select",
+   "type": "select-one",
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "option",
+   "type": null,
+   "text": "파라미터 칼선(현재 치수 + 재단 여분)",
+   "value": "param",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "option",
+   "type": null,
+   "text": "아트보드 전체 이미지 · 싸바리 160×110×43 인쇄소 칼선(2025-10-27)",
+   "value": "artboard",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "option",
+   "type": null,
+   "text": "칼선 외곽 크롭 이미지 · 싸바리 160×110×43 인쇄소 칼선(2025-10-27)",
+   "value": "crop",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "splitArtRow",
+   "tag": "span",
+   "type": null,
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "아트보드 가로 (mm)",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "splitArtW",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "range": "10~5000/0.1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "세로 (mm)",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "splitArtH",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "range": "10~5000/0.1",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "splitCropInfo",
+   "tag": "span",
+   "type": null,
+   "text": "크롭 이미지 모드: 재단 여분 없이 칼선 외곽(232.0×283.0mm)에 맞춰 면을 배치합니다. 몸통(하단)은 이 크롭 이미지에 없으므로 파라미터 칼선으로 배치됩니다.",
+   "className": "hint",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "label",
+   "type": null,
+   "text": "칼선 종류",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "splitKind",
+   "tag": "select",
+   "type": "select-one",
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "option",
+   "type": null,
+   "text": "뚜껑(십자형)",
+   "value": "lid",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "option",
+   "type": null,
+   "text": "하단 몸통",
+   "value": "base",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "splitBleed",
+   "tag": "input",
+   "type": "number",
+   "text": null,
+   "range": "0~50/0.5",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnSplitAuto",
+   "tag": "button",
+   "type": "submit",
+   "text": "자동 배치로 되돌리기",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "span",
+   "type": null,
+   "text": "영역 전체 이동·확대",
+   "className": "hint",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnRegAllLeft",
+   "tag": "button",
+   "type": "submit",
+   "text": "◀",
+   "title": "전체 왼쪽으로",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnRegAllRight",
+   "tag": "button",
+   "type": "submit",
+   "text": "▶",
+   "title": "전체 오른쪽으로",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnRegAllUp",
+   "tag": "button",
+   "type": "submit",
+   "text": "▲",
+   "title": "전체 위로",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnRegAllDown",
+   "tag": "button",
+   "type": "submit",
+   "text": "▼",
+   "title": "전체 아래로",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnRegAllSmaller",
+   "tag": "button",
+   "type": "submit",
+   "text": "－",
+   "title": "전체 축소",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnRegAllBigger",
+   "tag": "button",
+   "type": "submit",
+   "text": "＋",
+   "title": "전체 확대",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "splitWarn",
+   "tag": "p",
+   "type": null,
+   "text": null,
+   "className": "err",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "splitViewport",
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "splitStage",
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "splitStatus",
+   "tag": "p",
+   "type": null,
+   "text": null,
+   "className": "hint",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "splitList",
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnSplitApply",
+   "tag": "button",
+   "type": "submit",
+   "text": "면에 적용",
+   "className": "primary",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnSplitCancel",
+   "tag": "button",
+   "type": "submit",
+   "text": "취소",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "stage",
+   "tag": "main",
+   "type": null,
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "viewport",
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "rotBadge",
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "panelToggle",
+   "tag": "button",
+   "type": "button",
+   "text": "◀ 패널 접기",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "panBadge",
+   "tag": "div",
+   "type": null,
+   "text": "손 도구 (Space) — 끌어서 화면 이동",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "overlayTop",
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "msg",
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "msgText",
+   "tag": "span",
+   "type": null,
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "msgClose",
+   "tag": "button",
+   "type": "submit",
+   "text": "닫기",
+   "aria-label": "닫기",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "extGlbBanner",
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "extGlbBannerText",
+   "tag": "span",
+   "type": null,
+   "text": "외부 GLB를 보는 중",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnExtGlbBack",
+   "tag": "button",
+   "type": "submit",
+   "text": "내 작업으로 돌아가기",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "ratioBanner",
+   "tag": "div",
+   "type": null,
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "ratioBannerText",
+   "tag": "span",
+   "type": null,
+   "text": "·",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "b",
+   "type": null,
+   "text": "⚠ 비율 변경",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnRatioDetail",
+   "tag": "button",
+   "type": "submit",
+   "text": "자세히",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnRatioRevert",
+   "tag": "button",
+   "type": "submit",
+   "text": "원래 사이즈로 되돌리기",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "btnRatioClose",
+   "tag": "button",
+   "type": "submit",
+   "text": "닫기",
+   "aria-label": "비율 변경 알림 닫기",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "ratioDetail",
+   "tag": "ul",
+   "type": null,
+   "text": null,
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "loading",
+   "tag": "div",
+   "type": null,
+   "text": "처리 중…",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": "dropHint",
+   "tag": "div",
+   "type": null,
+   "text": "여기에 놓으면 불러옵니다 (이미지 · .glb · .sabari)",
+   "className": "",
+   "states": [
+    "default",
+    "use-base",
+    "use-base-faces",
+    "lock-on",
+    "ratio-changed",
+    "external-glb",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "span",
+   "type": null,
+   "text": "앞면",
+   "className": "",
+   "states": [
+    "use-base-faces"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "span",
+   "type": null,
+   "text": "뒷면",
+   "className": "",
+   "states": [
+    "use-base-faces"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "span",
+   "type": null,
+   "text": "왼쪽 면",
+   "className": "",
+   "states": [
+    "use-base-faces"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "span",
+   "type": null,
+   "text": "오른쪽 면",
+   "className": "",
+   "states": [
+    "use-base-faces"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "span",
+   "type": null,
+   "text": "바닥",
+   "className": "",
+   "states": [
+    "use-base-faces"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "text",
+   "type": null,
+   "text": "상단",
+   "className": "",
+   "states": [
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "text",
+   "type": null,
+   "text": "뒷날개",
+   "className": "",
+   "states": [
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "text",
+   "type": null,
+   "text": "앞날개",
+   "className": "",
+   "states": [
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "text",
+   "type": null,
+   "text": "오른쪽 날개",
+   "className": "",
+   "states": [
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "text",
+   "type": null,
+   "text": "왼쪽 날개",
+   "className": "",
+   "states": [
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "input",
+   "type": "checkbox",
+   "text": null,
+   "aria-label": "상단 적용",
+   "className": "split-use",
+   "states": [
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "b",
+   "type": null,
+   "text": "상단",
+   "className": "",
+   "states": [
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "small",
+   "type": null,
+   "text": "580×516px",
+   "className": "",
+   "states": [
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "select",
+   "type": "select-one",
+   "text": null,
+   "aria-label": "상단 회전",
+   "className": "",
+   "states": [
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "option",
+   "type": null,
+   "text": "회전 0°",
+   "value": "0",
+   "className": "",
+   "states": [
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "option",
+   "type": null,
+   "text": "회전 90°",
+   "value": "90",
+   "className": "",
+   "states": [
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "option",
+   "type": null,
+   "text": "회전 180°",
+   "value": "180",
+   "className": "",
+   "states": [
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "option",
+   "type": null,
+   "text": "회전 270°",
+   "value": "270",
+   "className": "",
+   "states": [
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "input",
+   "type": "checkbox",
+   "text": null,
+   "aria-label": "뒷날개 적용",
+   "className": "split-use",
+   "states": [
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "b",
+   "type": null,
+   "text": "뒷날개",
+   "className": "",
+   "states": [
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "small",
+   "type": null,
+   "text": "192×516px",
+   "className": "",
+   "states": [
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "select",
+   "type": "select-one",
+   "text": null,
+   "aria-label": "뒷날개 회전",
+   "className": "",
+   "states": [
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "input",
+   "type": "checkbox",
+   "text": null,
+   "aria-label": "앞날개 적용",
+   "className": "split-use",
+   "states": [
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "b",
+   "type": null,
+   "text": "앞날개",
+   "className": "",
+   "states": [
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "select",
+   "type": "select-one",
+   "text": null,
+   "aria-label": "앞날개 회전",
+   "className": "",
+   "states": [
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "input",
+   "type": "checkbox",
+   "text": null,
+   "aria-label": "오른쪽 날개 적용",
+   "className": "split-use",
+   "states": [
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "b",
+   "type": null,
+   "text": "오른쪽 날개",
+   "className": "",
+   "states": [
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "small",
+   "type": null,
+   "text": "580×119px",
+   "className": "",
+   "states": [
+    "split-dialog",
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "select",
+   "type": "select-one",
+   "text": null,
+   "aria-label": "오른쪽 날개 회전",
+   "className": "",
+   "states": [
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "input",
+   "type": "checkbox",
+   "text": null,
+   "aria-label": "왼쪽 날개 적용",
+   "className": "split-use",
+   "states": [
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "b",
+   "type": null,
+   "text": "왼쪽 날개",
+   "className": "",
+   "states": [
+    "split-dialog"
+   ]
+  },
+  {
+   "id": null,
+   "tag": "select",
+   "type": "select-one",
+   "text": null,
+   "aria-label": "왼쪽 날개 회전",
+   "className": "",
+   "states": [
+    "split-dialog"
+   ]
+  }
+ ]
+}

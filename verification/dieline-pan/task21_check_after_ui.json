@@ -1,0 +1,60 @@
+{
+ "label": "after",
+ "layout": [],
+ "apply": null,
+ "ui": {
+  "fit": {
+   "zoom": 0.176488,
+   "panX": 242.299,
+   "panY": 0,
+   "vw": 968,
+   "vh": 590
+  },
+  "regionView": {
+   "zoom": 0.283,
+   "marginPx": {
+    "left": 296.7,
+    "top": 24,
+    "right": 296.7,
+    "bottom": 24
+   },
+   "fitsInside": true,
+   "focusOnStage": "splitViewport"
+  },
+  "backToFit": {
+   "zoomDiff": 0,
+   "panXDiff": 0,
+   "panYDiff": 0
+  },
+  "keyZ": {
+   "zoomed": true
+  },
+  "dblclick": {
+   "zoomed": true
+  },
+  "imeSpace": {
+   "defaultPrevented": true,
+   "panMoved": true,
+   "zoomSame": true,
+   "regionsUnchanged": true
+  },
+  "editAfterSpace": {
+   "moved": true
+  },
+  "numeric": {
+   "changed": true,
+   "undone": true,
+   "mmText": "= X 62.5, Y 62.2, 115.0×165.0mm"
+  },
+  "altArrow": {
+   "dx": 11
+  },
+  "zoomReached": 16,
+  "bigImage": {
+   "zoom200Ms": 36,
+   "wheel20Ms": 1102,
+   "spaceDrag20Ms": 529
+  }
+ },
+ "errors": []
+}

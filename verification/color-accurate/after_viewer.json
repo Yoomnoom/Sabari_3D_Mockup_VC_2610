@@ -1,0 +1,41 @@
+{
+ "app_made_glb_lid_front": {
+  "mesh": "lid_front",
+  "point": [
+   760.2672369682782,
+   466.0277328056787
+  ],
+  "baseSRGB": [
+   255,
+   255,
+   255
+  ],
+  "hasMap": true,
+  "shaderPatched": true,
+  "screen": [
+   200,
+   60,
+   60
+  ]
+ },
+ "external_glb": {
+  "mesh": "xase_front",
+  "point": [
+   757.3557781287719,
+   481.40184836551373
+  ],
+  "baseSRGB": [
+   255,
+   255,
+   255
+  ],
+  "hasMap": true,
+  "shaderPatched": true,
+  "screen": [
+   30,
+   100,
+   220
+  ]
+ },
+ "page_errors": []
+}

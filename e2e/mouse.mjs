@@ -21,7 +21,7 @@ R.hl_after_background_click = await hl();
 await p.screenshot({ path: path.join(V, '12_highlight_off.png') });
 await p.mouse.click(840, 430);                      // 윗면
 R.hl_after_face_click = await hl();
-await p.mouse.click(1340, 840);                     // 다시 배경
+await p.mouse.click(...(await p.bgPoint()));                     // 다시 배경
 R.hl_off_again = await hl();
 await p.click('#faceList button[data-face=lid_top]'); // 면 버튼으로도 다시 표시
 R.hl_after_list_click = await hl();

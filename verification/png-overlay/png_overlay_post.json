@@ -1,0 +1,86 @@
+{
+ "highlight_white_x1": {
+  "sameSize": true,
+  "differentPixels": 0,
+  "size": [
+   1360,
+   1040
+  ]
+ },
+ "highlight_white_x2": {
+  "sameSize": true,
+  "differentPixels": 0,
+  "size": [
+   2720,
+   2080
+  ]
+ },
+ "highlight_white_x4": {
+  "sameSize": true,
+  "differentPixels": 0,
+  "size": [
+   5440,
+   4160
+  ]
+ },
+ "highlight_transparent_x1": {
+  "sameSize": true,
+  "differentPixels": 0,
+  "size": [
+   1360,
+   1040
+  ]
+ },
+ "highlight_transparent_x2": {
+  "sameSize": true,
+  "differentPixels": 0,
+  "size": [
+   2720,
+   2080
+  ]
+ },
+ "highlight_transparent_x4": {
+  "sameSize": true,
+  "differentPixels": 0,
+  "size": [
+   5440,
+   4160
+  ]
+ },
+ "lock_lines_white": {
+  "sameSize": true,
+  "differentPixels": 0,
+  "size": [
+   1360,
+   1040
+  ]
+ },
+ "lock_lines_transparent": {
+  "sameSize": true,
+  "differentPixels": 0,
+  "size": [
+   1360,
+   1040
+  ]
+ },
+ "glb_node_names": [
+  "Template",
+  "Base",
+  "base_front",
+  "base_back",
+  "base_left",
+  "base_right",
+  "base_bottom",
+  "base_rim",
+  "base_inner",
+  "Lid",
+  "lid_top",
+  "lid_front",
+  "lid_back",
+  "lid_left",
+  "lid_right",
+  "lid_rim",
+  "lid_inner"
+ ],
+ "glb_has_overlay_names": false
+}

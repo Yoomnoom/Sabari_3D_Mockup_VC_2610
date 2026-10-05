@@ -1,0 +1,34 @@
+{
+  "file": "F:\\ai_바이브코딩\\26.10.03_GLB(3D목업)읽는프로그램\\verification\\bg13\\bg_image.glb",
+  "bytes": 17608,
+  "validator": {
+    "errors": 0,
+    "warnings": 0,
+    "infos": 10,
+    "hints": 0
+  },
+  "messages": [],
+  "images": [],
+  "texturedMaterials": [],
+  "extensionsUsed": [],
+  "nodes": [
+    "Template",
+    "Base",
+    "base_front",
+    "base_back",
+    "base_left",
+    "base_right",
+    "base_bottom",
+    "base_rim",
+    "base_inner",
+    "Lid",
+    "lid_top",
+    "lid_front",
+    "lid_back",
+    "lid_left",
+    "lid_right",
+    "lid_rim",
+    "lid_inner"
+  ],
+  "externalUris": 0
+}

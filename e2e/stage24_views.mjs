@@ -16,7 +16,7 @@ for (const [name, sel] of [['front', '[data-view=front]'], ['back', '[data-view=
 await p.click('[data-view=right]'); await p.mouse.move(700, 450); await p.mouse.wheel(0, -500); await p.waitForTimeout(150);
 await p.keyboard.down('Space'); await p.mouse.move(700, 450); await p.mouse.down(); await p.mouse.move(760, 500, { steps: 4 }); await p.mouse.up(); await p.keyboard.up('Space');
 res.right_zoomed_panned = await snap();
-await p.mouse.click(1330, 780); await p.keyboard.press('f'); await p.waitForTimeout(100); res.F_after_zoom_pan = await snap();
+await p.mouse.click(...(await p.bgPoint())); await p.keyboard.press('f'); await p.waitForTimeout(100); res.F_after_zoom_pan = await snap();
 await p.click('#btnFit'); res.F_button = await snap();
 fs.writeFileSync(out, JSON.stringify(res, null, 1));
 await b.close();

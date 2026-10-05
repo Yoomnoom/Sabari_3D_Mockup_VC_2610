@@ -1,0 +1,36 @@
+{
+ "label": "after",
+ "layout": [],
+ "apply": {
+  "appliedZoom": 5.972,
+  "faces": 10,
+  "differing": [],
+  "fit": {
+   "lid_top": "1915x1335:71235573:26242989",
+   "lid_front": "1915x441:90a83930:d05561a9",
+   "lid_back": "1915x441:6449be7d:fc0e2234",
+   "lid_left": "1323x437:9d74e931:3c8e117b",
+   "lid_right": "1323x437:b19b4d37:619764d4",
+   "base_front": null,
+   "base_back": null,
+   "base_left": null,
+   "base_right": null,
+   "base_bottom": null
+  },
+  "zoomed": {
+   "lid_top": "1915x1335:71235573:26242989",
+   "lid_front": "1915x441:90a83930:d05561a9",
+   "lid_back": "1915x441:6449be7d:fc0e2234",
+   "lid_left": "1323x437:9d74e931:3c8e117b",
+   "lid_right": "1323x437:b19b4d37:619764d4",
+   "base_front": null,
+   "base_back": null,
+   "base_left": null,
+   "base_right": null,
+   "base_bottom": null
+  },
+  "pixelErrorZero": true
+ },
+ "ui": {},
+ "errors": []
+}

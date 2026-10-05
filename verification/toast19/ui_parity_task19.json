@@ -1,0 +1,99 @@
+{
+ "beforeCount": 410,
+ "afterCount": 595,
+ "afterIds": 296,
+ "beforeIds": 190,
+ "missing": [],
+ "textChanged": [],
+ "mappedCount": 16,
+ "mapped": [
+  {
+   "item": "#panelTabs",
+   "to": "#tabRail",
+   "reason": "900px 미만 편집|뷰어 탭이 4개 작업 탭(모바일은 하단 탭 바)으로 통합"
+  },
+  {
+   "item": "#tabPanelEdit",
+   "to": "#tabDesign / #tabBox",
+   "reason": "편집 탭이 디자인·박스 탭으로 분리"
+  },
+  {
+   "item": "#tabPanelView",
+   "to": "#tabView / #tabExport",
+   "reason": "뷰어 탭이 보기·내보내기 탭으로 분리"
+  },
+  {
+   "item": "#panelBody",
+   "to": "#panelScroll",
+   "reason": "패널 본문 컨테이너(탭별 자체 스크롤)"
+  },
+  {
+   "item": "#editSection",
+   "to": "#tp-design / #tp-box (디자인·박스 탭)",
+   "reason": "편집 영역이 작업 탭으로 나뉨. 외부 GLB 중 비활성은 setExternalUi()가 두 탭에 inert를 건다"
+  },
+  {
+   "item": "h2|1. 면 선택",
+   "text": "1. 면 선택",
+   "to": "면 선택",
+   "reason": "번호 제거(카드 제목)"
+  },
+  {
+   "item": "h2|2. 이미지",
+   "text": "2. 이미지",
+   "to": "이미지",
+   "reason": "번호 제거. 선택한 면 이름은 오른쪽 '선택한 면' 패널(#faceTitle)로 이동"
+  },
+  {
+   "item": "#panelSplitter",
+   "to": "(없음: 탭 구조로 대체)",
+   "reason": "편집·뷰어 위·아래 분할이 탭으로 바뀌어 스플리터가 필요 없음"
+  },
+  {
+   "item": "#viewSection",
+   "to": "#tp-view / #tp-export (보기·내보내기 탭)",
+   "reason": "뷰어 영역이 보기·내보내기 탭으로 나뉨"
+  },
+  {
+   "item": "summary|뷰어",
+   "text": "뷰어",
+   "to": "탭 '보기'·'내보내기'",
+   "reason": "뷰어 영역 제목"
+  },
+  {
+   "item": "#saveBar",
+   "to": "#tp-export (#expFiles)",
+   "reason": "맨 아래 고정 저장 줄이 내보내기 탭의 '파일 저장' 구역으로 이동. 그 안의 버튼(btnGlb, btnProjSave, btnProjOpen, btnDraftSave, btnDraftLoad, btnDraftClear)과 안내 문구는 id·문구 그대로 유지"
+  },
+  {
+   "item": "span|앞면",
+   "text": "앞면",
+   "to": "하단 앞",
+   "reason": "면 이름 통일(작업 12): 하단 앞·뒤·좌·우·바닥. faceDefs.ts 한 곳에서 정의"
+  },
+  {
+   "item": "span|뒷면",
+   "text": "뒷면",
+   "to": "하단 뒤",
+   "reason": "면 이름 통일(작업 12): 하단 앞·뒤·좌·우·바닥. faceDefs.ts 한 곳에서 정의"
+  },
+  {
+   "item": "span|왼쪽 면",
+   "text": "왼쪽 면",
+   "to": "하단 좌",
+   "reason": "면 이름 통일(작업 12): 하단 앞·뒤·좌·우·바닥. faceDefs.ts 한 곳에서 정의"
+  },
+  {
+   "item": "span|오른쪽 면",
+   "text": "오른쪽 면",
+   "to": "하단 우",
+   "reason": "면 이름 통일(작업 12): 하단 앞·뒤·좌·우·바닥. faceDefs.ts 한 곳에서 정의"
+  },
+  {
+   "item": "span|바닥",
+   "text": "바닥",
+   "to": "하단 바닥",
+   "reason": "면 이름 통일(작업 12): 하단 앞·뒤·좌·우·바닥. faceDefs.ts 한 곳에서 정의"
+  }
+ ]
+}

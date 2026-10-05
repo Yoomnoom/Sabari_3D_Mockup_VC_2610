@@ -1,0 +1,160 @@
+{
+ "name_dialog": {
+  "sabari": {
+   "default": "사바리_프로젝트_20261005",
+   "ext": ".sabari",
+   "cancelNoDownload": true
+  },
+  "glb": {
+   "default": "사바리_목업_20261005",
+   "ext": ".glb",
+   "cancelNoDownload": true
+  },
+  "png": {
+   "default": "사바리_목업_20261005",
+   "ext": ".png",
+   "cancelNoDownload": true
+  },
+  "svg-lid": {
+   "default": "사바리_뚜껑_칼선가이드_20261005",
+   "ext": ".svg",
+   "cancelNoDownload": true
+  },
+  "svg-base": {
+   "default": "사바리_하단_칼선가이드_20261005",
+   "ext": ".svg",
+   "cancelNoDownload": true
+  },
+  "top-save": {
+   "default": "사바리_프로젝트_20261005",
+   "ext": ".sabari",
+   "cancelNoDownload": true
+  },
+  "top-png": {
+   "default": "사바리_목업_20261005",
+   "ext": ".png",
+   "cancelNoDownload": true
+  },
+  "sanitized": {
+   "suggested": "a_b_c______d.png",
+   "expected": "a_b_c______d.png"
+  },
+  "numbering": [
+   "same.png",
+   "same (2).png"
+  ],
+  "ask_toggle": {
+   "askOff": {
+    "stored": "0",
+    "opt": false
+   },
+   "direct": "사바리_목업_20261005 (2).png",
+   "asksAgain": true
+  }
+ },
+ "bytes_invariant": {
+  "glb": {
+   "same": true,
+   "bytes": 81328
+  },
+  "png": {
+   "same": true,
+   "bytes": 178582
+  },
+  "svg": {
+   "same": true,
+   "bytes": 3932
+  },
+  "sabari": {
+   "same": false,
+   "bytes": 13746
+  }
+ },
+ "dirty": {
+  "initial": false,
+  "afterChange": true,
+  "afterSave": false
+ },
+ "unsaved": {
+  "open": true,
+  "kind": "confirm-unsaved",
+  "title": "저장하지 않은 변경",
+  "text": "저장하지 않은 변경이 있습니다.\n프로젝트을(를) 열면 현재 작업이 바뀝니다. 계속할까요?",
+  "cancelHidden": false,
+  "cancelKeeps": true,
+  "afterOpenDirty": false
+ },
+ "base_off": {
+  "open": true,
+  "kind": "confirm-base-off",
+  "title": "하단 몸통 사용 끄기",
+  "text": "하단 이미지 5개가 제거됩니다.\n계속할까요? (Ctrl+Z로 되돌릴 수 있습니다)",
+  "cancelHidden": false,
+  "undoRestores": true
+ },
+ "bad_image": {
+  "open": true,
+  "kind": "error",
+  "title": "처리할 수 없습니다",
+  "text": "이미지를 읽지 못했습니다. 파일이 손상되지 않았는지 확인해 주세요.",
+  "cancelHidden": true
+ },
+ "future": {
+  "open": true,
+  "kind": "error",
+  "title": "처리할 수 없습니다",
+  "text": "이 프로젝트는 현재 버전에서 열 수 없습니다. 앱을 업데이트해 주세요.",
+  "cancelHidden": true
+ },
+ "big_image_bytes": 175150,
+ "progress_labels": [
+  "이미지를 처리하는 중…"
+ ],
+ "png_lowered": {
+  "open": true,
+  "kind": "info",
+  "title": "PNG 저장 크기 안내",
+  "text": "장치가 만들 수 있는 최대 크기를 넘어 4배 대신 2.52배(8192×5266px)로 저장했습니다.",
+  "cancelHidden": true
+ },
+ "save_failed": {
+  "open": true,
+  "kind": "error",
+  "title": "저장하지 못했습니다",
+  "text": "GLB 파일를 저장하는 중 문제가 생겼습니다. 다시 시도해 주세요.\n(시험용 저장 실패)",
+  "cancelHidden": true
+ },
+ "help": {
+  "open": true,
+  "rows": 21,
+  "text": "\n    단축키 · 마우스 조작\n\n        \n          화면\n          Space 누른 채 드래그화면 이동 (손 도구)\n          가운데 버튼 / 오른쪽 드래그화면 이동\n          왼쪽 드래그 / 휠회전 / 확대·축소\n          1 Shift+1 3 Shift+3 7 Shift+7정면 · 후면 · 우측 · 좌측 · 윗면 · 아래\n          R / L3/4 시점: 앞·오른쪽 날개 / 뒤·왼쪽 날개\n          03/4 시점 (누를 때마다 R ↔ L)\n          F위치 초기화 (확대·이동을 처음 상태로, 방향은 유지)\n          O뚜껑 열기/닫기\n          Esc선택선·안내 닫기\n          편집\n          [ ]이전 / 다음 면 선택 (하단 몸통 디자인을 켠 경우 하단 면 포함)\n          ←↑→↓이미지 1% 이동 (Shift = 5%)\n          + -이미지 확대 / 축소\n          M3D에서 마우스로 이미지 이동 켜기/끄기\n          이동 모드 + 휠선택한 면 위에서 이미지 확대·축소\n          Shift + 3D 드래그이미지 이동 (모드와 관계없이)\n          Delete이미지 제거\n          Ctrl+Z / Ctrl+Y되돌리기 / 다시 실행 (최대 50단계)\n          Ctrl+S / Ctrl+O프로젝트 저장 / 열기\n          ?이 설명 열기\n        \n    닫기\n  "
+ },
+ "more": {
+  "ver": "사바리 목업 스튜디오 v0.8.0 · 25d678f · 빌드 2026-10-04",
+  "optKeys": true,
+  "keysHint": true,
+  "askHint": true,
+  "reset": true,
+  "clipboard": "사바리 목업 스튜디오 v0.8.0 · 25d678f · 빌드 2026-10-04"
+ },
+ "pkg_version": "0.8.0",
+ "split_dialog": {
+  "kinds": [
+   "뚜껑(십자형)",
+   "하단 몸통"
+  ],
+  "modes": 3,
+  "hasAuto": true,
+  "zoom": true,
+  "opacity": true,
+  "status": true,
+  "warnOld": true,
+  "srgb": true
+ },
+ "external_requests": [],
+ "errors": [
+  "Nm: 이미지를 읽지 못했습니다. 파일이 손상되지 않았는지 확인해 주세요.\n    at Pm (http://127.0.0.1:8881/assets/index-ilzoua5e.js:4237:90375)\n    at async cg (http://127.0.0.1:8881/assets/index-ilzoua5e.js:4237:104169)\n    at asyn",
+  "Nm: 이 프로젝트는 현재 버전에서 열 수 없습니다. 앱을 업데이트해 주세요.\n    at Vm (http://127.0.0.1:8881/assets/index-ilzoua5e.js:4237:93054)\n    at async http://127.0.0.1:8881/assets/index-ilzoua5e.js:4237:109935\n    at async U",
+  "Error: 시험용 저장 실패\n    at URL.createObjectURL (eval at evaluate (:311:30), <anonymous>:1:88)\n    at Jh (http://127.0.0.1:8881/assets/index-ilzoua5e.js:4237:103028)\n    at oh (http://127.0.0.1:8881/asset"
+ ]
+}

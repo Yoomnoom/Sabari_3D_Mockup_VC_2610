@@ -15,7 +15,7 @@ await p.evaluate(async () => {
   await new Promise((res, rej) => { const r = indexedDB.open('sabari-mockup', 1); r.onupgradeneeded = () => r.result.createObjectStore('drafts'); r.onsuccess = () => { const t = r.result.transaction('drafts', 'readwrite'); t.objectStore('drafts').put(draft, 'current'); t.oncomplete = () => { r.result.close(); res(); }; t.onerror = rej; }; r.onerror = rej; });
 });
 await p.reload(); await p.waitForFunction(() => window.__sabari); await p.waitForTimeout(500);
-const R = { notice: await p.textContent('#msgText'), loadEnabled: !(await p.isDisabled('#btnDraftLoad')) };
+const R = { notice: await p.textContent('#draftToast'), /* 작업 19: 상단 띠 대신 3D 화면 안 알림 */ loadEnabled: !(await p.isDisabled('#btnDraftLoad')) };
 await p.click('#btnDraftLoad'); await p.waitForFunction(() => ['lid_top', 'lid_front', 'lid_back', 'lid_left', 'lid_right'].every((id) => window.__sabari.faces[id].img), null, { timeout: 8000 });
 await p.waitForTimeout(300);
 R.after = await p.evaluate(() => ({ switchOn: document.getElementById('useBase').checked, tabsVisible: !document.getElementById('faceTabs').hidden, lid: ['lid_top', 'lid_front', 'lid_back', 'lid_left', 'lid_right'].filter((id) => window.__sabari.faces[id].img).length, base: ['base_front', 'base_back', 'base_left', 'base_right', 'base_bottom'].filter((id) => window.__sabari.faces[id].img).length, top: { ...window.__sabari.faces.lid_top.state }, lift: window.__sabari.viewer.getLiftMm(), list: [...document.querySelectorAll('#faceList button')].map((x) => x.dataset.face) }));

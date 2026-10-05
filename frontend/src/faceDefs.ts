@@ -23,11 +23,11 @@ const LABELS: [FaceId, FaceGroup, string, string][] = [
   ['lid_left', 'lid', '왼쪽 날개', '왼쪽 날개'],
   ['lid_right', 'lid', '오른쪽 날개', '오른쪽 날개'],
   // 하단 몸통: 사용자가 "하단 몸통 디자인 사용"을 켠 경우에만 편집 목록에 나타난다.
-  ['base_front', 'base', '하단 앞면', '앞면'],
-  ['base_back', 'base', '하단 뒷면', '뒷면'],
-  ['base_left', 'base', '하단 왼쪽 면', '왼쪽 면'],
-  ['base_right', 'base', '하단 오른쪽 면', '오른쪽 면'],
-  ['base_bottom', 'base', '하단 바닥', '바닥'],
+  ['base_front', 'base', '하단 앞', '하단 앞'],
+  ['base_back', 'base', '하단 뒤', '하단 뒤'],
+  ['base_left', 'base', '하단 좌', '하단 좌'],
+  ['base_right', 'base', '하단 우', '하단 우'],
+  ['base_bottom', 'base', '하단 바닥', '하단 바닥'],
 ];
 
 const initial = faceSizes(DEFAULT_PARAMS);

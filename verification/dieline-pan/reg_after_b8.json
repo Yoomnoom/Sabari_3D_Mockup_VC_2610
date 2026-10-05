@@ -1,0 +1,8 @@
+[
+ {
+  "script": "stage26_b.mjs",
+  "exit": 0,
+  "sec": 26,
+  "tail": "ok stage26_b.json F_overlays_excluded, H_lock_kept_across_views, H_reload_lock_off, K_other_interactions, I_glb_viewer_mode, page_errors"
+ }
+]

@@ -1,0 +1,53 @@
+{
+ "4_1920x1080": {
+  "noHScroll": true,
+  "noOverlap": true,
+  "tabsHidden": true,
+  "editH": 372.34375,
+  "viewH": 305.65625
+ },
+ "4_1366x768": {
+  "noHScroll": true,
+  "noOverlap": true,
+  "tabsHidden": true,
+  "editH": 200.75,
+  "viewH": 165.25
+ },
+ "4_1024x768": {
+  "noHScroll": true,
+  "noOverlap": true,
+  "tabsHidden": true,
+  "editH": 200.75,
+  "viewH": 165.25
+ },
+ "4_390x844": {
+  "noHScroll": true,
+  "noOverlap": true,
+  "tabsHidden": false,
+  "editH": 403,
+  "viewH": 0
+ },
+ "splitter_persist": {
+  "beforeRatio": "55",
+  "draggedRatio": "66.93649598393574",
+  "afterReloadRatio": "66.93649598393574",
+  "changed": true,
+  "persisted": true
+ },
+ "fold_keeps_state": {
+  "camUnchanged": true,
+  "camUnchangedWhileCollapsed": true,
+  "selectionUnchanged": true,
+  "highlightBefore": true,
+  "highlightWhileCollapsed": false,
+  "highlightAfter": true,
+  "highlightHidesOnCollapse": true,
+  "highlightRestoresOnExpand": true
+ },
+ "control_counts": {
+  "editSection": 73,
+  "viewSection": 69,
+  "saveBar": 9
+ },
+ "errors": []
+}

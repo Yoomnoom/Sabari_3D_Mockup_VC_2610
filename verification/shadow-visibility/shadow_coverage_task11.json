@@ -1,0 +1,1572 @@
+{
+  "coverage": [
+    {
+      "lid": "closed",
+      "pose": "lying",
+      "dir": "default",
+      "shadowFootprintOverFloorRadius": 0.692,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.279,
+        -0.095
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "lying",
+      "dir": "az0",
+      "shadowFootprintOverFloorRadius": 0.638,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.252,
+        -0.121
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "lying",
+      "dir": "az90",
+      "shadowFootprintOverFloorRadius": 0.671,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.268,
+        -0.105
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "lying",
+      "dir": "az180",
+      "shadowFootprintOverFloorRadius": 0.638,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.252,
+        -0.121
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "lying",
+      "dir": "az270",
+      "shadowFootprintOverFloorRadius": 0.671,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.268,
+        -0.105
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "lying",
+      "dir": "el20",
+      "shadowFootprintOverFloorRadius": 0.795,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.332,
+        -0.044
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "lying",
+      "dir": "el80",
+      "shadowFootprintOverFloorRadius": 0.675,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.244,
+        -0.128
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "standing",
+      "dir": "default",
+      "shadowFootprintOverFloorRadius": 0.536,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.325,
+        -0.043
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "standing",
+      "dir": "az0",
+      "shadowFootprintOverFloorRadius": 0.465,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.306,
+        -0.068
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "standing",
+      "dir": "az90",
+      "shadowFootprintOverFloorRadius": 0.553,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.329,
+        -0.042
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "standing",
+      "dir": "az180",
+      "shadowFootprintOverFloorRadius": 0.454,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.303,
+        -0.065
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "standing",
+      "dir": "az270",
+      "shadowFootprintOverFloorRadius": 0.553,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.329,
+        -0.042
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "standing",
+      "dir": "el20",
+      "shadowFootprintOverFloorRadius": 0.805,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.299,
+        -0.068
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "standing",
+      "dir": "el80",
+      "shadowFootprintOverFloorRadius": 0.457,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.316,
+        -0.054
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt1",
+      "dir": "default",
+      "shadowFootprintOverFloorRadius": 0.486,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.244,
+        -0.128
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt1",
+      "dir": "az0",
+      "shadowFootprintOverFloorRadius": 0.507,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.218,
+        -0.151
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt1",
+      "dir": "az90",
+      "shadowFootprintOverFloorRadius": 0.512,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.252,
+        -0.119
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt1",
+      "dir": "az180",
+      "shadowFootprintOverFloorRadius": 0.461,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.269,
+        -0.105
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt1",
+      "dir": "az270",
+      "shadowFootprintOverFloorRadius": 0.505,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.253,
+        -0.119
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt1",
+      "dir": "el20",
+      "shadowFootprintOverFloorRadius": 0.536,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.263,
+        -0.111
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt1",
+      "dir": "el80",
+      "shadowFootprintOverFloorRadius": 0.476,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.242,
+        -0.129
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt2",
+      "dir": "default",
+      "shadowFootprintOverFloorRadius": 0.524,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.217,
+        -0.151
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt2",
+      "dir": "az0",
+      "shadowFootprintOverFloorRadius": 0.497,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.252,
+        -0.121
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt2",
+      "dir": "az90",
+      "shadowFootprintOverFloorRadius": 0.508,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.282,
+        -0.091
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt2",
+      "dir": "az180",
+      "shadowFootprintOverFloorRadius": 0.499,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.234,
+        -0.136
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt2",
+      "dir": "az270",
+      "shadowFootprintOverFloorRadius": 0.536,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.251,
+        -0.12
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt2",
+      "dir": "el20",
+      "shadowFootprintOverFloorRadius": 0.687,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.275,
+        -0.095
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt2",
+      "dir": "el80",
+      "shadowFootprintOverFloorRadius": 0.511,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.231,
+        -0.138
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt3",
+      "dir": "default",
+      "shadowFootprintOverFloorRadius": 0.491,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.27,
+        -0.102
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt3",
+      "dir": "az0",
+      "shadowFootprintOverFloorRadius": 0.494,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.233,
+        -0.137
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt3",
+      "dir": "az90",
+      "shadowFootprintOverFloorRadius": 0.464,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.262,
+        -0.111
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt3",
+      "dir": "az180",
+      "shadowFootprintOverFloorRadius": 0.437,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.269,
+        -0.105
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt3",
+      "dir": "az270",
+      "shadowFootprintOverFloorRadius": 0.503,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.25,
+        -0.121
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt3",
+      "dir": "el20",
+      "shadowFootprintOverFloorRadius": 0.625,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.279,
+        -0.095
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt3",
+      "dir": "el80",
+      "shadowFootprintOverFloorRadius": 0.457,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.254,
+        -0.117
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt4",
+      "dir": "default",
+      "shadowFootprintOverFloorRadius": 0.52,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.246,
+        -0.127
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt4",
+      "dir": "az0",
+      "shadowFootprintOverFloorRadius": 0.551,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.252,
+        -0.12
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt4",
+      "dir": "az90",
+      "shadowFootprintOverFloorRadius": 0.542,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.245,
+        -0.128
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt4",
+      "dir": "az180",
+      "shadowFootprintOverFloorRadius": 0.544,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.258,
+        -0.115
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt4",
+      "dir": "az270",
+      "shadowFootprintOverFloorRadius": 0.53,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.256,
+        -0.117
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt4",
+      "dir": "el20",
+      "shadowFootprintOverFloorRadius": 0.648,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.272,
+        -0.104
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt4",
+      "dir": "el80",
+      "shadowFootprintOverFloorRadius": 0.502,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.227,
+        -0.144
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt5",
+      "dir": "default",
+      "shadowFootprintOverFloorRadius": 0.458,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.231,
+        -0.138
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt5",
+      "dir": "az0",
+      "shadowFootprintOverFloorRadius": 0.447,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.252,
+        -0.121
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt5",
+      "dir": "az90",
+      "shadowFootprintOverFloorRadius": 0.44,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.279,
+        -0.095
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt5",
+      "dir": "az180",
+      "shadowFootprintOverFloorRadius": 0.472,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.256,
+        -0.114
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt5",
+      "dir": "az270",
+      "shadowFootprintOverFloorRadius": 0.495,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.241,
+        -0.128
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt5",
+      "dir": "el20",
+      "shadowFootprintOverFloorRadius": 0.609,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.233,
+        -0.135
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "tilt5",
+      "dir": "el80",
+      "shadowFootprintOverFloorRadius": 0.433,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.246,
+        -0.123
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "flipped",
+      "dir": "default",
+      "shadowFootprintOverFloorRadius": 0.709,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.277,
+        -0.092
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "flipped",
+      "dir": "az0",
+      "shadowFootprintOverFloorRadius": 0.651,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.25,
+        -0.119
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "flipped",
+      "dir": "az90",
+      "shadowFootprintOverFloorRadius": 0.687,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.267,
+        -0.103
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "flipped",
+      "dir": "az180",
+      "shadowFootprintOverFloorRadius": 0.651,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.25,
+        -0.119
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "flipped",
+      "dir": "az270",
+      "shadowFootprintOverFloorRadius": 0.687,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.267,
+        -0.103
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "flipped",
+      "dir": "el20",
+      "shadowFootprintOverFloorRadius": 0.804,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.329,
+        -0.041
+      ]
+    },
+    {
+      "lid": "closed",
+      "pose": "flipped",
+      "dir": "el80",
+      "shadowFootprintOverFloorRadius": 0.683,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.243,
+        -0.127
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "lying",
+      "dir": "default",
+      "shadowFootprintOverFloorRadius": 0.647,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.311,
+        -0.062
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "lying",
+      "dir": "az0",
+      "shadowFootprintOverFloorRadius": 0.58,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.288,
+        -0.085
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "lying",
+      "dir": "az90",
+      "shadowFootprintOverFloorRadius": 0.622,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.302,
+        -0.071
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "lying",
+      "dir": "az180",
+      "shadowFootprintOverFloorRadius": 0.58,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.288,
+        -0.085
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "lying",
+      "dir": "az270",
+      "shadowFootprintOverFloorRadius": 0.622,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.302,
+        -0.071
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "lying",
+      "dir": "el20",
+      "shadowFootprintOverFloorRadius": 0.763,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.328,
+        -0.047
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "lying",
+      "dir": "el80",
+      "shadowFootprintOverFloorRadius": 0.597,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.285,
+        -0.086
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "standing",
+      "dir": "default",
+      "shadowFootprintOverFloorRadius": 0.599,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.322,
+        -0.046
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "standing",
+      "dir": "az0",
+      "shadowFootprintOverFloorRadius": 0.57,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.313,
+        -0.061
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "standing",
+      "dir": "az90",
+      "shadowFootprintOverFloorRadius": 0.56,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.31,
+        -0.061
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "standing",
+      "dir": "az180",
+      "shadowFootprintOverFloorRadius": 0.561,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.31,
+        -0.058
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "standing",
+      "dir": "az270",
+      "shadowFootprintOverFloorRadius": 0.56,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.31,
+        -0.061
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "standing",
+      "dir": "el20",
+      "shadowFootprintOverFloorRadius": 0.718,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.317,
+        -0.05
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "standing",
+      "dir": "el80",
+      "shadowFootprintOverFloorRadius": 0.534,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.303,
+        -0.064
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt1",
+      "dir": "default",
+      "shadowFootprintOverFloorRadius": 0.478,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.261,
+        -0.112
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt1",
+      "dir": "az0",
+      "shadowFootprintOverFloorRadius": 0.43,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.248,
+        -0.122
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt1",
+      "dir": "az90",
+      "shadowFootprintOverFloorRadius": 0.487,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.272,
+        -0.1
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt1",
+      "dir": "az180",
+      "shadowFootprintOverFloorRadius": 0.481,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.281,
+        -0.093
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt1",
+      "dir": "az270",
+      "shadowFootprintOverFloorRadius": 0.486,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.272,
+        -0.1
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt1",
+      "dir": "el20",
+      "shadowFootprintOverFloorRadius": 0.549,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.254,
+        -0.121
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt1",
+      "dir": "el80",
+      "shadowFootprintOverFloorRadius": 0.435,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.264,
+        -0.107
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt2",
+      "dir": "default",
+      "shadowFootprintOverFloorRadius": 0.428,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.246,
+        -0.122
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt2",
+      "dir": "az0",
+      "shadowFootprintOverFloorRadius": 0.483,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.262,
+        -0.111
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt2",
+      "dir": "az90",
+      "shadowFootprintOverFloorRadius": 0.475,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.288,
+        -0.085
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt2",
+      "dir": "az180",
+      "shadowFootprintOverFloorRadius": 0.423,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.259,
+        -0.111
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt2",
+      "dir": "az270",
+      "shadowFootprintOverFloorRadius": 0.446,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.27,
+        -0.1
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt2",
+      "dir": "el20",
+      "shadowFootprintOverFloorRadius": 0.63,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.282,
+        -0.087
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt2",
+      "dir": "el80",
+      "shadowFootprintOverFloorRadius": 0.449,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.256,
+        -0.113
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt3",
+      "dir": "default",
+      "shadowFootprintOverFloorRadius": 0.451,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.278,
+        -0.095
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt3",
+      "dir": "az0",
+      "shadowFootprintOverFloorRadius": 0.417,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.255,
+        -0.114
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt3",
+      "dir": "az90",
+      "shadowFootprintOverFloorRadius": 0.468,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.269,
+        -0.104
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt3",
+      "dir": "az180",
+      "shadowFootprintOverFloorRadius": 0.458,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.272,
+        -0.101
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt3",
+      "dir": "az270",
+      "shadowFootprintOverFloorRadius": 0.437,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.267,
+        -0.104
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt3",
+      "dir": "el20",
+      "shadowFootprintOverFloorRadius": 0.614,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.267,
+        -0.106
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt3",
+      "dir": "el80",
+      "shadowFootprintOverFloorRadius": 0.428,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.267,
+        -0.103
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt4",
+      "dir": "default",
+      "shadowFootprintOverFloorRadius": 0.517,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.274,
+        -0.1
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt4",
+      "dir": "az0",
+      "shadowFootprintOverFloorRadius": 0.532,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.28,
+        -0.092
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt4",
+      "dir": "az90",
+      "shadowFootprintOverFloorRadius": 0.512,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.274,
+        -0.097
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt4",
+      "dir": "az180",
+      "shadowFootprintOverFloorRadius": 0.541,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.285,
+        -0.089
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt4",
+      "dir": "az270",
+      "shadowFootprintOverFloorRadius": 0.534,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.282,
+        -0.092
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt4",
+      "dir": "el20",
+      "shadowFootprintOverFloorRadius": 0.648,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.273,
+        -0.104
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt4",
+      "dir": "el80",
+      "shadowFootprintOverFloorRadius": 0.472,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.26,
+        -0.111
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt5",
+      "dir": "default",
+      "shadowFootprintOverFloorRadius": 0.417,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.251,
+        -0.118
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt5",
+      "dir": "az0",
+      "shadowFootprintOverFloorRadius": 0.449,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.253,
+        -0.12
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt5",
+      "dir": "az90",
+      "shadowFootprintOverFloorRadius": 0.428,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.272,
+        -0.101
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt5",
+      "dir": "az180",
+      "shadowFootprintOverFloorRadius": 0.401,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.268,
+        -0.102
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt5",
+      "dir": "az270",
+      "shadowFootprintOverFloorRadius": 0.436,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.258,
+        -0.112
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt5",
+      "dir": "el20",
+      "shadowFootprintOverFloorRadius": 0.554,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.25,
+        -0.118
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "tilt5",
+      "dir": "el80",
+      "shadowFootprintOverFloorRadius": 0.415,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.26,
+        -0.11
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "flipped",
+      "dir": "default",
+      "shadowFootprintOverFloorRadius": 0.661,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.309,
+        -0.06
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "flipped",
+      "dir": "az0",
+      "shadowFootprintOverFloorRadius": 0.595,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.286,
+        -0.083
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "flipped",
+      "dir": "az90",
+      "shadowFootprintOverFloorRadius": 0.636,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.301,
+        -0.069
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "flipped",
+      "dir": "az180",
+      "shadowFootprintOverFloorRadius": 0.595,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.286,
+        -0.083
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "flipped",
+      "dir": "az270",
+      "shadowFootprintOverFloorRadius": 0.636,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.301,
+        -0.069
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "flipped",
+      "dir": "el20",
+      "shadowFootprintOverFloorRadius": 0.771,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.324,
+        -0.043
+      ]
+    },
+    {
+      "lid": "open",
+      "pose": "flipped",
+      "dir": "el80",
+      "shadowFootprintOverFloorRadius": 0.615,
+      "verticesOutsideLightFrustum": 0,
+      "vertices": 112,
+      "ndcZ": [
+        -0.284,
+        -0.085
+      ]
+    }
+  ],
+  "summary": {
+    "worstShadowFootprintOverFloorRadius": 0.805,
+    "totalVerticesOutsideLightFrustum": 0,
+    "cases": 112
+  },
+  "camera_height_sweep": [
+    {
+      "pose": "lying",
+      "camElevationDeg": -14,
+      "camMinusFloorMm": -78.5,
+      "px": 0
+    },
+    {
+      "pose": "lying",
+      "camElevationDeg": -12,
+      "camMinusFloorMm": -64.3,
+      "px": 0
+    },
+    {
+      "pose": "lying",
+      "camElevationDeg": -10,
+      "camMinusFloorMm": -50,
+      "px": 0
+    },
+    {
+      "pose": "lying",
+      "camElevationDeg": -8,
+      "camMinusFloorMm": -35.6,
+      "px": 0
+    },
+    {
+      "pose": "lying",
+      "camElevationDeg": -6,
+      "camMinusFloorMm": -21.1,
+      "px": 0
+    },
+    {
+      "pose": "lying",
+      "camElevationDeg": -4,
+      "camMinusFloorMm": -6.6,
+      "px": 0
+    },
+    {
+      "pose": "lying",
+      "camElevationDeg": -2,
+      "camMinusFloorMm": 8,
+      "px": 3960
+    },
+    {
+      "pose": "lying",
+      "camElevationDeg": 0,
+      "camMinusFloorMm": 22.6,
+      "px": 10792
+    },
+    {
+      "pose": "lying",
+      "camElevationDeg": 2,
+      "camMinusFloorMm": 37.2,
+      "px": 17541
+    },
+    {
+      "pose": "lying",
+      "camElevationDeg": 4,
+      "camMinusFloorMm": 51.8,
+      "px": 24162
+    },
+    {
+      "pose": "lying",
+      "camElevationDeg": 6,
+      "camMinusFloorMm": 66.3,
+      "px": 30667
+    },
+    {
+      "pose": "lying",
+      "camElevationDeg": 8,
+      "camMinusFloorMm": 80.8,
+      "px": 36967
+    },
+    {
+      "pose": "lying",
+      "camElevationDeg": 10,
+      "camMinusFloorMm": 95.2,
+      "px": 43144
+    },
+    {
+      "pose": "lying",
+      "camElevationDeg": 12,
+      "camMinusFloorMm": 109.5,
+      "px": 49086
+    },
+    {
+      "pose": "lying",
+      "camElevationDeg": 14,
+      "camMinusFloorMm": 123.7,
+      "px": 54828
+    },
+    {
+      "pose": "lying",
+      "camElevationDeg": 16,
+      "camMinusFloorMm": 137.8,
+      "px": 60378
+    },
+    {
+      "pose": "lying",
+      "camElevationDeg": 18,
+      "camMinusFloorMm": 151.8,
+      "px": 65671
+    },
+    {
+      "pose": "lying",
+      "camElevationDeg": 20,
+      "camMinusFloorMm": 165.6,
+      "px": 70778
+    },
+    {
+      "pose": "standing",
+      "camElevationDeg": -14,
+      "camMinusFloorMm": -18.5,
+      "px": 0
+    },
+    {
+      "pose": "standing",
+      "camElevationDeg": -12,
+      "camMinusFloorMm": -4.3,
+      "px": 0
+    },
+    {
+      "pose": "standing",
+      "camElevationDeg": -10,
+      "camMinusFloorMm": 10,
+      "px": 9790
+    },
+    {
+      "pose": "standing",
+      "camElevationDeg": -8,
+      "camMinusFloorMm": 24.4,
+      "px": 23205
+    },
+    {
+      "pose": "standing",
+      "camElevationDeg": -6,
+      "camMinusFloorMm": 38.9,
+      "px": 36079
+    },
+    {
+      "pose": "standing",
+      "camElevationDeg": -4,
+      "camMinusFloorMm": 53.4,
+      "px": 48376
+    },
+    {
+      "pose": "standing",
+      "camElevationDeg": -2,
+      "camMinusFloorMm": 68,
+      "px": 59312
+    },
+    {
+      "pose": "standing",
+      "camElevationDeg": 0,
+      "camMinusFloorMm": 82.6,
+      "px": 65186
+    },
+    {
+      "pose": "standing",
+      "camElevationDeg": 2,
+      "camMinusFloorMm": 97.2,
+      "px": 67868
+    },
+    {
+      "pose": "standing",
+      "camElevationDeg": 4,
+      "camMinusFloorMm": 111.8,
+      "px": 69021
+    },
+    {
+      "pose": "standing",
+      "camElevationDeg": 6,
+      "camMinusFloorMm": 126.3,
+      "px": 69546
+    },
+    {
+      "pose": "standing",
+      "camElevationDeg": 8,
+      "camMinusFloorMm": 140.8,
+      "px": 69883
+    },
+    {
+      "pose": "standing",
+      "camElevationDeg": 10,
+      "camMinusFloorMm": 155.2,
+      "px": 70250
+    },
+    {
+      "pose": "standing",
+      "camElevationDeg": 12,
+      "camMinusFloorMm": 169.5,
+      "px": 70779
+    },
+    {
+      "pose": "standing",
+      "camElevationDeg": 14,
+      "camMinusFloorMm": 183.7,
+      "px": 71449
+    },
+    {
+      "pose": "standing",
+      "camElevationDeg": 16,
+      "camMinusFloorMm": 197.8,
+      "px": 72388
+    },
+    {
+      "pose": "standing",
+      "camElevationDeg": 18,
+      "camMinusFloorMm": 211.8,
+      "px": 73570
+    },
+    {
+      "pose": "standing",
+      "camElevationDeg": 20,
+      "camMinusFloorMm": 225.6,
+      "px": 74983
+    }
+  ],
+  "page_errors": []
+}

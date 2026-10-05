@@ -1,0 +1,213 @@
+{
+ "checks": {
+  "noVisibleUi": true,
+  "noSelectionLines": true,
+  "fillsWindow": true,
+  "interaction": true,
+  "escExits": true,
+  "restored": true,
+  "exportsSame": true,
+  "menuAndEsc": true,
+  "settings": true,
+  "settingsRestore": true,
+  "touch": true,
+  "external": true,
+  "fourSizes": true,
+  "noPageErrors": true
+ },
+ "sizes": [
+  {
+   "win": [
+    1920,
+    1080
+   ],
+   "vp": [
+    0,
+    0,
+    1920,
+    1080
+   ],
+   "canvas": [
+    1920,
+    1080
+   ],
+   "sx": false,
+   "sy": false,
+   "visible": 0,
+   "fills": true
+  },
+  {
+   "win": [
+    1366,
+    768
+   ],
+   "vp": [
+    0,
+    0,
+    1366,
+    768
+   ],
+   "canvas": [
+    1366,
+    768
+   ],
+   "sx": false,
+   "sy": false,
+   "visible": 0,
+   "fills": true
+  },
+  {
+   "win": [
+    1024,
+    768
+   ],
+   "vp": [
+    0,
+    0,
+    1024,
+    768
+   ],
+   "canvas": [
+    1024,
+    768
+   ],
+   "sx": false,
+   "sy": false,
+   "visible": 0,
+   "fills": true
+  },
+  {
+   "win": [
+    390,
+    844
+   ],
+   "vp": [
+    0,
+    0,
+    390,
+    844
+   ],
+   "canvas": [
+    390,
+    844
+   ],
+   "sx": false,
+   "sy": false,
+   "visible": 0,
+   "fills": true
+  }
+ ],
+ "baseline": {
+  "orange0": 234,
+  "orangeNoHl": 29,
+  "blue0": 832,
+  "scroll": 120,
+  "tab": "tabDesign"
+ },
+ "entered": {
+  "clean": true,
+  "visible": [],
+  "orange": 33,
+  "blue": 0
+ },
+ "fill": {
+  "viewport": [
+   0,
+   0,
+   1360,
+   860
+  ],
+  "stage": [
+   0,
+   0,
+   1360,
+   860
+  ],
+  "win": [
+   1360,
+   860
+  ],
+  "scrollX": false,
+  "scrollY": false,
+  "canvas": [
+   1360,
+   860
+  ]
+ },
+ "exportsDuring": {
+  "glbSame": true,
+  "pngSizeDuring": [
+   5440,
+   3440
+  ],
+  "pngSizeNormal": [
+   2736,
+   3216
+  ]
+ },
+ "interact": {
+  "viewKeyWorks": true,
+  "zoomChanged": true,
+  "rotated": true,
+  "panned": true,
+  "clickKeepsSelection": true,
+  "highlightVisibleAfterClick": false
+ },
+ "exportsCycle": {
+  "glbDuringSame": true,
+  "glbAfterSame": true,
+  "pngAfterSame": true
+ },
+ "exportsAfterExit": {
+  "glbSame": true
+ },
+ "restore": {
+  "camDiff": 0,
+  "sameUi": true,
+  "tab": [
+   "tabDesign",
+   "tabDesign"
+  ],
+  "scroll": [
+   80,
+   80
+  ],
+  "orange": [
+   177,
+   177
+  ]
+ },
+ "menu": {
+  "viaMenu": true,
+  "menuExit": true,
+  "hIgnoredWhenKeysOff": true,
+  "enteredKeysOff": true,
+  "escExitsEvenWhenKeysOff": true
+ },
+ "settings": {
+  "offState": {
+   "rot": "none",
+   "fv": "none"
+  },
+  "persisted": {
+   "rot": false,
+   "fv": false,
+   "rotDisp": "none",
+   "fvDisp": "none"
+  },
+  "viewKeyWorksWithMenuOff": true,
+  "btnViewWorks": true
+ },
+ "touch": {
+  "touchStart": true,
+  "shortPressKeeps": true,
+  "farCornerKeeps": true,
+  "longPressExits": true
+ },
+ "external": {
+  "enteredClean": true,
+  "visibleWhileClean": [],
+  "exitAndBannerRestored": true
+ },
+ "errors": []
+}

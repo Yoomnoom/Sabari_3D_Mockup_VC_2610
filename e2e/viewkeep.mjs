@@ -52,7 +52,23 @@ await p.mouse.move(840, 430); await p.mouse.wheel(0, -300); await p.waitForTimeo
 const z2 = await cam(); await p.click('#btnOpen'); await p.click('[data-view=back]');
 R.open_lid_view_keeps_zoom = Math.abs((await cam()).dist - z2.dist) < 1e-4;
 
-// 탭 전환/GLB 불러오기는 전체 보기로 맞춤
-await p.click('#tabView'); const tabFit = await cam(); R.tab_switch_refits = Math.abs(tabFit.dist - fit0.dist) < 0.02;
+// 작업 탭을 바꾸고 왼쪽 패널을 접었다 펼쳐도 카메라는 바뀌지 않는다 (작업4 → 작업12에서 새 탭 구조로 갱신)
+const beforeViewToggle = await cam();
+for (const t of ['#tabBox', '#tabView', '#tabExport', '#tabDesign']) await p.click(t);
+await p.click('#panelToggle'); await p.click('#panelExpand');
+const afterViewToggle = await cam();
+R.view_section_toggle_keeps_cam = afterViewToggle.dist === beforeViewToggle.dist && afterViewToggle.tgt === beforeViewToggle.tgt && afterViewToggle.dir === beforeViewToggle.dir;
+
+// 외부 GLB를 열면 전체 보기로 맞추고, 돌아가면 직전 상태를 그대로 복원한다 (작업4)
+const beforeGlb = await cam();
+await p.setInputFiles('#fileGlb', path.join(ROOT, 'e2e', 'fixtures', 'legacy_5face.glb'));
+await p.waitForFunction(() => document.getElementById('glbInfo').textContent.includes('메시'));
+const afterGlbOpen = await cam();
+R.glb_open_refits = afterGlbOpen.dir === R.views.key0.dir; // 외부 GLB는 치수가 달라 거리 자체가 아닌 아이소 시점 방향으로 전체 보기가 맞았는지 확인한다
+R.edit_section_inert_during_glb = await p.evaluate(() => document.getElementById('tp-design').inert);
+await p.click('#btnExtGlbBack');
+const afterReturn = await cam();
+R.glb_return_restores_pose = afterReturn.dist === beforeGlb.dist && afterReturn.tgt === beforeGlb.tgt && afterReturn.dir === beforeGlb.dir;
+R.edit_section_reenabled_after_return = !(await p.evaluate(() => document.getElementById('tp-design').inert));
 R.errors = errs;
 console.log(JSON.stringify(R, null, 1)); await b.close();

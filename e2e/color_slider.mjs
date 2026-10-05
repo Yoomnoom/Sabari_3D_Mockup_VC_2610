@@ -1,0 +1,24 @@
+// 음영 세기 슬라이더 UI: 열기 → 0으로 → 새로고침 후 유지(이 브라우저에만) → 범위 제한. 결과: verification/color-accurate/slider.json + 스크린샷
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { chromium } from '../frontend/node_modules/playwright/index.mjs';
+const OUT = path.join(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), 'verification', 'color-accurate');
+const b = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
+const p = await (await b.newContext({ viewport: { width: 1360, height: 900 } })).newPage(); const errors = [];
+p.on('pageerror', (e) => errors.push(String(e)));
+await p.goto(process.env.SABARI_URL ?? 'http://127.0.0.1:8765/'); await p.waitForFunction(() => window.__sabari); await p.waitForTimeout(400);
+const R = {};
+const st = () => p.evaluate(() => ({ viewer: window.__sabari.viewer.getShadeStrength(), r: document.getElementById('shadeR').value, n: document.getElementById('shadeN').value, shadeSaved: (JSON.parse(localStorage.getItem('sabari-ui') ?? '{}')).shade ?? null }));
+R.default = await st();
+await p.click('#dLight summary'); await p.fill('#shadeN', '0'); await p.waitForTimeout(100); R.afterZero = await st();
+await p.screenshot({ path: path.join(OUT, 'slider_open_zero.png'), clip: { x: 0, y: 300, width: 320, height: 560 } });
+await p.reload(); await p.waitForFunction(() => window.__sabari); await p.waitForTimeout(400); R.afterReload = await st();
+await p.fill('#shadeN', '55'); await p.waitForTimeout(100); R.set55 = await st();
+await p.fill('#shadeN', '250'); await p.dispatchEvent('#shadeN', 'change'); R.clamp250 = await st();
+await p.evaluate(() => { const r = document.getElementById('shadeR'); r.value = '30'; r.dispatchEvent(new Event('input')); }); R.restore30 = await st();
+R.note = '값은 localStorage sabari-ui.shade 에만 저장된다(브라우저별). project.ts·draft.ts 는 shade 를 읽거나 쓰지 않는다.';
+R.page_errors = errors;
+fs.writeFileSync(path.join(OUT, 'slider.json'), JSON.stringify(R, null, 1));
+console.log(JSON.stringify({ def: R.default.viewer, zero: R.afterZero.viewer, reload: R.afterReload.viewer, s55: R.set55.viewer, clamp: R.clamp250.viewer, back: R.restore30.viewer, errors: errors.length }));
+await b.close();

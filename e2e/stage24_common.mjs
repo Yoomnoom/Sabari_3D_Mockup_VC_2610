@@ -46,7 +46,7 @@ export async function start() {
     }
     if (!(await p.isChecked('#useBase'))) await p.check('#useBase');
     for (const id of Object.keys(COLORS)) { await p.click(id.startsWith('base_') ? '#tab_base' : '#tab_lid'); await p.click(`#faceList button[data-face=${id}]`); await p.setInputFiles('#filePick', path.join(OUT, 'colors', `${id}.png`)); await p.waitForFunction((i) => window.__sabari.faces[i].img, id); }
-    await p.click('#tab_lid'); await p.mouse.click(1330, 780);
+    await p.click('#tab_lid'); await p.mouse.click(...(await p.bgPoint()));
   };
   const finish = async (name) => { results.page_errors = errors; assert.deepEqual(errors, []); fs.writeFileSync(path.join(OUT, name), JSON.stringify(results, null, 2)); console.log('ok', name, Object.keys(results).join(', ')); await context.close(); await browser.close(); };
   return { browser, context, p, results, rec, H, quat, camAxes, camDist, rel, drag, setAxis, reset, visible, shot, faceCenter, colorFaces, finish };

@@ -42,7 +42,7 @@ assert(results['3_free_diagonal'].bothComponentsApplied, '자유 회전 대각�
 
 // ===== 4. (단계 26) 제거 확인: 방향 버튼·방향 표시·T 키 없음, 옛 localStorage 값 무시
 const gone = {}; gone.rotH = await p.locator('#rotH').count(); gone.rotV = await p.locator('#rotV').count(); gone.rotDirLabel = await p.locator('#rotDirLabel').count();
-await p.mouse.click(1330, 780); const qT0 = await quat(); await p.keyboard.press('t'); gone.tKeyChangesNothing = JSON.stringify(qT0) === JSON.stringify(await quat());
+await p.mouse.click(...(await p.bgPoint())); const qT0 = await quat(); await p.keyboard.press('t'); gone.tKeyChangesNothing = JSON.stringify(qT0) === JSON.stringify(await quat());
 await p.evaluate(() => localStorage.setItem('sabari-ui', JSON.stringify({ rotAxis: 'vertical', keys: true })));
 await p.reload(); await p.waitForFunction(() => window.__sabari); await p.waitForTimeout(400);
 const qOld = await quat(); await drag([700, 450], [700 + 90, 450 + 90], 8); gone.oldKeyIgnored_diagonalRotates = JSON.stringify(qOld) !== JSON.stringify(await quat());

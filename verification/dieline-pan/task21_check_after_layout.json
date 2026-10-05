@@ -1,0 +1,120 @@
+{
+ "label": "after",
+ "layout": [
+  {
+   "win": [
+    1920,
+    1080
+   ],
+   "dialogH": 1056,
+   "dialogScrollH": 1054,
+   "dialogClientH": 1054,
+   "dialogOuterScroll": false,
+   "pageScrollX": false,
+   "stageH": 770,
+   "stageW": 968,
+   "apply": {
+    "top": 973,
+    "bottom": 1013,
+    "left": 1322,
+    "right": 1397
+   },
+   "list": {
+    "top": 1017,
+    "bottom": 1057,
+    "left": 475,
+    "right": 1445
+   },
+   "helpOpen": false,
+   "dialogBottom": 1068,
+   "footerVisible": true
+  },
+  {
+   "win": [
+    1366,
+    768
+   ],
+   "dialogH": 744,
+   "dialogScrollH": 742,
+   "dialogClientH": 742,
+   "dialogOuterScroll": false,
+   "pageScrollX": false,
+   "stageH": 458,
+   "stageW": 968,
+   "apply": {
+    "top": 661,
+    "bottom": 701,
+    "left": 1045,
+    "right": 1120
+   },
+   "list": {
+    "top": 705,
+    "bottom": 745,
+    "left": 198,
+    "right": 1168
+   },
+   "helpOpen": false,
+   "dialogBottom": 756,
+   "footerVisible": true
+  },
+  {
+   "win": [
+    1024,
+    768
+   ],
+   "dialogH": 744,
+   "dialogScrollH": 742,
+   "dialogClientH": 742,
+   "dialogOuterScroll": false,
+   "pageScrollX": false,
+   "stageH": 458,
+   "stageW": 931,
+   "apply": {
+    "top": 661,
+    "bottom": 701,
+    "left": 855,
+    "right": 930
+   },
+   "list": {
+    "top": 705,
+    "bottom": 745,
+    "left": 46,
+    "right": 978
+   },
+   "helpOpen": false,
+   "dialogBottom": 756,
+   "footerVisible": true
+  },
+  {
+   "win": [
+    390,
+    844
+   ],
+   "dialogH": 820,
+   "dialogScrollH": 818,
+   "dialogClientH": 818,
+   "dialogOuterScroll": false,
+   "pageScrollX": false,
+   "stageH": 525,
+   "stageW": 324,
+   "apply": {
+    "top": 737,
+    "bottom": 777,
+    "left": 235,
+    "right": 310
+   },
+   "list": {
+    "top": 781,
+    "bottom": 821,
+    "left": 32,
+    "right": 358
+   },
+   "helpOpen": false,
+   "dialogBottom": 832,
+   "footerVisible": true
+  }
+ ],
+ "apply": null,
+ "ui": {},
+ "errors": []
+}

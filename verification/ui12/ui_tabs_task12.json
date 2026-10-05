@@ -1,0 +1,333 @@
+{
+ "skeleton": {
+  "tabs": [
+   [
+    "디자인",
+    "true"
+   ],
+   [
+    "박스",
+    "false"
+   ],
+   [
+    "보기",
+    "false"
+   ],
+   [
+    "내보내기",
+    "false"
+   ]
+  ],
+  "top": [
+   "열기 ▾",
+   "저장",
+   "↶",
+   "↷",
+   "PNG 내보내기",
+   "⋮ 더보기"
+  ],
+  "floating": [
+   "정면",
+   "3/4",
+   "세운 3/4",
+   "위치 초기화"
+  ],
+  "facePanelTitle": "선택한 면"
+ },
+ "control_counts": {
+  "topBar": 16,
+  "tabRail": 4,
+  "facePanel": 2,
+  "floating": 4,
+  "tab_design": 36,
+  "tab_box": 48,
+  "tab_view": 61,
+  "tab_export": 13
+ },
+ "control_total_new": 184,
+ "invariance": {
+  "camSame": true,
+  "valsSame": true,
+  "sel": "lid_front"
+ },
+ "highlight": {
+  "Design": true,
+  "Box": false,
+  "View": false,
+  "Export": false,
+  "Design_again": true
+ },
+ "click_select_in_design": "lid_top",
+ "click_select_in_box": "lid_top",
+ "keyboard_tab": "tabView",
+ "persist": {
+  "tab": "tabExport",
+  "collapsed": true,
+  "keys": [
+   "sabari.activeTab",
+   "sabari.facePanelCollapsed",
+   "sabari.panelCollapsed"
+  ]
+ },
+ "face_panel_default": {
+  "name": "상단",
+  "size": "면 크기 165×115mm (비율 1.43:1)",
+  "info": "sabari_ui12_face.png · 원본 900×600px"
+ },
+ "face_panel_after_dims": {
+  "name": "상단",
+  "size": "면 크기 205×115mm (비율 1.78:1)",
+  "ratioVisible": true,
+  "ratioText": "⚠ 비율 1.43:1 → 1.78:1 (+24%)",
+  "badges": 1
+ },
+ "ratio_ack_hides": true,
+ "external": {
+  "banner": "외부 GLB를 보는 중 · legacy_5face.glb",
+  "bannerHidden": false,
+  "designInert": true,
+  "boxInert": true,
+  "exportPngInert": false,
+  "exportFilesInert": true,
+  "exportSvgInert": true,
+  "topSave": true,
+  "topUndo": true,
+  "topRedo": true,
+  "topPng": false,
+  "activeTab": "tabView",
+  "menuClosed": true,
+  "editingHighlight": false
+ },
+ "external_return": {
+  "camSame": true,
+  "valsSame": true,
+  "sel": "lid_back",
+  "tab": "tabDesign",
+  "designInert": false
+ },
+ "png_quick_vs_export": {
+  "sameBytes": true,
+  "bytes": 251046
+ },
+ "open_menu": [
+  "프로젝트 열기 (.sabari)",
+  "GLB 파일 열기",
+  "임시저장 불러오기"
+ ],
+ "more_menu": {
+  "hasHelp": true,
+  "keys": true,
+  "reset": true,
+  "visible": true
+ },
+ "help_key_opens_more": {
+  "menu": true,
+  "help": true
+ },
+ "floating": {
+  "front": "0,0.1191,0.9929",
+  "iso": "0.5721,0.4767,0.6674",
+  "standingQuat": [
+   0.5,
+   0.5,
+   0.5,
+   0.5
+  ]
+ },
+ "sizes": {
+  "1920x1080_Design": {
+   "hscroll": false,
+   "panelHScroll": false,
+   "pageVScroll": false,
+   "overlaps": [],
+   "floatInside": true,
+   "canvas": [
+    1244,
+    1024
+   ]
+  },
+  "1920x1080_Box": {
+   "hscroll": false,
+   "panelHScroll": false,
+   "pageVScroll": false,
+   "overlaps": [],
+   "floatInside": true,
+   "canvas": [
+    1244,
+    1024
+   ]
+  },
+  "1920x1080_View": {
+   "hscroll": false,
+   "panelHScroll": false,
+   "pageVScroll": false,
+   "overlaps": [],
+   "floatInside": true,
+   "canvas": [
+    1244,
+    1024
+   ]
+  },
+  "1920x1080_Export": {
+   "hscroll": false,
+   "panelHScroll": false,
+   "pageVScroll": false,
+   "overlaps": [],
+   "floatInside": true,
+   "canvas": [
+    1244,
+    1024
+   ]
+  },
+  "1366x768_Design": {
+   "hscroll": false,
+   "panelHScroll": false,
+   "pageVScroll": false,
+   "overlaps": [],
+   "floatInside": true,
+   "canvas": [
+    690,
+    712
+   ]
+  },
+  "1366x768_Box": {
+   "hscroll": false,
+   "panelHScroll": false,
+   "pageVScroll": false,
+   "overlaps": [],
+   "floatInside": true,
+   "canvas": [
+    690,
+    712
+   ]
+  },
+  "1366x768_View": {
+   "hscroll": false,
+   "panelHScroll": false,
+   "pageVScroll": false,
+   "overlaps": [],
+   "floatInside": true,
+   "canvas": [
+    690,
+    712
+   ]
+  },
+  "1366x768_Export": {
+   "hscroll": false,
+   "panelHScroll": false,
+   "pageVScroll": false,
+   "overlaps": [],
+   "floatInside": true,
+   "canvas": [
+    690,
+    712
+   ]
+  },
+  "1024x768_Design": {
+   "hscroll": false,
+   "panelHScroll": false,
+   "pageVScroll": false,
+   "overlaps": [],
+   "floatInside": true,
+   "canvas": [
+    403,
+    712
+   ]
+  },
+  "1024x768_Box": {
+   "hscroll": false,
+   "panelHScroll": false,
+   "pageVScroll": false,
+   "overlaps": [],
+   "floatInside": true,
+   "canvas": [
+    403,
+    712
+   ]
+  },
+  "1024x768_View": {
+   "hscroll": false,
+   "panelHScroll": false,
+   "pageVScroll": false,
+   "overlaps": [],
+   "floatInside": true,
+   "canvas": [
+    403,
+    712
+   ]
+  },
+  "1024x768_Export": {
+   "hscroll": false,
+   "panelHScroll": false,
+   "pageVScroll": false,
+   "overlaps": [],
+   "floatInside": true,
+   "canvas": [
+    403,
+    712
+   ]
+  },
+  "390x844_Design": {
+   "hscroll": false,
+   "panelHScroll": false,
+   "pageVScroll": false,
+   "overlaps": [],
+   "floatInside": true,
+   "canvas": [
+    390,
+    372
+   ]
+  },
+  "390x844_Box": {
+   "hscroll": false,
+   "panelHScroll": false,
+   "pageVScroll": false,
+   "overlaps": [],
+   "floatInside": true,
+   "canvas": [
+    390,
+    372
+   ]
+  },
+  "390x844_View": {
+   "hscroll": false,
+   "panelHScroll": false,
+   "pageVScroll": false,
+   "overlaps": [],
+   "floatInside": true,
+   "canvas": [
+    390,
+    372
+   ]
+  },
+  "390x844_Export": {
+   "hscroll": false,
+   "panelHScroll": false,
+   "pageVScroll": false,
+   "overlaps": [],
+   "floatInside": true,
+   "canvas": [
+    390,
+    372
+   ]
+  }
+ },
+ "mobile": {
+  "railOrientation": "horizontal",
+  "railBottom": 844,
+  "vh": 844,
+  "faceLine": "선택한 면 · 뒷날개 · 165×38mm (비율 4.34:1) · 이미지 없음",
+  "facePanelHidden": true,
+  "topButtons": [
+   "실행 취소",
+   "다시 실행",
+   "더보기"
+  ],
+  "sheetAfterClick": {
+   "min": false,
+   "h": 573
+  },
+  "stateKept": true
+ },
+ "errors": []
+}

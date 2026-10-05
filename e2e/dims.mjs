@@ -72,7 +72,7 @@ await p.click('[data-view=iso]'); await p.waitForTimeout(250);
 await p.screenshot({ path: path.join(V, '30_dims_h60.png') });
 // 같은 GLB 를 GLB 뷰어 모드에서 열어 치수 정보가 보이는지
 const p2 = await newPage(await b.newContext({ viewport: { width: 1360, height: 900 } }));
-await p2.click('#tabView'); await p2.setInputFiles('#fileGlb', glb60); await p2.waitForFunction(() => document.getElementById('glbInfo').textContent.includes('메시'));
+await p2.setInputFiles('#fileGlb', glb60); await p2.waitForFunction(() => document.getElementById('glbInfo').textContent.includes('메시'));
 rec('2_viewer_opens_h60_glb', await p2.textContent('#glbInfo'));
 rec('2_viewer_errors', p2.errors); await p2.context().close();
 

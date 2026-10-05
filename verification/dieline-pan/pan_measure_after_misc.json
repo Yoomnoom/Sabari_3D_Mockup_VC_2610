@@ -1,0 +1,141 @@
+{
+ "label": "after",
+ "images": {
+  "2739x3343": {
+   "size": [
+    2739,
+    3343
+   ],
+   "zoomMethods": [],
+   "focusSpace": [
+    {
+     "button": "＋",
+     "focusedBefore": "btnZoomIn",
+     "zoomBefore": 2.6,
+     "zoomAfter": 2.6,
+     "panMoved": true,
+     "zoomChangedByRelease": false,
+     "resetToFit": false
+    },
+    {
+     "button": "－",
+     "focusedBefore": "btnZoomOut",
+     "zoomBefore": 1.538,
+     "zoomAfter": 1.538,
+     "panMoved": true,
+     "zoomChangedByRelease": false,
+     "resetToFit": false
+    },
+    {
+     "button": "맞춤",
+     "focusedBefore": "splitViewport",
+     "zoomBefore": 0.159,
+     "zoomAfter": 0.159,
+     "panMoved": true,
+     "zoomChangedByRelease": false,
+     "resetToFit": false
+    },
+    {
+     "button": "100%",
+     "focusedBefore": "btnZoom100",
+     "zoomBefore": 1,
+     "zoomAfter": 1,
+     "panMoved": true,
+     "zoomChangedByRelease": false,
+     "resetToFit": false
+    },
+    {
+     "button": "200%",
+     "focusedBefore": "btnZoom200",
+     "zoomBefore": 2,
+     "zoomAfter": 2,
+     "panMoved": true,
+     "zoomChangedByRelease": false,
+     "resetToFit": false
+    },
+    {
+     "button": "칼선 종류 select",
+     "zoomBefore": 2,
+     "zoomAfter": 2,
+     "panMoved": true,
+     "valueAfter": "lid"
+    }
+   ],
+   "regionCover": {
+    "plainDragPannedView": false,
+    "statusBefore": "배율 16% · 커서 1370, 1672px (119.0, 144.0mm) · 선택 영역 2171×3142px (188.7×270.7mm)",
+    "statusAfter": "배율 16% · 커서 1747, 1923px (151.8, 165.7mm) · 선택 영역 2171×3142px (188.7×270.7mm)",
+    "handToolButton": true,
+    "handToolDragPanned": true,
+    "handToolStatusSame": true
+   },
+   "corners": {
+    "Space 드래그": {
+     "좌상": true,
+     "우상": true,
+     "좌하": true,
+     "우하": true
+    },
+    "가운데 버튼 드래그": {
+     "좌상": true,
+     "우상": true,
+     "좌하": true,
+     "우하": true
+    },
+    "스크롤바": {
+     "좌상": true,
+     "우상": true,
+     "좌하": true,
+     "우하": true
+    },
+    "방향키": {
+     "좌상": true,
+     "우상": true,
+     "좌하": true,
+     "우하": true
+    }
+   },
+   "timing": {
+    "wheel20Ms": 721,
+    "spaceDragMs": 166
+   },
+   "initial": {
+    "fitZoom": 0.175292,
+    "vw": 968,
+    "vh": 532,
+    "dialogScroll": {
+     "scrollH": 874,
+     "clientH": 874,
+     "pageScroll": false
+    }
+   },
+   "handles": [
+    {
+     "zoom": 2,
+     "expectedDxImg": 12,
+     "gotDwImg": 12,
+     "expectedDyImg": 9,
+     "gotDhImg": 9,
+     "handleScreenPx": 18
+    },
+    {
+     "zoom": 7.051,
+     "expectedDxImg": 3.4,
+     "gotDwImg": 3.4,
+     "expectedDyImg": 2.55,
+     "gotDhImg": 2.55,
+     "handleScreenPx": 18
+    },
+    {
+     "zoom": 16,
+     "expectedDxImg": 1.5,
+     "gotDwImg": 1.5,
+     "expectedDyImg": 1.13,
+     "gotDhImg": 1.13,
+     "handleScreenPx": 18
+    }
+   ]
+  }
+ },
+ "errors": []
+}

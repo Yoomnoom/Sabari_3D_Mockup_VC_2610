@@ -243,14 +243,14 @@ await ctx2.close(); await ctx.close(); // 소프트웨어 렌더링 메모리 �
 const p3 = await (await browser.newContext({ viewport: { width: 1360, height: 860 } })).newPage();
 await p3.goto(URL);
 await p3.waitForFunction(() => window.__sabari);
-await p3.click('#tabView');
+
 await p3.setInputFiles('#fileGlb', glbPath);
 await p3.waitForFunction(() => document.getElementById('glbInfo').textContent.includes('메시'));
 rec('viewer_glb_info', await p3.textContent('#glbInfo'));
 await p3.waitForTimeout(300);
 await p3.screenshot({ path: path.join(V, '10_viewer_loaded_glb.png') });
-rec('viewer_lid_slider_visible', await p3.isVisible('#viewLid'));
-await p3.fill('#vLiftN', '0'); await p3.dispatchEvent('#vLiftN', 'change');
+rec('viewer_lid_slider_visible', await p3.locator('#viewLid').count() ? await p3.isVisible('#viewLid') : 'removed_in_task4'); // 작업 4에서 뷰어 전용 뚜껑 슬라이더(#viewLid/#vLiftN)가 없어졌다
+if (await p3.locator('#vLiftN').count()) { await p3.fill('#vLiftN', '0'); await p3.dispatchEvent('#vLiftN', 'change'); }
 await p3.click('[data-view=top]'); await p3.waitForTimeout(200);
 await p3.screenshot({ path: path.join(V, '10b_viewer_top_closed.png') });
 await p3.click('[data-view=back]'); await p3.waitForTimeout(200);

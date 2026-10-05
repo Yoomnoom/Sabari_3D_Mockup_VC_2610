@@ -1,0 +1,522 @@
+{
+ "png": {
+  "white": {
+   "size": [
+    1368,
+    1688
+   ],
+   "ink": [
+    3,
+    3,
+    3,
+    255
+   ],
+   "bg": [
+    28,
+    28,
+    28,
+    255
+   ],
+   "corner": [
+    255,
+    255,
+    255,
+    255
+   ]
+  },
+  "transparent": {
+   "size": [
+    1368,
+    1688
+   ],
+   "ink": [
+    3,
+    3,
+    3,
+    255
+   ],
+   "bg": [
+    28,
+    28,
+    28,
+    255
+   ],
+   "corner": [
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  "screenCenter": [
+   758.0000000000001,
+   478.0000000000001
+  ],
+  "screenCenterPixel": [
+   3,
+   3,
+   3,
+   255
+  ]
+ },
+ "glb": {
+  "bytes": 23192,
+  "nodes": [
+   {
+    "name": "Template",
+    "children": [
+     1,
+     9
+    ]
+   },
+   {
+    "name": "Base",
+    "children": [
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ]
+   },
+   {
+    "name": "base_front",
+    "mesh": 0
+   },
+   {
+    "name": "base_back",
+    "mesh": 1
+   },
+   {
+    "name": "base_left",
+    "mesh": 2
+   },
+   {
+    "name": "base_right",
+    "mesh": 3
+   },
+   {
+    "name": "base_bottom",
+    "mesh": 4
+   },
+   {
+    "name": "base_rim",
+    "mesh": 5
+   },
+   {
+    "name": "base_inner",
+    "mesh": 6
+   },
+   {
+    "name": "Lid",
+    "children": [
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16
+    ]
+   },
+   {
+    "name": "lid_top",
+    "mesh": 7
+   },
+   {
+    "name": "lid_front",
+    "mesh": 8
+   },
+   {
+    "name": "lid_back",
+    "mesh": 9
+   },
+   {
+    "name": "lid_left",
+    "mesh": 10
+   },
+   {
+    "name": "lid_right",
+    "mesh": 11
+   },
+   {
+    "name": "lid_rim",
+    "mesh": 12
+   },
+   {
+    "name": "lid_inner",
+    "mesh": 13
+   }
+  ],
+  "materials": [
+   {
+    "name": "base_front",
+    "pbr": {
+     "baseColorFactor": [
+      0.401978,
+      0.246201,
+      0.057805,
+      1
+     ],
+     "metallicFactor": 0,
+     "roughnessFactor": 0.9
+    }
+   },
+   {
+    "name": "base_back",
+    "pbr": {
+     "baseColorFactor": [
+      0.401978,
+      0.246201,
+      0.057805,
+      1
+     ],
+     "metallicFactor": 0,
+     "roughnessFactor": 0.9
+    }
+   },
+   {
+    "name": "base_left",
+    "pbr": {
+     "baseColorFactor": [
+      0.401978,
+      0.246201,
+      0.057805,
+      1
+     ],
+     "metallicFactor": 0,
+     "roughnessFactor": 0.9
+    }
+   },
+   {
+    "name": "base_right",
+    "pbr": {
+     "baseColorFactor": [
+      0.401978,
+      0.246201,
+      0.057805,
+      1
+     ],
+     "metallicFactor": 0,
+     "roughnessFactor": 0.9
+    }
+   },
+   {
+    "name": "base_bottom",
+    "pbr": {
+     "baseColorFactor": [
+      0.401978,
+      0.246201,
+      0.057805,
+      1
+     ],
+     "metallicFactor": 0,
+     "roughnessFactor": 0.9
+    }
+   },
+   {
+    "name": "base_rim",
+    "pbr": {
+     "baseColorFactor": [
+      0.401978,
+      0.246201,
+      0.057805,
+      1
+     ],
+     "metallicFactor": 0,
+     "roughnessFactor": 0.9
+    }
+   },
+   {
+    "name": "base_inner",
+    "pbr": {
+     "baseColorFactor": [
+      0.401978,
+      0.246201,
+      0.057805,
+      1
+     ],
+     "metallicFactor": 0,
+     "roughnessFactor": 0.9
+    }
+   },
+   {
+    "name": "lid_top",
+    "pbr": {
+     "metallicFactor": 0,
+     "roughnessFactor": 0.9,
+     "baseColorTexture": {
+      "index": 0
+     }
+    }
+   },
+   {
+    "name": "lid_front",
+    "pbr": {
+     "metallicFactor": 0,
+     "roughnessFactor": 0.9,
+     "baseColorTexture": {
+      "index": 1
+     }
+    }
+   },
+   {
+    "name": "lid_back",
+    "pbr": {
+     "baseColorFactor": [
+      0.011612,
+      0.011612,
+      0.011612,
+      1
+     ],
+     "metallicFactor": 0,
+     "roughnessFactor": 0.9
+    }
+   },
+   {
+    "name": "lid_left",
+    "pbr": {
+     "baseColorFactor": [
+      0.011612,
+      0.011612,
+      0.011612,
+      1
+     ],
+     "metallicFactor": 0,
+     "roughnessFactor": 0.9
+    }
+   },
+   {
+    "name": "lid_right",
+    "pbr": {
+     "baseColorFactor": [
+      0.011612,
+      0.011612,
+      0.011612,
+      1
+     ],
+     "metallicFactor": 0,
+     "roughnessFactor": 0.9
+    }
+   },
+   {
+    "name": "lid_rim",
+    "pbr": {
+     "baseColorFactor": [
+      0.033105,
+      0.057805,
+      0.090842,
+      1
+     ],
+     "metallicFactor": 0,
+     "roughnessFactor": 0.9
+    }
+   },
+   {
+    "name": "lid_inner",
+    "pbr": {
+     "baseColorFactor": [
+      0.033105,
+      0.057805,
+      0.090842,
+      1
+     ],
+     "metallicFactor": 0,
+     "roughnessFactor": 0.9
+    }
+   }
+  ],
+  "meshes": [
+   {
+    "prims": [
+     {
+      "attrs": [
+       "NORMAL",
+       "POSITION",
+       "TEXCOORD_0"
+      ],
+      "material": 0
+     }
+    ]
+   },
+   {
+    "prims": [
+     {
+      "attrs": [
+       "NORMAL",
+       "POSITION",
+       "TEXCOORD_0"
+      ],
+      "material": 1
+     }
+    ]
+   },
+   {
+    "prims": [
+     {
+      "attrs": [
+       "NORMAL",
+       "POSITION",
+       "TEXCOORD_0"
+      ],
+      "material": 2
+     }
+    ]
+   },
+   {
+    "prims": [
+     {
+      "attrs": [
+       "NORMAL",
+       "POSITION",
+       "TEXCOORD_0"
+      ],
+      "material": 3
+     }
+    ]
+   },
+   {
+    "prims": [
+     {
+      "attrs": [
+       "NORMAL",
+       "POSITION",
+       "TEXCOORD_0"
+      ],
+      "material": 4
+     }
+    ]
+   },
+   {
+    "prims": [
+     {
+      "attrs": [
+       "NORMAL",
+       "POSITION"
+      ],
+      "material": 5
+     }
+    ]
+   },
+   {
+    "prims": [
+     {
+      "attrs": [
+       "NORMAL",
+       "POSITION"
+      ],
+      "material": 6
+     }
+    ]
+   },
+   {
+    "prims": [
+     {
+      "attrs": [
+       "NORMAL",
+       "POSITION",
+       "TEXCOORD_0"
+      ],
+      "material": 7
+     }
+    ]
+   },
+   {
+    "prims": [
+     {
+      "attrs": [
+       "NORMAL",
+       "POSITION",
+       "TEXCOORD_0"
+      ],
+      "material": 8
+     }
+    ]
+   },
+   {
+    "prims": [
+     {
+      "attrs": [
+       "NORMAL",
+       "POSITION",
+       "TEXCOORD_0"
+      ],
+      "material": 9
+     }
+    ]
+   },
+   {
+    "prims": [
+     {
+      "attrs": [
+       "NORMAL",
+       "POSITION",
+       "TEXCOORD_0"
+      ],
+      "material": 10
+     }
+    ]
+   },
+   {
+    "prims": [
+     {
+      "attrs": [
+       "NORMAL",
+       "POSITION",
+       "TEXCOORD_0"
+      ],
+      "material": 11
+     }
+    ]
+   },
+   {
+    "prims": [
+     {
+      "attrs": [
+       "NORMAL",
+       "POSITION"
+      ],
+      "material": 12
+     }
+    ]
+   },
+   {
+    "prims": [
+     {
+      "attrs": [
+       "NORMAL",
+       "POSITION"
+      ],
+      "material": 13
+     }
+    ]
+   }
+  ],
+  "textures": [
+   {
+    "sampler": 0,
+    "source": 0,
+    "name": "lid_top"
+   },
+   {
+    "sampler": 1,
+    "source": 1,
+    "name": "lid_front"
+   }
+  ],
+  "extensionsUsed": [],
+  "imageHashes": [
+   {
+    "mime": "image/png",
+    "sha256": "2aea85f582d06440e0473bf8af2c902d9492e3a0dbda2e8df0c7c11ba4bd9fb2"
+   },
+   {
+    "mime": "image/png",
+    "sha256": "b0da138d5af34b2d4919b0b6b3b37ffa6fa6de0158e94d0c8ba5294b434522ac"
+   }
+  ]
+ },
+ "page_errors": []
+}

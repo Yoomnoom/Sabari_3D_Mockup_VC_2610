@@ -1,0 +1,38 @@
+[08:24:11] 묶음 1 시작(ratio.mjs, run.mjs, scroll_fix.mjs, shadow_default_compare.mjs, sharp.mjs, shortcuts.mjs, shot_panel.mjs) 남은 메모리 4.10GB
+[08:26:35] PASS ratio.mjs 27s | PASS run.mjs 18s | PASS scroll_fix.mjs 50s | PASS shadow_default_compare.mjs 36s | PASS sharp.mjs 4s | PASS shortcuts.mjs 7s | PASS shot_panel.mjs 2s
+[08:26:36] 묶음 1 종료 — 정리한 브라우저 프로세스 0개, 남은 메모리 3.98GB
+[08:26:36] 묶음 2 시작(sidebar_task8.mjs, space_repro.mjs, split_zoom_check.mjs, standing_view_task6.mjs, template_task16.mjs, ui_dialogs_task17.mjs, ui_tabs_task12.mjs, viewkeep.mjs) 남은 메모리 3.98GB
+[08:28:58] PASS sidebar_task8.mjs 13s | PASS space_repro.mjs 2s | PASS split_zoom_check.mjs 12s | PASS standing_view_task6.mjs 10s | PASS template_task16.mjs 19s | PASS ui_dialogs_task17.mjs 63s | PASS ui_tabs_task12.mjs 19s | PASS viewkeep.mjs 4s
+[08:28:59] 묶음 2 종료 — 정리한 브라우저 프로세스 0개, 남은 메모리 4.71GB
+[08:28:59] 묶음 3 시작(png_scale_task7.mjs) 남은 메모리 4.71GB
+[08:29:13] PASS png_scale_task7.mjs 14s
+[08:29:14] 묶음 3 종료 — 정리한 브라우저 프로세스 0개, 남은 메모리 5.00GB
+[08:29:14] 묶음 4 시작(stage24.mjs) 남은 메모리 5.00GB
+[08:29:31] PASS stage24.mjs 18s
+[08:29:32] 묶음 4 종료 — 정리한 브라우저 프로세스 0개, 남은 메모리 5.00GB
+[08:29:32] 묶음 5 시작(stage24_b.mjs) 남은 메모리 5.00GB
+[08:30:04] PASS stage24_b.mjs 32s
+[08:30:05] 묶음 5 종료 — 정리한 브라우저 프로세스 0개, 남은 메모리 5.06GB
+[08:30:05] 묶음 6 시작(stage24_views.mjs) 남은 메모리 5.06GB
+[08:30:08] PASS stage24_views.mjs 3s
+[08:30:09] 묶음 6 종료 — 정리한 브라우저 프로세스 0개, 남은 메모리 5.06GB
+[08:30:09] 묶음 7 시작(stage26.mjs) 남은 메모리 5.06GB
+[08:30:51] PASS stage26.mjs 42s
+[08:30:52] 묶음 7 종료 — 정리한 브라우저 프로세스 0개, 남은 메모리 5.06GB
+[08:30:52] 묶음 8 시작(stage26_b.mjs) 남은 메모리 5.06GB
+[08:31:18] PASS stage26_b.mjs 26s
+[08:31:18] 묶음 8 종료 — 정리한 브라우저 프로세스 0개, 남은 메모리 5.14GB
+[08:31:18] 묶음 9 시작(stage26c.mjs) 남은 메모리 5.14GB
+[08:32:26] PASS stage26c.mjs 68s
+[08:32:27] 묶음 9 종료 — 정리한 브라우저 프로세스 0개, 남은 메모리 5.00GB
+[08:32:27] 묶음 10 시작(stage26c_count.mjs) 남은 메모리 5.00GB
+[08:32:29] FAIL stage26c_count.mjs 2s
+[08:32:30] 묶음 10 종료 — 정리한 브라우저 프로세스 0개, 남은 메모리 5.00GB
+[08:32:30] 재시도(단독): stage26c_count.mjs
+[08:32:32] 묶음 11 시작(stage27a.mjs) 남은 메모리 4.99GB
+[08:32:40] PASS stage27a.mjs 8s
+[08:32:41] 묶음 11 종료 — 정리한 브라우저 프로세스 0개, 남은 메모리 4.99GB
+[08:32:41] 묶음 12 시작(stage30.mjs) 남은 메모리 4.99GB
+[08:33:06] PASS stage30.mjs 24s
+[08:33:06] 묶음 12 종료 — 정리한 브라우저 프로세스 0개, 남은 메모리 4.97GB
+[08:33:06] BATCHES_DONE

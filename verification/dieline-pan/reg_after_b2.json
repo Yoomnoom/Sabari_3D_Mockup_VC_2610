@@ -1,0 +1,50 @@
+[
+ {
+  "script": "sidebar_task8.mjs",
+  "exit": 0,
+  "sec": 13,
+  "tail": "ok sidebar_task8.json readout_in_view_section, readout_front, drag, readout_vs_quat, after_view_buttons, lock_no_axis, lock_axis, lock_plus5, lock_drag, unlock, collapse, collapsed_after_reload, localStorage, expanded_again, collapse_expand_roundtrip_same, window_sizes, page_errors"
+ },
+ {
+  "script": "space_repro.mjs",
+  "exit": 0,
+  "sec": 2,
+  "tail": "{\"A_number_field_focused\":true,\"B_select_focused\":true,\"C_button_focused\":true,\"D_after_canvas_click\":true,\"E_ime_process_key\":true,\"F_badge_visible\":true,\"F_space_not_typed_into_field\":true,\"F_pan_moved_target\":true,\"F_badge_hidden_after\":true,\"G_panel_hover_no_pan\":true,\"H_R_key\":{\"dir\":\"0.28,0.23"
+ },
+ {
+  "script": "split_zoom_check.mjs",
+  "exit": 0,
+  "sec": 12,
+  "tail": " }, |  \"errs\": [] | }"
+ },
+ {
+  "script": "standing_view_task6.mjs",
+  "exit": 0,
+  "sec": 10,
+  "tail": "ok standing_task6.json measure_table, symmetry, fov_after_front_button, saved_slot_roundtrip, fov_after_keyF, fov_after_iso, fov_after_top, alt6_left, axis_lock_kept, drag_after_standing_rotates, glb_nodes_unchanged, glb_validator, png_bytes, page_errors"
+ },
+ {
+  "script": "template_task16.mjs",
+  "exit": 0,
+  "sec": 19,
+  "tail": "ok template_task16"
+ },
+ {
+  "script": "ui_dialogs_task17.mjs",
+  "exit": 0,
+  "sec": 63,
+  "tail": "ok ui_dialogs_task17"
+ },
+ {
+  "script": "ui_tabs_task12.mjs",
+  "exit": 0,
+  "sec": 19,
+  "tail": "ok ui_tabs_task12 {\"topBar\":19,\"tabRail\":4,\"facePanel\":2,\"floating\":4,\"tab_design\":36,\"tab_box\":52,\"tab_view\":98,\"tab_export\":13}"
+ },
+ {
+  "script": "viewkeep.mjs",
+  "exit": 0,
+  "sec": 4,
+  "tail": " \"edit_section_reenabled_after_return\": true, |  \"errors\": [] | }"
+ }
+]

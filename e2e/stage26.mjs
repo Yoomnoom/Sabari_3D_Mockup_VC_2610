@@ -51,7 +51,7 @@ rec('B3_rotated_pose_uses_current_normal', rotated);
 
 // 무시되는 곳: 배경 · 두께면/안쪽면
 await reset(); const before = await lockState();
-await p.mouse.click(1330, 780); const bg = await lockState();
+await p.mouse.click(...(await p.bgPoint())); const bg = await lockState();
 const scan = (names) => p.evaluate((names) => { const v = window.__sabari.viewer, m = v.debugIdMap(), { w, h, data, names: ids } = m, r = v.renderer.domElement.getBoundingClientRect(), k = w / r.width; const at = (x, y) => (x < 0 || y < 0 || x >= w || y >= h ? -1 : data[(y * w + x) * 4]); for (const want of names) { const idx = ids.indexOf(want) + 1; if (!idx) continue; for (let y = 3; y < h - 3; y += 2) for (let x = 3; x < w - 3; x += 2) { if (at(x, y) === idx && at(x - 2, y) === idx && at(x + 2, y) === idx && at(x, y - 2) === idx && at(x, y + 2) === idx) return { name: want, x: r.left + x / k, y: r.top + y / k }; } } return null; }, names);
 const ignored = [];
 for (const [cfg, names] of [[{ lid: false, base: true, view: 'top' }, ['base_inner', 'base_rim']], [{ lid: true, base: false, view: 'bottom' }, ['lid_inner', 'lid_rim']], [{ lid: true, base: true, view: 'iso' }, ['lid_rim', 'base_rim']]]) {

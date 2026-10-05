@@ -1,0 +1,18 @@
+{
+  "state_with_selection_line": {
+    "hlVisible": true,
+    "lockLine": null,
+    "lockHls": []
+  },
+  "state_with_lock_lines": {
+    "hlVisible": true,
+    "lockLine": true,
+    "lockHls": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  "page_errors": []
+}

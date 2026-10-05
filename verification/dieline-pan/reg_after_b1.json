@@ -1,0 +1,44 @@
+[
+ {
+  "script": "ratio.mjs",
+  "exit": 0,
+  "sec": 27,
+  "tail": "{\"0_initial_no_alert\":{\"banner\":false,\"bannerText\":\"\",\"badges\":[],\"note\":\"\",\"selected\":\"lid_front\"},\"1_small_change_no_alert\":{\"banner\":false,\"bannerText\":\"\",\"badges\":[],\"note\":\"\",\"selected\":\"lid_front\"},\"1_face_size_still_updates\":\"면 크기 162×43mm (비율 3.77:1)\",\"2_not_yet_during_debounce\":false,\"2_aft"
+ },
+ {
+  "script": "run.mjs",
+  "exit": 0,
+  "sec": 18,
+  "tail": "viewer_lid_slider_visible \"removed_in_task4\" | viewer_mode_png_saved true | external_requests_blocked []"
+ },
+ {
+  "script": "scroll_fix.mjs",
+  "exit": 0,
+  "sec": 50,
+  "tail": "{\"tested\":36,\"bad\":[]}"
+ },
+ {
+  "script": "shadow_default_compare.mjs",
+  "exit": 0,
+  "sec": 36,
+  "tail": "ok shadow_default_compare.json default_after_change, visible_shadow_table, restore_button, page_errors"
+ },
+ {
+  "script": "sharp.mjs",
+  "exit": 0,
+  "sec": 4,
+  "tail": " \"editorTexAniso\": 16, |  \"maxAniso\": 16 | }"
+ },
+ {
+  "script": "shortcuts.mjs",
+  "exit": 0,
+  "sec": 7,
+  "tail": " \"typing_in_number_field_ignored\": false, |  \"errors\": [] | }"
+ },
+ {
+  "script": "shot_panel.mjs",
+  "exit": 0,
+  "sec": 2,
+  "tail": "2244"
+ }
+]

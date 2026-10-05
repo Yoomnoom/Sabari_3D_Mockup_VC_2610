@@ -1,0 +1,8 @@
+[
+ {
+  "script": "stage30.mjs",
+  "exit": 0,
+  "sec": 24,
+  "tail": "ok stage30.json A0_axis_select_is_zero, A_plus30, B_zero_matches_baseline, C_delta_buttons, D_number_input, E_drag_sync, F_ctrl_snap_sync, G_axis_change_resets, H1_lock_off_disables_rotated, H2_lock_off_disables_from_top, I0_slot0_saved_state_card, I_round_trip_slot0, J_overwrite_slot3, J_rename_slo"
+ }
+]

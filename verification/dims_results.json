@@ -176,7 +176,7 @@
   "6_baseline_restored_baseH": 43,
   "6_ctrl_z_after_baseline": 70,
   "7_project_json": {
-    "schemaVersion": 4,
+    "schemaVersion": 6,
     "params": {
       "baseW": 170,
       "baseD": 110,

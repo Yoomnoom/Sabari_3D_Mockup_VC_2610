@@ -1,0 +1,8 @@
+[
+ {
+  "script": "stage24_b.mjs",
+  "exit": 0,
+  "sec": 32,
+  "tail": "ok stage24_b.json 7_features_in_poses, 8_not_clipped, 9_glb, 9_png_overlay_excluded, 9_storage_boundary, 10_interactions, page_errors"
+ }
+]

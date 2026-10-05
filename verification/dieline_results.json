@@ -161,14 +161,14 @@
   "4_dialog_restores_saved_regions": true,
   "4_dragged_css_px": {
     "movedByCss": 40,
-    "imagePxPerCss": 4.57
+    "imagePxPerCss": 3.91
   },
   "4_resize": {
     "before": "304×1320px",
     "after": [
       "920×1320px",
       "304×1320px",
-      "213×1183px",
+      "226×1203px",
       "920×304px",
       "920×304px"
     ]
@@ -225,14 +225,14 @@
   },
   "4_auto_reset_restores": true,
   "5_project_json_dieline": {
-    "schemaVersion": 4,
+    "schemaVersion": 6,
     "file": "images/dieline.png",
     "bleedMm": 3,
     "kind": "lid",
     "regionCount": 5,
     "lid_top_saved": {
-      "x": 629.142822265625,
-      "y": 537.7142333984375,
+      "x": 609.152587890625,
+      "y": 531.05078125,
       "w": 920,
       "h": 1320
     },
@@ -258,8 +258,8 @@
     "bleed": 3,
     "kind": "lid",
     "lidTop": {
-      "x": 629.142822265625,
-      "y": 537.7142333984375,
+      "x": 609.152587890625,
+      "y": 531.05078125,
       "w": 920,
       "h": 1320
     },
@@ -269,20 +269,20 @@
   },
   "6_reopen_region_equal": true,
   "6_reopen_dialog_rect_matches_saved": {
-    "x": 629.142822265625,
-    "y": 537.7142333984375,
+    "x": 609.152587890625,
+    "y": 531.05078125,
     "saved": [
-      629.14,
-      537.71
+      609.15,
+      531.05
     ]
   },
   "6_reopen_errors": [],
   "7_base_rows": [
     "하단 바닥",
-    "하단 앞면",
-    "하단 뒷면",
-    "하단 오른쪽 면",
-    "하단 왼쪽 면"
+    "하단 앞",
+    "하단 뒤",
+    "하단 우",
+    "하단 좌"
   ],
   "7_base_split": {
     "switchTurnedOn": true,
@@ -296,7 +296,7 @@
   },
   "7_mismatch_warning": {
     "visible": true,
-    "text": "이미지 비율이 칼선(재단 여분 3mm 포함)의 비율과 2.2% 다릅니다. 재단 여분 값이나 이미지가 맞는지 "
+    "text": "이미지 비율이 칼선(재단 여분 3mm 포함)의 비율과 2.2% 다릅니다. 이미지에 여백이 있을 수 있습니다."
   },
   "7_warning_clears_with_correct_bleed": true,
   "7_errors": []

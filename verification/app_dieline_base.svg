@@ -26,10 +26,10 @@
     <rect x="63.5" y="19.3" width="110" height="43" stroke="#00a050" stroke-width="0.2" stroke-dasharray="1 1.5" fill="none"/>
     <rect x="63.5" y="264.7" width="110" height="43" stroke="#00a050" stroke-width="0.2" stroke-dasharray="1 1.5" fill="none"/>
     <text x="118.5" y="163.5" font-size="5" fill="#00a050" text-anchor="middle" dominant-baseline="middle" transform="rotate(270 118.5 163.5)">하단 바닥</text>
-    <text x="40.8" y="163.5" font-size="5" fill="#00a050" text-anchor="middle" dominant-baseline="middle" transform="rotate(270 40.8 163.5)">하단 앞면</text>
-    <text x="196.2" y="163.5" font-size="5" fill="#00a050" text-anchor="middle" dominant-baseline="middle" transform="rotate(90 196.2 163.5)">하단 뒷면</text>
-    <text x="118.5" y="40.8" font-size="5" fill="#00a050" text-anchor="middle" dominant-baseline="middle" transform="rotate(0 118.5 40.8)">하단 오른쪽 면</text>
-    <text x="118.5" y="286.2" font-size="5" fill="#00a050" text-anchor="middle" dominant-baseline="middle" transform="rotate(180 118.5 286.2)">하단 왼쪽 면</text>
+    <text x="40.8" y="163.5" font-size="5" fill="#00a050" text-anchor="middle" dominant-baseline="middle" transform="rotate(270 40.8 163.5)">하단 앞</text>
+    <text x="196.2" y="163.5" font-size="5" fill="#00a050" text-anchor="middle" dominant-baseline="middle" transform="rotate(90 196.2 163.5)">하단 뒤</text>
+    <text x="118.5" y="40.8" font-size="5" fill="#00a050" text-anchor="middle" dominant-baseline="middle" transform="rotate(0 118.5 40.8)">하단 우</text>
+    <text x="118.5" y="286.2" font-size="5" fill="#00a050" text-anchor="middle" dominant-baseline="middle" transform="rotate(180 118.5 286.2)">하단 좌</text>
     <text x="-2" y="329" font-size="2.6" fill="#555">디자인 가이드용, 제조 칼선 아님. 최종 칼선은 인쇄소 템플릿을 사용하세요</text>
   </g>
 </svg>

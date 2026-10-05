@@ -9,80 +9,80 @@
   "bleed": {
     "iso_front_right": {
       "count": {
-        "lid_top": 94243,
-        "lid_front": 48588,
-        "lid_right": 27149
+        "lid_top": 82327,
+        "lid_front": 42405,
+        "lid_right": 22331
       },
       "bleed": {
-        "lid_front": 11
+        "lid_front": 27
       }
     },
     "iso_back_left": {
       "count": {
-        "lid_top": 92060,
-        "lid_back": 48173,
-        "lid_left": 27469
+        "lid_top": 80462,
+        "lid_back": 42183,
+        "lid_left": 22687
       },
       "bleed": {
-        "lid_back": 2
+        "lid_back": 14
       }
     },
     "iso_front_left": {
       "count": {
-        "lid_top": 75088,
-        "lid_front": 54557,
-        "lid_left": 41725
+        "lid_top": 65336,
+        "lid_front": 46992,
+        "lid_left": 32122
       },
       "bleed": {
-        "lid_left": 3
+        "lid_left": 2
       }
     },
     "iso_back_right": {
       "count": {
-        "lid_top": 75723,
-        "lid_back": 54132,
-        "lid_right": 41120
+        "lid_top": 65883,
+        "lid_back": 46730,
+        "lid_right": 31577
       },
       "bleed": {
-        "lid_right": 2
+        "lid_right": 1
       }
     },
     "axis_front": {
       "count": {
-        "lid_front": 97077
+        "lid_front": 84230
       },
-      "bleed": {}
+      "bleed": {
+        "lid_front": 8
+      }
     },
     "axis_back": {
       "count": {
-        "lid_back": 96892
+        "lid_back": 84268
       },
       "bleed": {}
     },
     "axis_left": {
       "count": {
-        "lid_left": 75373
+        "lid_left": 65550
       },
       "bleed": {
-        "lid_left": 7
+        "lid_left": 11
       }
     },
     "axis_right": {
       "count": {
-        "lid_right": 74246
+        "lid_right": 64915
       },
-      "bleed": {
-        "lid_right": 7
-      }
+      "bleed": {}
     },
     "top_down": {
       "count": {
-        "lid_top": 246162
+        "lid_top": 214419
       },
       "bleed": {}
     }
   },
-  "bleed_total_pixels": 32,
+  "bleed_total_pixels": 63,
   "mouse_orbit_zoom_changed_camera": true,
   "click_picks_top": "lid_top",
   "top_state_after_edit": {
@@ -105,10 +105,10 @@
   "closed_lift_mm": 0,
   "png_white": {
     "file": "08_export_white.png",
-    "bytes": 657877,
+    "bytes": 450281,
     "pngSignature": true,
-    "w": 2080,
-    "h": 1720,
+    "w": 1368,
+    "h": 1608,
     "corners": [
       [
         255,
@@ -138,10 +138,10 @@
   },
   "png_transparent": {
     "file": "08_export_transparent.png",
-    "bytes": 656361,
+    "bytes": 449856,
     "pngSignature": true,
-    "w": 2080,
-    "h": 1720,
+    "w": 1368,
+    "h": 1608,
     "corners": [
       [
         0,
@@ -170,10 +170,10 @@
     ]
   },
   "glb_saved_bytes": 305400,
-  "project_saved_bytes": 146674,
+  "project_saved_bytes": 146766,
   "error_message_bad_file": "이미지를 읽지 못했습니다. 파일이 손상되지 않았는지 확인해 주세요.",
   "console_errors_edit": [
-    "rm: 이미지를 읽지 못했습니다. 파일이 손상되지 않았는지 확인해 주세요.\n    at im (http://127.0.0.1:8766/assets/index-JIycUHhV.js:4234:90395)\n    at async qm (http://127.0.0.1:8766/assets/index-JIycUHhV.js:4234:96774)\n    at async Mm (http://127.0.0.1:8766/assets/index-JIycUHhV.js:4234:95480)"
+    "Zm: 이미지를 읽지 못했습니다. 파일이 손상되지 않았는지 확인해 주세요.\n    at Qm (http://127.0.0.1:8878/assets/index-DEBMX6iE.js:4237:93332)\n    at async Og (http://127.0.0.1:8878/assets/index-DEBMX6iE.js:4237:108123)\n    at async sg (http://127.0.0.1:8878/assets/index-DEBMX6iE.js:4237:106041)"
   ],
   "project_reopen_state_equal": true,
   "project_reopen_lift_mm": 80,
@@ -185,7 +185,7 @@
     "sample_lid_right.png"
   ],
   "viewer_glb_info": "exported_sabari_mockup.glb · 메시 14개 · 이미지가 붙은 재질 5개 · 몸통 160×110×43mm",
-  "viewer_lid_slider_visible": true,
+  "viewer_lid_slider_visible": "removed_in_task4",
   "viewer_mode_png_saved": true,
   "external_requests_blocked": []
 }

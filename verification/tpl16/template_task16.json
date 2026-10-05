@@ -1,0 +1,79 @@
+{
+ "card": {
+  "firstIsTemplateCard": true,
+  "title": "템플릿",
+  "items": [
+   {
+    "label": "사바리 박스 160×110×43",
+    "sub": "사용 중",
+    "disabled": false,
+    "checked": "true",
+    "role": "radio",
+    "id": "sabari-160-110-43-v2"
+   },
+   {
+    "label": "책자",
+    "sub": "준비 중",
+    "disabled": true,
+    "checked": "false",
+    "role": "radio",
+    "id": "booklet"
+   },
+   {
+    "label": "카드",
+    "sub": "준비 중",
+    "disabled": true,
+    "checked": "false",
+    "role": "radio",
+    "id": "card"
+   },
+   {
+    "label": "접지물",
+    "sub": "준비 중",
+    "disabled": true,
+    "checked": "false",
+    "role": "radio",
+    "id": "fold"
+   }
+  ],
+  "group": "radiogroup",
+  "hint": "지금은 사바리 박스 한 가지 템플릿만 쓸 수 있습니다. 다른 템플릿은 준비 중입니다."
+ },
+ "after_click_disabled": "sabari-160-110-43-v2",
+ "saved_templateId": "sabari-160-110-43-v2",
+ "reopen_active": "sabari-160-110-43-v2",
+ "legacy_missing": {
+  "opened": true,
+  "resavedTemplateId": "sabari-160-110-43-v2"
+ },
+ "legacy_v1": {
+  "opened": true,
+  "resavedTemplateId": "sabari-160-110-43-v2"
+ },
+ "legacy_v2": {
+  "opened": true,
+  "resavedTemplateId": "sabari-160-110-43-v2"
+ },
+ "legacy_schema2_opens": true,
+ "rejected": {
+  "unknown": {
+   "kind": "error",
+   "title": "처리할 수 없습니다",
+   "text": "지원하지 않는 템플릿의 프로젝트입니다. (mystery-box-v9)",
+   "banner": "지원하지 않는 템플릿의 프로젝트입니다. (mystery-box-v9)"
+  },
+  "booklet": {
+   "kind": "error",
+   "title": "처리할 수 없습니다",
+   "text": "지원하지 않는 템플릿의 프로젝트입니다. (booklet)",
+   "banner": "지원하지 않는 템플릿의 프로젝트입니다. (booklet)"
+  }
+ },
+ "future": "error",
+ "external_box_inert": true,
+ "errors": [
+  "Zm: 지원하지 않는 템플릿의 프로젝트입니다. (mystery-box-v9)\n    at ah (http://127.0.0.1:8881/assets/index-D4HKNTdS.js:4237:96381)\n    at async http://127.0.0.1:8881/assets/index-D4HKNTdS.js:4237:114153\n    at async sg",
+  "Zm: 지원하지 않는 템플릿의 프로젝트입니다. (booklet)\n    at ah (http://127.0.0.1:8881/assets/index-D4HKNTdS.js:4237:96381)\n    at async http://127.0.0.1:8881/assets/index-D4HKNTdS.js:4237:114153\n    at async sg (http:",
+  "Zm: 이 프로젝트는 현재 버전에서 열 수 없습니다. 앱을 업데이트해 주세요.\n    at ah (http://127.0.0.1:8881/assets/index-D4HKNTdS.js:4237:96296)\n    at async http://127.0.0.1:8881/assets/index-D4HKNTdS.js:4237:114153\n    at async s"
+ ]
+}

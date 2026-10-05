@@ -166,3 +166,89 @@ ${layer('안내선', '안내선: 여분·면 영역 (초록 점선)', guide)}
 </svg>
 `;
 }
+
+// ------------------------------------------------------------------ 아트보드 전체 이미지 + 인쇄소 칼선 프리셋
+/**
+ * 인쇄소가 보낸 실제 칼선(.ai)에서 뽑은 좌표(mm, 아트보드 좌상단 원점)로 면 영역을 정하는 프리셋.
+ * 좌표는 개발 중 tools/dieline_extract.py 로 뽑아 데이터로만 넣었다(앱은 .ai 를 읽지 않는다).
+ * 면 영역 = 패널·날개를 접이선까지 그대로(싸바리지 패널 117.4×167.4 전체). 접어 넣는 영역과 모서리 탭은 제외한다.
+ * 패널(싸바리지 여유 포함)과 3D 면(115×165)의 크기 차이는 면 이미지를 면 비율로 늘여 맞춘다(splitUi.cropFace, 가로 −2.0%·세로 −1.4%).
+ * 날개도 패널과 같은 구간(변 방향 전체)을 같은 비율로 줄이므로 패널·날개 경계(접이선)에서 그림이 어긋나지 않고 이어진다.
+ */
+export interface ArtboardPreset {
+  id: string;
+  label: string;
+  /** 아트보드 크기 mm (기본값, 입력으로 바꿀 수 있다) */
+  artboardMm: [number, number];
+  /** 이 프리셋이 전제하는 박스 치수 mm */
+  box: { baseW: number; baseD: number; baseH: number; lidH: number };
+  /** 이 칼선은 재단 여분이 칼선 바깥에 없으므로 0 이다 */
+  bleedMm: 0;
+  regionsMm: Record<DieKind, Record<string, Rect>>;
+}
+
+export const PRESET_SABARI_160_110_43: ArtboardPreset = {
+  id: 'sabari-160x110x43-20251027',
+  label: '싸바리 160×110×43 인쇄소 칼선(2025-10-27)',
+  artboardMm: [525.7, 349.0],
+  box: { baseW: 160, baseD: 110, baseH: 43, lidH: 38 },
+  bleedMm: 0,
+  regionsMm: {
+    lid: {
+      lid_top: { x: 77.04, y: 91.84, w: 117.4, h: 167.4 },
+      lid_back: { x: 39.04, y: 91.84, w: 38, h: 167.4 }, // 왼쪽 날개
+      lid_front: { x: 194.44, y: 91.84, w: 38, h: 167.4 }, // 오른쪽 날개
+      lid_right: { x: 77.04, y: 53.84, w: 117.4, h: 38 }, // 위 날개
+      lid_left: { x: 77.04, y: 259.24, w: 117.4, h: 38 }, // 아래 날개
+    },
+    base: {
+      base_bottom: { x: 330.27, y: 94.34, w: 112.4, h: 162.4 },
+      base_front: { x: 287.27, y: 94.34, w: 43, h: 162.4 },
+      base_back: { x: 442.67, y: 94.34, w: 43, h: 162.4 },
+      base_right: { x: 330.27, y: 51.34, w: 112.4, h: 43 },
+      base_left: { x: 330.27, y: 256.74, w: 112.4, h: 43 },
+    },
+  },
+};
+export const ARTBOARD_PRESETS = [PRESET_SABARI_160_110_43];
+/**
+ * 칼선 외곽에 딱 맞게 크롭한 이미지(재단 여분 없음)의 실제 크기(mm)와, 그 좌상단이
+ * 아트보드 원점에서 얼마나 떨어져 있는지(오프셋, mm). 2025-10-27 인쇄소 칼선을 실측해 뽑은 값이다.
+ * 면 배치는 ARTBOARD_PRESETS 의 regionsMm 을 그대로 재사용하고 이 오프셋만큼 평행이동해서 쓴다(중복 정의 금지).
+ * 이 크롭은 뚜껑 십자형만 포함하므로(몸통은 이 크롭 이미지에 없다) kind='lid' 에만 쓴다.
+ */
+export const CROP_SABARI_160_110_43_SIZE_MM: [number, number] = [232.0, 283.0];
+export const CROP_SABARI_160_110_43_OFFSET_MM: [number, number] = [19.74, 34.04];
+export const CROP_SABARI_160_110_43_LABEL = '칼선 외곽 크롭 이미지 · 싸바리 160×110×43 인쇄소 칼선(2025-10-27)';
+
+/** 칼선 외곽에 맞춘 크롭 이미지(픽셀)에서 각 면의 영역(픽셀). 아트보드 프리셋 데이터를 오프셋만큼 옮겨서 재사용한다. */
+export function cropRegions(p: ArtboardPreset, kind: DieKind, imgW: number, imgH: number, cropW: number, cropH: number, offsetMm: [number, number]): Record<string, Rect> {
+  const sx = imgW / cropW, sy = imgH / cropH;
+  const out: Record<string, Rect> = {};
+  for (const [id, r] of Object.entries(p.regionsMm[kind])) out[id] = { x: (r.x - offsetMm[0]) * sx, y: (r.y - offsetMm[1]) * sy, w: r.w * sx, h: r.h * sy };
+  return out;
+}
+
+/** 이미지 비율이 크롭 이미지의 실제 비율(기본 232:283)과 얼마나 다른지 (0.01 = 1%) */
+export function cropMismatch(imgW: number, imgH: number, cropW: number, cropH: number): number {
+  return Math.abs(imgW / imgH / (cropW / cropH) - 1);
+}
+
+
+/** 아트보드 전체 이미지(픽셀)에서 각 면의 영역(픽셀). 이미지 가로·세로를 아트보드 mm 에 각각 대응시킨다. */
+export function artboardRegions(p: ArtboardPreset, kind: DieKind, imgW: number, imgH: number, artW: number, artH: number): Record<string, Rect> {
+  const sx = imgW / artW, sy = imgH / artH;
+  const out: Record<string, Rect> = {};
+  for (const [id, r] of Object.entries(p.regionsMm[kind])) out[id] = { x: r.x * sx, y: r.y * sy, w: r.w * sx, h: r.h * sy };
+  return out;
+}
+
+/** 이미지 비율이 아트보드 비율과 얼마나 다른지 (0.01 = 1%) */
+export function artboardMismatch(imgW: number, imgH: number, artW: number, artH: number): number {
+  return Math.abs(imgW / imgH / (artW / artH) - 1);
+}
+
+/** 현재 박스 치수가 프리셋이 전제한 치수와 같은지 */
+export function presetBoxMatches(p: ArtboardPreset, b: { baseW: number; baseD: number; baseH: number; lidH: number }): boolean {
+  return b.baseW === p.box.baseW && b.baseD === p.box.baseD && b.baseH === p.box.baseH && b.lidH === p.box.lidH;
+}

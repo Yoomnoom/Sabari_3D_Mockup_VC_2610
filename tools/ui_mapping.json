@@ -1,0 +1,79 @@
+{
+  "_설명": "UI 개편 1단계(작업 12)에서 의도적으로 옮기거나 합친 항목. 기능 컨트롤(id가 있는 버튼·입력)은 모두 새 UI에 그대로 있고, 아래는 구조용 컨테이너와 제목뿐이다.",
+  "ids": {
+    "editSection": {
+      "to": "#tp-design / #tp-box (디자인·박스 탭)",
+      "reason": "편집 영역이 작업 탭으로 나뉨. 외부 GLB 중 비활성은 setExternalUi()가 두 탭에 inert를 건다"
+    },
+    "viewSection": {
+      "to": "#tp-view / #tp-export (보기·내보내기 탭)",
+      "reason": "뷰어 영역이 보기·내보내기 탭으로 나뉨"
+    },
+    "panelSplitter": {
+      "to": "(없음: 탭 구조로 대체)",
+      "reason": "편집·뷰어 위·아래 분할이 탭으로 바뀌어 스플리터가 필요 없음"
+    },
+    "panelTabs": {
+      "to": "#tabRail",
+      "reason": "900px 미만 편집|뷰어 탭이 4개 작업 탭(모바일은 하단 탭 바)으로 통합"
+    },
+    "tabPanelEdit": {
+      "to": "#tabDesign / #tabBox",
+      "reason": "편집 탭이 디자인·박스 탭으로 분리"
+    },
+    "tabPanelView": {
+      "to": "#tabView / #tabExport",
+      "reason": "뷰어 탭이 보기·내보내기 탭으로 분리"
+    },
+    "panelBody": {
+      "to": "#panelScroll",
+      "reason": "패널 본문 컨테이너(탭별 자체 스크롤)"
+    },
+    "saveBar": {
+      "to": "#tp-export (#expFiles)",
+      "reason": "맨 아래 고정 저장 줄이 내보내기 탭의 '파일 저장' 구역으로 이동. 그 안의 버튼(btnGlb, btnProjSave, btnProjOpen, btnDraftSave, btnDraftLoad, btnDraftClear)과 안내 문구는 id·문구 그대로 유지"
+    }
+  },
+  "texts": {
+    "편집": {
+      "to": "탭 '디자인'·'박스'",
+      "reason": "편집 영역 제목"
+    },
+    "뷰어": {
+      "to": "탭 '보기'·'내보내기'",
+      "reason": "뷰어 영역 제목"
+    },
+    "편집·뷰어 영역 크기 조절": {
+      "to": "(없음)",
+      "reason": "스플리터 제거"
+    },
+    "1. 면 선택": {
+      "to": "면 선택",
+      "reason": "번호 제거(카드 제목)"
+    },
+    "2. 이미지": {
+      "to": "이미지",
+      "reason": "번호 제거. 선택한 면 이름은 오른쪽 '선택한 면' 패널(#faceTitle)로 이동"
+    },
+    "앞면": {
+      "to": "하단 앞",
+      "reason": "면 이름 통일(작업 12): 하단 앞·뒤·좌·우·바닥. faceDefs.ts 한 곳에서 정의"
+    },
+    "뒷면": {
+      "to": "하단 뒤",
+      "reason": "면 이름 통일(작업 12): 하단 앞·뒤·좌·우·바닥. faceDefs.ts 한 곳에서 정의"
+    },
+    "왼쪽 면": {
+      "to": "하단 좌",
+      "reason": "면 이름 통일(작업 12): 하단 앞·뒤·좌·우·바닥. faceDefs.ts 한 곳에서 정의"
+    },
+    "오른쪽 면": {
+      "to": "하단 우",
+      "reason": "면 이름 통일(작업 12): 하단 앞·뒤·좌·우·바닥. faceDefs.ts 한 곳에서 정의"
+    },
+    "바닥": {
+      "to": "하단 바닥",
+      "reason": "면 이름 통일(작업 12): 하단 앞·뒤·좌·우·바닥. faceDefs.ts 한 곳에서 정의"
+    }
+  }
+}

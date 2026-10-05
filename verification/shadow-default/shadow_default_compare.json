@@ -1,0 +1,65 @@
+{
+  "default_after_change": {
+    "on": true,
+    "strength": 0.4,
+    "soft": 0.5,
+    "az": 225,
+    "el": 65
+  },
+  "visible_shadow_table": {
+    "iso": {
+      "before": {
+        "visibleOutsideBox": 5906,
+        "onBoxEdge": 983,
+        "ratioVsTopDown": 0.06
+      },
+      "after": {
+        "visibleOutsideBox": 138372,
+        "onBoxEdge": 939,
+        "ratioVsTopDown": 2.473
+      }
+    },
+    "left": {
+      "before": {
+        "visibleOutsideBox": 32722,
+        "onBoxEdge": 593,
+        "ratioVsTopDown": 0.334
+      },
+      "after": {
+        "visibleOutsideBox": 47778,
+        "onBoxEdge": 534,
+        "ratioVsTopDown": 0.854
+      }
+    },
+    "right": {
+      "before": {
+        "visibleOutsideBox": 1251,
+        "onBoxEdge": 569,
+        "ratioVsTopDown": 0.013
+      },
+      "after": {
+        "visibleOutsideBox": 70552,
+        "onBoxEdge": 531,
+        "ratioVsTopDown": 1.261
+      }
+    },
+    "top": {
+      "before": {
+        "visibleOutsideBox": 98104,
+        "onBoxEdge": 687
+      },
+      "after": {
+        "visibleOutsideBox": 55958,
+        "onBoxEdge": 1147
+      }
+    }
+  },
+  "restore_button": {
+    "on": true,
+    "strength": 0.4,
+    "soft": 0.5,
+    "az": 225,
+    "el": 65
+  },
+  "page_errors": []
+}

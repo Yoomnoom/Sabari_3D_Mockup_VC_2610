@@ -1,0 +1,206 @@
+{
+ "axes": [
+  {
+   "axis": "front",
+   "blueOn": 1350,
+   "blueOff": 0,
+   "blueOnAgain": 1350,
+   "line": true,
+   "lineVisible": false,
+   "hls": 4,
+   "hlVisible": false,
+   "lineVisibleOn": true,
+   "hlVisibleOn": true,
+   "hasLine": true
+  },
+  {
+   "axis": "back",
+   "blueOn": 1350,
+   "blueOff": 0,
+   "blueOnAgain": 1350,
+   "line": true,
+   "lineVisible": false,
+   "hls": 4,
+   "hlVisible": false,
+   "lineVisibleOn": true,
+   "hlVisibleOn": true,
+   "hasLine": true
+  },
+  {
+   "axis": "left",
+   "blueOn": 1398,
+   "blueOff": 0,
+   "blueOnAgain": 1398,
+   "line": true,
+   "lineVisible": false,
+   "hls": 4,
+   "hlVisible": false,
+   "lineVisibleOn": true,
+   "hlVisibleOn": true,
+   "hasLine": true
+  },
+  {
+   "axis": "right",
+   "blueOn": 1398,
+   "blueOff": 0,
+   "blueOnAgain": 1398,
+   "line": true,
+   "lineVisible": false,
+   "hls": 4,
+   "hlVisible": false,
+   "lineVisibleOn": true,
+   "hlVisibleOn": true,
+   "hasLine": true
+  },
+  {
+   "axis": "top",
+   "blueOn": 896,
+   "blueOff": 0,
+   "blueOnAgain": 896,
+   "line": true,
+   "lineVisible": false,
+   "hls": 2,
+   "hlVisible": false,
+   "lineVisibleOn": true,
+   "hlVisibleOn": true,
+   "hasLine": true
+  },
+  {
+   "axis": "bottom",
+   "blueOn": 896,
+   "blueOff": 0,
+   "blueOnAgain": 896,
+   "line": true,
+   "lineVisible": false,
+   "hls": 2,
+   "hlVisible": false,
+   "lineVisibleOn": true,
+   "hlVisibleOn": true,
+   "hasLine": true
+  },
+  {
+   "axis": "iso",
+   "blueOn": 0,
+   "blueOff": 0,
+   "blueOnAgain": 0,
+   "line": true,
+   "lineVisible": false,
+   "hls": 0,
+   "hlVisible": true,
+   "lineVisibleOn": true,
+   "hlVisibleOn": true,
+   "hasLine": true
+  }
+ ],
+ "quat": {
+  "angle30On": 29.999999999999996,
+  "angle30Off": 29.999999999999996,
+  "maxDiff30": 0,
+  "maxDiff0": 0,
+  "returnTo0On": 0,
+  "returnTo0Off": 0
+ },
+ "png": [
+  {
+   "bg": "white",
+   "mult": 1,
+   "n": 0,
+   "w": 1368,
+   "h": 1688,
+   "applied": 1
+  },
+  {
+   "bg": "transparent",
+   "mult": 1,
+   "n": 0,
+   "w": 1368,
+   "h": 1688,
+   "applied": 1
+  },
+  {
+   "bg": "white",
+   "mult": 2,
+   "n": 0,
+   "w": 2736,
+   "h": 3376,
+   "applied": 2
+  },
+  {
+   "bg": "transparent",
+   "mult": 2,
+   "n": 0,
+   "w": 2736,
+   "h": 3376,
+   "applied": 2
+  },
+  {
+   "bg": "white",
+   "mult": 4,
+   "n": 0,
+   "w": 5472,
+   "h": 6752,
+   "applied": 4
+  },
+  {
+   "bg": "transparent",
+   "mult": 4,
+   "n": 0,
+   "w": 5472,
+   "h": 6752,
+   "applied": 4
+  }
+ ],
+ "persist": {
+  "stored": "0",
+  "afterReload": {
+   "checked": "false",
+   "state": "꺼짐",
+   "vis": false
+  },
+  "otherKeys": 0
+ },
+ "glb": {
+  "on": {
+   "sha": "3fece7040cf1a4b983e2add19f683400db6f603412e9de54fb45a2301475da0e",
+   "bytes": 17608,
+   "hasLockName": false
+  },
+  "off": {
+   "sha": "3fece7040cf1a4b983e2add19f683400db6f603412e9de54fb45a2301475da0e",
+   "bytes": 17608,
+   "hasLockName": false
+  }
+ },
+ "initial": {
+  "checked": "true",
+  "disabled": false,
+  "state": "켜짐"
+ },
+ "canvasBlueWhileOn": 896,
+ "snapshotBlue": 0,
+ "keys": {
+  "afterGToggledOn": true,
+  "keysOffGUnchanged": true,
+  "clickWorksWhenKeysOff": true
+ },
+ "lockOff": {
+  "disabled": true,
+  "state": "축 잠금을 켜면 적용됩니다"
+ },
+ "checks": {
+  "sevenAxes": true,
+  "offZeroBlue": true,
+  "onShowsBlue": true,
+  "onAgainSame": true,
+  "objectsKeptWhenOff": true,
+  "quatInvariant": true,
+  "angle30": true,
+  "pngNoBlue": true,
+  "glbSame": true,
+  "persisted": true,
+  "keys": true,
+  "lockOffDisabled": true,
+  "noPageErrors": true
+ },
+ "errors": []
+}
