@@ -161,7 +161,7 @@ await p.click('#btnMore'); await p.click('#btnHelpOpen'); assert(await p.evaluat
 // ---- 9. ⋮ 더보기: 설명 문구·버전 줄·복사·외부 요청 없음 ----------------------------------------------------------------------------------
 await p.click('#btnMore'); await p.evaluate(() => { document.getElementById('dHelp').open = true; });
 R.more = await p.evaluate(() => ({ ver: document.getElementById('verLine').textContent, optKeys: !!document.getElementById('optKeys'), keysHint: document.querySelector('#optKeys').closest('label').textContent.includes('한글 입력기'), askHint: document.getElementById('optAskName').closest('label').textContent.includes('이 브라우저에만'), reset: !!document.getElementById('btnUiReset') }));
-assert(/^사바리 목업 스튜디오 v0.9.0 · [0-9a-z]{7} · 빌드 \d{4}-\d{2}-\d{2}$/.test(R.more.ver) && R.more.keysHint && R.more.askHint, JSON.stringify(R.more));
+assert(/^사바리 목업 스튜디오 v0\.9\.0 · [0-9a-z]{7} · 빌드 \d{4}-\d{2}-\d{2}$/.test(R.more.ver) && R.more.keysHint && R.more.askHint, JSON.stringify(R.more));
 await p.screenshot({ path: path.join(OUT, 'ui17_more_menu.png') });
 await p.click('#btnCopyVer'); await p.waitForTimeout(300);
 R.more.clipboard = await p.evaluate(() => navigator.clipboard.readText()).catch(() => null); if (R.more.clipboard !== null) assert.equal(R.more.clipboard, R.more.ver);
