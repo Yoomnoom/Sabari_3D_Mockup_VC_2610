@@ -166,7 +166,7 @@ await p.screenshot({ path: path.join(OUT, 'ui17_more_menu.png') });
 await p.click('#btnCopyVer'); await p.waitForTimeout(300);
 R.more.clipboard = await p.evaluate(() => navigator.clipboard.readText()).catch(() => null); if (R.more.clipboard !== null) assert.equal(R.more.clipboard, R.more.ver);
 await p.keyboard.press('Escape');
-R.pkg_version = JSON.parse(fs.readFileSync(path.join(ROOT, 'frontend', 'package.json'), 'utf-8')).version; assert.equal(R.pkg_version, '0.8.0');
+R.pkg_version = JSON.parse(fs.readFileSync(path.join(ROOT, 'frontend', 'package.json'), 'utf-8')).version; assert.equal(R.pkg_version, '0.9.0');
 
 // ---- 10. 칼선 분할 대화상자(시안 13~15 항목이 이미 있음: 로직 불변) -----------------------------------------------------------------------------
 await p.click('#tabDesign');
