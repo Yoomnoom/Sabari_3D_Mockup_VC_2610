@@ -458,3 +458,12 @@
 
 ### 작업 32B — 정보 위계 적용 (구현·검증 완료, 시각 승인 대기)
 - 보기·디자인·내보내기 탭과 칼선 분할 화면의 긴 안내 12개를 "짧은 한 줄 + 자세히 보기(원문 전체)"로 바꿨다(`tools/ui_apply_more.py`, 매핑 `tools/ui_text_map.json`). 공통 컴포넌트 `details.more`(Enter·Space, 44px 터치), 알림 4단계(`notify.ts` `NoteKind` info·warn·error·ok, 아이콘+글자), 비활성 이유 툴팁. 기능·기본값·버튼 이름·저장 형식 불변. 자세한 내용과 전후 표는 `.night/REPORT_32B.md`. `deploy/candidate-5` 재생성 대기(작업 34 뒤).
+
+## 배포 v0.9.0 (후보 검증 기록, 2026-10-06)
+- 상태: **⚠️ 사용자 승인 대기** — 이 기록 시점에 main·태그는 push하지 않았다(origin/main = `ad5ec15`, 버전 0.8.0). 후보는 origin/main의 자손이라 fast-forward 가능.
+- 후보: `deploy/candidate-5`(origin/main 기준 squash 1커밋 `55875b5` + 버전 0.9.0 `2f57cb7` + dist `70df939` + 시험 기대 문자열 2건). 빌드 정보 고정: SABARI_BUILD_HASH=`2f57cb7`, SABARI_BUILD_DATE=2026-10-06, dist `index-BPcmaSIF.js`·`index-FU803uh-.css`(임시 폴더 재빌드와 파일명 같음). 총 84.9MB, origin/main 대비 verification/ 변경 0.
+- 포함 작업(통합 브랜치 post-25 ~ post-34): 25 바닥 그림자·스튜디오 배경, 33 GLB 보기 입구, 29 알림·상태줄, 28 고급 색상, 27 칼선 방향 인식, 30 칼선 종류별 저장, 26 면 바탕 이미지, 31 다른 프로젝트에서 면 가져오기, 32A·32B 정보 위계(조사·적용), 34 소규모 수정 4건. 작업 26 요구 6(칼선 분할 연동)은 미구현.
+- `.sabari` schemaVersion: v0.8.0 = 6 → 25: 7 → 28: 8 → 27: 9 → 30: 10 → 26: 11. 이전 파일 열림, 미래 버전(99) 거부(전용 시험 통과).
+- 검증 결과: tsc 통과 · Vitest 124 통과/1 건너뜀(고객 .ai 필요) · pytest 13 · 기존 e2e 러너 67개 중 전용 시험 포함 통과(실패는 아래 표) · 36조합 0 bad · 큰 이미지 6209×4122 합성 열기 0.85초·적용 1.4초·RSS 최대 890MB · 4배 PNG(큰 창 8192×5266으로 한계 하향 안내) · 경계 픽셀 43/14·비면 메시 번짐 0/0(1040×900 캔버스) · GLB validator 4개 오류 0/경고 0 · ui_parity 사라짐 0 · 작업 28 same_as_before(post-25 비교) 통과.
+- 환경 한계·알려진 항목: (1) `draft_toast_task19.dirtyConfirm`은 v0.8.0 빌드에서도 같게 실패(회귀 아님). (2) `studio_bg_task25.glb_bytes_same`은 소프트웨어 렌더러에서 간헐 실패(post-25 빌드 0/4, 후보 3/6 통과; 후보 고유 회귀 아님). (3) `stage26c_count`는 러너 제외 단독 도구. (4) `dieline_real_check`는 고객 크롭 이미지가 필요해 합성만으로는 실행 불가(미실행), `dieline_real2`는 입력 파일이 없어 건너뜀. (5) 러너 제외 도구 `dieline_pan_measure_task21`·`glb_png_invariance_task12`는 측정용 단독 도구.
+- 미검증: 실제 GPU, 실제 PC·터치 기기, Vercel 배포본, 시각 승인(레이어 구역·방향 안내·가져오기·접기 UI·알림 4단계 모양, 모바일 시트).
