@@ -92,16 +92,16 @@ await p.evaluate(() => { const o = document.getElementById('optKeys'); o.checked
 R.menu = { viaMenu, menuExit, hIgnoredWhenKeysOff: hWithKeysOff === false, enteredKeysOff, escExitsEvenWhenKeysOff: escKeysOff };
 R.checks.menuAndEsc = viaMenu && menuExit && R.menu.hIgnoredWhenKeysOff && enteredKeysOff && escKeysOff;
 // ---------- 개별 설정 2개 ----------
-await p.evaluate(() => { for (const id of ['optRotBadge', 'optFloatViews']) { const o = document.getElementById(id); o.checked = false; o.dispatchEvent(new Event('change')); } });
+await p.evaluate(() => { const r = document.getElementById('optRotPlace'); r.value = 'off'; r.dispatchEvent(new Event('change')); const o = document.getElementById('optFloatViews'); o.checked = false; o.dispatchEvent(new Event('change')); }); // 작업 29: 회전 각도 배지 보기 → 표시 위치(끄기)
 const offState = await p.evaluate(() => ({ rot: getComputedStyle(document.getElementById('rotBadge')).display, fv: getComputedStyle(document.getElementById('floatViews')).display }));
 const btnViewWorks = await p.evaluate(() => { const b = document.querySelector('#tp-view [data-view="top"], #tp-view button'); return !!b; });
 await boot();
-const persisted = await p.evaluate(() => ({ rot: document.getElementById('optRotBadge').checked, fv: document.getElementById('optFloatViews').checked, rotDisp: getComputedStyle(document.getElementById('rotBadge')).display, fvDisp: getComputedStyle(document.getElementById('floatViews')).display }));
+const persisted = await p.evaluate(() => ({ rot: document.getElementById('optRotPlace').value === 'panel', fv: document.getElementById('optFloatViews').checked, rotDisp: getComputedStyle(document.getElementById('rotBadge')).display, fvDisp: getComputedStyle(document.getElementById('floatViews')).display }));
 const sv3 = await state(); await key('3'); const sv4 = await state();
 const q3 = [...sv3.q, ...sv3.cam], q4 = [...sv4.q, ...sv4.cam];
 R.settings = { offState, persisted, viewKeyWorksWithMenuOff: q4.some((x, i) => Math.abs(x - q3[i]) > 1e-6), btnViewWorks };
 R.checks.settings = offState.rot === 'none' && offState.fv === 'none' && persisted.rot === false && persisted.fv === false && persisted.fvDisp === 'none' && R.settings.viewKeyWorksWithMenuOff;
-await p.evaluate(() => { for (const id of ['optRotBadge', 'optFloatViews']) { const o = document.getElementById(id); o.checked = true; o.dispatchEvent(new Event('change')); } });
+await p.evaluate(() => { const r = document.getElementById('optRotPlace'); r.value = 'panel'; r.dispatchEvent(new Event('change')); const o = document.getElementById('optFloatViews'); o.checked = true; o.dispatchEvent(new Event('change')); });
 const onAgain = await p.evaluate(() => getComputedStyle(document.getElementById('floatViews')).display !== 'none');
 R.checks.settingsRestore = onAgain;
 // ---------- 터치 길게 누르기(오른쪽 위 모서리 1초) ----------

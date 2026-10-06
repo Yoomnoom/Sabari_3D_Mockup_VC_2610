@@ -9,11 +9,25 @@
 <body>
   <header id="topBar">
     <h1 class="brand">사바리 목업 스튜디오<span id="dirtyMark" class="dirty" hidden title="저장하지 않은 변경이 있습니다">● <span class="dirty-text">변경됨</span></span></h1>
+    <div id="notifyArea" aria-label="알림">
+      <div id="msg" role="alert" hidden><span id="msgLevel" class="msg-level"></span><span id="msgText"></span><button id="msgClose" aria-label="닫기">닫기</button></div>
+      <div id="extGlbBanner" role="status" hidden>
+        <span id="extGlbBannerText">외부 GLB를 보는 중</span>
+        <button id="btnExtGlbBack">내 작업으로 돌아가기</button>
+      </div>
+      <div id="draftToast" role="status" aria-live="polite" hidden>
+      <b class="dt-title">이전 임시저장이 있습니다</b>
+      <span id="draftToastText"></span>
+      <div class="dt-btns"><button id="btnDraftToastLoad" type="button" class="primary">불러오기</button><button id="btnDraftToastClose" type="button">닫기</button></div>
+    </div>
+      <div id="panHintTop" role="status" hidden>손 도구 (Space) — 끌어서 화면 이동</div>
+    </div>
     <div class="top-actions">
       <div class="menu-wrap">
         <button id="btnTopOpen" type="button" class="hide-mobile" aria-haspopup="true" aria-expanded="false" aria-controls="openMenu">열기 ▾</button>
         <div id="openMenu" class="popover" role="menu" hidden>
           <button id="btnTopProjOpen" type="button" role="menuitem">프로젝트 열기 (.sabari)</button>
+          <button id="btnTopImportFaces" type="button" role="menuitem">다른 프로젝트에서 면 가져오기 (.sabari)</button>
           <section>
             <h2>GLB 열기</h2>
             <p class="hint">이 앱에서 내보낸 GLB(또는 다른 GLB)를 불러와 봅니다. 파일을 3D 화면에 끌어놓아도 됩니다.</p>
@@ -39,11 +53,12 @@
       <label class="check"><input id="optAskName" type="checkbox" checked /> <span>저장할 때 이름 묻기 <small>끄면 기본 이름(예: 사바리_목업_날짜)으로 바로 저장합니다. 이 브라우저에만 기억됩니다.</small></span></label>
       <button id="btnCleanScreen" type="button" title="3D 화면만 남기고 모든 화면 요소를 숨깁니다 (H · 해제 H 또는 Esc)">깨끗한 화면(녹화용)</button>
       <button id="btnHelpOpen" type="button">단축키 · 마우스 조작 보기 (?)</button>
+      <button id="btnNotifyLog" type="button">최근 알림</button>
       <details class="sec" id="dHelp">
         <summary>설정 · 도움말</summary>
         <h3>설정</h3>
         <label class="check"><input id="optKeys" type="checkbox" checked /> <span>단축키 사용 <small>한글 입력기 등과 키가 겹치면 끄세요. (Space 화면 이동은 항상 사용)</small></span></label>
-        <label class="check"><input id="optRotBadge" type="checkbox" checked /> <span>회전 각도 배지 보기 <small>끄면 드래그 중 각도 표시가 나타나지 않습니다.</small></span></label>
+        <label class="check sel"><span>회전 각도 표시 위치</span> <select id="optRotPlace" aria-label="회전 각도 표시 위치"><option value="panel">왼쪽 패널</option><option value="view">3D 화면 위</option><option value="off">표시 안 함</option></select></label>
         <label class="check"><input id="optFloatViews" type="checkbox" checked /> <span>하단 플로팅 메뉴 보기 <small>끄더라도 시점 단축키와 보기 탭 버튼은 그대로 쓸 수 있습니다.</small></span></label>
         <button id="btnUiReset">접기·펼치기 상태 초기화</button>
 
@@ -66,6 +81,17 @@
       <div class="panel-head">
         <h2 id="panelTitle">면 디자인</h2>
         <button id="panelToggle" type="button" aria-controls="panel" aria-expanded="true" title="왼쪽 패널 접기/펴기" aria-label="◀ 패널 접기">‹</button>
+      </div>
+      <div id="ratioBanner" role="status" hidden>
+        <div class="rb-row">
+          <span id="ratioBannerText"><b>⚠ 비율 변경</b> · </span>
+          <span class="rb-btns">
+            <button id="btnRatioDetail" aria-expanded="false" aria-controls="ratioDetail">자세히</button>
+            <button id="btnRatioRevert">원래 사이즈로 되돌리기</button>
+            <button id="btnRatioClose" aria-label="비율 변경 알림 닫기">닫기</button>
+          </span>
+        </div>
+        <ul id="ratioDetail" hidden></ul>
       </div>
       <div id="panelScroll">
         <section class="tabpanel" id="tp-design" role="tabpanel" aria-labelledby="tabDesign">
@@ -92,22 +118,39 @@
               <input id="fileDieline" type="file" accept="image/png,image/jpeg,image/webp" hidden />
               <p id="dielineInfo" class="info">올린 칼선 이미지 없음</p>
               <button id="btnSplitEdit" disabled>분할 영역 조정</button>
-              <p class="hint">칼선 위에서 만든 디자인 한 장(PNG/JPG)을 면별로 자동으로 나눕니다. 접어 넣는 영역과 모서리 탭은 면에 포함되지 않습니다.<br><b>내보낼 때 칼선·안내선 레이어를 숨기고 sRGB PNG로 내보내세요.</b> 인쇄소 칼선 프리셋(아트보드 전체 이미지)은 재단 여분 0 기준입니다.</p>
+              <p class="hint short">칼선 위 디자인 한 장을 면별로 자동 분할합니다.</p>
+<details class="more"><summary>자세히 보기</summary><p class="hint more-body">칼선 위에서 만든 디자인 한 장(PNG/JPG)을 면별로 자동으로 나눕니다. 접어 넣는 영역과 모서리 탭은 면에 포함되지 않습니다.<br><b>내보낼 때 칼선·안내선 레이어를 숨기고 sRGB PNG로 내보내세요.</b> 인쇄소 칼선 프리셋(아트보드 전체 이미지)은 재단 여분 0 기준입니다.</p></details>
             </div>
           </section>
           <section id="faceSection">
             <h2>이미지</h2>
-            <div class="row">
+            <div class="row wrap">
               <button id="btnPick" class="primary">이미지 선택</button>
+              <button id="btnImportFaces" type="button" class="link" title="다른 .sabari 프로젝트에서 원하는 면만 가져옵니다. 현재 프로젝트는 고르는 동안 바뀌지 않습니다">다른 프로젝트에서 면 가져오기</button>
+              <input id="fileImport" type="file" accept=".sabari,application/zip" hidden />
               <input id="filePick" type="file" accept="image/png,image/jpeg,image/webp" hidden />
             </div>
             <canvas id="facePreview" aria-label="면 미리보기"></canvas>
             <p class="hint">미리보기를 끌어 위치를 옮길 수 있습니다.</p>
+            <section id="layerSection" class="layers" aria-label="레이어">
+              <h3>레이어</h3>
+              <ul id="layerList" role="listbox"></ul>
+              <div class="row wrap">
+                <button id="btnUnderAdd" type="button">바탕 이미지 추가</button>
+                <button id="btnUnderSwap" type="button" title="바탕 이미지와 디자인 이미지의 위아래를 바꿉니다">순서 바꾸기</button>
+                <button id="btnUnderDel" type="button">삭제</button>
+                <input id="fileUnder" type="file" accept="image/png,image/jpeg,image/webp" hidden />
+              </div>
+              <label class="slider">바탕 불투명도 (%) <input id="underOpR" type="range" min="0" max="100" step="1" value="100" /><input id="underOpN" type="number" min="0" max="100" step="1" value="100" /></label>
+              <button id="btnUnderAll" type="button">같은 바탕을 면에 적용</button>
+              <p id="underInfo" class="hint"></p>
+            </section>
             <div id="faceControls">
               <details class="grp" id="dFit" open>
                 <summary>맞춤 방식</summary>
                 <label><input type="radio" name="fit" value="contain" checked /> 이미지 전체 보이기</label>
                 <label><input type="radio" name="fit" value="cover" /> 면 전체 채우기</label>
+                <label id="fitTileLabel" hidden><input type="radio" name="fit" value="tile" /> 반복(타일)</label>
               </details>
 
               <details class="grp" id="dRot" open>
@@ -189,13 +232,33 @@
               <label class="swatch"><input id="colLid" type="color" value="#ffffff" /><span>뚜껑</span></label>
               <label class="swatch"><input id="colBase" type="color" value="#ffffff" /><span>몸통</span></label>
             </div>
-            <p class="hint">면 바탕 = 이미지 없는 면·여백 / 뚜껑 = 테두리·안쪽</p>
+            <p class="hint">면 바탕 = 이미지 없는 뚜껑 면·여백 / 뚜껑 = 테두리·안쪽 / 몸통 = 이미지 없는 하단 면·테두리·안쪽</p>
+            <details class="sec sub" id="dColorAdv">
+              <summary>고급 색상</summary>
+              <p class="hint">"같게"를 켜면 위의 뚜껑·몸통 색을 따릅니다. 끄면 그 항목만 따로 칠합니다.</p>
+              <div class="advrows" id="advRows" role="group" aria-label="고급 색상">
+                <div class="advrow"><span>뚜껑 테두리</span><label class="check"><input id="advChkLidRim" type="checkbox" checked /> <span>같게</span></label><input id="advColLidRim" type="color" value="#ffffff" aria-label="뚜껑 테두리 색" disabled /></div>
+                <div class="advrow"><span>뚜껑 안쪽</span><label class="check"><input id="advChkLidInner" type="checkbox" checked /> <span>같게</span></label><input id="advColLidInner" type="color" value="#ffffff" aria-label="뚜껑 안쪽 색" disabled /></div>
+                <div class="advrow"><span>몸통 바깥 면</span><label class="check"><input id="advChkBaseFace" type="checkbox" checked /> <span>같게</span></label><input id="advColBaseFace" type="color" value="#ffffff" aria-label="몸통 바깥 면 색" disabled /></div>
+                <div class="advrow"><span>몸통 테두리</span><label class="check"><input id="advChkBaseRim" type="checkbox" checked /> <span>같게</span></label><input id="advColBaseRim" type="color" value="#ffffff" aria-label="몸통 테두리 색" disabled /></div>
+                <div class="advrow"><span>몸통 안쪽</span><label class="check"><input id="advChkBaseInner" type="checkbox" checked /> <span>같게</span></label><input id="advColBaseInner" type="color" value="#ffffff" aria-label="몸통 안쪽 색" disabled /></div>
+              </div>
+            </details>
             <button id="btnColorReset">색상 기본값</button>
           </details>
           </div>
         </section>
         <section class="tabpanel" id="tp-view" role="tabpanel" aria-labelledby="tabView" hidden>
           <div class="tp-body">
+          <div class="glb-entry" id="glbEntry">
+            <div class="ge-head"><strong id="glbEntryTitle">GLB 보기</strong><button id="btnGlbEntryHelp" type="button" class="link ge-help" aria-expanded="false" aria-controls="glbEntryHelp" aria-label="GLB 보기 도움말" title="도움말">?</button></div>
+            <p id="glbEntryHelp" class="hint" hidden>이 앱에서 내보낸 GLB나 다른 GLB를 열어 봅니다. 파일을 3D 화면에 끌어놓아도 열립니다.</p>
+            <div class="ge-row">
+              <button id="btnOpenGlbView" type="button" data-proxy="btnOpenGlb">GLB 파일 열기</button>
+              <button id="btnExtGlbBackView" type="button" hidden>내 작업으로 돌아가기</button>
+              <span id="glbInfoView" class="info ge-info" role="status">불러온 파일 없음</span>
+            </div>
+          </div>
           <details class="sec" id="dView" open>
             <summary>보기 <button id="btnFit" class="link fit" title="확대·이동을 처음 상태로 (F)">위치 초기화 (F)</button></summary>
             <div class="grid3">
@@ -208,7 +271,6 @@
               <button id="btnIso" data-view="iso" title="한 번 더 누르면 반대편 모서리(뒤·왼쪽 날개)로 바뀝니다">3/4 시점</button>
               </div>
 
-            <p class="rotread" id="rotReadout" role="status"><b>회전 상태</b> <span id="rotReadoutText">자유 회전 · 좌우 +0° · 위아래 +0°</span></p>
 
             <div class="viewpresets" id="viewPresets">
               <b>저장된 시점</b>
@@ -243,7 +305,8 @@
                 <button class="vp-fixed" type="button" data-side="left" title="박스를 세워 왼쪽 옆면이 보이게 합니다 (Alt+6)">세운 3/4 · 왼쪽 옆면</button>
                 <button class="vp-fixed" type="button" data-side="right" title="박스를 세워 오른쪽 옆면이 보이게 합니다">세운 3/4 · 오른쪽 옆면</button>
               </div>
-              <p class="hint">카드 클릭: 불러오기 · 저장: 지금 시점으로 덮어쓰기 · 외부 GLB를 보는 중에는 쓸 수 없습니다. 바꿀 수 있으면 <kbd>Alt+1</kbd>~<kbd>Alt+5</kbd>.</p>
+              <p class="hint short">카드를 누르면 불러오고, 저장은 덮어씁니다.</p>
+<details class="more"><summary>자세히 보기</summary><p class="hint more-body">카드 클릭: 불러오기 · 저장: 지금 시점으로 덮어쓰기 · 외부 GLB를 보는 중에는 쓸 수 없습니다. 바꿀 수 있으면 <kbd>Alt+1</kbd>~<kbd>Alt+5</kbd>.</p></details>
             </div>
 
             <div class="rotdir"><button id="lockToggle" aria-pressed="false" title="켜고 회전축 버튼을 누르거나 박스의 면을 누르면 그 축으로만 돕니다">축 잠금</button></div>
@@ -257,7 +320,8 @@
             <div class="axisguide" id="axisGuideRow">
               <button id="axisGuideToggle" type="button" role="switch" aria-checked="true" disabled title="축 선 보기 (G)"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg><span>축 선 보기</span></button>
               <span class="hint" id="axisGuideState">축 잠금을 켜면 적용됩니다</span>
-              <p class="hint">축 잠금 중 3D 화면에 보이는 파란 축 선과 면 윤곽선을 켜고 끕니다. 끄더라도 축 잠금은 그대로 동작합니다. 화면 전용이며 PNG·GLB에는 들어가지 않습니다.</p>
+              <p class="hint short">축 선은 화면에서만 보입니다.</p>
+<details class="more"><summary>자세히 보기</summary><p class="hint more-body">축 잠금 중 3D 화면에 보이는 파란 축 선과 면 윤곽선을 켜고 끕니다. 끄더라도 축 잠금은 그대로 동작합니다. 화면 전용이며 PNG·GLB에는 들어가지 않습니다.</p></details>
             </div>
 
             <details class="grp" id="dAngle">
@@ -272,13 +336,16 @@
             </details>
 
             <p class="hint" id="lockHint" hidden></p>
-            <p class="hint">시점 버튼은 박스를 기본 자세로 되돌리고 방향만 바꾸며 확대는 유지합니다. 처음처럼 전체를 보려면 <kbd>F</kbd> 또는 위치 초기화.<br>3/4 시점을 한 번 더 누르면 반대편 모서리로 바뀝니다. <kbd>R</kbd> 앞·오른쪽 날개 / <kbd>L</kbd> 뒤·왼쪽 날개</p>
-            <p class="hint">드래그: 박스 자유 회전(제한 없음) · <kbd>Ctrl</kbd>+드래그: 15° 단위 · 휠: 확대/축소 · Space+드래그: 이동</p>
+            <p class="hint short">시점 버튼은 방향만 바꾸고 확대는 유지합니다.</p>
+<details class="more"><summary>자세히 보기</summary><p class="hint more-body">시점 버튼은 박스를 기본 자세로 되돌리고 방향만 바꾸며 확대는 유지합니다. 처음처럼 전체를 보려면 <kbd>F</kbd> 또는 위치 초기화.<br>3/4 시점을 한 번 더 누르면 반대편 모서리로 바뀝니다. <kbd>R</kbd> 앞·오른쪽 날개 / <kbd>L</kbd> 뒤·왼쪽 날개</p></details>
+            <p class="hint short">드래그로 회전하고 휠로 확대합니다.</p>
+<details class="more"><summary>자세히 보기</summary><p class="hint more-body">드래그: 박스 자유 회전(제한 없음) · <kbd>Ctrl</kbd>+드래그: 15° 단위 · 휠: 확대/축소 · Space+드래그: 이동</p></details>
             <details class="grp" id="dLight">
               <summary>조명 (음영)</summary>
               <div class="row"><button id="shadeToggle" type="button" aria-pressed="true" class="grow">음영 숨기기</button></div>
               <label class="slider">음영 세기 (%) <input id="shadeR" type="range" min="0" max="100" step="1" value="30" /><input id="shadeN" type="number" min="0" max="100" step="1" value="30" /></label>
-              <p class="hint">넣은 색은 카메라를 마주 보는 면에서 그대로 보입니다. 음영은 비스듬한 면을 어둡게만 하고 색을 밝히지 않으며, 0%면 모든 각도에서 평면 색 그대로입니다. 이 설정은 이 브라우저에만 기억되고 파일(.sabari·GLB·임시저장)에는 저장되지 않습니다.</p>
+              <p class="hint short">카메라를 마주 보는 면은 입력 색 그대로 보입니다.</p>
+<details class="more"><summary>자세히 보기</summary><p class="hint more-body">넣은 색은 카메라를 마주 보는 면에서 그대로 보입니다. 음영은 비스듬한 면을 어둡게만 하고 색을 밝히지 않으며, 0%면 모든 각도에서 평면 색 그대로입니다. 이 설정은 이 브라우저에만 기억되고 파일(.sabari·GLB·임시저장)에는 저장되지 않습니다.</p></details>
               <b class="lightdir-title">빛 방향</b>
                 <label class="slider">빛 방향 좌우 (°) <input id="shAzR" type="range" min="0" max="360" step="1" value="225" /><input id="shAzN" type="number" min="0" max="360" step="1" value="225" /></label>
                 <label class="slider">빛 높이 (°) <input id="shElR" type="range" min="20" max="80" step="1" value="65" /><input id="shElN" type="number" min="20" max="80" step="1" value="65" /></label>
@@ -287,6 +354,9 @@
 
                           <div class="row"><button id="shadowToggle" type="button" aria-pressed="false" class="grow">바닥 그림자 보기</button></div>
               <div id="shadowCtl" hidden>
+                <label class="slider">그림자 스타일 <select id="shStyle" aria-describedby="shStyleHint"><option value="default">기본(현재와 같음)</option><option value="studio">스튜디오 소프트</option><option value="contact">접촉 위주</option></select></label>
+                <p class="hint short">스타일에 따라 번지는 정도가 다릅니다.</p>
+<details class="more"><summary>자세히 보기</summary><p class="hint more-body" id="shStyleHint">스튜디오 소프트는 낮은 빛에서 길고 부드럽게 번지고, 접촉 위주는 바닥 가까이 약하게 번집니다. 조작을 멈추면 잠시 뒤 더 부드럽게 다듬어지고, PNG 저장은 다듬기가 끝난 뒤 합니다.</p></details>
                 <label class="slider">세기 (%) <input id="shStrR" type="range" min="0" max="100" step="1" value="40" /><input id="shStrN" type="number" min="0" max="100" step="1" value="40" /></label>
                 <label class="slider">부드러움 (%) <input id="shSoftR" type="range" min="0" max="100" step="1" value="50" /><input id="shSoftN" type="number" min="0" max="100" step="1" value="50" /></label>
                 <div class="row"><button id="shDefault" type="button">기본값 복원</button></div>
@@ -301,10 +371,21 @@
               <button id="bgKindWhite" type="button" data-bgkind="white" aria-pressed="true">흰색</button>
               <button id="bgKindSolid" type="button" data-bgkind="solid" aria-pressed="false">단색</button>
               <button id="bgKindImage" type="button" data-bgkind="image" aria-pressed="false">이미지</button>
+              <button id="bgKindStudio" type="button" data-bgkind="studio" aria-pressed="false">스튜디오</button>
             </div>
             <div id="bgTransparentCtl" hidden>
               <button id="bgChecker" type="button" aria-pressed="false">체크무늬 어둡게</button>
               <p class="hint">투명 배경의 체크무늬는 화면에만 보이고 저장 PNG에는 들어가지 않습니다.</p>
+            </div>
+            <div id="bgStudioCtl" hidden>
+              <label class="swatch inline"><input id="bgStudioWall" type="color" value="#ffffff" aria-label="벽 색" /><span>벽 색</span></label>
+              <div class="bgchips" id="bgStudioWallChips" role="group" aria-label="벽 빠른 색"></div>
+              <label class="swatch inline"><input id="bgStudioFloor" type="color" value="#ffffff" aria-label="바닥 색" /><span>바닥 색</span></label>
+              <div class="bgchips" id="bgStudioFloorChips" role="group" aria-label="바닥 빠른 색"></div>
+              <label class="slider">비네팅 (%) <input id="bgVigR" type="range" min="0" max="100" step="1" value="10" /><input id="bgVigN" type="number" min="0" max="100" step="1" value="10" /></label>
+              <button id="bgHorizonAuto" type="button" role="switch" aria-checked="true">수평선 자동(카메라 기울기를 따라 이동)</button>
+              <label class="slider">수평선 위치 (%) <input id="bgHorR" type="range" min="0" max="100" step="1" value="60" /><input id="bgHorN" type="number" min="0" max="100" step="1" value="60" /></label>
+              <p class="hint">스튜디오 배경은 화면과 "화면 그대로" PNG에만 들어가고 GLB에는 들어가지 않습니다. 투명 PNG에는 배경이 없습니다.</p>
             </div>
             <div id="bgSolidCtl" hidden>
               <div class="bgchips" id="bgChips" role="group" aria-label="빠른 색"></div>
@@ -324,7 +405,8 @@
               <b class="bgsamples-title">샘플 배경</b>
               <div class="bgsamples" id="bgSamples" role="group" aria-label="샘플 배경"></div>
             </div>
-            <p class="hint">배경은 화면에만 보이고 GLB에는 들어가지 않습니다. 박스를 돌려도 배경은 화면에 고정됩니다. PNG 저장에서 "화면 그대로"를 고르면 배경이 함께 저장됩니다. 단축키 <kbd>B</kbd>로 순환합니다.</p>
+            <p class="hint short">배경은 화면에만 보이고 GLB에는 들어가지 않습니다.</p>
+<details class="more"><summary>자세히 보기</summary><p class="hint more-body">배경은 화면에만 보이고 GLB에는 들어가지 않습니다. 박스를 돌려도 배경은 화면에 고정됩니다. PNG 저장에서 "화면 그대로"를 고르면 배경이 함께 저장됩니다. 단축키 <kbd>B</kbd>로 순환합니다.</p></details>
           </details>
           <details class="sec" id="dEdge">
             <summary>경계 점검</summary>
@@ -336,7 +418,8 @@
               </div>
               <button id="edgeAlpha" type="button" aria-pressed="false">알파 마스크 보기</button>
             </div>
-            <p class="hint">화면 전용이며 PNG·GLB에는 들어가지 않습니다. 켜고 마우스를 3D 화면 위에 올리면 그 부분을 확대해 보여 주고, 알파 마스크는 박스의 불투명도만 흑백으로 보여 줍니다. 회전·확대는 그대로 쓸 수 있습니다.</p>
+            <p class="hint short">화면 전용이며 PNG·GLB에는 들어가지 않습니다.</p>
+<details class="more"><summary>자세히 보기</summary><p class="hint more-body">화면 전용이며 PNG·GLB에는 들어가지 않습니다. 켜고 마우스를 3D 화면 위에 올리면 그 부분을 확대해 보여 주고, 알파 마스크는 박스의 불투명도만 흑백으로 보여 줍니다. 회전·확대는 그대로 쓸 수 있습니다.</p></details>
           </details>
           </div>
         </section>
@@ -361,7 +444,8 @@
               <button id="btnDieLid" class="grow">뚜껑 칼선 SVG</button>
               <button id="btnDieBase" class="grow">하단 칼선 SVG</button>
             </div>
-            <p class="hint">현재 치수로 만든 1:1(mm) SVG입니다. 재단선(빨강 실선)·접는선(파랑 점선)·안내선(초록 점선)이 레이어로 나뉩니다.</p>
+            <p class="hint short">현재 치수 기준 1:1(mm) SVG입니다.</p>
+<details class="more"><summary>자세히 보기</summary><p class="hint more-body">현재 치수로 만든 1:1(mm) SVG입니다. 재단선(빨강 실선)·접는선(파랑 점선)·안내선(초록 점선)이 레이어로 나뉩니다.</p></details>
           </details>
           </div>
           <section id="expFiles">
@@ -372,13 +456,19 @@
                   <div class="draft">
                     <div class="row"><button id="btnDraftSave" class="grow">임시저장</button><button id="btnDraftLoad" class="grow" disabled>불러오기</button></div>
                     <p id="draftInfo" class="info">임시저장 없음</p>
-                    <p class="hint">변경 후 자동 보관 · 이 브라우저에만 저장됩니다. 파일로 보관하려면 프로젝트 저장(.sabari)을 쓰세요.</p>
+                    <p class="hint short">임시저장은 현재 브라우저에만 보관됩니다.</p>
+<details class="more"><summary>자세히 보기</summary><p class="hint more-body">변경 후 자동 보관 · 이 브라우저에만 저장됩니다. 파일로 보관하려면 프로젝트 저장(.sabari)을 쓰세요.</p></details>
                     <button id="btnDraftClear">임시저장 삭제</button>
                   </div>
                   <p class="hint">파일은 브라우저 다운로드 폴더에 저장됩니다.</p>
           </section>
           </div>
         </section>
+      </div>
+      <div id="statusBar" role="group" aria-label="상태 표시줄">
+        <span id="statusRot" aria-live="off"><span id="rotReadout"><span id="rotReadoutText">자유 회전 · 좌우 +0.0° · 위아래 +0.0°</span></span></span>
+        <span id="panBadge" aria-live="polite">손 도구 (Space) — 끌어서 화면 이동</span>
+        <span id="zoomReadout" aria-live="off">확대 100%</span>
       </div>
     </aside>
   <main id="stage">
@@ -387,24 +477,7 @@
     <canvas id="edgeMask" aria-hidden="true" hidden></canvas>
     <div id="edgeLoupe" aria-hidden="true" hidden><canvas id="edgeLoupeCv" width="200" height="200"></canvas><span id="edgeLoupeLabel">4배</span></div>
     <div id="rotBadge" role="status" hidden></div>
-    <div id="panBadge" aria-live="polite">손 도구 (Space) — 끌어서 화면 이동</div>
     <div id="overlayTop">
-      <div id="msg" role="alert" hidden><span id="msgText"></span><button id="msgClose" aria-label="닫기">닫기</button></div>
-      <div id="extGlbBanner" role="status" hidden>
-        <span id="extGlbBannerText">외부 GLB를 보는 중</span>
-        <button id="btnExtGlbBack">내 작업으로 돌아가기</button>
-      </div>
-      <div id="ratioBanner" role="status" hidden>
-        <div class="rb-row">
-          <span id="ratioBannerText"><b>⚠ 비율 변경</b> · </span>
-          <span class="rb-btns">
-            <button id="btnRatioDetail" aria-expanded="false" aria-controls="ratioDetail">자세히</button>
-            <button id="btnRatioRevert">원래 사이즈로 되돌리기</button>
-            <button id="btnRatioClose" aria-label="비율 변경 알림 닫기">닫기</button>
-          </span>
-        </div>
-        <ul id="ratioDetail" hidden></ul>
-      </div>
     </div>
     <button id="panelExpand" type="button" aria-controls="panel" aria-label="▶ 패널 펴기" title="왼쪽 패널 펴기" hidden>›</button>
     <div id="floatViews" role="group" aria-label="빠른 시점">
@@ -412,11 +485,6 @@
       <button id="fvIso" type="button">3/4</button>
       <button id="fvStanding" type="button" title="박스를 세워 옆면이 보이게 합니다 (Alt+6)">세운 3/4</button>
       <button id="fvFit" type="button" title="확대·이동을 처음 상태로 (F)">위치 초기화</button>
-    </div>
-    <div id="draftToast" role="status" aria-live="polite" hidden>
-      <b class="dt-title">이전 임시저장이 있습니다</b>
-      <span id="draftToastText"></span>
-      <div class="dt-btns"><button id="btnDraftToastLoad" type="button" class="primary">불러오기</button><button id="btnDraftToastClose" type="button">닫기</button></div>
     </div>
     <div id="loading" hidden>처리 중…</div>
     <div id="dropHint" hidden>여기에 놓으면 불러옵니다 (이미지 · .glb · .sabari)</div>
@@ -460,11 +528,17 @@
       <label>칼선 종류 <select id="splitKind"><option value="lid">뚜껑(십자형)</option><option value="base">하단 몸통</option></select></label>
       <label>재단 여분 (mm) <input id="splitBleed" type="number" step="0.5" min="0" max="50" /></label>
       <button id="btnSplitAuto">자동 배치로 되돌리기</button>
+      <span class="split-rot" role="group" aria-label="이미지 돌리기"><span class="hint">이미지 돌리기</span><button id="btnRotL" type="button" title="이미지를 왼쪽으로 90° 돌립니다">90° 왼쪽</button><button id="btnRotR" type="button" title="이미지를 오른쪽으로 90° 돌립니다">90° 오른쪽</button><button id="btnRot180" type="button" title="이미지를 180° 돌립니다">180°</button></span>
       <span class="split-all-move"><span class="hint">영역 전체 이동·확대</span><button id="btnRegAllLeft" title="전체 왼쪽으로">◀</button><button id="btnRegAllRight" title="전체 오른쪽으로">▶</button><button id="btnRegAllUp" title="전체 위로">▲</button><button id="btnRegAllDown" title="전체 아래로">▼</button><button id="btnRegAllSmaller" title="전체 축소">－</button><button id="btnRegAllBigger" title="전체 확대">＋</button></span>
+    </div>
+    <div id="splitOrient" class="split-orient" hidden>
+      <div class="split-orient-line"><p id="splitOrientMsg" role="status"></p><button id="btnOrientFlip" type="button" hidden>방향 바꾸기</button><button id="btnOrientRevert" type="button" hidden>원래대로</button><button id="btnOrientOk" type="button" hidden>이 방향이 맞습니다</button></div>
+      <div id="splitOrientCands" class="split-orient-cands" role="group" aria-label="방향 후보" hidden></div>
     </div>
     <p id="splitWarn" class="err" role="alert" hidden></p>
     <div id="splitViewport" tabindex="0" aria-label="칼선 이미지 화면(방향키로 이동)"><div id="splitStage"><img id="splitImg" alt="올린 칼선 이미지" draggable="false" /><svg id="splitSvg" role="img" aria-label="면 영역 조정"></svg></div><div id="splitSbH" class="split-sb split-sb-h" hidden aria-hidden="true"><i></i></div><div id="splitSbV" class="split-sb split-sb-v" hidden aria-hidden="true"><i></i></div></div>
-    <div class="split-statusrow"><p id="splitStatus" class="hint"></p><p id="splitPanHint" class="hint" title="손 도구(Space)·가운데 버튼·스크롤바·방향키로 이동 · 확대는 +/− 키·휠 · 선택 영역 보기 Z · Alt+방향키로 선택 영역 1px 이동(Shift 10px)">손 도구(Space)·가운데 버튼·스크롤바·방향키로 이동 · 확대는 +/− 키·휠 · 선택 영역 보기 Z · Alt+방향키로 선택 영역 1px 이동(Shift 10px)</p></div>
+    <div class="split-statusrow"><p id="splitStatus" class="hint"></p><p class="hint short">이동: 손 도구(Space) · 확대: +/− 키·휠</p>
+<details class="more"><summary>자세히 보기</summary><p id="splitPanHint" class="hint more-body" title="손 도구(Space)·가운데 버튼·스크롤바·방향키로 이동 · 확대는 +/− 키·휠 · 선택 영역 보기 Z · Alt+방향키로 선택 영역 1px 이동(Shift 10px)">손 도구(Space)·가운데 버튼·스크롤바·방향키로 이동 · 확대는 +/− 키·휠 · 선택 영역 보기 Z · Alt+방향키로 선택 영역 1px 이동(Shift 10px)</p></details></div>
     <div class="split-footer">
       <div class="split-foot-top">
       <div id="splitRegionEdit" class="split-regedit" role="group" aria-label="선택한 영역 위치·크기 (px)">
@@ -475,8 +549,28 @@
       </div>
       <div class="row"><button id="btnSplitApply" class="primary">면에 적용</button><button id="btnSplitCancel">취소</button></div>
       </div>
+      <p id="splitKindNote" class="hint" role="status"></p>
       <div id="splitList"></div>
     </div>
+  </dialog>
+  <dialog id="importDlg" aria-labelledby="importTitle">
+    <h2 id="importTitle">다른 프로젝트에서 면 가져오기 <small id="importTitleName"></small></h2>
+    <p id="importDims" class="hint"></p>
+    <p id="importDimsWarn" class="err" role="status" hidden>면 크기가 달라 비율이 다를 수 있습니다.</p>
+    <div class="row wrap">
+      <button id="impQuickLid" type="button">뚜껑 5면</button><button id="impQuickBase" type="button">하단 5면</button><button id="impQuickAll" type="button">이미지 있는 면 모두</button><button id="impQuickNone" type="button">선택 해제</button>
+      <span id="importCount" class="hint" role="status"></span>
+    </div>
+    <div id="importGrid" class="imp-grid" role="group" aria-label="가져올 면 (방향키로 이동, 스페이스로 선택)"></div>
+    <div class="imp-opts">
+      <label class="check"><input id="impTransform" type="checkbox" checked /> <span>이미지 위치·확대·회전 설정도 가져오기</span></label>
+      <label class="check"><input id="impBgColor" type="checkbox" /> <span>면 바탕색도 가져오기</span></label>
+      <label id="impOptDieline" class="check" hidden><input id="impDieline" type="checkbox" checked /> <span>칼선 분할 설정도 가져오기</span></label>
+      <label id="impOptUnderlay" class="check" hidden><input id="impUnderlay" type="checkbox" checked /> <span>바탕 이미지 레이어도 가져오기</span></label>
+      <label id="impOptParams" class="check" hidden><input id="impParams" type="checkbox" /> <span>박스 치수도 가져오기</span></label>
+    </div>
+    <p id="importWarn" class="err" role="alert" hidden></p>
+    <div class="row dlg-actions"><button id="btnImportApply" class="primary" type="button">가져오기</button><button id="btnImportCancel" type="button">취소</button></div>
   </dialog>
   <dialog id="saveDlg" aria-labelledby="saveDlgTitle">
     <h2 id="saveDlgTitle">저장 이름</h2>
@@ -493,6 +587,12 @@
     <div class="row dlg-actions"><button id="msgDlgOk" class="primary" type="button">확인</button><button id="msgDlgCancel" type="button">취소</button></div>
   </dialog>
 
+  <dialog id="notifyDlg" aria-labelledby="notifyDlgTitle">
+    <h2 id="notifyDlgTitle">최근 알림</h2>
+    <ul id="notifyList"></ul>
+    <p id="notifyEmpty" class="hint" hidden>아직 알림이 없습니다.</p>
+    <div class="dlg-btns"><button id="btnNotifyDlgClose" type="button" class="primary">닫기</button></div>
+  </dialog>
   <dialog id="helpDlg" aria-labelledby="helpDlgTitle">
     <h2 id="helpDlgTitle">단축키 · 마우스 조작</h2>
 
@@ -506,6 +606,8 @@
           <tr><td><kbd>0</kbd></td><td>3/4 시점 (누를 때마다 R ↔ L)</td></tr>
           <tr><td><kbd>F</kbd></td><td>위치 초기화 (확대·이동을 처음 상태로, 방향은 유지)</td></tr>
           <tr><td><kbd>G</kbd></td><td>축 선 보기 켜기/끄기 (축 잠금을 켠 동안)</td></tr>
+          <tr><td>보기 탭 · 바닥 그림자</td><td>그림자 스타일: 기본 / 스튜디오 소프트 / 접촉 위주 (조작을 멈추면 더 부드럽게 다듬어집니다)</td></tr>
+          <tr><td>보기 탭 · 배경</td><td>스튜디오: 벽·바닥 색, 비네팅, 수평선 위치(자동/고정)</td></tr>
           <tr><td><kbd>H</kbd></td><td>깨끗한 화면(녹화용) 켜기/끄기 — 3D 화면만 남깁니다</td></tr>
           <tr><td><kbd>Esc</kbd></td><td>깨끗한 화면 해제 (단축키 사용을 꺼도 항상 동작)</td></tr>
           <tr><td><kbd>B</kbd></td><td>배경 순환 (흰색 → 투명 → 단색 → 이미지)</td></tr>

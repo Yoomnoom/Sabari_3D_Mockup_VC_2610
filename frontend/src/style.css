@@ -415,3 +415,123 @@ body.clean-screen #appBody { width: 100%; }
 body.clean-screen #stage { flex: 1 1 100%; width: 100%; height: 100%; }
 body.hide-rotbadge #rotBadge { display: none !important; }
 body.hide-floatviews #floatViews { display: none !important; }
+
+/* 작업 33: 보기 탭 맨 위 "GLB 보기" 한 줄 */
+.glb-entry { padding: 6px 2px 8px; border-bottom: 1px solid var(--line, #e3e3e3); margin-bottom: 6px; }
+.glb-entry .ge-head { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+.glb-entry .ge-help { min-width: 22px; min-height: 22px; padding: 0 6px; border-radius: 11px; }
+.glb-entry .ge-row { display: flex; align-items: center; gap: 8px; min-width: 0; flex-wrap: nowrap; }
+.glb-entry .ge-row > button { flex: 0 0 auto; white-space: nowrap; }
+.glb-entry .ge-info { flex: 1 1 0; min-width: 0; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.glb-entry .hint { margin: 4px 0; }
+
+/* 작업 29: 알림은 상단 바의 알림 영역 한 곳, 회전 각도·확대·손 도구는 왼쪽 패널 하단 상태줄 */
+#notifyArea { flex: 1 1 auto; min-width: 0; height: 100%; display: flex; align-items: center; padding: 0 8px; overflow: hidden; }
+#notifyArea > * { min-width: 0; max-width: 100%; margin: 0; }
+#notifyArea > .note-hidden { display: none !important; }
+#notifyArea #msg, #notifyArea #extGlbBanner, #notifyArea #draftToast { position: static; left: auto; bottom: auto; width: auto; max-height: 40px; box-sizing: border-box; padding: 3px 10px; gap: 8px; align-items: center; box-shadow: none; flex-direction: row; justify-content: flex-start; }
+#notifyArea #msgText, #notifyArea #extGlbBannerText, #notifyArea #draftToast .dt-title, #notifyArea #draftToastText { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
+#notifyArea #draftToast .dt-title { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 899px) { #notifyArea #draftToastText { display: none; } } /* 좁은 화면: 제목과 불러오기·닫기 버튼이 잘리지 않게 보조 문구는 접는다(문구는 DOM에 남음) */
+#notifyArea #msg button, #notifyArea #extGlbBanner button, #notifyArea #draftToast .dt-btns button { min-height: 28px; padding: 0 10px; flex: none; font-size: 13px; }
+#notifyArea #draftToast .dt-btns { margin: 0; flex: none; }
+#panHintTop { padding: 4px 12px; border-radius: 999px; background: #25231f; color: #fff; font-size: 13px; white-space: nowrap; }
+#panHintTop[hidden] { display: none; }
+#statusBar { position: sticky; bottom: 0; flex: none; display: flex; align-items: center; justify-content: space-between; gap: 10px; height: 36px; box-sizing: border-box; padding: 0 12px; background: #25231f; color: #fff; font-size: 13px; white-space: nowrap; overflow: hidden; z-index: 3; }
+#statusBar #statusRot { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+#statusBar.snap #statusRot { color: #ff922b; }
+#statusBar #panBadge { display: none; position: static; transform: none; padding: 0; background: none; color: inherit; border-radius: 0; font-size: 13px; flex: 1 1 auto; }
+#statusBar.panning #panBadge { display: inline; }
+#statusBar.panning #statusRot { display: none; }
+#statusBar #zoomReadout { flex: none; color: #d6d3cd; }
+body.rotplace-view #statusRot, body.rotplace-off #statusRot { visibility: hidden; }
+#rotBadge { display: none !important; }
+body.rotplace-view #rotBadge:not([hidden]) { display: block !important; }
+body.panel-collapsed #statusBar { display: none; }
+#optRotPlace { margin-left: 6px; }
+label.check.sel { display: flex; align-items: center; gap: 6px; }
+#notifyList { margin: 0 0 8px; padding: 0; list-style: none; max-height: 50vh; overflow: auto; font-size: 13px; }
+#notifyList li { padding: 6px 4px; border-bottom: 1px solid var(--line, #e3e3e3); display: flex; gap: 8px; }
+#notifyList li time { color: #6b6761; flex: none; }
+#notifyList li.err { background: #fff3e8; border-left: 3px solid var(--accent, #e8590c); }
+#notifyList li.err::before { content: '오류'; font-weight: 700; flex: none; }
+@media (max-width: 899px) {
+  #statusBar { display: none; }
+  #topBar.has-note .brand { display: none; }
+  #notifyArea { padding: 0 4px; }
+}
+body.clean-screen #notifyArea { display: none !important; }
+
+/* 작업 28: 고급 색상 */
+#dColorAdv { margin-top: 8px; }
+.advrows { display: grid; gap: 6px; margin-top: 6px; }
+.advrow { display: grid; grid-template-columns: 1fr auto 44px; align-items: center; gap: 8px; font-size: 13px; }
+.advrow input[type=color] { width: 44px; height: 28px; padding: 0; }
+.advrow input[type=color]:disabled { opacity: 0.4; }
+
+/* 칼선 이미지 방향 안내(작업 27) */
+.split-rot { display: inline-flex; align-items: center; gap: 4px; }
+.split-rot button { height: 30px; padding: 0 8px; }
+.split-orient { border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; margin: 6px 0; background: #fff8ef; font-size: 12px; }
+.split-orient-line { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.split-orient-line p { margin: 0; flex: 1 1 240px; }
+.split-orient-line button { height: 28px; padding: 0 8px; }
+.split-orient-cands { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.split-orient-cand { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px; min-height: 44px; border: 2px solid var(--line); border-radius: 6px; background: #fff; cursor: pointer; }
+.split-orient-cand[aria-pressed='true'] { border-color: var(--accent); }
+.split-orient-thumb { display: block; max-width: 96px; max-height: 96px; border: 1px solid var(--line); }
+
+/* 면 레이어 구역(작업 26) */
+.layers { border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; margin: 8px 0; }
+.layers h3 { margin: 0 0 4px; font-size: 13px; }
+#layerList { list-style: none; margin: 0 0 6px; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.layer-row { display: flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 6px; padding: 2px 6px; min-height: 36px; font-size: 12px; }
+.layer-row.active { border-color: var(--accent); background: #fff3e8; }
+.layer-row.locked, .layer-row.empty { color: #6b665e; background: #f6f4f0; }
+.layer-pick { flex: 1; display: flex; flex-direction: column; align-items: flex-start; border: 0; background: none; padding: 2px; text-align: left; cursor: pointer; }
+.layer-sub { color: #6b665e; }
+.layer-swatch { width: 16px; height: 16px; border: 1px solid var(--line); border-radius: 3px; display: inline-block; }
+.layer-eye { height: 28px; padding: 0 8px; }
+
+/* 다른 프로젝트에서 면 가져오기(작업 31) */
+.link { background: none; border: 0; color: var(--accent); text-decoration: underline; cursor: pointer; padding: 4px; }
+#importDlg { max-width: 560px; width: calc(100vw - 32px); }
+#importTitleName { font-weight: 400; color: #6b665e; }
+.imp-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 8px 0; }
+.imp-cell { display: flex; flex-direction: column; align-items: center; gap: 2px; border: 1px solid var(--line); border-radius: 6px; padding: 4px; font-size: 12px; cursor: pointer; }
+.imp-cell.empty { opacity: 0.5; cursor: default; }
+.imp-cell:has(input:checked) { border-color: var(--accent); background: #fff3e8; }
+.imp-thumb { display: flex; align-items: center; justify-content: center; width: 72px; height: 72px; }
+.imp-thumb canvas { max-width: 72px; max-height: 72px; border: 1px solid var(--line); }
+.imp-opts { display: flex; flex-direction: column; gap: 4px; margin: 6px 0; }
+@media (max-width: 520px) { .imp-grid { grid-template-columns: repeat(3, 1fr); } }
+
+/* 자세히 보기(작업 32B, docs/UI_INFO_HIERARCHY.md 8절): 짧은 한 줄은 항상, 원문은 details 안에 그대로 */
+.hint.short { margin: 4px 0 0; }
+details.more { margin: 0 0 6px; }
+details.more > summary { display: inline-flex; align-items: center; min-height: 28px; padding: 0 2px; font-size: 12px; color: #4b463f; text-decoration: underline; cursor: pointer; list-style: none; }
+details.more > summary::-webkit-details-marker { display: none; }
+details.more > summary::marker { content: ''; }
+details.more > summary::after { content: ' ▾'; }
+details.more[open] > summary::after { content: ' ▴'; }
+details.more > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+details.more > .more-body { margin: 2px 0 4px; }
+@media (max-width: 900px) { details.more > summary { min-height: 44px; } }
+
+/* 알림 4단계(작업 32B): 정보(회색 파랑)·주의(연한 주황)·오류(연한 빨강)·성공(연한 초록). 아이콘+글자(#msgLevel)로도 구분한다. */
+#msg { background: #fdecea; border-color: #c92a2a; }
+#msg.warn { background: #fff3e8; border-color: var(--accent); }
+#msg.info { background: #eef3fb; border-color: #3b6fb6; }
+#msg .msg-level { flex: none; font-weight: 700; font-size: 12px; margin-right: 8px; white-space: nowrap; }
+#notifyList li[data-level]::before { font-weight: 700; margin-right: 6px; }
+#notifyList li[data-level='info']::before { content: 'ℹ 안내'; }
+#notifyList li[data-level='warn']::before { content: '⚠ 주의'; }
+#notifyList li[data-level='error']::before { content: '✖ 오류'; }
+#notifyList li[data-level='ok']::before { content: '✔ 완료'; }
+
+/* 비율 변경 알림(작업 34): 3D 화면 위 오버레이가 아니라 왼쪽 패널 제목 아래에 놓아 3D 화면과 겹치지 않는다(해당 상황에서만 보이고 평소 높이 0) */
+#panel > #ratioBanner { flex: none; margin: 6px 12px 0; }
+#panel > #ratioBanner[hidden] { display: none; }
+#panel > #ratioBanner .rb-row { flex-direction: column; align-items: stretch; gap: 6px; }
+#panel > #ratioBanner .rb-btns button { flex: 1 1 auto; min-height: 36px; }
+#panel > #ratioBanner #ratioDetail { max-height: 120px; overflow: auto; }

@@ -16,6 +16,8 @@ export async function start() {
   const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
   const results = {}; const rec = (k, v) => { results[k] = v; };
   const context = await browser.newContext({ viewport: { width: 1360, height: 900 }, acceptDownloads: true, hasTouch: true });
+  // 작업 29: 회전 각도는 기본으로 왼쪽 패널(상태줄)에만 나온다. 3D 화면 위 배지를 읽는 시험은 "3D 화면 위" 표시를 고른 상태로 시작한다.
+  if (!process.env.ROT_PLACE_DEFAULT) await context.addInitScript(() => { try { localStorage.setItem('sabari-ui', JSON.stringify({ rotPlace: 'view' })); } catch { /* 무시 */ } });
   const p = await context.newPage(); const errors = [];
   p.on('pageerror', (e) => errors.push(String(e)));
   p.on('console', (m) => { if (m.type() === 'error') errors.push(m.text().slice(0, 200)); });

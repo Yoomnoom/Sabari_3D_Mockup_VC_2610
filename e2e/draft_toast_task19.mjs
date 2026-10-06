@@ -27,13 +27,16 @@ await p.waitForFunction(() => !document.getElementById('draftToast').hidden, nul
 const shown = await p.evaluate(() => ({ title: document.querySelector('#draftToast .dt-title').textContent, text: document.getElementById('draftToastText').textContent, role: document.getElementById('draftToast').getAttribute('role'), live: document.getElementById('draftToast').getAttribute('aria-live'), btns: [...document.querySelectorAll('#draftToast button')].map((b) => b.textContent), topStrip: !document.getElementById('msg').hidden, focusInToast: document.getElementById('draftToast').contains(document.activeElement), pos: getComputedStyle(document.getElementById('draftToast')).position, noOldHint: !document.body.innerText.includes('왼쪽 아래 "임시저장 불러오기"') }));
 const canvasWith = await rect('#viewport'), stageR = await rect('#stage'), toastR = await rect('#draftToast'), fv = await rect('#floatViews');
 const scrollWith = await p.evaluate(() => ({ x: document.documentElement.scrollWidth > innerWidth + 1, y: document.documentElement.scrollHeight > innerHeight + 1 }));
+const notifyR = await rect('#notifyArea'), btnsR = await p.evaluate(() => [...document.querySelectorAll('#draftToast button')].map((b) => { const r = b.getBoundingClientRect(); return { l: r.left, r: r.right, w: r.width }; }));
 await p.screenshot({ path: path.join(OUT, 'toast_1360x860.png') });
 await p.click('#btnDraftToastClose'); await p.waitForTimeout(150);
 const canvasWithout = await rect('#viewport');
 R.shown = { ...shown, canvasWith, canvasWithout, toastRect: toastR, stageRect: stageR, toastFromStageLeft: toastR.l - stageR.l, toastFromStageBottom: stageR.b - toastR.b, toastWidth: toastR.w, scrollWith };
 R.checks.layoutUnchanged = ['l', 't', 'w', 'h'].every((k) => Math.abs(canvasWith[k] - canvasWithout[k]) < 0.01);
 R.checks.content = shown.title === '이전 임시저장이 있습니다' && /에 자동 보관된 작업입니다\.$/.test(shown.text) && shown.btns.join() === '불러오기,닫기' && !shown.topStrip && shown.noOldHint;
-R.checks.geometry = Math.abs(R.shown.toastFromStageLeft - 16) <= 1 && Math.abs(R.shown.toastFromStageBottom - 84) <= 1 && toastR.w <= 350.5 && shown.pos === 'absolute' && !overlap(toastR, fv);
+// 작업 29 이후: 토스트는 3D 화면 위가 아니라 상단 알림 영역(#notifyArea)에 놓인다(위치 기준만 새 자리로 바꿈, 3D 화면과 안 겹침·창 안·버튼 보임은 그대로 요구)
+R.shown.notifyRect = notifyR; R.shown.toastParent = await p.evaluate(() => document.getElementById('draftToast').parentElement.id);
+R.checks.geometry = R.shown.toastParent === 'notifyArea' && toastR.l >= notifyR.l - 0.5 && toastR.r <= notifyR.r + 0.5 && toastR.t >= 0 && toastR.b <= stageR.t + 0.5 && !overlap(toastR, canvasWith) && btnsR.length === 2 && btnsR.every((b) => b.w > 20 && b.r <= notifyR.r + 0.5);
 R.checks.a11y = shown.role === 'status' && shown.live === 'polite' && shown.focusInToast === false;
 R.checks.noScrollbars = !scrollWith.x && !scrollWith.y;
 // 3) 창 4종: 플로팅 바·시트와 겹치지 않음, 스크롤바 없음, 3D 영역 안
@@ -43,13 +46,15 @@ for (const [w, h] of [[1920, 1080], [1366, 768], [1024, 768], [390, 844]]) {
   await p.waitForTimeout(200);
   const t = await rect('#draftToast'), f = await rect('#floatViews'), st = await rect('#stage'), pn = await rect('#panel'), tab = await rect('#tabRail');
   const sc = await p.evaluate(() => ({ x: document.documentElement.scrollWidth > innerWidth + 1, y: document.documentElement.scrollHeight > innerHeight + 1 }));
-  const inside = t.l >= st.l - 0.5 && t.r <= st.r + 0.5 && t.t >= st.t - 0.5 && t.b <= st.b + 0.5;
+  const na = await rect('#notifyArea'), vp = await rect('#viewport');
+  const btns = await p.evaluate(() => [...document.querySelectorAll('#draftToast button')].map((b) => { const r = b.getBoundingClientRect(); return { r: r.right, w: r.width }; }));
+  const inside = t.l >= na.l - 0.5 && t.r <= na.r + 0.5 && t.t >= 0 && t.b <= na.b + 0.5 && t.r <= w && btns.length === 2 && btns.every((b) => b.w > 20 && b.r <= na.r + 0.5) && !overlap(t, vp); // 알림 영역 안, 창 안, 3D 화면과 안 겹침, 불러오기·닫기 버튼이 잘리지 않음
   R.sizes.push({ win: [w, h], toast: t, widthRatioOfStage: +(t.w / st.w).toFixed(3), insideStage: inside, overlapFloat: overlap(t, f), overlapPanel: overlap(t, pn), overlapTabRail: overlap(t, tab), scrollX: sc.x, scrollY: sc.y });
   await p.screenshot({ path: path.join(OUT, `toast_${w}x${h}.png`) });
 }
 await p.setViewportSize({ width: 1360, height: 860 });
 R.checks.sizesOk = R.sizes.every((s) => s.insideStage && !s.overlapFloat && !s.overlapPanel && !s.overlapTabRail && !s.scrollX && !s.scrollY);
-R.checks.mobileWidth = Math.abs(R.sizes[3].widthRatioOfStage - 0.9) < 0.02;
+R.checks.mobileWidth = R.sizes[3].insideStage && R.sizes[3].toast.r <= 390; // 모바일: 알림 영역 안에서 버튼이 잘리지 않는다(이전의 "3D 영역 폭 90%"는 작업 29에서 사라진 배치)
 // 4) 닫기: 알림만 닫고 임시저장은 유지, 세션에서 다시 안 뜸, 열기 메뉴에 날짜+점
 await boot(); await p.waitForFunction(() => !document.getElementById('draftToast').hidden);
 await p.click('#btnDraftToastClose'); await p.waitForTimeout(200);
@@ -93,9 +98,10 @@ await p.setInputFiles('#filePick', path.join(ROOT, 'assets/samples/sample_lid_le
 await p.evaluate(() => document.getElementById('draftToast').hidden && 0);
 const stillShown = await toastVisible();
 if (stillShown) await p.click('#btnDraftToastLoad');
-await p.waitForTimeout(600);
+await p.waitForSelector('dialog[open]', { timeout: 4000 }).catch(() => {}); // 고정 대기(600ms) 대신 확인 대화상자가 열릴 때까지 기다린다(없으면 아래 판정이 실패한다)
+await p.waitForTimeout(100);
 R.dirtyLoad = await p.evaluate(() => ({ confirmOpen: !!document.querySelector('dialog[open]'), text: document.querySelector('dialog[open]')?.textContent?.slice(0, 40) ?? '' }));
-R.checks.dirtyConfirm = stillShown && R.dirtyLoad.confirmOpen;
+R.dirtyLoad.stillShown = stillShown; R.dirtyLoad.diag = await p.evaluate(() => ({ dirtyMark: !document.getElementById('dirtyMark').hidden, imgs: Object.entries(window.__sabari.faces).filter(([, f]) => f.img).map(([k]) => k), msg: document.getElementById('msgText').textContent, toastHidden: document.getElementById('draftToast').hidden })); R.checks.dirtyConfirm = stillShown && R.dirtyLoad.confirmOpen;
 if (R.dirtyLoad.confirmOpen) await p.evaluate(() => { const b = [...document.querySelectorAll('dialog[open] button')].find((x) => x.textContent.includes('취소')); b?.click(); });
 // 10) 외부 GLB 중에는 표시하지 않고 돌아간 뒤 표시
 await boot(); await p.waitForFunction(() => !document.getElementById('draftToast').hidden);

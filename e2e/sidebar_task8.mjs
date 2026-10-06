@@ -12,8 +12,8 @@ const eulerText = () => p.evaluate(() => { const v = window.__sabari.viewer, T =
 const parse = (t) => { const m = /좌우 ([+−])([\d.]+)° · 위아래 ([+−])([\d.]+)°/.exec(t); return m ? { yaw: (m[1] === '−' ? -1 : 1) * Number(m[2]), pitch: (m[3] === '−' ? -1 : 1) * Number(m[4]) } : null; };
 
 // 1) 회전 상태 줄: 위치(뷰어 > 보기), 초기값, 알약 없음/임시 배지 유지
-rec('readout_in_view_section', await p.evaluate(() => !!document.querySelector('#dView #rotReadout')));
-assert(await p.evaluate(() => !!document.querySelector('#dView #rotReadout')));
+rec('readout_in_statusbar', await p.evaluate(() => !!document.querySelector('#statusRot #rotReadout')));
+assert(await p.evaluate(() => !!document.querySelector('#statusRot #rotReadout')));
 await p.click('[data-view=front]'); await p.waitForTimeout(100);
 const t0 = await readout(); rec('readout_front', t0); assert(/^자유 회전 · 좌우 \+0\.0° · 위아래 \+0\.0°$/.test(t0), t0);
 assert(!(await p.isVisible('#rotBadge')), '드래그 전에는 3D 화면 알약 없음');

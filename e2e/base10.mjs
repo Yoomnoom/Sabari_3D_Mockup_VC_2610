@@ -189,6 +189,7 @@ await p5.setInputFiles('#fileProj', path.join(FX, 'future_v99.sabari')); await p
 rec('9_future_version_message', await p5.textContent('#msgText'));
 rec('9_future_version_did_not_change_state', { lid: (await imgs(p5, LID)).length });
 // 새 형식(v3)이지만 스위치 꺼짐인 방금의 .sabari도 열린다
+await p5.click('#msgClose').catch(() => {}); // 작업 29: 오류 알림은 닫기 전까지 남고 성공 알림이 대신하지 않는다(의도된 변경)
 await p5.setInputFiles('#fileProj', proj5); await p5.waitForFunction(() => document.getElementById('msgText').textContent.includes('열었습니다')); await p5.waitForTimeout(300);
 rec('9_default_off_project_reopen', { switchOff: !(await p5.isChecked('#useBase')), lid: (await imgs(p5, LID)).length });
 rec('9_errors_p5', p5.errors);

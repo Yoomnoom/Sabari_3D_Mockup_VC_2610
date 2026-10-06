@@ -4,6 +4,8 @@ import { BoxParams } from './params';
 import { ARTBOARD_PRESETS, CROP_SABARI_160_110_43_OFFSET_MM, CROP_SABARI_160_110_43_SIZE_MM, DieKind, Dieline, PRESET_SABARI_160_110_43, Rect, artboardMismatch, artboardRegions, aspectMismatch, buildDieline, cropMismatch, cropRegions, presetBoxMatches, regionsFor } from './dieline';
 import type { FaceId } from './faceDefs';
 import type { DielineSave } from './project';
+import { confirmDialog } from './dialogs';
+import { Grid, ImgRot, OrientRef, OrientResult, addRot, artboardRef, cropRef, detectOrientation, evaluateOrientation, paramRef, rotLabel, rotatePoint, rotatedSize } from './dielineOrient';
 
 export interface SplitResult {
   source: Blob; name: string | null; bleedMm: number; kind: DieKind;
@@ -12,12 +14,16 @@ export interface SplitResult {
   skipped: FaceId[];
   regions: Partial<Record<FaceId, Rect>>; rotations: Partial<Record<FaceId, number>>;
   faces: { id: FaceId; blob: Blob; name: string }[];
+  /** 칼선 이미지를 시계방향으로 이만큼 돌려 인식했다(원본 바이트는 그대로) */
+  imageRotation: ImgRot; orientConfirmed: boolean;
 }
 export interface SplitCtx {
   params(): BoxParams;
   faceLabel(id: FaceId): string;
   /** 분할 결과를 면에 적용한다(이력 기록 포함). */
   apply(r: SplitResult): Promise<void>;
+  /** 칼선 종류별로 저장된 분할 설정(없으면 null) */
+  saved(kind: DieKind): DielineSave | null;
 }
 
 const COLORS = ['#e8590c', '#1c7ed6', '#2f9e44', '#ae3ec9', '#f08c00'];
@@ -77,6 +83,45 @@ function cornersTransparent(bmp: ImageBitmap): boolean {
   return sum / count < 12; // 평균 알파 5% 미만
 }
 
+/** 알파 채널을 작은 불투명/투명 격자로 줄인다(긴 변 64칸). 방향 판정의 모양 비교에 쓴다. */
+function alphaGrid(b: ImageBitmap, long = 64): Grid {
+  const sc = long / Math.max(b.width, b.height), w = Math.max(1, Math.round(b.width * sc)), h = Math.max(1, Math.round(b.height * sc));
+  const cv = document.createElement('canvas');
+  cv.width = w; cv.height = h;
+  const g = cv.getContext('2d', { willReadFrequently: true })!;
+  g.imageSmoothingQuality = 'high';
+  g.drawImage(b, 0, 0, w, h);
+  const d = g.getImageData(0, 0, w, h).data, a = new Uint8Array(w * h);
+  for (let i = 0; i < a.length; i++) a[i] = d[i * 4 + 3] > 128 ? 1 : 0;
+  return { w, h, a };
+}
+
+/** 캔버스 좌표계를 시계방향 rot 만큼 돌리는 정수 변환(원본 w×h 이미지를 그리면 돌린 모양이 된다). 픽셀이 보간 없이 그대로 옮겨진다. */
+function setRotTransform(g: CanvasRenderingContext2D, rot: ImgRot, w: number, h: number) {
+  if (rot === 90) g.setTransform(0, 1, -1, 0, h, 0);
+  else if (rot === 180) g.setTransform(-1, 0, 0, -1, w, h);
+  else if (rot === 270) g.setTransform(0, -1, 1, 0, 0, w);
+  else g.setTransform(1, 0, 0, 1, 0, 0);
+}
+/** 시계방향 rot 만큼 돌린 새 비트맵 */
+async function rotateBitmap(src: ImageBitmap, rot: ImgRot): Promise<ImageBitmap> {
+  if (rot === 0) return src;
+  const [w, h] = rotatedSize(src.width, src.height, rot);
+  const cv = document.createElement('canvas');
+  cv.width = w; cv.height = h;
+  const g = cv.getContext('2d')!;
+  g.imageSmoothingEnabled = false;
+  setRotTransform(g, rot, src.width, src.height);
+  g.drawImage(src, 0, 0);
+  return createImageBitmap(cv);
+}
+function bitmapBlob(b: ImageBitmap): Promise<Blob> {
+  const cv = document.createElement('canvas');
+  cv.width = b.width; cv.height = b.height;
+  cv.getContext('2d')!.drawImage(b, 0, 0);
+  return new Promise((res, rej) => cv.toBlob((x) => (x ? res(x) : rej(new Error('이미지를 돌리지 못했습니다.'))), 'image/png'));
+}
+
 export function initSplitUi(ctx: SplitCtx) {
   const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
   const dlg = $<HTMLDialogElement>('splitDlg');
@@ -89,6 +134,11 @@ export function initSplitUi(ctx: SplitCtx) {
   const NS = 'http://www.w3.org/2000/svg';
 
   let source: Blob | null = null, sourceName: string | null = null, bmp: ImageBitmap | null = null, url = '';
+  // 방향: raw = 올린 그대로의 비트맵, bmp = raw 를 imgRot 만큼 돌린 것(영역·분할·화면은 모두 bmp 좌표계). 원본 바이트(source)는 바꾸지 않는다.
+  let raw: ImageBitmap | null = null, imgRot: ImgRot = 0, alpha: Grid | undefined, cornerT = false;
+  let orient: OrientResult | null = null, orientRef: OrientRef | null = null;
+  let manualRot = false; // 사용자가 직접 돌리거나 고른 뒤에는 칼선 기준을 바꿔도 방향을 다시 판정하지 않는다
+  let needConfirm = false; // 후보가 여럿이라 임시로 고른 방향을 아직 확인하지 않음
   let kind: DieKind = 'lid', bleed = 3;
   let mode: 'param' | 'artboard' | 'crop' = 'param';
   let artW = PRESET_SABARI_160_110_43.artboardMm[0], artH = PRESET_SABARI_160_110_43.artboardMm[1];
@@ -413,23 +463,180 @@ export function initSplitUi(ctx: SplitCtx) {
   $('btnHandTool').onclick = () => { handTool = !handTool; $('btnHandTool').setAttribute('aria-pressed', String(handTool)); syncCursor(); refocus(); };
 
   // ---- 열기 / 적용 ----
-  async function open(blob: Blob, name: string | null, saved?: DielineSave | null) {
+  const refFor = (m: 'param' | 'artboard' | 'crop'): OrientRef => (m === 'crop' ? cropRef() : m === 'artboard' ? artboardRef(artW, artH) : paramRef(buildDieline(ctx.params(), kind), bleed));
+  /** raw 를 imgRot 만큼 돌려 bmp 와 화면 이미지를 만든다 */
+  async function buildRotated() {
+    const prev = bmp;
+    bmp = imgRot === 0 ? raw! : await rotateBitmap(raw!, imgRot);
+    if (prev && prev !== raw && prev !== bmp) prev.close();
     if (url) URL.revokeObjectURL(url);
-    bmp?.close();
-    source = blob; sourceName = name;
-    bmp = await createImageBitmap(blob);
-    url = URL.createObjectURL(blob);
+    url = URL.createObjectURL(imgRot === 0 ? source! : await bitmapBlob(bmp));
     img.src = url;
+  }
+  /** 회전 뒤에도 화면 중심이 가리키던 이미지 지점을 유지한다(맞춤 상태면 다시 맞춘다) */
+  function remapView(oldW: number, oldH: number, delta: ImgRot) {
+    if (fitMode) { resetView(); return; }
+    const vw = viewport.clientWidth, vh = viewport.clientHeight;
+    const [nx, ny] = rotatePoint((vw / 2 - panX) / zoom, (vh / 2 - panY) / zoom, oldW, oldH, delta);
+    panX = vw / 2 - nx * zoom; panY = vh / 2 - ny * zoom;
+    clampPan(); applyTransform();
+  }
+  const orientMsg = (r: OrientResult) => (r.rot === 180 ? '이미지가 거꾸로 저장되어 있어 180° 돌려서 인식했습니다.' : `이미지가 ${raw!.width > raw!.height ? '가로' : '세로'}로 저장되어 있어 ${r.rot === 270 ? '왼쪽으로 ' : ''}90° 돌려서 인식했습니다.`);
+  /** 후보 방향 미리보기: 돌린 이미지를 작게 그리고 칼선 기준의 면 영역 윤곽을 겹친다 */
+  function thumb(rot: ImgRot): HTMLCanvasElement {
+    const [rw, rh] = rotatedSize(raw!.width, raw!.height, rot), sc = 96 / Math.max(rw, rh);
+    const sw = Math.max(1, Math.round(raw!.width * sc)), sh = Math.max(1, Math.round(raw!.height * sc));
+    const small = document.createElement('canvas');
+    small.width = sw; small.height = sh;
+    const sg = small.getContext('2d')!;
+    sg.imageSmoothingQuality = 'medium'; sg.drawImage(raw!, 0, 0, sw, sh);
+    const [w, h] = rotatedSize(sw, sh, rot);
+    const cv = document.createElement('canvas');
+    cv.width = w; cv.height = h; cv.className = 'split-orient-thumb';
+    const g = cv.getContext('2d')!;
+    g.fillStyle = '#fff'; g.fillRect(0, 0, w, h);
+    setRotTransform(g, rot, sw, sh); g.drawImage(small, 0, 0); g.setTransform(1, 0, 0, 1, 0, 0);
+    if (orientRef) {
+      g.lineWidth = 1.5; g.strokeStyle = '#e8590c';
+      for (const r of orientRef.rects) g.strokeRect((r.x / orientRef.w) * w, (r.y / orientRef.h) * h, (r.w / orientRef.w) * w, (r.h / orientRef.h) * h);
+    }
+    return cv;
+  }
+  /** 방향 안내 영역: 자동 적용 한 줄 / 후보 미리보기 / 확인 표시 */
+  function renderOrient() {
+    const box = $('splitOrient'), msg = $('splitOrientMsg'), cands = $('splitOrientCands');
+    const st = orient?.status, show = st === 'auto' || st === 'choose';
+    box.hidden = !show; cands.innerHTML = ''; cands.hidden = st !== 'choose';
+    $('btnOrientFlip').hidden = st !== 'auto'; $('btnOrientRevert').hidden = st !== 'auto';
+    $('btnOrientOk').hidden = !(st === 'choose' && needConfirm);
+    if (!show) { msg.textContent = ''; return; }
+    if (st === 'auto') { msg.textContent = orientMsg(orient!); return; }
+    msg.textContent = needConfirm ? '방향 확인 필요: 이미지 방향을 하나로 정하지 못했습니다. 맞는 방향을 고르세요.' : `방향 확인됨: ${rotLabel(imgRot)}.`;
+    for (const c of orient!.cands) {
+      const bt = document.createElement('button');
+      bt.type = 'button'; bt.className = 'split-orient-cand'; bt.setAttribute('aria-pressed', String(c.rot === imgRot));
+      bt.setAttribute('aria-label', `방향 후보: ${rotLabel(c.rot)}`);
+      bt.appendChild(thumb(c.rot));
+      const t = document.createElement('span'); t.textContent = rotLabel(c.rot); bt.appendChild(t);
+      bt.onclick = () => { void setOrientation(c.rot, true); };
+      cands.appendChild(bt);
+    }
+  }
+  /** 후보 선택·방향 바꾸기·원래대로: 회전값만 바꾸고 영역은 새 좌표계에서 다시 배치한다(실행 취소 가능) */
+  async function setOrientation(rot: ImgRot, byUser: boolean) {
+    if (!raw || !bmp) return;
+    pushRotHist();
+    const oldW = bmp.width, oldH = bmp.height, delta = addRot(rot, 360 - imgRot);
+    imgRot = rot; manualRot = true;
+    if (byUser) needConfirm = false;
+    await buildRotated();
+    autoRegions(); active = layout.faces[0].id; remapView(oldW, oldH, delta);
+    renderOrient(); draw();
+  }
+  /** 이미지 돌리기 버튼: 돌리면 칼선 기준(크롭·아트보드·파라미터)과 비율 경고, 영역 배치를 다시 판정한다 */
+  async function rotateBy(delta: 90 | 180 | 270) {
+    if (!raw || !bmp || busy) return;
+    pushRotHist();
+    const oldW = bmp.width, oldH = bmp.height;
+    imgRot = addRot(imgRot, delta); manualRot = true; needConfirm = false; orient = null;
+    await buildRotated();
+    const newMode: typeof mode = cropMismatch(bmp.width, bmp.height, CROP_SABARI_160_110_43_SIZE_MM[0], CROP_SABARI_160_110_43_SIZE_MM[1]) <= 0.01 && cornerT ? 'crop' : artboardMismatch(bmp.width, bmp.height, artW, artH) <= 0.01 ? 'artboard' : 'param';
+    if (newMode !== 'param' || mode !== 'param') { mode = newMode; if (mode === 'param') bleed = ctx.params().bleed; if (mode === 'crop') bleed = 0; }
+    $<HTMLSelectElement>('splitMode').value = mode;
+    autoRegions(); active = layout.faces[0].id; remapView(oldW, oldH, delta);
+    renderOrient(); draw(); refocus();
+  }
+  /** 칼선 기준·종류를 바꿀 때: 직접 돌리지 않았다면 새 기준으로 방향을 다시 평가한다(어느 방향에도 비율이 안 맞으면 그대로 둔다) */
+  async function reorient() {
+    if (!raw || !bmp || manualRot) return;
+    const ref = refFor(mode), res = evaluateOrientation(raw.width, raw.height, ref, alpha);
+    if (res.status === 'none') { orient = null; orientRef = null; needConfirm = false; renderOrient(); return; }
+    orient = res; orientRef = ref; needConfirm = res.status === 'choose';
+    if (res.rot !== imgRot) { const oldW = bmp.width, oldH = bmp.height, delta = addRot(res.rot, 360 - imgRot); imgRot = res.rot; await buildRotated(); remapView(oldW, oldH, delta); }
+    renderOrient();
+  }
+  const snapObj = () => ({ imgRot, manualRot, needConfirm, mode, kind, bleed, artW, artH, regions, rots, include, blank, active });
+  const rotSnap = () => 'R:' + JSON.stringify(snapObj());
+  const pushRotHist = () => pushHist(rotSnap());
+  async function restoreRot(sn: { imgRot: ImgRot; manualRot: boolean; needConfirm: boolean; mode: typeof mode; kind: DieKind; bleed: number; artW: number; artH: number; regions: Record<string, Rect>; rots: Record<string, Rot>; include: Record<string, boolean>; blank: Record<string, boolean>; active: string | null }) {
+    const oldW = bmp!.width, oldH = bmp!.height, delta = addRot(sn.imgRot, 360 - imgRot);
+    imgRot = sn.imgRot; manualRot = sn.manualRot; needConfirm = sn.needConfirm;
+    mode = sn.mode; kind = sn.kind; bleed = sn.bleed; artW = sn.artW; artH = sn.artH;
+    await buildRotated();
+    layout = buildDieline(ctx.params(), kind);
+    regions = sn.regions; rots = sn.rots; include = sn.include; blank = sn.blank; active = sn.active;
+    $<HTMLSelectElement>('splitMode').value = mode; $<HTMLSelectElement>('splitKind').value = kind;
+    $<HTMLInputElement>('splitBleed').value = String(bleed); $<HTMLInputElement>('splitArtW').value = String(artW); $<HTMLInputElement>('splitArtH').value = String(artH);
+    $('splitBleed').toggleAttribute('disabled', mode === 'artboard' || mode === 'crop'); $('splitArtRow').hidden = mode !== 'artboard'; $('splitCropInfo').hidden = mode !== 'crop';
+    warn(); remapView(oldW, oldH, delta);
+    if (orient && orient.status === 'choose') orient = { ...orient, rot: imgRot }; else if (orient?.status === 'auto') orient = manualRot ? null : orient;
+    renderOrient(); draw();
+  }
+
+  async function setRaw(blob: Blob, name: string | null) {
+    if (url) URL.revokeObjectURL(url);
+    url = '';
+    if (bmp && bmp !== raw) bmp.close();
+    raw?.close();
+    source = blob; sourceName = name;
+    raw = await createImageBitmap(blob);
+    alpha = alphaGrid(raw); cornerT = cornersTransparent(raw);
+  }
+
+  // ---- 종류별 작업 상태: 대화상자를 연 동안 종류(뚜껑·하단 몸통)를 바꿨다 돌아와도 이미지·영역·회전 조정을 그대로 되살린다 ----
+  const KL: Record<DieKind, string> = { lid: '뚜껑', base: '하단 몸통' };
+  type Sess = ReturnType<typeof snapObj> & { blob: Blob; name: string | null; orient: OrientResult | null; orientRef: OrientRef | null };
+  const sess: Partial<Record<DieKind, Sess>> = {};
+  let uploaded = false; // 방금 올린 이미지(저장본이 아님): 종류를 바꿔도 이 이미지를 그대로 자동 배치한다
+  const updateKindNote = () => { $('splitKindNote').textContent = `이번 적용은 ${KL[kind]} 5면만 바꿉니다. ${KL[kind === 'lid' ? 'base' : 'lid']} 면은 그대로 유지됩니다.`; };
+  const takeSess = (): Sess => JSON.parse(JSON.stringify({ ...snapObj(), blob: null, name: sourceName, orient, orientRef })) as Sess;
+  async function restoreSess(ss: Sess, blob: Blob) {
+    if (blob !== source) await setRaw(blob, ss.name);
+    orient = ss.orient; orientRef = ss.orientRef;
+    await restoreRot(ss);
+    regHist.length = 0; syncUndo(); resetView(); draw();
+  }
+  async function switchKind(nk: DieKind) {
+    if (!bmp || !source || nk === kind) { kind = nk; updateKindNote(); return; }
+    const old = kind, oldBlob = source;
+    sess[old] = takeSess(); sessBlob[old] = oldBlob;
+    kind = nk;
+    const ss = sess[nk];
+    if (ss) await restoreSess(ss, sessBlob[nk]!);
+    else {
+      const sv = uploaded ? null : ctx.saved(nk);
+      if (sv) await load(sv.blob, sv.name, sv); // 그 종류의 저장본(이미지·영역·회전)을 불러온다
+      else { await reorient(); autoRegions(); active = layout.faces[0].id; regHist.length = 0; syncUndo(); draw(); } // 저장본이 없으면 지금 열린 이미지로 자동 배치
+    }
+    updateKindNote();
+  }
+  const sessBlob: Partial<Record<DieKind, Blob>> = {};
+
+  async function load(blob: Blob, name: string | null, saved?: DielineSave | null) {
+    await setRaw(blob, name);
+    raw = raw!;
     kind = saved?.kind ?? 'lid';
     bleed = saved?.bleedMm ?? ctx.params().bleed;
     [artW, artH] = saved?.artboardMm ?? preset.artboardMm;
-    // 저장된 값이 없으면: 이미지 비율이 칼선 외곽 크롭(232×283, ±1%)과 같고 모서리가 투명하면 크롭 이미지로,
-    // 아트보드(525.7×349.0)와 1% 이내로 같으면 아트보드 전체 이미지로 본다(사용자가 바꿀 수 있다)
-    mode = saved
-      ? (saved.mode === 'artboard' ? 'artboard' : saved.mode === 'crop' ? 'crop' : 'param')
-      : cropMismatch(bmp.width, bmp.height, CROP_SABARI_160_110_43_SIZE_MM[0], CROP_SABARI_160_110_43_SIZE_MM[1]) <= 0.01 && cornersTransparent(bmp)
-        ? 'crop'
-        : artboardMismatch(bmp.width, bmp.height, artW, artH) <= 0.01 ? 'artboard' : 'param';
+    orient = null; orientRef = null; manualRot = false; needConfirm = false; imgRot = 0;
+    // 저장된 값이 없으면 칼선 기준과 방향을 함께 고른다. 회전 없이 맞는 이미지는 예전과 같은 결과다(크롭 232×283 ±1%·모서리 투명 → 크롭,
+    // 아트보드 525.7×349.0 ±1% → 아트보드, 그 외 파라미터). 어느 방향이든 맞는 기준이 있으면 돌려서 인식하고 안내한다(사용자가 바꿀 수 있다).
+    if (saved) {
+      mode = saved.mode === 'artboard' ? 'artboard' : saved.mode === 'crop' ? 'crop' : 'param';
+      imgRot = saved.imageRotation ?? 0;
+      if (imgRot) {
+        manualRot = saved.orientationConfirmed !== false; needConfirm = !manualRot;
+        if (needConfirm) { // 확인하지 않고 저장된 방향: 후보를 다시 계산해 미리보기를 보여 준다
+          const ref = refFor(mode), res = evaluateOrientation(raw.width, raw.height, ref, alpha);
+          if (res.status === 'choose' && res.cands.some((c) => c.rot === imgRot)) { orient = { ...res, rot: imgRot }; orientRef = ref; } else needConfirm = false;
+        }
+      }
+    } else {
+      const det = detectOrientation(raw.width, raw.height, cornerT, alpha, artW, artH, () => paramRef(buildDieline(ctx.params(), kind), bleed));
+      mode = det.mode; imgRot = det.res.rot; orient = det.res; orientRef = refFor(mode); needConfirm = det.res.status === 'choose';
+    }
+    await buildRotated();
+    bmp = bmp!;
     $<HTMLSelectElement>('splitKind').value = kind;
     $<HTMLSelectElement>('splitMode').value = mode;
     $<HTMLInputElement>('splitBleed').value = String(bleed);
@@ -445,7 +652,7 @@ export function initSplitUi(ctx: SplitCtx) {
     if (!dlg.open) dlg.showModal();
     regHist.length = 0; syncUndo(); handTool = false; spaceHeld = false; $('btnHandTool').setAttribute('aria-pressed', 'false');
     resetView(); // 대화상자를 열 때마다 맞춤 배율로 시작하고 이전 확대·이동 상태는 저장하지 않는다
-    draw(); syncCursor(); refocus();
+    updateKindNote(); renderOrient(); draw(); syncCursor(); refocus();
   }
 
   $('splitMode').onchange = () => {
@@ -453,7 +660,7 @@ export function initSplitUi(ctx: SplitCtx) {
     mode = v === 'artboard' ? 'artboard' : v === 'crop' ? 'crop' : 'param';
     if (mode === 'param') bleed = ctx.params().bleed;
     if (mode === 'crop') bleed = 0;
-    autoRegions(); draw();
+    void reorient().then(() => { autoRegions(); draw(); });
   };
   for (const id of ['splitArtW', 'splitArtH']) {
     $(id).oninput = () => {
@@ -461,7 +668,7 @@ export function initSplitUi(ctx: SplitCtx) {
       if (Number.isFinite(w) && Number.isFinite(h) && w >= 10 && h >= 10 && w <= 5000 && h <= 5000) { artW = w; artH = h; autoRegions(); draw(); }
     };
   }
-  $('splitKind').onchange = () => { kind = ($('splitKind') as HTMLSelectElement).value as DieKind; autoRegions(); draw(); };
+  $('splitKind').onchange = () => { void switchKind(($('splitKind') as HTMLSelectElement).value as DieKind); };
   $('splitBleed').oninput = () => { const v = Number(($('splitBleed') as HTMLInputElement).value); if (Number.isFinite(v) && v >= 0 && v <= 50) { bleed = v; autoRegions(); draw(); } };
   $('btnSplitAuto').onclick = () => { pushHist(); autoRegions(); draw(); };
   const allStep = () => Math.max(2, Math.round(Math.min(bmp!.width, bmp!.height) * 0.01)); // 영역 전체 이동 한 번의 크기(이미지 짧은 변 1%)
@@ -501,13 +708,28 @@ export function initSplitUi(ctx: SplitCtx) {
       pushHist(); regions[active] = { x, y, w, h }; draw();
     };
   }
-  const undoRegion = () => { const snap = regHist.pop(); if (snap) { regions = JSON.parse(snap); draw(); } syncUndo(); };
+  const undoRegion = async () => {
+    const snap = regHist.pop(); syncUndo();
+    if (!snap) return;
+    if (snap.startsWith('R:')) await restoreRot(JSON.parse(snap.slice(2)));
+    else { regions = JSON.parse(snap); draw(); }
+  };
+  $('btnRotL').onclick = () => { void rotateBy(270); };
+  $('btnRotR').onclick = () => { void rotateBy(90); };
+  $('btnRot180').onclick = () => { void rotateBy(180); };
+  $('btnOrientFlip').onclick = () => { void setOrientation(addRot(imgRot, 180), true); };
+  $('btnOrientRevert').onclick = () => { void setOrientation(0, true).then(() => { orient = null; renderOrient(); }); };
+  $('btnOrientOk').onclick = () => { needConfirm = false; renderOrient(); };
   $('btnRegUndo').onclick = () => { undoRegion(); refocus(); };
   $('splitOpacity').oninput = () => { fillOpacity = Number(($('splitOpacity') as HTMLInputElement).value) / 100; draw(); };
   $('splitShowRegions').onchange = () => { showRegions = ($('splitShowRegions') as HTMLInputElement).checked; draw(); };
   $('btnSplitCancel').onclick = () => dlg.close();
   $('btnSplitApply').onclick = async () => {
     if (busy || !bmp || !source) return;
+    if (needConfirm) { // 후보가 여럿이었던 방향을 확인하지 않고 적용하려는 경우
+      if (!(await confirmDialog({ kind: 'confirm-orientation', title: '방향 확인', text: '방향을 확인하셨나요?\n면이 바뀌어 들어갈 수 있습니다.', ok: '이 방향으로 적용', cancel: '돌아가서 확인' }))) return;
+      needConfirm = false; renderOrient();
+    }
     busy = true; ($('btnSplitApply') as HTMLButtonElement).disabled = true;
     try {
       const faces: SplitResult['faces'] = [];
@@ -517,7 +739,7 @@ export function initSplitUi(ctx: SplitCtx) {
         faces.push({ id: f.id as FaceId, blob: await cropFace(bmp, regions[f.id], rots[f.id], { w: f.faceW, h: f.faceH }), name: `칼선분할_${ctx.faceLabel(f.id as FaceId)}.png` });
       }
       if (!faces.length) throw new Error('적용할 면이 없습니다. 면 목록에서 적용할 면을 체크하세요.');
-      await ctx.apply({ source, name: sourceName, bleedMm: bleed, kind, mode, artboardMm: mode === 'crop' ? CROP_SABARI_160_110_43_SIZE_MM : [artW, artH], skipped, regions: { ...regions } as SplitResult['regions'], rotations: { ...rots } as SplitResult['rotations'], faces });
+      await ctx.apply({ source, name: sourceName, bleedMm: bleed, kind, mode, artboardMm: mode === 'crop' ? CROP_SABARI_160_110_43_SIZE_MM : [artW, artH], skipped, regions: { ...regions } as SplitResult['regions'], rotations: { ...rots } as SplitResult['rotations'], faces, imageRotation: imgRot, orientConfirmed: !needConfirm });
       dlg.close();
     } catch (e) {
       $('splitWarn').hidden = false;
@@ -555,6 +777,12 @@ export function initSplitUi(ctx: SplitCtx) {
   });
   window.addEventListener('blur', () => { spaceHeld = false; syncCursor(); });
   // 닫으면 큰 이미지(디코드된 비트맵·미리보기)를 놓아 메모리를 돌려준다. 다시 열 때 원본(.sabari 안의 바이트)에서 다시 디코드한다.
-  dlg.addEventListener('close', () => { bmp?.close(); bmp = null; if (url) { URL.revokeObjectURL(url); url = ''; } img.removeAttribute('src'); pointers.clear(); panMode = false; spaceHeld = false; handTool = false; $('btnHandTool').setAttribute('aria-pressed', 'false'); syncCursor(); regHist.length = 0; syncUndo(); drag = null; });
-  return { open };
+  dlg.addEventListener('close', () => { if (bmp !== raw) bmp?.close(); raw?.close(); raw = null; bmp = null; orient = null; for (const k of ['lid', 'base'] as DieKind[]) { delete sess[k]; delete sessBlob[k]; } uploaded = false; if (url) { URL.revokeObjectURL(url); url = ''; } img.removeAttribute('src'); pointers.clear(); panMode = false; spaceHeld = false; handTool = false; $('btnHandTool').setAttribute('aria-pressed', 'false'); syncCursor(); regHist.length = 0; syncUndo(); drag = null; });
+  return {
+    open: async (blob: Blob, name: string | null, saved?: DielineSave | null) => {
+      for (const k of ['lid', 'base'] as DieKind[]) { delete sess[k]; delete sessBlob[k]; }
+      uploaded = !saved;
+      await load(blob, name, saved);
+    },
+  };
 }

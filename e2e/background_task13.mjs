@@ -135,7 +135,7 @@ const proj = await dl('#btnProjSave', 'bg_project.sabari', '#tabExport');
 const zip = await JSZip.loadAsync(fs.readFileSync(proj)); const pj = JSON.parse(await zip.file('project.json').async('string'));
 const orig = await zip.file(pj.viewSettings.background.imageFile).async('nodebuffer');
 R.sabari = { schemaVersion: pj.schemaVersion, bg: pj.viewSettings.background, entries: Object.keys(zip.files).length, originalBytesSame: orig.equals(fs.readFileSync(big)) };
-assert(pj.schemaVersion === 6 && pj.viewSettings.background.kind === 'image' && pj.viewSettings.background.image.fit === 'contain' && pj.viewSettings.background.image.x === -20 && pj.viewSettings.background.image.scale === 120 && R.sabari.originalBytesSame, '.sabari에 배경 설정·원본 이미지 보관');
+assert(pj.schemaVersion === 11 && pj.viewSettings.background.kind === 'image' && pj.viewSettings.background.image.fit === 'contain' && pj.viewSettings.background.image.x === -20 && pj.viewSettings.background.image.scale === 120 && R.sabari.originalBytesSame, '.sabari에 배경 설정·원본 이미지 보관');
 const page2 = await ctx.newPage(); await page2.addInitScript(() => localStorage.setItem('sabari.askSaveName', '0'));
 await page2.goto(process.env.SABARI_URL); await page2.waitForFunction(() => window.__sabari); await page2.waitForTimeout(500);
 await page2.setInputFiles('#fileProj', proj); await page2.waitForFunction(() => document.querySelector('[data-bgkind][aria-pressed=true]')?.dataset.bgkind === 'image', null, { timeout: 20000 }); await page2.waitForTimeout(400);

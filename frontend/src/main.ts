@@ -1,19 +1,22 @@
 import * as THREE from 'three';
 import { SNAP_DEG } from './screenRotate';
-import { FACES, FaceData, FaceId, FaceSnapshot, decode, faces, groupOf, rebake, resizeFaceCanvases, theme } from './faces';
+import { FACES, FaceData, FaceId, FaceSnapshot, decode, decodeUnder, faces, groupOf, rebake, resizeFaceCanvases, theme } from './faces';
 import { FaceGroup, GROUPS, applyFaceSizes, facesOf } from './faceDefs';
 import { BoxParams, DEFAULT_PARAMS, RatioChange, cloneParams, faceSizes, formatPct, formatRatio, paramsEqual, ratioChanges, ratioOf, validateParams } from './params';
 import { initDimsUi } from './dimsUi';
 import { DieKind, buildDieline, dielineSvg } from './dieline';
 import { SplitResult, initSplitUi } from './splitUi';
-import { Viewer, ViewName } from './viewer';
+import { initLayers } from './layers';
+import { ImportOptions, initImportFaces } from './importFaces';
+import { DetailKey, Viewer, ViewName } from './viewer';
 import { Rotation, defaultState } from './transform';
-import { DielineSave, UserError, inspectImage, packProject, unpackProject, OpenedProject, ViewPresetSlot, ViewPresetValue } from './project';
+import { DielineSave, DielineSet, UserError, inspectImage, packProject, unpackProject, OpenedProject, ViewPresetSlot, ViewPresetValue } from './project';
 import { StandingSide, standingPresetValue } from './standingView';
-import { BG_CHIPS, BG_SAMPLES, BgSettings, BgSource, DEFAULT_BG, drawBackground, loadBgImage, makeSample, nextKind, sanitizeBg } from './background';
+import { BG_CHIPS, BG_SAMPLES, DEFAULT_STUDIO, BgSettings, BgSource, DEFAULT_BG, drawBackground, loadBgImage, makeSample, nextKind, sanitizeBg } from './background';
 import { SABARI_BOX_ID, TEMPLATES } from './templates';
 import { askEnabled, confirmDialog, defaultStem, infoDialog, saveFile, setAskEnabled } from './dialogs';
 import { DEFAULT_SHADOW, ShadowSettings, sanitizeShadow } from './floorShadow';
+import { NOTE_LEVELS, NoteKind, NoteSlot, mayReplace, noteHistory, pickVisible, recordNote } from './notify';
 import { Draft, delDraft, getDraft, putDraft } from './draft';
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -33,7 +36,11 @@ let baselineParams: BoxParams = cloneParams(DEFAULT_PARAMS);
 let dims: ReturnType<typeof initDimsUi> | null = null;
 let split: ReturnType<typeof initSplitUi> | null = null;
 /** 마지막으로 올린 칼선 이미지 한 장과 분할 설정(원본 이미지는 .sabari 에 그대로 들어간다) */
-let dieline: DielineSave | null = null;
+const underSave = (id: FaceId) => { const u = faces[id].under; return u && faces[id].blob ? { blob: u.blob, name: u.name, state: { ...u.state }, onTop: faces[id].underOnTop } : null; };
+let layersUi: ReturnType<typeof initLayers> | undefined;
+const activeSt = (f: FaceData) => (layersUi ? layersUi.activeState(f) : f.state);
+let dielines: DielineSet = {}; // 칼선 분할 저장: 뚜껑·하단 몸통 종류별로 따로
+let lastDieKind: DieKind = 'lid'; // 가장 최근에 적용·불러온 칼선 종류("분할 영역 조정"이 여는 기본 종류)
 
 // ---------- 저장된 시점 ----------
 const VP_SLOTS = 5;
@@ -165,12 +172,60 @@ function initViewPresets() {
 }
 
 // ---------- 공통 UI 유틸 ----------
-function msg(text: string, kind: 'error' | 'ok' = 'error') {
-  $('msgText').textContent = text;
-  $('msg').className = kind === 'ok' ? 'ok' : '';
-  $('msg').hidden = false;
+// 알림(작업 29): 상단 바의 알림 영역 한 곳. 성공·안내는 5초 뒤 사라지고(마우스 올림·포커스 중 유지), 오류는 닫을 때까지 유지한다.
+// 진행 중인 오류는 새 성공·안내로 대체하지 않고(기록에만 남음), 깨끗한 화면 중에는 기록에만 남는다. 문구·종류는 호출부 그대로다.
+let msgTimer = 0, msgHold = false;
+function msg(text: string, kind: NoteKind = 'error') {
+  recordNote(text, kind);
+  if (document.body.classList.contains('clean-screen')) return;
+  const el = $('msg');
+  const cur: NoteKind | null = el.hidden ? null : (el.dataset.level as NoteKind | undefined) ?? 'error';
+  if (!mayReplace(cur, kind)) return;
+  $('msgText').textContent = text; el.title = text;
+  const lv = NOTE_LEVELS[kind];
+  el.className = kind === 'error' ? '' : kind; el.dataset.level = kind; // 'ok'는 예전과 같은 클래스 이름
+  $('msgLevel').textContent = `${lv.icon} ${lv.label}`;
+  el.setAttribute('role', lv.role);
+  el.hidden = false;
+  clearTimeout(msgTimer);
+  if (lv.autoHide && !msgHold) msgTimer = window.setTimeout(clearMsg, 5000);
 }
-const clearMsg = () => { $('msg').hidden = true; };
+// "자세히 보기"(details.more > summary): 앱의 Space 단축키(손 도구)보다 먼저 받아 Enter·Space 모두로 열고 닫는다(작업 32B).
+{
+  const isMoreSummary = (t: EventTarget | null) => t instanceof HTMLElement && t.matches('details.more > summary');
+  document.addEventListener('keydown', (e) => { if (e.code === 'Space' && isMoreSummary(e.target)) { e.preventDefault(); e.stopImmediatePropagation(); if (!e.repeat) { const d = (e.target as HTMLElement).parentElement as HTMLDetailsElement; d.open = !d.open; } } }, true);
+  document.addEventListener('keyup', (e) => { if (e.code === 'Space' && isMoreSummary(e.target)) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
+}
+const clearMsg = () => { clearTimeout(msgTimer); $('msg').hidden = true; };
+const armMsg = () => { clearTimeout(msgTimer); const el = $('msg'); if (!el.hidden && NOTE_LEVELS[(el.dataset.level as NoteKind | undefined) ?? 'error'].autoHide && !msgHold) msgTimer = window.setTimeout(clearMsg, 5000); };
+/** 알림 영역은 한 번에 한 개만 보인다(우선순위: 오류 > 안내 > 임시저장 > 손 도구 > 외부 GLB 상태). 요소의 hidden 은 각 기능이 그대로 쓰고, 여기서는 겹치는 쪽을 숨기기만 한다. */
+function initNotifyArea() {
+  const ids = ['msg', 'draftToast', 'panHintTop', 'extGlbBanner'];
+  const owner: Record<NoteSlot, string> = { 'msg-error': 'msg', 'msg-ok': 'msg', draft: 'draftToast', pan: 'panHintTop', ext: 'extGlbBanner' };
+  const run = () => {
+    const m = $('msg');
+    const pick = pickVisible({ 'msg-error': !m.hidden && (m.dataset.level ?? 'error') === 'error', 'msg-ok': !m.hidden && (m.dataset.level ?? 'error') !== 'error', draft: !$('draftToast').hidden, pan: !$('panHintTop').hidden, ext: !$('extGlbBanner').hidden });
+    for (const id of ids) $(id).classList.toggle('note-hidden', !!pick && owner[pick] !== id);
+    $('topBar').classList.toggle('has-note', !!pick);
+  };
+  const mo = new MutationObserver(run);
+  for (const id of ids) mo.observe($(id), { attributes: true, attributeFilter: ['hidden', 'class'] });
+  const m = $('msg');
+  m.addEventListener('mouseenter', () => { msgHold = true; clearTimeout(msgTimer); });
+  m.addEventListener('mouseleave', () => { msgHold = m.contains(document.activeElement); armMsg(); });
+  m.addEventListener('focusin', () => { msgHold = true; clearTimeout(msgTimer); });
+  m.addEventListener('focusout', (e) => { if (!m.contains((e as FocusEvent).relatedTarget as Node | null)) { msgHold = false; armMsg(); } });
+  m.addEventListener('keydown', (e) => { if ((e as KeyboardEvent).key === 'Escape') { e.stopPropagation(); clearMsg(); } });
+  run();
+}
+const fmtNoteTime = (t: number) => new Date(t).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+function openNotifyLog() {
+  const ul = $('notifyList'); ul.textContent = '';
+  const items = noteHistory();
+  $('notifyEmpty').hidden = items.length > 0;
+  for (const n of items) { const li = document.createElement('li'); if (n.kind === 'error') li.className = 'err'; li.dataset.level = n.kind; const t = document.createElement('time'); t.textContent = fmtNoteTime(n.at); const sp = document.createElement('span'); sp.textContent = n.text; li.append(t, sp); ul.appendChild(li); }
+  const d = $<HTMLDialogElement>('notifyDlg'); if (!d.open) d.showModal();
+}
 async function busy<T>(fn: () => Promise<T>, label = '처리 중…'): Promise<T | undefined> {
   $('loading').textContent = label; // 큰 이미지 등은 무엇을 처리하는 중인지 알린다
   $('loading').hidden = false;
@@ -227,12 +282,14 @@ function download(blob: Blob, name: string) {
 // 실행 취소/다시 실행: 한 번의 변경 전 상태(면 스냅샷 묶음 + 스위치 상태)를 쌓는다.
 // 같은 면의 연속 조작(드래그·슬라이더)은 0.8초 안이면 한 번으로 묶는다. 하단 면을 한꺼번에 제거하는 것도 한 항목이다.
 type Snap = FaceSnapshot & { id: FaceId };
-type Entry = { snaps: Snap[]; base: boolean; params: BoxParams };
+type ColorSnap = { face: string; lid: string; base: string; detail: DetailColors };
+/** colors 는 "다른 프로젝트에서 면 가져오기"에서 면 바탕색도 가져온 항목에만 들어간다(일반 색 변경은 예전처럼 실행 취소 대상이 아니다). */
+type Entry = { snaps: Snap[]; base: boolean; params: BoxParams; colors?: ColorSnap };
 const undoStack: Entry[] = [];
 const redoStack: Entry[] = [];
 let lastPushAt = 0;
 let lastPushId: FaceId | 'params' | null = null;
-const take = (id: FaceId): Snap => { const f = faces[id]; return { id, state: { ...f.state }, blob: f.blob, name: f.name, img: f.img, iw: f.iw, ih: f.ih }; };
+const take = (id: FaceId): Snap => { const f = faces[id]; return { id, state: { ...f.state }, blob: f.blob, name: f.name, img: f.img, iw: f.iw, ih: f.ih, under: f.under ? { ...f.under, state: { ...f.under.state } } : null, underOnTop: f.underOnTop }; };
 const takeEntry = (ids: FaceId[]): Entry => ({ snaps: ids.map(take), base: baseEnabled, params: cloneParams(params) });
 
 function pushHistory(id: FaceId, force = false) {
@@ -263,10 +320,13 @@ function pushHistoryMany(ids: FaceId[]) {
 function stepHistory(from: Entry[], to: Entry[]): boolean {
   const e = from.pop();
   if (!e) return false;
-  to.push(takeEntry(e.snaps.map((x) => x.id)));
+  const back = takeEntry(e.snaps.map((x) => x.id));
+  if (e.colors) back.colors = currentColors(); // 되돌리기↔다시 실행에서 색도 왕복한다
+  to.push(back);
   lastPushId = null;
   if (!paramsEqual(e.params, params)) applyParams(e.params, false); // 치수 변경도 실행 취소/다시 실행 대상
-  for (const { id, ...rest } of e.snaps) Object.assign(faces[id], { ...rest, state: { ...rest.state } });
+  for (const { id, ...rest } of e.snaps) Object.assign(faces[id], { ...rest, state: { ...rest.state }, under: rest.under ? { ...rest.under, state: { ...rest.under.state } } : null });
+  if (e.colors) applyColors(e.colors.face, e.colors.lid, e.colors.base, e.colors.detail);
   if (e.base !== baseEnabled) setBaseEnabled(e.base, false);
   for (const { id } of e.snaps) apply(id);
   const first = e.snaps[0]?.id;
@@ -285,7 +345,7 @@ async function setImage(id: FaceId, file: Blob, name: string) {
   f.blob = file; f.name = name; f.img = img; f.iw = iw; f.ih = ih;
   f.state = defaultState(); // 새 이미지는 항상 "이미지 전체 보이기"로 시작
   clearMsg();
-  if (info.warnings.length) msg(info.warnings.join(' '), 'ok');
+  if (info.warnings.length) msg(info.warnings.join(' '), 'warn');
   apply(id);
   resetRatioRefs([id]); // 새 이미지는 지금 비율에 맞춰 넣은 것이므로 이 면의 알림은 사라진다
   setCurrent(id);
@@ -397,7 +457,7 @@ function renderFaceList() {
     b.setAttribute('aria-pressed', String(fd.id === current));
     b.dataset.face = fd.id;
     const al = alertOf(fd.id);
-    b.innerHTML = `<span>${fd.short}</span><small>${f.img ? '이미지 있음' : '비어 있음'}</small>${al ? `<span class="badge" title="치수 변경으로 이 면의 비율이 ${formatPct(al.pct)} 달라졌습니다">⚠ 비율 변경</span>` : ''}`;
+    b.innerHTML = `<span>${fd.short}</span><small>${f.img ? (f.under ? '이미지 있음 · 바탕' : '이미지 있음') : '비어 있음'}</small>${al ? `<span class="badge" title="치수 변경으로 이 면의 비율이 ${formatPct(al.pct)} 달라졌습니다">⚠ 비율 변경</span>` : ''}`;
     b.onclick = () => setCurrent(fd.id);
     box.appendChild(b);
   }
@@ -449,7 +509,7 @@ async function onUseBaseToggle() {
     pushHistoryMany(withImage);
     for (const id of withImage) {
       const f = faces[id];
-      f.blob = null; f.name = null; f.img = null; f.iw = f.ih = 0; f.state = defaultState();
+      f.blob = null; f.name = null; f.img = null; f.iw = f.ih = 0; f.state = defaultState(); f.under = null; f.underOnTop = false;
       apply(id);
     }
   }
@@ -469,15 +529,18 @@ function syncControls() {
   const ctx = prev.getContext('2d')!;
   ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, prev.width, prev.height);
   if (f.img) ctx.drawImage(f.canvas, 0, 0, prev.width, prev.height);
-  (document.querySelector(`input[name=fit][value=${f.state.fit}]`) as HTMLInputElement).checked = true;
-  $('flipX').setAttribute('aria-pressed', String(f.state.flipX));
-  $('flipY').setAttribute('aria-pressed', String(f.state.flipY));
-  $('rotText').textContent = `${f.state.rotationDeg}°`;
-  setPair('scale', f.state.scale * 100);
-  setPair('x', f.state.offsetX * 100);
-  setPair('y', f.state.offsetY * 100);
+  layersUi?.render();
+  const st = activeSt(f);
+  (document.querySelector(`input[name=fit][value=${st.fit}]`) as HTMLInputElement).checked = true;
+  $('flipX').setAttribute('aria-pressed', String(st.flipX));
+  $('flipY').setAttribute('aria-pressed', String(st.flipY));
+  $('rotText').textContent = `${st.rotationDeg}°`;
+  setPair('scale', st.scale * 100);
+  setPair('x', st.offsetX * 100);
+  setPair('y', st.offsetY * 100);
   $<HTMLButtonElement>('btnRemove').disabled = !f.img;
   $<HTMLButtonElement>('btnReset').disabled = !f.img;
+  for (const id of ['btnRemove', 'btnReset']) $(id).title = f.img ? '' : '이 면에 이미지를 넣으면 쓸 수 있습니다'; // 비활성 이유(작업 32B)
   $('btnUndo').hidden = undoStack.length === 0;
   syncTopHistory();
   renderRatioNote();
@@ -491,7 +554,7 @@ function edit(fn: (f: FaceData) => void) {
   const f = faces[current];
   if (!f.img) return;
   pushHistory(current);
-  fn(f);
+  fn({ ...f, state: activeSt(f) } as FaceData); // 선택한 레이어(디자인/바탕)의 변환 상태를 고친다
   apply(current);
 }
 const rotate = (d: number) => edit((f) => (f.state.rotationDeg = ((((f.state.rotationDeg + d) % 360) + 360) % 360) as Rotation));
@@ -511,15 +574,15 @@ function bindPair(k: string, min: number, max: number, set: (f: FaceData, v: num
 async function saveProject() {
   await busy(async () => {
     const blob = await packProject({
-      faces: FACES.map((x) => ({ id: x.id, state: faces[x.id].state, blob: faces[x.id].blob, name: faces[x.id].name })),
+      faces: FACES.map((x) => ({ id: x.id, state: faces[x.id].state, blob: faces[x.id].blob, name: faces[x.id].name, under: underSave(x.id) })),
       lidLiftMm: Math.round(viewer.slot === 'editor' ? viewer.getLiftMm() : 0),
       templateId: activeTemplateId,
       background: $<HTMLSelectElement>('bgSel').value === 'transparent' ? 'transparent' : 'white', // PNG 배경 옵션("화면 그대로"는 흰색으로 기억)
       viewSettings: { background: { settings: JSON.parse(JSON.stringify(bg)) as BgSettings, blob: bgImg?.blob ?? null, name: bgImg?.name ?? null } },
-      colors: { face: $<HTMLInputElement>('colFace').value, lid: $<HTMLInputElement>('colLid').value, base: $<HTMLInputElement>('colBase').value },
+      colors: { face: $<HTMLInputElement>('colFace').value, lid: $<HTMLInputElement>('colLid').value, base: $<HTMLInputElement>('colBase').value, ...detailFor() },
       useBaseFaces: baseEnabled,
       params: cloneParams(params),
-      dieline,
+      dielines,
       viewPresets: presets.filter((p): p is ViewPresetSlot => p !== null),
     });
     const r = await saveFile(blob, 'sabari', defaultStem('사바리_프로젝트'), download);
@@ -549,15 +612,20 @@ async function applyOpened(proj: OpenedProject) {
     } else {
       f.blob = null; f.name = null; f.img = null; f.iw = f.ih = 0;
     }
+    f.under = null; f.underOnTop = false;
+    if (p?.under && p.blob) {
+      try { const ud = await decodeUnder(p.under.blob); f.under = { state: { ...p.under.state }, blob: p.under.blob, name: p.under.name, ...ud }; f.underOnTop = p.under.onTop; } catch { /* 바탕 이미지를 못 읽으면 바탕 없이 연다 */ }
+    }
     apply(fdsc.id);
   }
-  if (proj.colors) applyColors(proj.colors.face, proj.colors.lid, proj.colors.base);
+  if (proj.colors) { const d: DetailColors = {}; for (const [k] of ADV_IDS) { const v = proj.colors[k]; if (v) d[k] = v; } applyColors(proj.colors.face, proj.colors.lid, proj.colors.base, d); }
   // 하단 면에 이미지가 있으면 스위치는 자동으로 켜진다(없던 이전 파일은 꺼짐)
   setBaseEnabled(proj.useBase === true || facesOf('base').some((x) => faces[x.id].img), false);
   setLift(proj.lidLiftMm);
   $<HTMLSelectElement>('bgSel').value = proj.background;
   syncControls();
-  dieline = proj.dieline ?? null;
+  dielines = proj.dielines ?? (proj.dieline ? { [proj.dieline.kind]: proj.dieline } : {});
+  lastDieKind = dielines.lid ? 'lid' : 'base';
   renderDielineInfo();
   presets = new Array(VP_SLOTS).fill(null);
   for (const url of presetThumbUrls) if (url) URL.revokeObjectURL(url);
@@ -586,6 +654,52 @@ async function openProject(file: File) {
   });
 }
 
+// ---------- 다른 프로젝트에서 면 가져오기 ----------
+/** 선택한 면만 원본 프로젝트에서 현재 프로젝트로 복사한다. 한 번의 실행 취소 항목이며, 선택하지 않은 면·옵션을 끈 항목은 바꾸지 않는다. */
+async function applyImportedFaces(src: OpenedProject, o: ImportOptions) {
+  const ids = o.ids;
+  const withImage = ids.filter((id) => faces[id].img);
+  if (withImage.length && !(await confirmDialog({ kind: 'confirm-import-replace', title: '면 이미지 바꾸기', text: `${withImage.map((id) => FACES.find((f) => f.id === id)!.label).join(', ')} 이미지가 바뀝니다.\n실행 취소(Ctrl+Z)로 되돌릴 수 있습니다.`, ok: '가져오기', cancel: '취소' }))) throw new Error('가져오기를 취소했습니다.');
+  // 필요한 것을 모두 읽은 뒤에 현재 작업을 바꾼다(중간에 실패해도 현재 작업은 그대로)
+  const dec = new Map<FaceId, Awaited<ReturnType<typeof decode>>>();
+  const und = new Map<FaceId, Awaited<ReturnType<typeof decodeUnder>>>();
+  for (const id of ids) {
+    const p = src.faces[id];
+    dec.set(id, await decode(p.blob!));
+    if (o.underlay && p.under) und.set(id, await decodeUnder(p.under.blob));
+  }
+  opening = true; // 치수·면 갱신 중 비율 알림·변경 표시 중복 방지(끝에서 직접 처리)
+  try {
+    pushHistoryMany(ids);
+    if (o.bgColor && src.colors) undoStack[undoStack.length - 1].colors = currentColors(); // 가져오기 전 색을 같은 실행 취소 항목에 담는다
+    if (ids.some((id) => groupOf(id) === 'base') && !baseEnabled) setBaseEnabled(true, false);
+    if (o.params && src.params) applyParams(cloneParams(src.params), false);
+    for (const id of ids) {
+      const p = src.faces[id], d = dec.get(id)!, f = faces[id];
+      f.blob = p.blob; f.name = p.name; f.img = d.img; f.iw = d.iw; f.ih = d.ih;
+      f.state = o.transform ? { ...p.state } : defaultState();
+      f.under = null; f.underOnTop = false;
+      const ud = und.get(id);
+      if (ud && p.under) { f.under = { state: { ...p.under.state }, blob: p.under.blob, name: p.under.name, ...ud }; f.underOnTop = p.under.onTop; }
+    }
+    if (o.bgColor && src.colors) { const { face, lid, base, ...detail } = src.colors; applyColors(face, lid, base, detail); }
+    if (o.dieline) {
+      const sd = src.dielines ?? {};
+      for (const k of ['lid', 'base'] as const) if (sd[k] && Object.keys(sd[k]!.regions).length && ids.some((id) => groupOf(id) === k)) dielines = { ...dielines, [k]: sd[k]! };
+      renderDielineInfo();
+    }
+    for (const id of ids) apply(id);
+  } finally { opening = false; }
+  // 가져온 면의 비율 기준은 원본 프로젝트의 면 크기: 현재 치수와 다르면 기존 "비율 변경" 알림이 그 면에 뜬다
+  const srcSizes = faceSizes(src.params ?? params);
+  for (const id of ids) ratioRef[id] = ratioOf(srcSizes[id]);
+  recomputeRatio();
+  setDirty(true);
+  scheduleDraft();
+  setCurrent(ids[0]);
+  msg(`다른 프로젝트에서 ${ids.length}면을 가져왔습니다. (Ctrl+Z로 되돌릴 수 있습니다)`, 'ok');
+}
+
 // ---------- 임시저장 (IndexedDB) ----------
 const COLOR_IDS = ['colFace', 'colLid', 'colBase'] as const;
 let draftReady = false;
@@ -597,10 +711,10 @@ const timeText = (t: number) => new Date(t).toLocaleString('ko-KR');
 function collectDraft(): Draft {
   const [face, lid, base] = COLOR_IDS.map((i) => $<HTMLInputElement>(i).value);
   return {
-    savedAt: Date.now(), templateId: activeTemplateId, lidLiftMm: Math.round(viewer.getLiftMm()), colors: { face, lid, base }, useBase: baseEnabled, params: cloneParams(params), dieline,
+    savedAt: Date.now(), templateId: activeTemplateId, lidLiftMm: Math.round(viewer.getLiftMm()), colors: { face, lid, base, ...detailFor() }, useBase: baseEnabled, params: cloneParams(params), dielines,
     background: $<HTMLSelectElement>('bgSel').value === 'transparent' ? 'transparent' : 'white',
     viewSettings: { background: { settings: JSON.parse(JSON.stringify(bg)) as BgSettings, blob: bgImg?.blob ?? null, name: bgImg?.name ?? null } },
-    faces: Object.fromEntries(FACES.map((x) => [x.id, { state: { ...faces[x.id].state }, blob: faces[x.id].blob, name: faces[x.id].name }])) as Draft['faces'],
+    faces: Object.fromEntries(FACES.map((x) => [x.id, { state: { ...faces[x.id].state }, blob: faces[x.id].blob, name: faces[x.id].name, under: underSave(x.id) }])) as Draft['faces'],
     viewPresets: presets.filter((p): p is ViewPresetSlot => p !== null),
   };
 }
@@ -693,6 +807,7 @@ function setCleanScreen(on: boolean) {
     document.querySelectorAll<HTMLElement>('#panel, #panel *, #facePanel, #facePanel *').forEach((el) => { if (el.scrollTop > 0) cleanScroll.set(el, el.scrollTop); });
     document.querySelectorAll<HTMLElement>('.popover').forEach((m) => { m.hidden = true; });
     document.getElementById('btnMore')?.setAttribute('aria-expanded', 'false');
+    clearMsg(); hideDraftToast(); // 해제 뒤에 이전 알림을 다시 띄우지 않는다(기록에는 남아 있음)
     cleanScreen = true; viewer.setCleanScreen(true);
     document.body.classList.add('clean-screen');
     (document.activeElement as HTMLElement | null)?.blur();
@@ -758,15 +873,32 @@ async function savePng() {
 
 // ---------- 목업 색상 ----------
 let defaultColors = { face: '#ffffff', lid: '#ffffff', base: '#ffffff' };
+/** 고급 색상(작업 28): 키가 없으면 "다른 항목과 같게". 저장 파일·임시저장에는 정해진 항목만 기록한다. */
+type DetailColors = Partial<Record<DetailKey, string>>;
+let detailColors: DetailColors = {};
+const ADV_IDS: [DetailKey, string][] = [['lidRim', 'LidRim'], ['lidInner', 'LidInner'], ['baseFace', 'BaseFace'], ['baseRim', 'BaseRim'], ['baseInner', 'BaseInner']];
+const detailFor = (): DetailColors => ({ ...detailColors });
+const currentColors = (): ColorSnap => ({ face: $<HTMLInputElement>('colFace').value, lid: $<HTMLInputElement>('colLid').value, base: $<HTMLInputElement>('colBase').value, detail: { ...detailColors } });
+function syncAdvUi() {
+  for (const [k, id] of ADV_IDS) {
+    const chk = $<HTMLInputElement>('advChk' + id), col = $<HTMLInputElement>('advCol' + id);
+    const own = detailColors[k];
+    chk.checked = own === undefined; col.disabled = own === undefined;
+    col.value = own ?? (k.startsWith('lid') ? $<HTMLInputElement>('colLid').value : $<HTMLInputElement>('colBase').value);
+  }
+}
 
-function applyColors(face: string, lid: string, base: string) {
+function applyColors(face: string, lid: string, base: string, detail: DetailColors = detailColors) {
+  detailColors = { ...detail };
   $<HTMLInputElement>('colFace').value = face;
   $<HTMLInputElement>('colLid').value = lid;
   $<HTMLInputElement>('colBase').value = base;
   viewer.setPartColor('lid', lid);
   viewer.setPartColor('base', base);
+  viewer.setDetailColors(detailColors);
+  syncAdvUi();
   theme.faceBg = face;
-  theme.baseBg = base; // 이미지 없는 하단 면·여백·투명 픽셀은 "몸통" 색
+  theme.baseBg = detailColors.baseFace ?? base; // 이미지 없는 하단 면·여백·투명 픽셀은 "몸통 바깥 면" 색(따로 정하지 않았으면 몸통 색)
   viewer.setFaceBg(face);
   for (const f of FACES) if (faces[f.id].img) apply(f.id); // 여백 색이 바뀌므로 다시 굽는다
   scheduleDraft();
@@ -805,14 +937,24 @@ async function openGlb(file: File) {
     syncBoxControlsForSlot();
     const dimText = info.params ? ` · 몸통 ${info.params.baseW}×${info.params.baseD}×${info.params.baseH}mm` : '';
     $('glbInfo').textContent = `${file.name} · 메시 ${info.meshes}개 · 이미지가 붙은 재질 ${info.textured}개${dimText}`;
+    syncGlbEntry(file.name);
     showView('iso', true);
     clearMsg();
   });
 }
 
+/** 보기 탭 맨 위 "GLB 보기" 한 줄(작업 33): 열기 메뉴의 #glbInfo 와 같은 상태를 보여 주고, 외부 GLB 중에는 돌아가기 버튼을 보인다. */
+function syncGlbEntry(extName?: string) {
+  const info = $('glbInfoView'), back = $('btnExtGlbBackView');
+  const text = externalGlbActive && extName ? `외부 GLB 보는 중 · ${extName}` : ($('glbInfo').textContent ?? '불러온 파일 없음');
+  info.textContent = text; info.title = text;
+  back.hidden = !externalGlbActive;
+}
+
 function returnToWork() {
   if (!externalGlbActive) return;
   externalGlbActive = false;
+  syncGlbEntry();
   renderPresets();
   viewer.setSlot('editor');
   setExternalUi(false);
@@ -840,11 +982,16 @@ const loadUi = (): { open?: Record<string, boolean>; keys?: boolean; shade?: num
 const saveUi = (patch: object) => { try { localStorage.setItem(UI_KEY, JSON.stringify({ ...loadUi(), ...patch })); } catch { /* 저장 불가 환경이면 기억만 안 한다 */ } };
 // 개별 설정 2개(이 브라우저에만 기억, 기본 켜짐)
 {
-  const optRot = $<HTMLInputElement>('optRotBadge'), optFloat = $<HTMLInputElement>('optFloatViews');
-  const prefs = loadUi() as { rotBadge?: boolean; floatViews?: boolean };
-  optRot.checked = prefs.rotBadge !== false; optFloat.checked = prefs.floatViews !== false;
-  const apply = () => { document.body.classList.toggle('hide-rotbadge', !optRot.checked); document.body.classList.toggle('hide-floatviews', !optFloat.checked); };
-  optRot.onchange = () => { saveUi({ rotBadge: optRot.checked }); apply(); };
+  const optRot = $<HTMLSelectElement>('optRotPlace'), optFloat = $<HTMLInputElement>('optFloatViews');
+  const prefs = loadUi() as { rotPlace?: string; floatViews?: boolean };
+  // 회전 각도 표시 위치(작업 29): 한 번에 한 곳에만 표시한다. 이전의 "회전 각도 배지 보기" 저장 값(rotBadge)은 무시한다.
+  optRot.value = ['panel', 'view', 'off'].includes(prefs.rotPlace ?? '') ? (prefs.rotPlace as string) : 'panel'; optFloat.checked = prefs.floatViews !== false;
+  const apply = () => {
+    document.body.classList.remove('rotplace-panel', 'rotplace-view', 'rotplace-off'); document.body.classList.add(`rotplace-${optRot.value}`);
+    document.body.classList.toggle('hide-floatviews', !optFloat.checked);
+    document.dispatchEvent(new Event('sabari-rotplace'));
+  };
+  optRot.onchange = () => { saveUi({ rotPlace: optRot.value }); apply(); };
   optFloat.onchange = () => { saveUi({ floatViews: optFloat.checked }); apply(); };
   apply();
 }
@@ -890,12 +1037,14 @@ let bg: BgSettings = JSON.parse(JSON.stringify(DEFAULT_BG));
 let bgImg: { blob: Blob | null; name: string | null; canvas: HTMLCanvasElement } | null = null;
 const bgSource = (): BgSource => (bgImg ? { img: bgImg.canvas, w: bgImg.canvas.width, h: bgImg.canvas.height } : null);
 
+let lastHz = -1;
 function renderBg() {
   const cv = $<HTMLCanvasElement>('bgCanvas'), r = $('viewport').getBoundingClientRect();
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const w = Math.max(1, Math.round(r.width * dpr)), h = Math.max(1, Math.round(r.height * dpr));
   if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; }
-  drawBackground(cv.getContext('2d')!, w, h, bg, bgSource(), true);
+  drawBackground(cv.getContext('2d')!, w, h, bg, bgSource(), true, viewer.horizonFrac());
+  lastHz = viewer.horizonFrac();
 }
 
 /** 저장 PNG "화면 그대로": 투명 배경으로 그린 박스(그림자 포함)를 같은 그리기 함수의 배경 위에 합성한다. 체크무늬는 넣지 않는다. */
@@ -903,7 +1052,7 @@ async function composeScreenPng(blob: Blob, w: number, h: number): Promise<Blob>
   const bmp = await createImageBitmap(blob);
   const c = document.createElement('canvas'); c.width = w; c.height = h;
   const ctx = c.getContext('2d')!;
-  drawBackground(ctx, w, h, bg, bgSource(), false);
+  drawBackground(ctx, w, h, bg, bgSource(), false, viewer.horizonFrac());
   ctx.drawImage(bmp, 0, 0); bmp.close();
   return new Promise((res, rej) => c.toBlob((b) => (b ? res(b) : rej(new Error('PNG 생성 실패'))), 'image/png'));
 }
@@ -911,7 +1060,7 @@ async function composeScreenPng(blob: Blob, w: number, h: number): Promise<Blob>
 /** PNG 배경 선택의 기본값: 배경이 단색·이미지면 "화면 그대로", 아니면(이미 "화면 그대로"였다면) 현재 배경 종류에 맞는 기존 옵션 */
 function syncPngBgDefault() {
   const sel = $<HTMLSelectElement>('bgSel');
-  if (bg.kind === 'solid' || bg.kind === 'image') sel.value = 'screen';
+  if (bg.kind === 'solid' || bg.kind === 'image' || bg.kind === 'studio') sel.value = 'screen';
   else if (sel.value === 'screen') sel.value = bg.kind === 'transparent' ? 'transparent' : 'white';
 }
 
@@ -920,6 +1069,13 @@ function syncBgUi() {
   $('bgTransparentCtl').hidden = bg.kind !== 'transparent';
   $('bgSolidCtl').hidden = bg.kind !== 'solid';
   $('bgImageCtl').hidden = bg.kind !== 'image';
+  $('bgStudioCtl').hidden = bg.kind !== 'studio';
+  $<HTMLInputElement>('bgStudioWall').value = bg.studio.wall; $<HTMLInputElement>('bgStudioFloor').value = bg.studio.floor;
+  document.querySelectorAll<HTMLButtonElement>('#bgStudioWallChips button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.color === bg.studio.wall)));
+  document.querySelectorAll<HTMLButtonElement>('#bgStudioFloorChips button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.color === bg.studio.floor)));
+  for (const [id, v] of [['bgVig', bg.studio.vignette], ['bgHor', bg.studio.horizon]] as [string, number][]) for (const sfx of ['R', 'N']) $<HTMLInputElement>(id + sfx).value = String(Math.round(v));
+  const hAuto = $<HTMLButtonElement>('bgHorizonAuto'); hAuto.setAttribute('aria-checked', String(bg.studio.horizonAuto));
+  for (const sfx of ['R', 'N']) $<HTMLInputElement>('bgHor' + sfx).disabled = bg.studio.horizonAuto;
   const ck = $<HTMLButtonElement>('bgChecker'); ck.setAttribute('aria-pressed', String(bg.checkerDark)); ck.textContent = bg.checkerDark ? '체크무늬 밝게' : '체크무늬 어둡게';
   $<HTMLInputElement>('bgColor').value = bg.color;
   document.querySelectorAll<HTMLButtonElement>('#bgChips button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.color === bg.color)));
@@ -948,7 +1104,7 @@ async function applyBgFromSave(b?: { settings: BgSettings; blob: Blob | null; na
   }
   if (bg.kind === 'image' && !bgImg) bg.kind = 'white';
   renderBg(); syncBgUi();
-  if (bg.kind === 'solid' || bg.kind === 'image') $<HTMLSelectElement>('bgSel').value = 'screen';
+  if (bg.kind === 'solid' || bg.kind === 'image' || bg.kind === 'studio') $<HTMLSelectElement>('bgSel').value = 'screen';
 }
 
 function initBackground() {
@@ -966,6 +1122,25 @@ function initBackground() {
     samples.appendChild(b);
   });
   document.querySelectorAll<HTMLButtonElement>('[data-bgkind]').forEach((b) => (b.onclick = () => setBgKind(b.dataset.bgkind as BgSettings['kind'])));
+  // 스튜디오 배경(작업 25): 벽·바닥 색(빠른 색 칩 + 직접 선택), 비네팅, 수평선(자동/고정)
+  for (const [boxId, key] of [['bgStudioWallChips', 'wall'], ['bgStudioFloorChips', 'floor']] as [string, 'wall' | 'floor'][]) {
+    for (const c of [{ name: '흰색', color: '#ffffff' }, { name: '밝은 회색', color: '#e6e6e6' }, { name: '회색', color: '#949494' }, { name: '어두운 회색', color: '#4a4a4a' }, { name: '베이지', color: '#e8dccb' }, { name: '하늘', color: '#cfe0ee' }]) {
+      const b = document.createElement('button'); b.type = 'button'; b.dataset.color = c.color; b.style.background = c.color; b.title = c.name; b.setAttribute('aria-label', `${key === 'wall' ? '벽' : '바닥'} 색 ${c.name}`); b.setAttribute('aria-pressed', 'false');
+      b.innerHTML = `<span>${c.name}</span>`;
+      b.onclick = () => { bg.studio[key] = c.color; bgChanged(); };
+      $(boxId).appendChild(b);
+    }
+  }
+  $<HTMLInputElement>('bgStudioWall').oninput = (e) => { bg.studio.wall = (e.target as HTMLInputElement).value.toLowerCase(); bgChanged(); };
+  $<HTMLInputElement>('bgStudioFloor').oninput = (e) => { bg.studio.floor = (e.target as HTMLInputElement).value.toLowerCase(); bgChanged(); };
+  for (const [id, key] of [['bgVig', 'vignette'], ['bgHor', 'horizon']] as [string, 'vignette' | 'horizon'][]) {
+    for (const sfx of ['R', 'N']) {
+      const el = $<HTMLInputElement>(id + sfx);
+      el[sfx === 'R' ? 'oninput' : 'onchange'] = () => { const v = Number(el.value); if (!Number.isNaN(v)) { bg.studio[key] = Math.min(100, Math.max(0, v)); bgChanged(); } };
+    }
+  }
+  $('bgHorizonAuto').onclick = () => { bg.studio.horizonAuto = !bg.studio.horizonAuto; bgChanged(); };
+  viewer.addDrawListener(() => { if (bg.kind === 'studio' && bg.studio.horizonAuto && Math.abs(viewer.horizonFrac() - lastHz) > 0.002) renderBg(); });
   $('bgChecker').onclick = () => { bg.checkerDark = !bg.checkerDark; bgChanged(); };
   $<HTMLInputElement>('bgColor').oninput = (e) => { bg.color = (e.target as HTMLInputElement).value.toLowerCase(); setBgKind('solid'); };
   document.querySelectorAll<HTMLInputElement>('input[name=bgfit]').forEach((r) => (r.onchange = () => { if (r.checked) { bg.image.fit = r.value as 'contain' | 'cover'; bgChanged(); } }));
@@ -1004,7 +1179,7 @@ function takeEdgeSnapshot() {
   const w = snap.width, h = snap.height;
   const base = document.createElement('canvas'); base.width = w; base.height = h;
   const bctx = base.getContext('2d')!;
-  drawBackground(bctx, w, h, bg, bgSource(), true); // 지금 화면 배경(체크무늬 포함) 위에
+  drawBackground(bctx, w, h, bg, bgSource(), true, viewer.horizonFrac()); // 지금 화면 배경(체크무늬 포함) 위에
   bctx.drawImage(snap, 0, 0);
   // 알파 마스크: 불투명도만 흑백(흰색 = 불투명)
   const src = snap.getContext('2d')!.getImageData(0, 0, w, h);
@@ -1173,6 +1348,7 @@ function initWorkspace() {
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenus(); });
   showMoreMenu = () => { closeMenus(); $('moreMenu').hidden = false; moreBtn.setAttribute('aria-expanded', 'true'); };
   $('btnTopProjOpen').onclick = () => { closeMenus(); $('btnProjOpen').click(); };
+  $('btnTopImportFaces').onclick = () => { closeMenus(); $('btnImportFaces').click(); };
   const topDraft = $<HTMLButtonElement>('btnTopDraftLoad'), draft = $<HTMLButtonElement>('btnDraftLoad');
   const syncDraftBtn = () => { topDraft.disabled = draft.disabled; };
   new MutationObserver(syncDraftBtn).observe(draft, { attributes: true, attributeFilter: ['disabled'] }); syncDraftBtn();
@@ -1218,7 +1394,12 @@ function initWorkspace() {
   });
   handle.addEventListener('pointerup', () => { drag = null; });
   const faceLine = $('sheetFaceLine');
-  const syncFaceLine = () => { faceLine.textContent = `선택한 면 · ${$('faceTitle').textContent} · ${($('faceSize').textContent ?? '').replace('면 크기 ', '')} · ${$('fileInfo').textContent}`; };
+  const syncFaceLine = () => {
+    const rot = !document.body.classList.contains('sheet-min') && document.body.classList.contains('rotplace-panel') ? ` · ${$('rotReadoutText').textContent}` : ''; // 회전 각도는 작업 시트 맨 위 줄 오른쪽에 한 줄로(시트가 접혀 있으면 표시하지 않음)
+    faceLine.textContent = `선택한 면 · ${$('faceTitle').textContent} · ${($('faceSize').textContent ?? '').replace('면 크기 ', '')} · ${$('fileInfo').textContent}${rot}`;
+  };
+  new MutationObserver(syncFaceLine).observe($('rotReadoutText'), { childList: true, characterData: true, subtree: true });
+  document.addEventListener('sabari-rotplace', syncFaceLine);
   const mo = new MutationObserver(syncFaceLine);
   for (const id of ['faceTitle', 'faceSize', 'fileInfo']) mo.observe($(id), { childList: true, characterData: true, subtree: true });
   syncFaceLine();
@@ -1232,9 +1413,12 @@ let showMoreMenu: () => void = () => {};
 
 // ---------- 칼선(디자인 가이드) · 칼선 이미지 분할 ----------
 function renderDielineInfo() {
-  const has = !!dieline;
-  $('dielineInfo').textContent = dieline ? `${dieline.name ?? '칼선 이미지'} · ${dieline.kind === 'base' ? '하단 몸통' : '뚜껑'} · ${dieline.mode === 'artboard' ? `아트보드 전체 ${dieline.artboardMm?.[0]}×${dieline.artboardMm?.[1]}mm` : dieline.mode === 'crop' ? `칼선 외곽 크롭 ${dieline.artboardMm?.[0]}×${dieline.artboardMm?.[1]}mm` : `여분 ${dieline.bleedMm}mm`}` : '올린 칼선 이미지 없음';
+  const modeText = (d: DielineSave) => (d.mode === 'artboard' ? `아트보드 전체 ${d.artboardMm?.[0]}×${d.artboardMm?.[1]}mm` : d.mode === 'crop' ? `칼선 외곽 크롭 ${d.artboardMm?.[0]}×${d.artboardMm?.[1]}mm` : `여분 ${d.bleedMm}mm`);
+  const one = (d: DielineSave | undefined) => (d ? `${d.name ?? '칼선 이미지'} · ${modeText(d)}${d.imageRotation ? ` · ${d.imageRotation}° 돌려 인식` : ''}` : '없음');
+  const has = !!(dielines.lid || dielines.base);
+  $('dielineInfo').textContent = has ? `뚜껑: ${one(dielines.lid)}, 하단 몸통: ${one(dielines.base)}` : '올린 칼선 이미지 없음';
   $<HTMLButtonElement>('btnSplitEdit').disabled = !has;
+  $('btnSplitEdit').title = has ? '' : '칼선 이미지를 먼저 올리면 쓸 수 있습니다'; // 비활성 이유(작업 32B)
 }
 
 async function downloadDielineSvg(kind: DieKind) {
@@ -1259,7 +1443,8 @@ async function applySplit(r: SplitResult) {
     f.state = { ...defaultState(), fit: 'cover' }; // 분할한 이미지는 면과 같은 비율이므로 면을 꽉 채운다(위치·확대·회전·반전은 이후 그대로 편집 가능)
     apply(d.id);
   }
-  dieline = { blob: r.source, name: r.name, bleedMm: r.bleedMm, kind: r.kind, regions: r.regions, rotations: r.rotations, ...(r.mode === 'artboard' || r.mode === 'crop' ? { mode: r.mode, artboardMm: r.artboardMm } : {}) };
+  lastDieKind = r.kind;
+  dielines = { ...dielines, [r.kind]: { blob: r.source, name: r.name, bleedMm: r.bleedMm, kind: r.kind, regions: r.regions, rotations: r.rotations, ...(r.mode === 'artboard' || r.mode === 'crop' ? { mode: r.mode, artboardMm: r.artboardMm } : {}), ...(r.imageRotation ? { imageRotation: r.imageRotation, orientationConfirmed: r.orientConfirmed } : {}) } };
   resetRatioRefs(ids);
   renderDielineInfo();
   setCurrent(ids[0]);
@@ -1352,8 +1537,25 @@ async function init() {
 
   // 편집 영역 펼침/접힘 · 외부 GLB 보기
   $('btnExtGlbBack').onclick = () => returnToWork();
+  $('btnExtGlbBackView').onclick = () => returnToWork();
+  const geHelp = $<HTMLButtonElement>('btnGlbEntryHelp');
+  geHelp.onclick = () => { const open = geHelp.getAttribute('aria-expanded') !== 'true'; geHelp.setAttribute('aria-expanded', String(open)); $('glbEntryHelp').hidden = !open; };
   initWorkspace();
   initBackground();
+  initNotifyArea();
+  {
+    // 상태줄(작업 29): 확대 배율, 손 도구 안내. 회전 각도는 #rotReadout 이 같은 줄에 들어 있다.
+    const zoomEl = $('zoomReadout'); let lastZoom = -1;
+    viewer.addDrawListener(() => { const z = viewer.getZoomPct(); if (z !== lastZoom) { lastZoom = z; zoomEl.textContent = `확대 ${z}%`; } });
+    const syncPan = () => {
+      const panning = $('viewport').classList.contains('panning');
+      $('statusBar').classList.toggle('panning', panning);
+      $('panHintTop').hidden = !(panning && getComputedStyle($('statusBar')).display === 'none'); // 패널이 접혔거나 모바일이면 알림 영역에 표시
+    };
+    new MutationObserver(syncPan).observe($('viewport'), { attributes: true, attributeFilter: ['class'] });
+    $('btnNotifyLog').onclick = () => { $('moreMenu').hidden = true; $('btnMore').setAttribute('aria-expanded', 'false'); openNotifyLog(); };
+    $('btnNotifyDlgClose').onclick = () => $<HTMLDialogElement>('notifyDlg').close();
+  }
   renderTemplateCard();
   initEdgeInspect();
 
@@ -1361,7 +1563,7 @@ async function init() {
   const pick = $<HTMLInputElement>('filePick');
   $('btnPick').onclick = () => pick.click();
   pick.onchange = () => { const f = pick.files?.[0]; pick.value = ''; if (f) busy(() => setImage(current, f, f.name), f.size > 8e6 ? '큰 이미지를 처리하는 중…' : '이미지를 처리하는 중…'); };
-  document.querySelectorAll<HTMLInputElement>('input[name=fit]').forEach((r) => (r.onchange = () => edit((f) => (f.state.fit = r.value as 'contain' | 'cover'))));
+  document.querySelectorAll<HTMLInputElement>('input[name=fit]').forEach((r) => (r.onchange = () => edit((f) => (f.state.fit = r.value as 'contain' | 'cover' | 'tile'))));
   $('rotL').onclick = () => rotate(-90);
   $('rotR').onclick = () => rotate(90);
   $('rot180').onclick = () => rotate(180);
@@ -1374,7 +1576,7 @@ async function init() {
     const f = faces[current];
     if (!f.img) return;
     pushHistory(current, true);
-    f.blob = null; f.name = null; f.img = null; f.iw = f.ih = 0; f.state = defaultState();
+    f.blob = null; f.name = null; f.img = null; f.iw = f.ih = 0; f.state = defaultState(); f.under = null; f.underOnTop = false;
     apply(current);
   };
   $('btnReset').onclick = () => {
@@ -1386,11 +1588,23 @@ async function init() {
     resetRatioRefs([current]); // 면을 초기화하면 그 면의 배지는 사라진다
   };
   $('btnUndo').onclick = () => { undo(); };
+  layersUi = initLayers({
+    faces, current: () => current,
+    groupOf: (id) => ({ ids: facesOf(groupOf(id)).map((x) => x.id), label: GROUPS[groupOf(id)].label }),
+    pushHistory, pushHistoryMany, apply,
+    inspect: async (file) => { await inspectImage(file); },
+    run: (fn) => busy(fn),
+  });
 
   // 목업 색상 (input 이벤트로 즉시 반영)
   const cur = () => [$<HTMLInputElement>('colFace').value, $<HTMLInputElement>('colLid').value, $<HTMLInputElement>('colBase').value] as const;
-  for (const id of ['colFace', 'colLid', 'colBase']) $<HTMLInputElement>(id).oninput = () => applyColors(...cur());
-  $('btnColorReset').onclick = () => applyColors(defaultColors.face, defaultColors.lid, defaultColors.base);
+  for (const id of ['colFace', 'colLid', 'colBase']) $<HTMLInputElement>(id).oninput = () => applyColors(...cur(), detailColors);
+  $('btnColorReset').onclick = () => applyColors(defaultColors.face, defaultColors.lid, defaultColors.base, {});
+  for (const [k, id] of ADV_IDS) {
+    const chk = $<HTMLInputElement>('advChk' + id), col = $<HTMLInputElement>('advCol' + id);
+    chk.onchange = () => { const d = { ...detailColors }; if (chk.checked) delete d[k]; else d[k] = col.value; applyColors(...cur(), d); };
+    col.oninput = () => { applyColors(...cur(), { ...detailColors, [k]: col.value }); };
+  }
 
   // 박스
   $('btnClose').onclick = () => setLift(0);
@@ -1474,6 +1688,7 @@ async function init() {
   syncAngleUi();
   initViewPresets();
   viewer.onRotateBadge = (text, snapping) => {
+    $('statusBar').classList.toggle('snap', !!text && !!snapping);
     const b = $('rotBadge');
     b.hidden = !text;
     if (text) { b.textContent = snapping ? `${text} · ${SNAP_DEG}° 스냅` : text; b.classList.toggle('snap', !!snapping); }
@@ -1483,6 +1698,7 @@ async function init() {
   let shadow: ShadowSettings = { ...DEFAULT_SHADOW };
   try { const raw = localStorage.getItem(SH_KEY); if (raw) shadow = sanitizeShadow(JSON.parse(raw)); } catch { /* 저장소를 못 쓰면 기본값(꺼짐) */ }
   const shToggle = $<HTMLButtonElement>('shadowToggle'), shCtl = $('shadowCtl');
+  const shStyleSel = $<HTMLSelectElement>('shStyle');
   const shPairs: [string, keyof ShadowSettings, number][] = [['shStr', 'strength', 100], ['shSoft', 'soft', 100], ['shAz', 'az', 1], ['shEl', 'el', 1]];
   const applyShadow = (persist = true) => {
     shadow = sanitizeShadow(shadow);
@@ -1490,10 +1706,12 @@ async function init() {
     shToggle.setAttribute('aria-pressed', String(shadow.on));
     shToggle.textContent = shadow.on ? '바닥 그림자 숨기기' : '바닥 그림자 보기';
     shCtl.hidden = !shadow.on;
+    shStyleSel.value = shadow.style;
     for (const [id, key, k] of shPairs) for (const sfx of ['R', 'N']) $<HTMLInputElement>(id + sfx).value = String(Math.round((shadow[key] as number) * k));
     if (persist) try { localStorage.setItem(SH_KEY, JSON.stringify(shadow)); } catch { /* 무시 */ }
   };
   shToggle.onclick = () => { shadow.on = !shadow.on; applyShadow(); };
+  shStyleSel.onchange = () => { shadow.style = shStyleSel.value as ShadowSettings['style']; applyShadow(); };
   for (const [id, key, k] of shPairs) for (const sfx of ['R', 'N']) {
     const el = $<HTMLInputElement>(id + sfx);
     el[sfx === 'R' ? 'oninput' : 'onchange'] = () => { const v = Number(el.value); if (!Number.isNaN(v)) { (shadow[key] as number) = v / k; applyShadow(); } };
@@ -1516,6 +1734,21 @@ async function init() {
   const pf = $<HTMLInputElement>('fileProj');
   $('btnProjOpen').onclick = () => pf.click();
   pf.onchange = () => { const f = pf.files?.[0]; pf.value = ''; if (f) openProject(f); };
+  const imp = initImportFaces({
+    read: (file) => unpackProject(file),
+    currentParams: () => params,
+    hasImage: (id) => !!faces[id].img,
+    apply: applyImportedFaces,
+  });
+  const impFile = $<HTMLInputElement>('fileImport');
+  $('btnImportFaces').onclick = () => { // 외부 GLB를 보는 중에는 쓸 수 없다. 파일을 고르는 것만으로는 현재 프로젝트가 바뀌지 않는다
+    if (externalGlbActive) { msg('외부 GLB를 보는 중에는 면을 가져올 수 없습니다. 작업으로 돌아간 뒤 사용하세요.'); return; }
+    impFile.click();
+  };
+  impFile.onchange = () => {
+    const f = impFile.files?.[0]; impFile.value = '';
+    if (f) void busy(async () => { await imp.open(f); }, '프로젝트를 읽는 중…');
+  };
   const gf = $<HTMLInputElement>('fileGlb');
   $('btnOpenGlb').onclick = () => gf.click();
   gf.onchange = () => { const f = gf.files?.[0]; gf.value = ''; if (f) openGlb(f); };
@@ -1629,6 +1862,7 @@ async function init() {
     params: () => params,
     faceLabel: (id) => FACES.find((f) => f.id === id)?.label ?? id,
     apply: applySplit,
+    saved: (k) => dielines[k] ?? null,
   });
   const dieFile = $<HTMLInputElement>('fileDieline');
   $('btnSplitPick').onclick = () => dieFile.click();
@@ -1637,7 +1871,10 @@ async function init() {
     if (!f) return;
     busy(async () => { await inspectImage(f); await split!.open(f, f.name); });
   };
-  $('btnSplitEdit').onclick = () => { if (dieline) busy(() => split!.open(dieline!.blob, dieline!.name, dieline)); };
+  $('btnSplitEdit').onclick = () => { // 가장 최근에 쓴 종류의 저장본을 연다(없으면 다른 종류). 대화상자에서 종류를 바꾸면 그 종류의 저장본을 불러온다.
+    const d = dielines[lastDieKind] ?? dielines.lid ?? dielines.base;
+    if (d) busy(() => split!.open(d.blob, d.name, d));
+  };
   $('btnDieLid').onclick = () => downloadDielineSvg('lid');
   $('btnDieBase').onclick = () => downloadDielineSvg('base');
   renderDielineInfo();
@@ -1652,14 +1889,14 @@ async function init() {
   $('btnRatioRevert').onclick = () => { applyParams(cloneParams(baselineParams), true, true); };
   $('btnRatioAck').onclick = () => { resetRatioRefs([current]); }; // 현재 비율을 이 면의 기준으로 받아들인다
   defaultColors = { face: '#ffffff', lid: viewer.getPartColor('lid'), base: viewer.getPartColor('base') };
-  applyColors(defaultColors.face, defaultColors.lid, defaultColors.base);
+  applyColors(defaultColors.face, defaultColors.lid, defaultColors.base, {});
   for (const f of FACES) viewer.setFaceTexture(f.id, null);
   setCurrent('lid_top');
   showView('iso', true);
   await initDraft();
   setDirty(false); // 시작 시 초기 설정은 "변경"이 아니다
   // 테스트·검증용 훅 (UI 동작에는 쓰지 않음)
-  (window as unknown as Record<string, unknown>).__sabari = { viewer, faces, setCurrent, getLayout: (k: DieKind) => buildDieline(params, k), getDieline: () => dieline, getParams: () => cloneParams(params), getBaseline: () => cloneParams(baselineParams), applyParams: (p: BoxParams) => applyParams(p, true) };
+  (window as unknown as Record<string, unknown>).__sabari = { viewer, faces, setCurrent, getLayout: (k: DieKind) => buildDieline(params, k), getDieline: () => dielines[lastDieKind] ?? dielines.lid ?? dielines.base ?? null, getDielines: () => dielines, getParams: () => cloneParams(params), getBaseline: () => cloneParams(baselineParams), applyParams: (p: BoxParams) => applyParams(p, true) };
 }
 
 init();

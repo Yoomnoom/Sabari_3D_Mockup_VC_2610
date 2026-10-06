@@ -2,12 +2,16 @@
 // 화면 배경과 PNG "화면 그대로" 합성이 같은 그리기 함수(drawBackground)를 써서 둘이 구조적으로 같다. 배경은 GLB에는 들어가지 않는다.
 import { UserError, inspectImage } from './project';
 
-export type BgKind = 'transparent' | 'white' | 'solid' | 'image';
+export type BgKind = 'transparent' | 'white' | 'solid' | 'image' | 'studio';
 export interface BgImageSettings { fit: 'contain' | 'cover'; x: number; y: number; scale: number; sample: number | null }
-export interface BgSettings { kind: BgKind; color: string; checkerDark: boolean; image: BgImageSettings }
+/** 스튜디오 배경(작업 25): 벽·바닥 세로 그라데이션 + 부드러운 수평선 + 비네팅. 화면 전용이며 GLB에는 들어가지 않는다. */
+export interface BgStudioSettings { wall: string; floor: string; vignette: number; horizon: number; horizonAuto: boolean }
+export interface BgSettings { kind: BgKind; color: string; checkerDark: boolean; image: BgImageSettings; studio: BgStudioSettings }
 
-export const DEFAULT_BG: BgSettings = { kind: 'white', color: '#808080', checkerDark: false, image: { fit: 'cover', x: 0, y: 0, scale: 100, sample: null } };
-export const BG_KINDS: BgKind[] = ['transparent', 'white', 'solid', 'image'];
+export const DEFAULT_STUDIO: BgStudioSettings = { wall: '#ffffff', floor: '#ffffff', vignette: 10, horizon: 60, horizonAuto: true };
+
+export const DEFAULT_BG: BgSettings = { kind: 'white', color: '#808080', checkerDark: false, image: { fit: 'cover', x: 0, y: 0, scale: 100, sample: null }, studio: { ...DEFAULT_STUDIO } };
+export const BG_KINDS: BgKind[] = ['transparent', 'white', 'solid', 'image', 'studio'];
 export const BG_CHIPS: { name: string; color: string }[] = [
   { name: '검정', color: '#000000' }, { name: '흰색', color: '#ffffff' }, { name: '회색', color: '#808080' },
   { name: '마젠타', color: '#ff00ff' }, { name: '초록', color: '#00b050' }, { name: '파랑', color: '#0070ff' },
@@ -21,6 +25,18 @@ export const BG_MAX_SIDE = 4096; // 화면 표시용으로는 긴 변 4096px 이
 const HEX = /^#[0-9a-fA-F]{6}$/;
 const num = (v: unknown, lo: number, hi: number, d: number) => (typeof v === 'number' && Number.isFinite(v) ? Math.min(hi, Math.max(lo, v)) : d);
 
+export function sanitizeStudio(raw: unknown): BgStudioSettings {
+  const o = (raw ?? {}) as Record<string, unknown>;
+  const hex = (v: unknown, d: string) => (typeof v === 'string' && HEX.test(v) ? v.toLowerCase() : d);
+  return { wall: hex(o.wall, DEFAULT_STUDIO.wall), floor: hex(o.floor, DEFAULT_STUDIO.floor), vignette: num(o.vignette, 0, 100, DEFAULT_STUDIO.vignette), horizon: num(o.horizon, 0, 100, DEFAULT_STUDIO.horizon), horizonAuto: o.horizonAuto === undefined ? DEFAULT_STUDIO.horizonAuto : o.horizonAuto === true };
+}
+
+/** 저장용: 스튜디오 설정은 스튜디오 배경이거나 기본값과 다를 때만 넣는다(그 외에는 이전 저장 파일과 같은 모양을 유지). */
+export function serializeBg(s: BgSettings): Record<string, unknown> {
+  const { studio, ...rest } = s;
+  return s.kind === 'studio' || JSON.stringify(studio) !== JSON.stringify(DEFAULT_STUDIO) ? { ...rest, studio } : rest;
+}
+
 /** 저장 파일·임시저장에서 읽은 값을 안전하게 정리한다(없거나 깨지면 기본값). */
 export function sanitizeBg(raw: unknown): BgSettings {
   const o = (raw ?? {}) as Record<string, unknown>;
@@ -31,6 +47,7 @@ export function sanitizeBg(raw: unknown): BgSettings {
     color: typeof o.color === 'string' && HEX.test(o.color) ? o.color.toLowerCase() : DEFAULT_BG.color,
     checkerDark: o.checkerDark === true,
     image: { fit: im.fit === 'contain' ? 'contain' : 'cover', x: num(im.x, -100, 100, 0), y: num(im.y, -100, 100, 0), scale: num(im.scale, 25, 300, 100), sample },
+    studio: sanitizeStudio(o.studio),
   };
 }
 
@@ -58,12 +75,39 @@ export async function loadBgImage(blob: Blob): Promise<{ canvas: HTMLCanvasEleme
 }
 
 const CHECKER_CELL = 14;
+const mix = (a: [number, number, number], b: [number, number, number], t: number): [number, number, number] => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+const rgbOf = (hex: string): [number, number, number] => [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)];
+const css = (c: [number, number, number], a = 1) => `rgba(${Math.round(c[0])},${Math.round(c[1])},${Math.round(c[2])},${a})`;
+export const STUDIO_WALL_SHADE = 0.06; // 벽 맨 위가 벽 색보다 어두워지는 정도
+export const STUDIO_FLOOR_SHADE = 0.06; // 바닥 맨 아래가 바닥 색보다 어두워지는 정도
+export const STUDIO_HORIZON_BAND = 0.08; // 수평선이 부드럽게 섞이는 폭(화면 높이 비율)
+
+/** 스튜디오 배경: 위 벽(위쪽이 어두움) → 부드러운 수평선 → 바닥(아래쪽이 약간 어두움), 그 위에 비네팅. hz = 수평선 높이(화면 위쪽 0 ~ 아래쪽 1), 자동이면 카메라 기울기에서 온 값을 쓴다. */
+export function drawStudio(ctx: CanvasRenderingContext2D, w: number, h: number, st: BgStudioSettings, hzAuto?: number) {
+  const hz = Math.min(0.95, Math.max(0.05, st.horizonAuto && hzAuto !== undefined ? hzAuto : st.horizon / 100));
+  const wall = rgbOf(st.wall), floor = rgbOf(st.floor), black: [number, number, number] = [0, 0, 0];
+  const band = STUDIO_HORIZON_BAND;
+  const g = ctx.createLinearGradient(0, 0, 0, h);
+  const stop = (t: number, c: [number, number, number]) => g.addColorStop(Math.min(1, Math.max(0, t)), css(c));
+  stop(0, mix(wall, black, STUDIO_WALL_SHADE));
+  stop(hz - band / 2, wall);
+  stop(hz + band / 2, floor);
+  stop(1, mix(floor, black, STUDIO_FLOOR_SHADE));
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+  if (st.vignette > 0) {
+    const r = Math.hypot(w, h) / 2;
+    const v = ctx.createRadialGradient(w / 2, h / 2, r * 0.45, w / 2, h / 2, r);
+    v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, `rgba(0,0,0,${(0.35 * st.vignette / 100).toFixed(4)})`);
+    ctx.fillStyle = v; ctx.fillRect(0, 0, w, h);
+  }
+}
 /**
  * 배경을 w×h 캔버스에 그린다. checker=true 는 화면 전용(투명일 때 체크무늬를 보여 준다). PNG 합성에서는 false 라 투명은 투명 그대로다.
  * 이미지는 맞춤(contain)/채우기(cover) 기준 배율에 확대(%)를 곱하고, 위치 X·Y(%)는 캔버스 크기에 대한 비율이라 화면과 PNG에서 같은 구도가 된다.
  */
-export function drawBackground(ctx: CanvasRenderingContext2D, w: number, h: number, s: BgSettings, src: BgSource, checker: boolean) {
+export function drawBackground(ctx: CanvasRenderingContext2D, w: number, h: number, s: BgSettings, src: BgSource, checker: boolean, horizonAuto?: number) {
   ctx.clearRect(0, 0, w, h);
+  if (s.kind === 'studio') { drawStudio(ctx, w, h, s.studio, horizonAuto); return; }
   if (s.kind === 'white') { ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, w, h); return; }
   if (s.kind === 'solid') { ctx.fillStyle = s.color; ctx.fillRect(0, 0, w, h); return; }
   if (s.kind === 'transparent') {

@@ -1,5 +1,5 @@
 ﻿import * as THREE from 'three';
-import { DEFAULT_SHADOW, FloorShadow, ShadowSettings } from './floorShadow';
+import { DEFAULT_SHADOW, FloorShadow, SHADOW_COLOR, ShadowSettings, ShadowStats } from './floorShadow';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
@@ -23,6 +23,8 @@ interface Model {
 }
 
 /** 화면에만 보이는 표시(선택선·축 잠금 면 표시·축 선). 선택·범위 계산·내보내기에서 제외한다. */
+export type DetailKey = 'lidRim' | 'lidInner' | 'baseFace' | 'baseRim' | 'baseInner';
+export const DETAIL_KEYS: DetailKey[] = ['lidRim', 'lidInner', 'baseFace', 'baseRim', 'baseInner'];
 const isOverlay = (o: THREE.Object3D) => o.name === '__highlight' || o.name === '__lockhl' || o.name === '__lockaxis';
 
 
@@ -144,10 +146,33 @@ export class Viewer {
   }
 
   /** 그림자를 갱신하고 그린다. shadow=false 면 그림자 없이(번짐 측정용 ID 지도) 그린다. */
-  private draw(shadow = true) {
-    this.floorShadow.update(shadow ? this.restingBounds() : null, shadow ? this.cur?.root ?? null : null, isOverlay);
+  private draw(shadow = true, settle = false) {
+    this.floorShadow.update(shadow ? this.restingBounds() : null, shadow ? this.cur?.root ?? null : null, isOverlay, settle);
     this.renderer.render(this.scene, this.camera);
+    if (this.floorShadow.busy) this.dirty = true; // 그림자 누적(작업 25)이 남아 있으면 다음 프레임에 이어서 한다
+    for (const f of this.drawListeners) f();
   }
+
+  /** 화면을 그린 직후 호출(스튜디오 배경의 자동 수평선 갱신용). 그림 안쪽 픽셀에는 영향이 없다. */
+  private drawListeners: (() => void)[] = [];
+  addDrawListener(f: () => void) { this.drawListeners.push(f); }
+
+  /** 확대 배율(%): 처음 맞춤 거리 대비 지금 카메라 거리. 100% = 박스가 화면에 맞는 처음 확대 */
+  getZoomPct(): number {
+    const d = this.camera.position.distanceTo(this.controls.target);
+    return d > 0 ? Math.round((100 * this.getFitDistance()) / d) : 100;
+  }
+
+  /** 카메라 기울기에서 구한 수평선 높이(화면 위쪽 0 ~ 아래쪽 1, 범위 밖이면 0~1로 제한하지 않은 값). 스튜디오 배경의 "자동" 수평선이 쓴다. */
+  horizonFrac(): number {
+    const f = new THREE.Vector3(); this.camera.getWorldDirection(f);
+    const pitch = Math.asin(THREE.MathUtils.clamp(-f.y, -1, 1)); // 아래를 볼수록 +
+    const ndc = Math.tan(pitch) / Math.tan(THREE.MathUtils.degToRad(this.camera.fov) / 2);
+    return 0.5 - 0.5 * ndc;
+  }
+
+  /** 검증·성능 기록용: 그림자 누적 상태 */
+  getShadowStats(): ShadowStats { return { ...this.floorShadow.stats }; }
 
   request() { this.dirty = true; }
 
@@ -468,6 +493,8 @@ export class Viewer {
   }
 
   private partColors: Partial<Record<'lid' | 'base', string>> = {};
+  /** 고급 색상(작업 28): 뚜껑 테두리·안쪽, 몸통 바깥 면·테두리·안쪽. 없으면 "다른 항목과 같게"(뚜껑 항목은 뚜껑 색, 몸통 항목은 몸통 색). */
+  private detail: Partial<Record<DetailKey, string>> = {};
 
   /**
    * 파라미터에서 편집용 템플릿을 (다시) 만든다. 서버·GLB 파일 없이 브라우저에서 만든다.
@@ -507,8 +534,7 @@ export class Viewer {
     root.visible = this.slot === 'editor';
     lid.position.y = lift / 1000;
     lid.visible = lidVisible; base.visible = baseVisible;
-    if (this.partColors.lid) this.setPartColor('lid', this.partColors.lid);
-    if (this.partColors.base) this.setPartColor('base', this.partColors.base);
+    this.applyPartColors();
     this.setSelected(this.selected);
     this.refreshLockVisuals();
     this.dirty = true;
@@ -539,33 +565,51 @@ export class Viewer {
     this.dirty = true;
   }
 
-  /** 색상 설정 대상 재질. 'lid'는 두께면(lid_rim)과 안쪽(lid_inner) 둘 다. */
-  private partMats(part: 'base' | 'lid'): THREE.MeshStandardMaterial[] {
-    const names = part === 'base' ? ['base_rim', 'base_inner'] : ['lid_rim', 'lid_inner'];
+  /** 이름으로 찾은 편집 모델의 재질 */
+  private matsOf(names: string[]): THREE.MeshStandardMaterial[] {
     const out: THREE.MeshStandardMaterial[] = [];
-    for (const m of [this.models.editor, this.models.viewer]) {
-      if (m && m === this.models.editor) m.root.traverse((o) => {
-        const mesh = o as THREE.Mesh;
-        if (mesh.isMesh && names.includes(mesh.name)) out.push(mesh.material as THREE.MeshStandardMaterial);
-      });
-    }
+    const m = this.models.editor;
+    if (m) m.root.traverse((o) => {
+      const mesh = o as THREE.Mesh;
+      if (mesh.isMesh && names.includes(mesh.name)) out.push(mesh.material as THREE.MeshStandardMaterial);
+    });
     return out;
   }
 
-  getPartColor(part: 'base' | 'lid'): string { return '#' + (this.partMats(part)[0]?.color.getHexString() ?? 'ffffff'); }
+  getPartColor(part: 'base' | 'lid'): string { return '#' + (this.matsOf(part === 'base' ? ['base_rim', 'base_inner'] : ['lid_rim', 'lid_inner'])[0]?.color.getHexString() ?? 'ffffff'); }
 
-  setPartColor(part: 'base' | 'lid', hex: string) {
-    this.partColors[part] = hex;
-    for (const mat of this.partMats(part)) mat.color.set(hex);
-    if (part === 'base') { // 이미지 없는 하단 면도 같은 색
-      this.baseBg = hex;
+  /** 몸통 바깥 면(이미지 없는 하단 면)의 색: 고급 색상에서 따로 정했으면 그것, 아니면 몸통 색 */
+  private baseFaceColor(): string | undefined { return this.detail.baseFace ?? this.partColors.base; }
+
+  /** 뚜껑·몸통 색과 고급 색상을 재질에 반영한다. 고급 색상이 모두 "같게"이면 변경 전과 같은 색이 된다. */
+  private applyPartColors() {
+    const lid = this.partColors.lid, base = this.partColors.base, d = this.detail;
+    const paint = (names: string[], hex: string | undefined) => { if (hex) for (const mat of this.matsOf(names)) mat.color.set(hex); };
+    paint(['lid_rim'], d.lidRim ?? lid); paint(['lid_inner'], d.lidInner ?? lid);
+    paint(['base_rim'], d.baseRim ?? base); paint(['base_inner'], d.baseInner ?? base);
+    const bf = this.baseFaceColor();
+    if (bf) {
+      this.baseBg = bf; // 이미지 없는 하단 면·여백·투명 픽셀은 몸통 바깥 면 색
       for (const [id, mesh] of this.faceMeshes) {
         const mat = mesh.material as THREE.MeshStandardMaterial;
-        if (groupOf(id) === 'base' && !mat.map) mat.color.set(hex);
+        if (groupOf(id) === 'base' && !mat.map) mat.color.set(bf);
       }
     }
     this.dirty = true;
   }
+
+  setPartColor(part: 'base' | 'lid', hex: string) {
+    this.partColors[part] = hex;
+    this.applyPartColors();
+  }
+
+  /** 고급 색상 설정(null/없음 = 같게). 화면·GLB 재질 색에만 반영된다. */
+  setDetailColors(d: Partial<Record<DetailKey, string | null>>) {
+    this.detail = {};
+    for (const k of DETAIL_KEYS) { const v = d[k]; if (typeof v === 'string') this.detail[k] = v; }
+    this.applyPartColors();
+  }
+  getBaseFaceColor(): string | undefined { return this.baseFaceColor(); }
 
   setFaceBg(hex: string) {
     this.faceBg = hex;
@@ -774,11 +818,24 @@ export class Viewer {
     if (this.lockLine) this.lockLine.visible = false;
     const pr = this.renderer.getPixelRatio();
     this.renderer.setPixelRatio(Math.max(pr, 1) * scale);
-    this.draw(shadow);
+    this.draw(shadow, true); // 그림자 누적이 남았으면 끝낸 뒤 저장한다(PNG 결과 = 화면의 최종 품질)
     const out = document.createElement('canvas');
     const src = this.renderer.domElement;
     out.width = src.width; out.height = src.height;
-    out.getContext('2d')!.drawImage(src, 0, 0);
+    const octx = out.getContext('2d')!;
+    if (shadow && this.cur && this.floorShadow.isBakedShown()) {
+      // 누적 그림자 스타일: 그림자 층(rgb 고정·알파만 변화)과 박스 층을 따로 그려 합친다 → 투명 PNG 가장자리에 색 번짐·흰선이 생기지 않는다
+      const pv = this.cur.pivot;
+      pv.visible = false;
+      this.renderer.render(this.scene, this.camera);
+      octx.drawImage(src, 0, 0);
+      octx.globalCompositeOperation = 'source-in';
+      octx.fillStyle = '#' + SHADOW_COLOR.toString(16).padStart(6, '0'); octx.fillRect(0, 0, out.width, out.height);
+      octx.globalCompositeOperation = 'source-over';
+      pv.visible = true; this.floorShadow.setBakedVisible(false);
+      this.renderer.render(this.scene, this.camera);
+      octx.drawImage(src, 0, 0);
+    } else octx.drawImage(src, 0, 0);
     this.renderer.setPixelRatio(pr);
     if (this.highlight) this.highlight.visible = !!hl;
     this.lockHls.forEach((o, i) => { o.visible = lh[i] !== false; });

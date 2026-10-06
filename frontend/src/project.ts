@@ -1,19 +1,19 @@
 // 브라우저 안에서 처리하는 이미지 검사와 .sabari(ZIP) 저장/열기. backend/app/project_io.py 와 같은 파일 형식이다.
 import JSZip from 'jszip';
 import { FACES, FaceId } from './faceDefs';
-import { SurfaceState } from './transform';
+import { SurfaceState, UnderlayState } from './transform';
 import { BoxParams, DEFAULT_PARAMS, paramsFromUnknown, validateParams } from './params';
 import { ViewName } from './viewDirs';
 import type { BgSettings } from './background';
-import { sanitizeBg } from './background';
+import { sanitizeBg, serializeBg } from './background';
 import { SABARI_BOX_ID, resolveTemplate } from './templates';
 
-// 6: 화면 설정(viewSettings.background: 배경 종류·색·이미지, 선택 필드). 4: 박스 치수 파라미터(params) + 칼선 이미지 분할(dieline). 3: 하단 5면 + 스위치(useBaseFaces). 2: 뚜껑 5면. 2~6 모두 열린다.
-export const SCHEMA_VERSION = 6;
-const READABLE_VERSIONS = [2, 3, 4, 5, 6];
+// 11: 면 바탕 이미지(surfaces.<면>.underlay: 파일·변환값·불투명도·보이기·순서, 선택 필드, 원본은 images/underlay_<면>.<확장자>). 10: 칼선 저장을 종류별로(dielines.lid·dielines.base, 선택 필드. 같은 원본 바이트는 ZIP에 한 번만 저장. 예전 단일 dieline 필드는 계속 기록·읽음). 9: 칼선 이미지 방향(dieline.imageRotation 0/90/180/270, dieline.orientationConfirmed, 0°면 기록 안 함). 8: 고급 색상(colors.lidRim·lidInner·baseFace·baseRim·baseInner, 선택 필드, 같게이면 기록 안 함). 7: 스튜디오 배경(viewSettings.background.studio, 스튜디오 배경이거나 기본값과 다를 때만 저장). 6: 화면 설정(viewSettings.background: 배경 종류·색·이미지, 선택 필드). 4: 박스 치수 파라미터(params) + 칼선 이미지 분할(dieline). 3: 하단 5면 + 스위치(useBaseFaces). 2: 뚜껑 5면. 2~6 모두 열린다.
+export const SCHEMA_VERSION = 11;
+const READABLE_VERSIONS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 export const TEMPLATE_ID = SABARI_BOX_ID;
 const MAX_BYTES = 50 * 1024 * 1024;
-const MAX_ENTRIES = 32;
+const MAX_ENTRIES = 64; // 면 10 + 바탕 10 + 칼선 2 + 배경 1 + 시점 썸네일 5 + project.json
 
 export class UserError extends Error {}
 
@@ -59,9 +59,13 @@ function parseSurface(v: unknown): { state: SurfaceState; sourceFile: string | n
   };
 }
 
-export interface SaveFace { id: FaceId; state: SurfaceState; blob: Blob | null; name: string | null }
+/** 면의 바탕 이미지(아래 레이어) 저장본: 원본 바이트와 변환값 */
+export interface UnderSave { blob: Blob; name: string | null; state: UnderlayState; onTop: boolean }
+export interface SaveFace { id: FaceId; state: SurfaceState; blob: Blob | null; name: string | null; under?: UnderSave | null }
 
-export interface Colors { face: string; lid: string; base: string }
+/** 고급 색상(작업 28)은 선택 필드: 없거나 null = 다른 항목과 같게 */
+export interface Colors { face: string; lid: string; base: string; lidRim?: string; lidInner?: string; baseFace?: string; baseRim?: string; baseInner?: string }
+export const DETAIL_COLOR_KEYS = ['lidRim', 'lidInner', 'baseFace', 'baseRim', 'baseInner'] as const;
 const HEX = /^#[0-9a-fA-F]{6}$/;
 const hex = (v: unknown, d: string) => (typeof v === 'string' && HEX.test(v) ? v.toLowerCase() : d);
 
@@ -78,7 +82,14 @@ export interface DielineSave {
   /** 'artboard' = 아트보드 전체 이미지 + 프리셋 칼선(재단 여분 0), 없으면 파라미터 칼선 */
   mode?: 'param' | 'artboard' | 'crop';
   artboardMm?: [number, number];
+  /** 칼선 이미지를 시계방향으로 이만큼 돌려야 칼선 기준의 정립 방향이다(원본 바이트는 그대로, 없으면 0°) */
+  imageRotation?: 90 | 180 | 270;
+  /** 사용자가 방향을 확인했는가(자동 인식 후보가 여럿이었던 경우의 확인 상태) */
+  orientationConfirmed?: boolean;
 }
+
+/** 칼선 분할 저장: 뚜껑·하단 몸통 종류별로 따로(서로 독립) */
+export type DielineSet = Partial<Record<'lid' | 'base', DielineSave>>;
 
 export interface ViewPresetLock {
   on: boolean;
@@ -110,7 +121,7 @@ export interface PackInput {
   colors: Colors;
   useBaseFaces: boolean;
   params: BoxParams;
-  dieline: DielineSave | null;
+  dielines: DielineSet;
   viewPresets: ViewPresetSlot[];
   /** 템플릿 id(선택). 없으면 사바리 박스 */
   templateId?: string;
@@ -131,14 +142,33 @@ export async function packProject(i: PackInput): Promise<Blob> {
       sourceFile = `images/${f.id}${info.ext}`;
       zip.file(sourceFile, f.blob, { compression: 'STORE' }); // 원본 바이트 그대로
     }
-    surfaces[f.id] = { ...f.state, sourceFile, originalName: f.name };
+    let underlay: unknown;
+    if (f.under) {
+      const ui = await inspectImage(f.under.blob);
+      const uf = `images/underlay_${f.id}${ui.ext}`;
+      zip.file(uf, f.under.blob, { compression: 'STORE' });
+      underlay = { file: uf, originalName: f.under.name, ...f.under.state, onTop: f.under.onTop };
+    }
+    surfaces[f.id] = { ...f.state, sourceFile, originalName: f.name, ...(underlay ? { underlay } : {}) };
   }
+  // 칼선 저장: 종류별 항목. 같은 원본 바이트(해시 동일)는 ZIP 안에 한 번만 넣는다. 예전 단일 dieline 필드(뚜껑 우선)도 함께 기록한다.
+  const dielinesOut: Record<string, unknown> = {};
   let dieline: unknown = null;
-  if (i.dieline) {
-    const info = await inspectImage(i.dieline.blob);
-    const file = `images/dieline${info.ext}`;
-    zip.file(file, i.dieline.blob, { compression: 'STORE' }); // 칼선 원본도 바이트 그대로
-    dieline = { file, originalName: i.dieline.name, bleedMm: i.dieline.bleedMm, kind: i.dieline.kind, regions: i.dieline.regions, mode: i.dieline.mode, artboardMm: i.dieline.artboardMm, rotations: i.dieline.rotations ?? {} };
+  const stored: { file: string; bytes: Uint8Array }[] = []; // 바이트가 같은 칼선 원본은 한 번만 저장(보안 컨텍스트가 아니어도 되도록 해시 대신 직접 비교)
+  for (const k of ['lid', 'base'] as const) {
+    const d = i.dielines[k];
+    if (!d) continue;
+    const info = await inspectImage(d.blob);
+    const bytes = new Uint8Array(await d.blob.arrayBuffer());
+    let file = stored.find((x) => x.bytes.length === bytes.length && x.bytes.every((v, n) => v === bytes[n]))?.file;
+    if (!file) {
+      file = `images/dieline${stored.length ? `_${stored.length + 1}` : ''}${info.ext}`;
+      zip.file(file, d.blob, { compression: 'STORE' }); // 칼선 원본도 바이트 그대로
+      stored.push({ file, bytes });
+    }
+    const entry = { file, originalName: d.name, bleedMm: d.bleedMm, kind: k, regions: d.regions, mode: d.mode, artboardMm: d.artboardMm, rotations: d.rotations ?? {}, ...(d.imageRotation ? { imageRotation: d.imageRotation, orientationConfirmed: !!d.orientationConfirmed } : {}) };
+    dielinesOut[k] = entry;
+    dieline ??= entry;
   }
   const viewPresets: unknown[] = [];
   for (const p of i.viewPresets) {
@@ -158,11 +188,11 @@ export async function packProject(i: PackInput): Promise<Blob> {
       imageFile = `images/background${info.ext}`;
       zip.file(imageFile, bgs.blob, { compression: 'STORE' }); // 배경 이미지 원본도 바이트 그대로
     }
-    viewSettings = { background: { ...bgs.settings, imageFile, originalName: bgs.name } };
+    viewSettings = { background: { ...serializeBg(bgs.settings), imageFile, originalName: bgs.name } };
   }
   zip.file('project.json', JSON.stringify({
     schemaVersion: SCHEMA_VERSION, templateId: i.templateId ?? TEMPLATE_ID, params: i.params,
-    box: { lidLiftMm: i.lidLiftMm }, colors: i.colors, useBaseFaces: i.useBaseFaces, background: i.background, surfaces, dieline, viewPresets, ...(viewSettings ? { viewSettings } : {}),
+    box: { lidLiftMm: i.lidLiftMm }, colors: i.colors, useBaseFaces: i.useBaseFaces, background: i.background, surfaces, dieline, ...(Object.keys(dielinesOut).length ? { dielines: dielinesOut } : {}), viewPresets, ...(viewSettings ? { viewSettings } : {}),
   }, null, 2));
   return zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
 }
@@ -174,8 +204,11 @@ export interface OpenedProject {
   useBase?: boolean; // 하단 몸통 디자인 사용 스위치. 하단 면에 이미지가 있으면 항상 true (이전 임시저장에는 없을 수 있음)
   /** 박스 치수. 없는 이전 파일·임시저장은 기본값(없으면 undefined → 호출한 쪽이 기본값 사용) */
   params?: BoxParams;
+  /** 예전 단일 칼선(뚜껑이 있으면 뚜껑, 없으면 하단 몸통). 새 코드는 dielines 를 쓴다. */
   dieline?: DielineSave | null;
-  faces: Record<FaceId, { state: SurfaceState; blob: Blob | null; name: string | null }>;
+  /** 종류별 칼선 저장. 없는 이전 파일·임시저장은 dieline 의 kind 로 옮겨 읽는다 */
+  dielines?: DielineSet;
+  faces: Record<FaceId, { state: SurfaceState; blob: Blob | null; name: string | null; under?: UnderSave | null }>;
   /** 저장된 시점 슬롯(0~4). 없는 이전 파일은 빈 배열로 연다 */
   viewPresets: ViewPresetSlot[];
   /** 이 파일의 템플릿(없는 이전 임시저장은 undefined → 사바리 박스) */
@@ -219,11 +252,18 @@ export async function unpackProject(file: Blob): Promise<OpenedProject> {
   for (const f of FACES) {
     const p = parseSurface(surfaces[f.id]);
     const blob = p.sourceFile ? await readImage(p.sourceFile, f.id) : null;
-    out[f.id] = { state: p.state, blob, name: blob ? (p.originalName ?? p.sourceFile) : null };
+    let under: UnderSave | null = null;
+    const ul = (surfaces[f.id] as Record<string, unknown> | undefined)?.underlay as Record<string, unknown> | undefined;
+    if (blob && ul && typeof ul.file === 'string') {
+      const us = parseSurface({ ...ul, fit: undefined }).state, ub = await readImage(ul.file, `${f.id} 바탕`);
+      under = { blob: ub, name: typeof ul.originalName === 'string' ? ul.originalName : null, onTop: ul.onTop === true, state: { ...us, fit: ul.fit === 'contain' || ul.fit === 'tile' ? ul.fit : 'cover', opacity: num(ul.opacity, 0, 1, 1), visible: ul.visible !== false } };
+    }
+    out[f.id] = { state: p.state, blob, name: blob ? (p.originalName ?? p.sourceFile) : null, ...(under ? { under } : {}) };
   }
   const box = (raw.box ?? {}) as Record<string, unknown>;
   const c = raw.colors as Record<string, unknown> | undefined;
-  const colors = c ? { face: hex(c.face, '#ffffff'), lid: hex(c.lid, '#ffffff'), base: hex(c.base, '#ffffff') } : null;
+  const colors: Colors | null = c ? { face: hex(c.face, '#ffffff'), lid: hex(c.lid, '#ffffff'), base: hex(c.base, '#ffffff') } : null;
+  if (colors && c) for (const k of DETAIL_COLOR_KEYS) { const v = c[k]; if (typeof v === 'string' && HEX.test(v)) colors[k] = v.toLowerCase(); }
   const hasBaseImage = FACES.some((f) => f.group === 'base' && out[f.id].blob);
 
   // 박스 치수: 없으면(버전 2·3) 기본값. 값이 있는데 불가능한 조합이면 기본값으로 열고 알린다.
@@ -236,9 +276,8 @@ export async function unpackProject(file: Blob): Promise<OpenedProject> {
   }
   // 칼선 이미지 분할 정보
   const abMm = (v: unknown): [number, number] => (Array.isArray(v) && v.length === 2 && v.every((n) => typeof n === 'number' && n >= 10 && n <= 5000) ? [v[0], v[1]] : [525.7, 349.0]);
-  let dieline: DielineSave | null = null;
-  const dl = raw.dieline as Record<string, unknown> | null | undefined;
-  if (dl && typeof dl.file === 'string') {
+  const readDieline = async (dl: Record<string, unknown> | null | undefined): Promise<DielineSave | null> => {
+    if (!dl || typeof dl.file !== 'string') return null;
     const regions: Partial<Record<FaceId, Rect>> = {};
     for (const [k, v] of Object.entries((dl.regions ?? {}) as Record<string, unknown>)) {
       const r = rectOf(v);
@@ -246,12 +285,25 @@ export async function unpackProject(file: Blob): Promise<OpenedProject> {
     }
     const rotations: Partial<Record<FaceId, number>> = {};
     for (const [k, v] of Object.entries((dl.rotations ?? {}) as Record<string, unknown>)) if ([0, 90, 180, 270].includes(v as number) && FACES.some((f) => f.id === k)) rotations[k as FaceId] = v as number;
-    dieline = {
+    return {
       blob: await readImage(dl.file, '칼선'), name: typeof dl.originalName === 'string' ? dl.originalName : null,
       bleedMm: num(dl.bleedMm, 0, 50, DEFAULT_PARAMS.bleed), kind: dl.kind === 'base' ? 'base' : 'lid', regions, rotations,
       ...(dl.mode === 'artboard' || dl.mode === 'crop' ? { mode: dl.mode as 'artboard' | 'crop', artboardMm: abMm(dl.artboardMm) } : {}),
+      ...(dl.imageRotation === 90 || dl.imageRotation === 180 || dl.imageRotation === 270 ? { imageRotation: dl.imageRotation as 90 | 180 | 270, orientationConfirmed: dl.orientationConfirmed === true } : {}),
     };
+  };
+  // 종류별 저장(dielines)이 있으면 그것을, 없으면 예전 단일 dieline 을 그 항목의 kind 로 옮겨 읽는다
+  const dielines: DielineSet = {};
+  const dlsRaw = raw.dielines as Record<string, unknown> | null | undefined;
+  for (const k of ['lid', 'base'] as const) {
+    const d = await readDieline(dlsRaw && typeof dlsRaw === 'object' ? (dlsRaw[k] as Record<string, unknown> | undefined) : undefined);
+    if (d) dielines[k] = { ...d, kind: k };
   }
+  if (!dielines.lid && !dielines.base) {
+    const legacy = await readDieline(raw.dieline as Record<string, unknown> | null | undefined);
+    if (legacy) dielines[legacy.kind] = legacy;
+  }
+  const dieline: DielineSave | null = dielines.lid ?? dielines.base ?? null;
   const VIEW_NAMES = ['front', 'back', 'left', 'right', 'top', 'bottom', 'iso', 'isoL'];
   const vec3 = (v: unknown): [number, number, number] | null => (Array.isArray(v) && v.length === 3 && v.every((n) => typeof n === 'number' && Number.isFinite(n)) ? [v[0], v[1], v[2]] : null);
   const quat4 = (v: unknown): [number, number, number, number] | null => (Array.isArray(v) && v.length === 4 && v.every((n) => typeof n === 'number' && Number.isFinite(n)) ? [v[0], v[1], v[2], v[3]] : null);
@@ -293,7 +345,7 @@ export async function unpackProject(file: Blob): Promise<OpenedProject> {
   return {
     templateId: tpl.id,
     useBase: raw.useBaseFaces === true || hasBaseImage, colors, lidLiftMm: num(box.lidLiftMm, 0, 150, 0),
-    background: raw.background === 'transparent' ? 'transparent' : 'white', faces: out, params, dieline, viewPresets, ...(viewSettings ? { viewSettings } : {}),
+    background: raw.background === 'transparent' ? 'transparent' : 'white', faces: out, params, dieline, dielines, viewPresets, ...(viewSettings ? { viewSettings } : {}),
     ...(paramNote ? { paramNote } : {}),
   } as OpenedProject & { paramNote?: string };
 }

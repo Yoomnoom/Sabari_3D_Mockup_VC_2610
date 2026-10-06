@@ -1,0 +1,86 @@
+{
+ "viewPresetsHint": {
+  "tab": "view",
+  "id": "",
+  "before": "카드 클릭: 불러오기 · 저장: 지금 시점으로 덮어쓰기 · 외부 GLB를 보는 중에는 쓸 수 없습니다. 바꿀 수 있으면 Alt+1~Alt+5.",
+  "after_visible": "카드를 누르면 불러오고, 저장은 덮어씁니다.",
+  "original_kept_in": "details.more > p.more-body"
+ },
+ "axisGuideHint": {
+  "tab": "view",
+  "id": "",
+  "before": "축 잠금 중 3D 화면에 보이는 파란 축 선과 면 윤곽선을 켜고 끕니다. 끄더라도 축 잠금은 그대로 동작합니다. 화면 전용이며 PNG·GLB에는 들어가지 않습니다.",
+  "after_visible": "축 선은 화면에서만 보입니다.",
+  "original_kept_in": "details.more > p.more-body"
+ },
+ "viewButtonsHint": {
+  "tab": "view",
+  "id": "",
+  "before": "시점 버튼은 박스를 기본 자세로 되돌리고 방향만 바꾸며 확대는 유지합니다. 처음처럼 전체를 보려면 F 또는 위치 초기화.3/4 시점을 한 번 더 누르면 반대편 모서리로 바뀝니다. R 앞·오른쪽 날개 / L 뒤·왼쪽 날개",
+  "after_visible": "시점 버튼은 방향만 바꾸고 확대는 유지합니다.",
+  "original_kept_in": "details.more > p.more-body"
+ },
+ "dragHint": {
+  "tab": "view",
+  "id": "",
+  "before": "드래그: 박스 자유 회전(제한 없음) · Ctrl+드래그: 15° 단위 · 휠: 확대/축소 · Space+드래그: 이동",
+  "after_visible": "드래그로 회전하고 휠로 확대합니다.",
+  "original_kept_in": "details.more > p.more-body"
+ },
+ "shadeHint": {
+  "tab": "view",
+  "id": "",
+  "before": "넣은 색은 카메라를 마주 보는 면에서 그대로 보입니다. 음영은 비스듬한 면을 어둡게만 하고 색을 밝히지 않으며, 0%면 모든 각도에서 평면 색 그대로입니다. 이 설정은 이 브라우저에만 기억되고 파일(.sabari·GLB·임시저장)에는 저장되지 않습니다.",
+  "after_visible": "카메라를 마주 보는 면은 입력 색 그대로 보입니다.",
+  "original_kept_in": "details.more > p.more-body"
+ },
+ "shStyleHintShort": {
+  "tab": "view",
+  "id": "shStyleHint",
+  "before": "스튜디오 소프트는 낮은 빛에서 길고 부드럽게 번지고, 접촉 위주는 바닥 가까이 약하게 번집니다. 조작을 멈추면 잠시 뒤 더 부드럽게 다듬어지고, PNG 저장은 다듬기가 끝난 뒤 합니다.",
+  "after_visible": "스타일에 따라 번지는 정도가 다릅니다.",
+  "original_kept_in": "details.more > p.more-body"
+ },
+ "bgHint": {
+  "tab": "view",
+  "id": "",
+  "before": "배경은 화면에만 보이고 GLB에는 들어가지 않습니다. 박스를 돌려도 배경은 화면에 고정됩니다. PNG 저장에서 \"화면 그대로\"를 고르면 배경이 함께 저장됩니다. 단축키 B로 순환합니다.",
+  "after_visible": "배경은 화면에만 보이고 GLB에는 들어가지 않습니다.",
+  "original_kept_in": "details.more > p.more-body"
+ },
+ "edgeHint": {
+  "tab": "view",
+  "id": "",
+  "before": "화면 전용이며 PNG·GLB에는 들어가지 않습니다. 켜고 마우스를 3D 화면 위에 올리면 그 부분을 확대해 보여 주고, 알파 마스크는 박스의 불투명도만 흑백으로 보여 줍니다. 회전·확대는 그대로 쓸 수 있습니다.",
+  "after_visible": "화면 전용이며 PNG·GLB에는 들어가지 않습니다.",
+  "original_kept_in": "details.more > p.more-body"
+ },
+ "dielineHint": {
+  "tab": "design",
+  "id": "",
+  "before": "칼선 위에서 만든 디자인 한 장(PNG/JPG)을 면별로 자동으로 나눕니다. 접어 넣는 영역과 모서리 탭은 면에 포함되지 않습니다.내보낼 때 칼선·안내선 레이어를 숨기고 sRGB PNG로 내보내세요. 인쇄소 칼선 프리셋(아트보드 전체 이미지)은 재단 여분 0 기준입니다.",
+  "after_visible": "칼선 위 디자인 한 장을 면별로 자동 분할합니다.",
+  "original_kept_in": "details.more > p.more-body"
+ },
+ "svgHint": {
+  "tab": "export",
+  "id": "",
+  "before": "현재 치수로 만든 1:1(mm) SVG입니다. 재단선(빨강 실선)·접는선(파랑 점선)·안내선(초록 점선)이 레이어로 나뉩니다.",
+  "after_visible": "현재 치수 기준 1:1(mm) SVG입니다.",
+  "original_kept_in": "details.more > p.more-body"
+ },
+ "draftHint": {
+  "tab": "export",
+  "id": "",
+  "before": "변경 후 자동 보관 · 이 브라우저에만 저장됩니다. 파일로 보관하려면 프로젝트 저장(.sabari)을 쓰세요.",
+  "after_visible": "임시저장은 현재 브라우저에만 보관됩니다.",
+  "original_kept_in": "details.more > p.more-body"
+ },
+ "splitPanHint": {
+  "tab": "split",
+  "id": "splitPanHint",
+  "before": "손 도구(Space)·가운데 버튼·스크롤바·방향키로 이동 · 확대는 +/− 키·휠 · 선택 영역 보기 Z · Alt+방향키로 선택 영역 1px 이동(Shift 10px)",
+  "after_visible": "이동: 손 도구(Space) · 확대: +/− 키·휠",
+  "original_kept_in": "details.more > p.more-body"
+ }
+}
