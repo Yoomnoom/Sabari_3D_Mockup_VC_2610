@@ -535,3 +535,146 @@ details.more > .more-body { margin: 2px 0 4px; }
 #panel > #ratioBanner .rb-row { flex-direction: column; align-items: stretch; gap: 6px; }
 #panel > #ratioBanner .rb-btns button { flex: 1 1 auto; min-height: 36px; }
 #panel > #ratioBanner #ratioDetail { max-height: 120px; overflow: auto; }
+
+/* ===== 시안 v6 보기 탭(작업 v6-ui): 카드 나누기 · 시점 4열 + 단축키 칩 · 회전 상태 줄 · 회전 방식 세그먼트 · 저장된 시점 목록 · 조명/그림자 스위치 ===== */
+.tp-body > details.grp.vcard { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 4px 12px 8px; margin: 0 0 8px; }
+#tp-view .vcard h2, #tp-view .vcard > summary { font-size: 15px; font-weight: 700; margin: 0 0 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+#tp-view details.vcard > summary { margin: 0; min-height: 40px; }
+#tp-view .vcard .sub { font-size: 12px; font-weight: 400; color: #6b665e; margin-left: auto; }
+#tp-view h3.vsub { font-size: 14px; margin: 12px 0 6px; padding-top: 10px; border-top: 1px solid var(--line); }
+#dView > summary { font-size: 15px; }
+#dView > summary button.fit { text-decoration: none; border: 1px solid #d6d2ca; border-radius: 7px; padding: 0 9px; color: #3e3a34; }
+.grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.grid4 button, .vp-fixedrow button { position: relative; min-height: 46px; padding: 4px 2px 18px; font-size: 13px; font-weight: 600; }
+[data-key]::after { content: attr(data-key); position: absolute; left: 50%; bottom: 3px; transform: translateX(-50%); min-width: 20px; padding: 0 4px; font-size: 10px; line-height: 14px; font-weight: 600; color: #4b463f; background: #f1efea; border: 1px solid #d6d2ca; border-radius: 4px; }
+.grid4 button[aria-pressed='true'], .grid4 button.on { background: #fff1e9; color: var(--accent); border-color: var(--accent); }
+.grid4 button[aria-pressed='true']::after { color: var(--accent); }
+.vp-fixedrow { margin-top: 8px; }
+.vp-fixedrow button { flex: 1; min-height: 46px; padding-bottom: 18px; }
+.vp-fixedrow button:nth-child(2)::after { content: none; }
+.vp-fixedrow button:nth-child(2) { padding-bottom: 4px; }
+#dView .state { margin: 10px 0 6px; padding: 7px 10px; background: #eef0f2; border-radius: 8px; font-size: 12px; color: #3e3a34; }
+#dView .state #statusRot { display: block; }
+body.rotplace-view #dView .state, body.rotplace-off #dView .state { display: none; }
+#dView .vhints { margin-top: 6px; }
+#dView .vhints .hint.short { margin: 2px 0 0; }
+.seg2 { display: flex; border: 1px solid #d7dbe0; border-radius: 8px; overflow: hidden; }
+.seg2 button { flex: 1; border: 0; border-radius: 0; min-height: 38px; font-weight: 700; background: #fff; color: #3e3a34; }
+.seg2 button + button { border-left: 1px solid #e1e4e8; }
+.seg2 button[aria-pressed='true'] { background: var(--accent); color: #fff; }
+.seg2 button[aria-pressed='true']::before { content: none; }
+.seg2 button:disabled { color: #9a9488; background: #f1efea; }
+#rotMode .axisrow, #rotMode .axisguide { margin-top: 8px; }
+#viewPresetsCard .viewpresets { margin: 0; }
+#viewPresetsCard .viewpresets > h2 { font-size: 15px; margin: 0 0 8px; }
+.vp-grid { grid-template-columns: 1fr; gap: 6px; }
+.vp-card { display: grid; grid-template-columns: 54px minmax(0, 1fr) auto; align-items: center; gap: 8px; }
+.vp-thumb { width: 54px; height: 40px; aspect-ratio: auto; }
+.vp-name { text-align: left; font-size: 13px; font-weight: 700; padding: 3px 5px; }
+.vp-actions { gap: 4px; }
+.vp-actions button { flex: none; min-height: 28px; padding: 0 8px; font-size: 12px; }
+.vp-card:not(.filled) .vp-load, .vp-card:has(.vp-thumb img[hidden]) .vp-load { display: none; }
+.vp-card:has(.vp-thumb:disabled) .vp-load { opacity: 0.5; pointer-events: none; }
+.vp-card:not(.filled) .vp-name { color: #8a929c; }
+.vp-thumb .vp-empty { font-size: 0; }
+/* 조명·그림자: 켜짐/꺼짐 버튼을 스위치 모양으로(버튼·글자·aria-pressed는 그대로) */
+#shadeToggle, #shadowToggle { display: flex; align-items: center; justify-content: space-between; width: 100%; border: 0; background: none; color: var(--ink); font-weight: 700; padding: 0; min-height: 36px; }
+#shadeToggle[aria-pressed], #shadowToggle[aria-pressed] { background: none; color: var(--ink); }
+#shadeToggle::after, #shadowToggle::after { content: ''; flex: none; width: 42px; height: 24px; border-radius: 20px; background: radial-gradient(circle at 12px 12px, #fff 9px, transparent 10px), #c9cdd2; }
+#shadeToggle[aria-pressed='true']::after, #shadowToggle[aria-pressed='true']::after { background: radial-gradient(circle at 30px 12px, #fff 9px, transparent 10px), var(--accent); }
+
+/* ===== 시안 v6 디자인 탭(작업 v6-ui): 면 카드 5열 · 스위치 줄 · 칼선 두 버튼 · 점선 빈 영역 · 맞춤 세그먼트 · 회전·반전 버튼 줄 ===== */
+#tp-design .facelist { grid-template-columns: repeat(5, 1fr); gap: 5px; }
+#tp-design .facelist button { min-height: 62px; padding: 4px 1px; font-size: 12px; font-weight: 700; }
+#tp-design .facelist small { font-size: 10px; font-weight: 400; }
+#tp-design .facelist button[aria-pressed='true'] { background: #fff1e9; color: var(--accent); border: 2px solid var(--accent); }
+#tp-design .facelist button[aria-pressed='true'] small { color: var(--accent); }
+label.check.sw { justify-content: space-between; min-height: 40px; font-weight: 700; }
+label.check.sw small { font-weight: 400; }
+label.check.sw input[type='checkbox'] { appearance: none; -webkit-appearance: none; flex: none; width: 42px; height: 24px; margin: 0; border-radius: 20px; background: radial-gradient(circle at 12px 12px, #fff 9px, transparent 10px), #c9cdd2; cursor: pointer; }
+label.check.sw input[type='checkbox']:checked { background: radial-gradient(circle at 30px 12px, #fff 9px, transparent 10px), var(--accent); }
+label.check.sw input[type='checkbox']:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+#cardSplit .split-btns { display: flex; gap: 6px; }
+#cardSplit .split-btns button { min-height: 40px; }
+#cardSplit .split-box { border: 0; padding: 0; margin-top: 0; }
+#facePreview { border: 2px dashed #c9c5bd; border-radius: 10px; }
+.dropempty { margin: -4px 0 6px; text-align: center; font-size: 12px; color: #6b665e; }
+.dropempty[hidden] { display: none; }
+#faceControls > details.grp { border: 0; padding: 0; margin: 6px 0; }
+#faceControls > details.grp > summary { min-height: 24px; font-size: 12px; font-weight: 600; color: #6b665e; }
+#dFit[open] { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid #d7dbe0; border-radius: 8px; overflow: hidden; }
+#dFit[open] > summary { grid-column: 1 / -1; padding: 0 8px; border-bottom: 1px solid #e1e4e8; background: #f6f5f2; }
+#dFit label { display: flex !important; align-items: center; justify-content: center; text-align: center; min-height: 38px !important; line-height: 1.2 !important; padding: 0 4px; font-weight: 700; font-size: 13px; cursor: pointer; border-right: 1px solid #e1e4e8; background: #fff; }
+#dFit label:has(input:checked) { background: var(--accent); color: #fff; }
+#dFit label input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+#dFit label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: -2px; }
+#dRot .row button { flex: 1 1 0; min-width: 0; }
+#dRot .row { margin: 6px 0; }
+#faceSection > .row.wrap > #btnPick { flex: 1 1 100%; min-height: 44px; font-weight: 700; }
+#faceSection > .row.wrap > #btnImportFaces { flex: none; min-height: 28px; }
+#faceSection > .row.wrap:last-child { margin-top: 10px; }
+#faceSection > .row.wrap:last-child button { flex: 1 1 0; min-width: 0; }
+#btnRemove { color: #bd4141; }
+#btnRemove:disabled, #btnReset:disabled { color: #9a9488; background: #f1efea; }
+#cardSplit .split-btns button { flex: 1 1 0; min-width: 0; white-space: normal; line-height: 1.2; padding: 4px 6px; }
+#tp-design .facelist button { min-width: 0; overflow: hidden; white-space: normal; }
+#tp-design .facelist button span, #tp-design .facelist button small { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+
+/* ===== 시안 v6 박스 탭: 입력 기준·뚜껑 닫힘/열림을 세그먼트로, 표시 항목은 스위치 줄로 ===== */
+#dDims .seg { display: flex; border: 1px solid #d7dbe0; border-radius: 8px; overflow: hidden; margin: 6px 0 8px; }
+#dDims .seg label { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 38px; padding: 0 4px; font-weight: 700; font-size: 13px; text-align: center; cursor: pointer; border-right: 1px solid #e1e4e8; background: #fff; }
+#dDims .seg label:last-child { border-right: 0; }
+#dDims .seg label:has(input:checked) { background: var(--accent); color: #fff; }
+#dDims .seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+#dDims .seg label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: -2px; }
+#dBox .lidseg { display: flex; gap: 0; border: 1px solid #d7dbe0; border-radius: 8px; overflow: hidden; }
+#dBox .lidseg button { flex: 1; border: 0; border-radius: 0; min-height: 38px; font-weight: 700; }
+#dBox .lidseg button + button { border-left: 1px solid #e1e4e8; }
+#dDims .row.wrap { margin-top: 8px; }
+#dDims .row.wrap button { flex: 1 1 0; min-width: 0; white-space: normal; line-height: 1.2; }
+
+/* ===== 시안 v6 내보내기 탭: 카드 나누기, PNG 배경·크기 세그먼트, 칼선 카드 기본 펼침(필수 경고가 항상 보이도록) ===== */
+select[data-seg] { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; pointer-events: none; }
+.segrow { margin: 8px 0; }
+.segrow > b { display: block; font-size: 12px; margin-bottom: 4px; }
+.segrow { position: relative; }
+#expFiles { display: block; }
+#expFiles > .hint { margin: 4px 0 0; }
+#expFiles section button { width: 100%; }
+#expFiles section .row button { flex: 1 1 0; width: auto; min-width: 0; }
+#expFiles section .row { margin: 4px 0; }
+#expFiles #btnDraftClear { margin-top: 6px; color: #bd4141; }
+#expPng .row { margin-top: 10px; }
+#expPng #btnPng { min-height: 44px; font-weight: 700; }
+
+/* ===== 시안 v6 2차: ? 도움말, 키 칩 한 줄, 컴팩트 템플릿·치수 2열, 모바일 시트 컴팩트·순서 ===== */
+button.helpq { display: inline-flex; align-items: center; justify-content: center; min-height: 22px; width: 22px; padding: 0; border-radius: 50%; font-size: 12px; font-weight: 700; color: #4b463f; background: #fff; vertical-align: middle; flex: none; }
+button.helpq[aria-expanded='true'] { background: #fff1e9; border-color: var(--accent); color: var(--accent); }
+.help-body { margin: 6px 0; padding: 6px 8px; background: #f6f5f2; border: 1px solid var(--line); border-radius: 8px; flex-basis: 100%; }
+.help-body[hidden] { display: none; }
+.help-body .hint { margin: 2px 0; }
+.noteline { font-size: 12px; color: #6b665e; line-height: 1.7; }
+.noteline kbd, .help-body kbd { display: inline-block; min-width: 18px; padding: 0 5px; font: 600 11px/16px inherit; text-align: center; color: #4b463f; background: #f1efea; border: 1px solid #d6d2ca; border-radius: 4px; }
+#dView .vhints { margin-top: 8px; }
+#axisGuideToggle:disabled { background: #eceae5; border-color: #d6d2ca; color: #9a9488; opacity: 1; cursor: not-allowed; }
+#axisGuideToggle:disabled svg { opacity: 0.6; }
+.axisguide .helpq { margin-left: auto; }
+#cardSplit .info + .helpq, #faceSection .helpq { }
+#cardSplit #dielineInfo { display: inline; margin: 6px 6px 0 0; }
+#cardTemplate { padding-top: 8px; padding-bottom: 8px; }
+#cardTemplate > h2 { display: inline-block; margin: 0 6px 4px 0; }
+#cardTemplate .tplgrid { gap: 4px; margin: 4px 0; }
+#cardTemplate .tplgrid button { min-height: 34px; padding: 3px 8px; flex-direction: row; align-items: center; justify-content: space-between; gap: 6px; font-size: 12px; }
+#cardTemplate .tplgrid button small { font-size: 10px; }
+#dimsOuterRows, #dimsWrapRows, #dimsAssumeRows { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 8px; }
+#dDims .slider { display: grid; grid-template-columns: minmax(0, 1fr) 64px; align-items: center; column-gap: 6px; row-gap: 2px; margin: 0; font-size: 12px; font-weight: 600; }
+#dDims .slider input[type='number'] { grid-column: 2; grid-row: 1; width: 100%; min-width: 0; }
+#dDims .slider input[type='range'] { grid-column: 1 / -1; grid-row: 2; width: 100%; margin: 0; height: 14px; }
+@media (max-width: 899px) {
+  .panel-head h2, #panelTitle { font-size: 15px; margin: 0; }
+  .tp-body > section, .tp-body > details.sec, .tp-body > details.grp.vcard, .tp-body > div > section { border-radius: 8px; padding: 8px 10px; margin-bottom: 6px; box-shadow: none; }
+  #tp-view .tp-body { display: flex; flex-direction: column; }
+  #tp-view .glb-entry { order: 0; }
+  #dView { order: 1; } #rotMode { order: 2; } #viewQuick { order: 3; } #dBg { order: 4; }
+  #viewPresetsCard { order: 5; } #dAngle { order: 6; } #dLight { order: 7; } #dEdge { order: 8; }
+}

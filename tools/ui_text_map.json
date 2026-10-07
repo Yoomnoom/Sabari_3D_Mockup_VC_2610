@@ -10,22 +10,22 @@
   "tab": "view",
   "id": "",
   "before": "축 잠금 중 3D 화면에 보이는 파란 축 선과 면 윤곽선을 켜고 끕니다. 끄더라도 축 잠금은 그대로 동작합니다. 화면 전용이며 PNG·GLB에는 들어가지 않습니다.",
-  "after_visible": "축 선은 화면에서만 보입니다.",
-  "original_kept_in": "details.more > p.more-body"
+  "after_visible": "축 선 보기",
+  "original_kept_in": ".help-body (? 도움말, 숨김)"
  },
  "viewButtonsHint": {
   "tab": "view",
   "id": "",
   "before": "시점 버튼은 박스를 기본 자세로 되돌리고 방향만 바꾸며 확대는 유지합니다. 처음처럼 전체를 보려면 F 또는 위치 초기화.3/4 시점을 한 번 더 누르면 반대편 모서리로 바뀝니다. R 앞·오른쪽 날개 / L 뒤·왼쪽 날개",
-  "after_visible": "시점 버튼은 방향만 바꾸고 확대는 유지합니다.",
-  "original_kept_in": "details.more > p.more-body"
+  "after_visible": "드래그: 박스 회전 · Ctrl+드래그: 15° 단위 · 휠: 확대/축소 · Space+드래그: 이동",
+  "original_kept_in": ".help-body (? 도움말, 숨김)"
  },
  "dragHint": {
   "tab": "view",
   "id": "",
   "before": "드래그: 박스 자유 회전(제한 없음) · Ctrl+드래그: 15° 단위 · 휠: 확대/축소 · Space+드래그: 이동",
-  "after_visible": "드래그로 회전하고 휠로 확대합니다.",
-  "original_kept_in": "details.more > p.more-body"
+  "after_visible": "드래그: 박스 회전 · Ctrl+드래그: 15° 단위 · 휠: 확대/축소 · Space+드래그: 이동",
+  "original_kept_in": ".help-body (? 도움말, 숨김)"
  },
  "shadeHint": {
   "tab": "view",
@@ -59,8 +59,8 @@
   "tab": "design",
   "id": "",
   "before": "칼선 위에서 만든 디자인 한 장(PNG/JPG)을 면별로 자동으로 나눕니다. 접어 넣는 영역과 모서리 탭은 면에 포함되지 않습니다.내보낼 때 칼선·안내선 레이어를 숨기고 sRGB PNG로 내보내세요. 인쇄소 칼선 프리셋(아트보드 전체 이미지)은 재단 여분 0 기준입니다.",
-  "after_visible": "칼선 위 디자인 한 장을 면별로 자동 분할합니다.",
-  "original_kept_in": "details.more > p.more-body"
+  "after_visible": "올린 칼선 이미지 없음",
+  "original_kept_in": ".help-body (? 도움말, 숨김)"
  },
  "svgHint": {
   "tab": "export",

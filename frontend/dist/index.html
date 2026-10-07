@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>사바리 목업 스튜디오</title>
-  <script type="module" crossorigin src="./assets/index-BPcmaSIF.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-FU803uh-.css">
+  <script type="module" crossorigin src="./assets/index-CsH7Nb18.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-DMCc3JNL.css">
 </head>
 <body>
   <header id="topBar">
@@ -100,13 +100,14 @@
           <div class="tp-body">
           <section>
             <h2>면 선택</h2>
-            <label class="check keep"><input id="useBase" type="checkbox" /> <span>하단 몸통 디자인 사용 <small>켜면 하단 5면(앞·뒤·왼쪽·오른쪽·바닥)도 편집합니다. 하단은 뚜껑을 열어야 보입니다.</small></span></label>
             <div id="faceTabs" class="subtabs" role="tablist" hidden>
               <button id="tab_lid" role="tab" aria-selected="true">뚜껑</button>
               <button id="tab_base" role="tab" aria-selected="false">하단</button>
             </div>
-            <p class="hint">버튼 또는 3D 박스의 면을 클릭</p>
             <div id="faceList" class="facelist"></div>
+            <p class="hint">버튼 또는 3D 박스의 면을 클릭</p>
+            <label class="check keep sw"><span>하단 몸통 디자인 사용</span><input id="useBase" type="checkbox" /></label>
+            <details class="more"><summary>자세히 보기</summary><p class="hint more-body">켜면 하단 5면(앞·뒤·왼쪽·오른쪽·바닥)도 편집합니다. 하단은 뚜껑을 열어야 보입니다.</p></details>
                       <div id="openNotice" class="notice" role="status" hidden>
               <span id="openNoticeText">뚜껑을 열어야 보입니다.</span>
               <span class="row"><button id="btnNoticeOpen">뚜껑 열기</button><button id="btnNoticeBottom" hidden>아래에서 보기</button></span>
@@ -115,10 +116,11 @@
           <section id="cardSplit">
             <h2>칼선으로 한 번에 넣기</h2>
             <div class="split-box">
-              <button id="btnSplitPick" class="grow">칼선 이미지 한 장 올리기</button>
+              <div class="split-btns"><button id="btnSplitPick" class="primary grow">칼선 이미지 한 장 올리기</button>
               <input id="fileDieline" type="file" accept="image/png,image/jpeg,image/webp" hidden />
+              <button id="btnSplitEdit" class="grow" disabled>분할 영역 조정</button></div>
+
               <p id="dielineInfo" class="info">올린 칼선 이미지 없음</p>
-              <button id="btnSplitEdit" disabled>분할 영역 조정</button>
               <p class="hint short">칼선 위 디자인 한 장을 면별로 자동 분할합니다.</p>
 <details class="more"><summary>자세히 보기</summary><p class="hint more-body">칼선 위에서 만든 디자인 한 장(PNG/JPG)을 면별로 자동으로 나눕니다. 접어 넣는 영역과 모서리 탭은 면에 포함되지 않습니다.<br><b>내보낼 때 칼선·안내선 레이어를 숨기고 sRGB PNG로 내보내세요.</b> 인쇄소 칼선 프리셋(아트보드 전체 이미지)은 재단 여분 0 기준입니다.</p></details>
             </div>
@@ -132,6 +134,7 @@
               <input id="filePick" type="file" accept="image/png,image/jpeg,image/webp" hidden />
             </div>
             <canvas id="facePreview" aria-label="면 미리보기"></canvas>
+            <p id="dropEmpty" class="dropempty">이미지 없음 · 위 버튼으로 이미지를 선택하세요</p>
             <p class="hint">미리보기를 끌어 위치를 옮길 수 있습니다.</p>
             <section id="layerSection" class="layers" aria-label="레이어">
               <h3>레이어</h3>
@@ -172,7 +175,7 @@
                 <summary>고급 설정</summary>
               <details class="grp" id="dPos" open>
                 <summary>크기 · 위치</summary>
-                <label class="check keep"><input id="moveMode" type="checkbox" /> <span>3D 화면에서 마우스로 이동 <small>휠: 확대·축소 · 끄면 끌어서 회전</small></span></label>
+                <label class="check keep sw"><span>3D 화면에서 마우스로 이동 <small>휠: 확대·축소 · 끄면 끌어서 회전 (M)</small></span><input id="moveMode" type="checkbox" /></label>
                 <label class="slider">배율 (%) <input id="scaleR" type="range" min="25" max="300" step="1" /><input id="scaleN" type="number" min="25" max="300" step="1" /></label>
                 <label class="slider">X 위치 (%) <input id="xR" type="range" min="-100" max="100" step="1" /><input id="xN" type="number" min="-100" max="100" step="1" /></label>
                 <label class="slider">Y 위치 (%) <input id="yR" type="range" min="-100" max="100" step="1" /><input id="yN" type="number" min="-100" max="100" step="1" /></label>
@@ -195,7 +198,7 @@
             <div id="tplList" class="tplgrid" role="radiogroup" aria-label="템플릿 선택"></div>
             <p class="hint">지금은 사바리 박스 한 가지 템플릿만 쓸 수 있습니다. 다른 템플릿은 준비 중입니다.</p>
           </section>
-          <details class="sec" id="dDims">
+          <details class="sec" id="dDims" open>
             <summary>박스 치수</summary>
             <p class="hint">목업용 치수입니다. <b>가정값(싸바리지 여유·접어 넣는 폭·재단 여분)은 제조 규격이 아닙니다.</b></p>
             <div class="seg" role="radiogroup" aria-label="입력 기준">
@@ -218,13 +221,13 @@
           </details>
           <details class="sec" id="dBox" open>
             <summary>뚜껑</summary>
-            <div class="row wrap">
+            <div class="row wrap seg2 lidseg">
               <button id="btnClose">닫힌 상태</button>
               <button id="btnOpen">열린 상태</button>
             </div>
             <label class="slider">뚜껑 높이 (mm) <input id="liftR" type="range" min="0" max="150" step="1" value="0" /><input id="liftN" type="number" min="0" max="150" step="1" value="0" /></label>
-            <label class="check"><input id="showLid" type="checkbox" checked /> 뚜껑 표시</label>
-            <label class="check"><input id="showBase" type="checkbox" checked /> 몸통 표시</label>
+            <label class="check sw"><span>뚜껑 표시</span><input id="showLid" type="checkbox" checked /></label>
+            <label class="check sw"><span>몸통 표시</span><input id="showBase" type="checkbox" checked /></label>
           </details>
           <details class="sec" id="dColor" open>
             <summary>목업 색상</summary>
@@ -260,57 +263,30 @@
               <span id="glbInfoView" class="info ge-info" role="status">불러온 파일 없음</span>
             </div>
           </div>
-          <details class="sec" id="dView" open>
-            <summary>보기 <button id="btnFit" class="link fit" title="확대·이동을 처음 상태로 (F)">위치 초기화 (F)</button></summary>
-            <div class="grid3">
-              <button data-view="front">정면</button>
-              <button data-view="back">후면</button>
-              <button data-view="left">좌측</button>
-              <button data-view="right">우측</button>
-              <button data-view="top">윗면</button>
-              <button data-view="bottom" title="아래에서 올려다봅니다 (Shift+7)">아래</button>
-              <button id="btnIso" data-view="iso" title="한 번 더 누르면 반대편 모서리(뒤·왼쪽 날개)로 바뀝니다">3/4 시점</button>
+          <details class="sec vcard" id="dView" open>
+            <summary>시점 <button id="btnFit" class="link fit" title="확대·이동을 처음 상태로 (F)">위치 초기화 (F)</button></summary>
+            <div class="grid4">
+              <button data-view="front" data-key="1">정면</button>
+              <button data-view="back" data-key="⇧1">후면</button>
+              <button data-view="left" data-key="⇧3">좌측</button>
+              <button data-view="right" data-key="3">우측</button>
+              <button data-view="top" data-key="7">윗면</button>
+              <button data-view="bottom" data-key="⇧7" title="아래에서 올려다봅니다 (Shift+7)">아래</button>
+              <button id="btnIso" data-view="iso" data-key="R/L" title="한 번 더 누르면 반대편 모서리(뒤·왼쪽 날개)로 바뀝니다">3/4 시점</button>
               </div>
-
-
-            <div class="viewpresets" id="viewPresets">
-              <b>저장된 시점</b>
-              <div class="vp-grid" id="vpGrid">
-                <div class="vp-card" data-slot="0">
-                  <button class="vp-thumb" type="button" title="눌러서 이 시점 불러오기"><img hidden alt="" /><span class="vp-empty">빈 슬롯</span></button>
-                  <input class="vp-name" type="text" value="시점 1" maxlength="20" aria-label="시점 이름" />
-                  <div class="vp-actions"><button class="vp-save" type="button" title="현재 시점 저장/덮어쓰기">저장</button><button class="vp-del" type="button" title="삭제" hidden>삭제</button></div>
-                </div>
-                <div class="vp-card" data-slot="1">
-                  <button class="vp-thumb" type="button" title="눌러서 이 시점 불러오기"><img hidden alt="" /><span class="vp-empty">빈 슬롯</span></button>
-                  <input class="vp-name" type="text" value="시점 2" maxlength="20" aria-label="시점 이름" />
-                  <div class="vp-actions"><button class="vp-save" type="button" title="현재 시점 저장/덮어쓰기">저장</button><button class="vp-del" type="button" title="삭제" hidden>삭제</button></div>
-                </div>
-                <div class="vp-card" data-slot="2">
-                  <button class="vp-thumb" type="button" title="눌러서 이 시점 불러오기"><img hidden alt="" /><span class="vp-empty">빈 슬롯</span></button>
-                  <input class="vp-name" type="text" value="시점 3" maxlength="20" aria-label="시점 이름" />
-                  <div class="vp-actions"><button class="vp-save" type="button" title="현재 시점 저장/덮어쓰기">저장</button><button class="vp-del" type="button" title="삭제" hidden>삭제</button></div>
-                </div>
-                <div class="vp-card" data-slot="3">
-                  <button class="vp-thumb" type="button" title="눌러서 이 시점 불러오기"><img hidden alt="" /><span class="vp-empty">빈 슬롯</span></button>
-                  <input class="vp-name" type="text" value="시점 4" maxlength="20" aria-label="시점 이름" />
-                  <div class="vp-actions"><button class="vp-save" type="button" title="현재 시점 저장/덮어쓰기">저장</button><button class="vp-del" type="button" title="삭제" hidden>삭제</button></div>
-                </div>
-                <div class="vp-card" data-slot="4">
-                  <button class="vp-thumb" type="button" title="눌러서 이 시점 불러오기"><img hidden alt="" /><span class="vp-empty">빈 슬롯</span></button>
-                  <input class="vp-name" type="text" value="시점 5" maxlength="20" aria-label="시점 이름" />
-                  <div class="vp-actions"><button class="vp-save" type="button" title="현재 시점 저장/덮어쓰기">저장</button><button class="vp-del" type="button" title="삭제" hidden>삭제</button></div>
-                </div>
-              </div>
-              <div class="vp-fixedrow" role="group" aria-label="기본 제공 시점">
-                <button class="vp-fixed" type="button" data-side="left" title="박스를 세워 왼쪽 옆면이 보이게 합니다 (Alt+6)">세운 3/4 · 왼쪽 옆면</button>
+            <div class="vp-fixedrow" role="group" aria-label="기본 제공 시점">
+                <button class="vp-fixed" type="button" data-side="left" data-key="Alt+6" title="박스를 세워 왼쪽 옆면이 보이게 합니다 (Alt+6)">세운 3/4 · 왼쪽 옆면</button>
                 <button class="vp-fixed" type="button" data-side="right" title="박스를 세워 오른쪽 옆면이 보이게 합니다">세운 3/4 · 오른쪽 옆면</button>
               </div>
-              <p class="hint short">카드를 누르면 불러오고, 저장은 덮어씁니다.</p>
-<details class="more"><summary>자세히 보기</summary><p class="hint more-body">카드 클릭: 불러오기 · 저장: 지금 시점으로 덮어쓰기 · 외부 GLB를 보는 중에는 쓸 수 없습니다. 바꿀 수 있으면 <kbd>Alt+1</kbd>~<kbd>Alt+5</kbd>.</p></details>
-            </div>
-
-            <div class="rotdir"><button id="lockToggle" aria-pressed="false" title="켜고 회전축 버튼을 누르거나 박스의 면을 누르면 그 축으로만 돕니다">축 잠금</button></div>
+            <div class="state"><span id="statusRot" aria-live="off"><span id="rotReadout"><span id="rotReadoutText">자유 회전 · 좌우 +0.0° · 위아래 +0.0°</span></span></span></div>
+            <div class="vhints"><p class="hint short">시점 버튼은 방향만 바꾸고 확대는 유지합니다.</p>
+<details class="more"><summary>자세히 보기</summary><p class="hint more-body">시점 버튼은 박스를 기본 자세로 되돌리고 방향만 바꾸며 확대는 유지합니다. 처음처럼 전체를 보려면 <kbd>F</kbd> 또는 위치 초기화.<br>3/4 시점을 한 번 더 누르면 반대편 모서리로 바뀝니다. <kbd>R</kbd> 앞·오른쪽 날개 / <kbd>L</kbd> 뒤·왼쪽 날개</p></details>
+            <p class="hint short">드래그로 회전하고 휠로 확대합니다.</p>
+<details class="more"><summary>자세히 보기</summary><p class="hint more-body">드래그: 박스 자유 회전(제한 없음) · <kbd>Ctrl</kbd>+드래그: 15° 단위 · 휠: 확대/축소 · Space+드래그: 이동</p></details></div>
+          </details>
+          <section class="vcard" id="rotMode">
+            <h2>회전 방식</h2>
+            <div class="seg2" role="group" aria-label="회전 방식"><button id="lockFree" type="button" aria-pressed="true" title="축 잠금을 끄고 자유롭게 돌립니다">자유</button><button id="lockToggle" aria-pressed="false" title="켜고 회전축 버튼을 누르거나 박스의 면을 누르면 그 축으로만 돕니다">축 잠금</button></div>
             <div class="axisrow" id="axisRow" role="group" aria-label="회전축" hidden>
               <b>회전축</b><span class="axishint">(그 방향을 바라보는 선)</span>
               <div class="view-buttons">
@@ -324,9 +300,9 @@
               <p class="hint short">축 선은 화면에서만 보입니다.</p>
 <details class="more"><summary>자세히 보기</summary><p class="hint more-body">축 잠금 중 3D 화면에 보이는 파란 축 선과 면 윤곽선을 켜고 끕니다. 끄더라도 축 잠금은 그대로 동작합니다. 화면 전용이며 PNG·GLB에는 들어가지 않습니다.</p></details>
             </div>
-
-            <details class="grp" id="dAngle">
-              <summary>미세 조절</summary>
+          </section>
+          <details class="grp vcard" id="dAngle">
+              <summary>축 기준 각도 <span class="sub">미세 조절</span></summary>
               <p class="hint" id="angleDisabledHint">축 잠금을 켜고 축을 먼저 정하세요.</p>
               <label class="slider" id="angleSliderRow" hidden>각도 (°) <input id="angleR" type="range" min="-180" max="180" step="0.1" value="0" /><input id="angleN" type="number" min="-180" max="180" step="0.1" value="0" /></label>
               <div class="row wrap" id="angleBtnRow" hidden>
@@ -335,14 +311,43 @@
                 <button id="angleRebase">기준 다시 잡기</button>
               </div>
             </details>
-
-            <p class="hint" id="lockHint" hidden></p>
-            <p class="hint short">시점 버튼은 방향만 바꾸고 확대는 유지합니다.</p>
-<details class="more"><summary>자세히 보기</summary><p class="hint more-body">시점 버튼은 박스를 기본 자세로 되돌리고 방향만 바꾸며 확대는 유지합니다. 처음처럼 전체를 보려면 <kbd>F</kbd> 또는 위치 초기화.<br>3/4 시점을 한 번 더 누르면 반대편 모서리로 바뀝니다. <kbd>R</kbd> 앞·오른쪽 날개 / <kbd>L</kbd> 뒤·왼쪽 날개</p></details>
-            <p class="hint short">드래그로 회전하고 휠로 확대합니다.</p>
-<details class="more"><summary>자세히 보기</summary><p class="hint more-body">드래그: 박스 자유 회전(제한 없음) · <kbd>Ctrl</kbd>+드래그: 15° 단위 · 휠: 확대/축소 · Space+드래그: 이동</p></details>
-            <details class="grp" id="dLight">
-              <summary>조명 (음영)</summary>
+          <p class="hint" id="lockHint" hidden></p>
+          <section class="vcard" id="viewPresetsCard">
+            <div class="viewpresets" id="viewPresets">
+              <h2>저장된 시점</h2>
+              <div class="vp-grid" id="vpGrid">
+                <div class="vp-card" data-slot="0">
+                  <button class="vp-thumb" type="button" title="눌러서 이 시점 불러오기"><img hidden alt="" /><span class="vp-empty">빈 슬롯</span></button>
+                  <input class="vp-name" type="text" value="시점 1" maxlength="20" aria-label="시점 이름" />
+                  <div class="vp-actions"><button class="vp-load" type="button" title="이 시점 불러오기">불러오기</button><button class="vp-save" type="button" title="현재 시점 저장/덮어쓰기">저장</button><button class="vp-del" type="button" title="삭제" hidden>삭제</button></div>
+                </div>
+                <div class="vp-card" data-slot="1">
+                  <button class="vp-thumb" type="button" title="눌러서 이 시점 불러오기"><img hidden alt="" /><span class="vp-empty">빈 슬롯</span></button>
+                  <input class="vp-name" type="text" value="시점 2" maxlength="20" aria-label="시점 이름" />
+                  <div class="vp-actions"><button class="vp-load" type="button" title="이 시점 불러오기">불러오기</button><button class="vp-save" type="button" title="현재 시점 저장/덮어쓰기">저장</button><button class="vp-del" type="button" title="삭제" hidden>삭제</button></div>
+                </div>
+                <div class="vp-card" data-slot="2">
+                  <button class="vp-thumb" type="button" title="눌러서 이 시점 불러오기"><img hidden alt="" /><span class="vp-empty">빈 슬롯</span></button>
+                  <input class="vp-name" type="text" value="시점 3" maxlength="20" aria-label="시점 이름" />
+                  <div class="vp-actions"><button class="vp-load" type="button" title="이 시점 불러오기">불러오기</button><button class="vp-save" type="button" title="현재 시점 저장/덮어쓰기">저장</button><button class="vp-del" type="button" title="삭제" hidden>삭제</button></div>
+                </div>
+                <div class="vp-card" data-slot="3">
+                  <button class="vp-thumb" type="button" title="눌러서 이 시점 불러오기"><img hidden alt="" /><span class="vp-empty">빈 슬롯</span></button>
+                  <input class="vp-name" type="text" value="시점 4" maxlength="20" aria-label="시점 이름" />
+                  <div class="vp-actions"><button class="vp-load" type="button" title="이 시점 불러오기">불러오기</button><button class="vp-save" type="button" title="현재 시점 저장/덮어쓰기">저장</button><button class="vp-del" type="button" title="삭제" hidden>삭제</button></div>
+                </div>
+                <div class="vp-card" data-slot="4">
+                  <button class="vp-thumb" type="button" title="눌러서 이 시점 불러오기"><img hidden alt="" /><span class="vp-empty">빈 슬롯</span></button>
+                  <input class="vp-name" type="text" value="시점 5" maxlength="20" aria-label="시점 이름" />
+                  <div class="vp-actions"><button class="vp-load" type="button" title="이 시점 불러오기">불러오기</button><button class="vp-save" type="button" title="현재 시점 저장/덮어쓰기">저장</button><button class="vp-del" type="button" title="삭제" hidden>삭제</button></div>
+                </div>
+              </div>
+              <p class="hint short">카드를 누르면 불러오고, 저장은 덮어씁니다.</p>
+<details class="more"><summary>자세히 보기</summary><p class="hint more-body">카드 클릭: 불러오기 · 저장: 지금 시점으로 덮어쓰기 · 외부 GLB를 보는 중에는 쓸 수 없습니다. 바꿀 수 있으면 <kbd>Alt+1</kbd>~<kbd>Alt+5</kbd>.</p></details>
+            </div>
+          </section>
+          <details class="grp vcard" id="dLight">
+              <summary>조명 <span class="sub">음영·그림자 공통</span></summary>
               <div class="row"><button id="shadeToggle" type="button" aria-pressed="true" class="grow">음영 숨기기</button></div>
               <label class="slider">음영 세기 (%) <input id="shadeR" type="range" min="0" max="100" step="1" value="30" /><input id="shadeN" type="number" min="0" max="100" step="1" value="30" /></label>
               <p class="hint short">카메라를 마주 보는 면은 입력 색 그대로 보입니다.</p>
@@ -353,7 +358,8 @@
               <div class="row"><button id="lightDefault" type="button">빛 방향 기본값 복원</button></div>
               <p class="hint" id="lightDirHint">빛 방향은 바닥 그림자에 적용됩니다. 면 음영은 항상 카메라 기준이라, 카메라를 마주 보는 면은 입력 색 그대로 보입니다.</p>
 
-                          <div class="row"><button id="shadowToggle" type="button" aria-pressed="false" class="grow">바닥 그림자 보기</button></div>
+                          <h3 class="vsub">바닥 그림자</h3>
+              <div class="row"><button id="shadowToggle" type="button" aria-pressed="false" class="grow">바닥 그림자 보기</button></div>
               <div id="shadowCtl" hidden>
                 <label class="slider">그림자 스타일 <select id="shStyle" aria-describedby="shStyleHint"><option value="default">기본(현재와 같음)</option><option value="studio">스튜디오 소프트</option><option value="contact">접촉 위주</option></select></label>
                 <p class="hint short">스타일에 따라 번지는 정도가 다릅니다.</p>
@@ -364,7 +370,6 @@
               </div>
               <p class="hint">그림자는 화면과 PNG에만 반영되고 GLB에는 들어가지 않습니다. 꺼 두면 화면은 그대로입니다.</p>
             </details>
-          </details>
           <details class="sec" id="dBg">
             <summary>배경</summary>
             <div class="bgkinds" role="group" aria-label="배경 종류">
@@ -430,15 +435,15 @@
           <div id="expPng">
           <section>
             <h2>PNG 저장</h2>
-            <div class="row">
-              <button id="btnPng" class="grow">현재 화면 PNG 저장</button>
-              <select id="bgSel" aria-label="PNG 배경"><option value="white">흰 배경</option><option value="transparent">투명</option><option value="screen">화면 그대로</option></select>
-              <select id="pngScale" aria-label="PNG 저장 크기"><option value="1">화면 크기</option><option value="2">2배</option><option value="4">4배</option></select>
-            </div>
+            <p class="hint">상단 "PNG 내보내기"는 현재 설정으로 바로 저장합니다. 여기서는 배경과 크기를 고릅니다.</p>
+            <div class="segrow"><b>배경</b><select id="bgSel" data-seg aria-label="PNG 배경"><option value="white">흰 배경</option><option value="transparent">투명</option><option value="screen">화면 그대로</option></select>
+              </div>
+            <div class="segrow"><b>저장 크기</b><select id="pngScale" data-seg aria-label="PNG 저장 크기"><option value="1">화면 크기</option><option value="2">2배</option><option value="4">4배</option></select></div>
+            <div class="row"><button id="btnPng" class="primary grow">현재 화면 PNG 저장</button></div>
           </section>
           </div>
           <div id="expSvg">
-          <details class="sec" id="dDie">
+          <details class="sec" id="dDie" open>
             <summary>칼선 (디자인 가이드)</summary>
             <p class="hint"><b>디자인 가이드용, 제조 칼선 아님.</b> 최종 칼선은 인쇄소 템플릿을 사용하세요.</p>
             <div class="row wrap">
@@ -449,25 +454,24 @@
 <details class="more"><summary>자세히 보기</summary><p class="hint more-body">현재 치수로 만든 1:1(mm) SVG입니다. 재단선(빨강 실선)·접는선(파랑 점선)·안내선(초록 점선)이 레이어로 나뉩니다.</p></details>
           </details>
           </div>
-          <section id="expFiles">
-            <h2>파일 저장</h2>
-                  <button id="btnGlb">GLB 저장 (이미지 포함)</button>
-                  <div class="row"><button id="btnProjSave" class="grow">프로젝트 저장</button><button id="btnProjOpen" class="grow">프로젝트 열기</button></div>
-                  <input id="fileProj" type="file" accept=".sabari,application/zip" hidden />
-                  <div class="draft">
+          <div id="expFiles">
+            <section id="expGlb"><h2>GLB 저장</h2><button id="btnGlb">GLB 저장 (이미지 포함)</button></section>
+            <section id="expProj"><h2>프로젝트</h2><div class="row"><button id="btnProjSave" class="grow">프로젝트 저장</button><button id="btnProjOpen" class="grow">프로젝트 열기</button></div>
+                  <input id="fileProj" type="file" accept=".sabari,application/zip" hidden /></section>
+            <section id="expDraft"><h2>임시저장</h2><div class="draft">
                     <div class="row"><button id="btnDraftSave" class="grow">임시저장</button><button id="btnDraftLoad" class="grow" disabled>불러오기</button></div>
                     <p id="draftInfo" class="info">임시저장 없음</p>
                     <p class="hint short">임시저장은 현재 브라우저에만 보관됩니다.</p>
 <details class="more"><summary>자세히 보기</summary><p class="hint more-body">변경 후 자동 보관 · 이 브라우저에만 저장됩니다. 파일로 보관하려면 프로젝트 저장(.sabari)을 쓰세요.</p></details>
                     <button id="btnDraftClear">임시저장 삭제</button>
                   </div>
-                  <p class="hint">파일은 브라우저 다운로드 폴더에 저장됩니다.</p>
-          </section>
+                  </section>
+            <p class="hint">파일은 브라우저 다운로드 폴더에 저장됩니다.</p>
+          </div>
           </div>
         </section>
       </div>
       <div id="statusBar" role="group" aria-label="상태 표시줄">
-        <span id="statusRot" aria-live="off"><span id="rotReadout"><span id="rotReadoutText">자유 회전 · 좌우 +0.0° · 위아래 +0.0°</span></span></span>
         <span id="panBadge" aria-live="polite">손 도구 (Space) — 끌어서 화면 이동</span>
         <span id="zoomReadout" aria-live="off">확대 100%</span>
       </div>

@@ -24,7 +24,7 @@ for (const f of files) {
   // 서버 프로세스를 이 스크립트가 쓰도록 비동기 spawn 대신 별도 프로세스에서 실행 (서버는 이 프로세스의 이벤트 루프가 필요하므로 spawn 사용)
   const r = await new Promise((resolve) => {
     import('node:child_process').then(({ spawn }) => {
-      const c = spawn(process.execPath, [path.join(E2E, f)], { env: { ...process.env, NO_TAB_SHIM: (f === 'ui_tabs_task12.mjs' || f === 'ui_dialogs_task17.mjs' || f === 'background_task13.mjs' || f === 'edge_inspect_task14.mjs' || f === 'lighting_task15.mjs' || f === 'template_task16.mjs') ? '1' : '', NODE_OPTIONS: `${process.env.NODE_OPTIONS ?? ''} --import=${pathToFileURL(path.join(E2E, 'tab_shim.mjs')).href}`.trim(), SABARI_URL: URL, STAGE_OUT: process.env.STAGE_OUT ?? 'verification-private/regression' }, stdio: ['ignore', 'pipe', 'pipe'] });
+      const c = spawn(process.execPath, [path.join(E2E, f)], { env: { ...process.env, NO_TAB_SHIM: (f === 'ui_tabs_task12.mjs' || f === 'ui_dialogs_task17.mjs' || f === 'background_task13.mjs' || f === 'edge_inspect_task14.mjs' || f === 'lighting_task15.mjs' || f === 'template_task16.mjs' || f === 'overlay_cleanup_task29.mjs') ? '1' : '', NODE_OPTIONS: `${process.env.NODE_OPTIONS ?? ''} --import=${pathToFileURL(path.join(E2E, 'tab_shim.mjs')).href}`.trim(), SABARI_URL: URL, STAGE_OUT: process.env.STAGE_OUT ?? 'verification-private/regression' }, stdio: ['ignore', 'pipe', 'pipe'] });
       let log = ''; c.stdout.on('data', (d) => (log += d)); c.stderr.on('data', (d) => (log += d));
       const timer = setTimeout(() => { c.kill(); log += '\n[TIMEOUT 600s]'; }, 600000);
       c.on('close', (code) => { clearTimeout(timer); resolve({ code, log }); });

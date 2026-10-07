@@ -100,14 +100,14 @@ await p2.goto(URL); await p2.waitForFunction(() => window.__sabari);
 await p2.setInputFiles('#fileProj', proj); await p2.waitForFunction(() => Object.values(window.__sabari.faces).filter((f) => f.img).length >= 3, null, { timeout: 15000 }); await p2.waitForTimeout(1500);
 rec('8_open_no_alert', await p2.evaluate(() => ({ banner: !document.getElementById('ratioBanner').hidden, badges: document.querySelectorAll('.badge').length, baseH: window.__sabari.getParams().baseH })));
 // 열린 뒤 이번 세션에서 바꾸면 알린다
-await p2.click('#dDims > summary'); await p2.fill('#dim_outer_baseH', '43'); await p2.waitForTimeout(1500);
+if (!(await p2.evaluate(() => document.getElementById('dDims').open))) await p2.click('#dDims > summary'); await p2.fill('#dim_outer_baseH', '43'); await p2.waitForTimeout(1500);
 rec('8_open_then_change_alerts', await p2.evaluate(() => ({ banner: !document.getElementById('ratioBanner').hidden, tabs: [document.getElementById('tab_lid').textContent, document.getElementById('tab_base').textContent] })));
 await c2.close();
 
 // ===== 이미지 없는 면만 있는 상태에서 큰 변경: 알림 없음 =====
 const c3 = await b.newContext({ viewport: { width: 1360, height: 900 } }); const p3 = await c3.newPage();
 await p3.goto(URL); await p3.waitForFunction(() => window.__sabari);
-await p3.click('#dDims > summary'); await p3.fill('#dim_outer_baseH', '90'); await p3.fill('#dim_outer_lidH', '70'); await p3.waitForTimeout(1500);
+if (!(await p3.evaluate(() => document.getElementById('dDims').open))) await p3.click('#dDims > summary'); await p3.fill('#dim_outer_baseH', '90'); await p3.fill('#dim_outer_lidH', '70'); await p3.waitForTimeout(1500);
 rec('9_no_images_no_alert', await p3.evaluate(() => ({ banner: !document.getElementById('ratioBanner').hidden, badges: document.querySelectorAll('.badge').length })));
 await c3.close();
 

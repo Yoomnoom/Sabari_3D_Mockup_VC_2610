@@ -523,6 +523,7 @@ function syncControls() {
   $('faceSize').textContent = `면 크기 ${fd.wMm}×${fd.hMm}mm (비율 ${(fd.wMm / fd.hMm).toFixed(2)}:1)`;
   $('fileInfo').textContent = f.img ? `${f.name} · 원본 ${f.iw}×${f.ih}px` : '이미지 없음';
   $('faceControls').classList.toggle('disabled', !f.img);
+  $('dropEmpty').hidden = !!f.img; // 시안 v6: 이미지가 없을 때만 점선 영역의 안내를 보인다
   $('facePreview').style.cursor = f.img ? 'grab' : 'default';
   const prev = $<HTMLCanvasElement>('facePreview');
   prev.width = f.canvas.width / 4; prev.height = f.canvas.height / 4;
@@ -1395,7 +1396,7 @@ function initWorkspace() {
   handle.addEventListener('pointerup', () => { drag = null; });
   const faceLine = $('sheetFaceLine');
   const syncFaceLine = () => {
-    const rot = !document.body.classList.contains('sheet-min') && document.body.classList.contains('rotplace-panel') ? ` · ${$('rotReadoutText').textContent}` : ''; // 회전 각도는 작업 시트 맨 위 줄 오른쪽에 한 줄로(시트가 접혀 있으면 표시하지 않음)
+    const rot = ''; // 시안 v6: 회전 각도는 보기 탭 시점 버튼 아래 한 번만(시트 맨 위 면 요약줄에는 넣지 않는다) // 회전 각도는 작업 시트 맨 위 줄 오른쪽에 한 줄로(시트가 접혀 있으면 표시하지 않음)
     faceLine.textContent = `선택한 면 · ${$('faceTitle').textContent} · ${($('faceSize').textContent ?? '').replace('면 크기 ', '')} · ${$('fileInfo').textContent}${rot}`;
   };
   new MutationObserver(syncFaceLine).observe($('rotReadoutText'), { childList: true, characterData: true, subtree: true });
@@ -1619,6 +1620,20 @@ async function init() {
   // 보기
   document.querySelectorAll<HTMLButtonElement>('[data-view]').forEach((b) => (b.onclick = () => showView(b.dataset.view as ViewName)));
   $('btnIso').onclick = toggleIso; // 3/4 시점: 누를 때마다 R ↔ L
+  // ? 도움말(시안 v6): 긴 설명은 컨트롤 사이에 두지 않고 ? 버튼 뒤에 모은다. 원문은 숨겨진 본문에 그대로 있다.
+  document.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLButtonElement>('button.helpq'); if (!b) return;
+    const body = document.getElementById(b.getAttribute('aria-controls') ?? ''); if (!body) return;
+    const open = b.getAttribute('aria-expanded') !== 'true'; b.setAttribute('aria-expanded', String(open)); body.hidden = !open;
+  });
+  { // 시안 v6: "회전 방식" 자유/축 잠금 세그먼트. 축 잠금 버튼(#lockToggle)이 그대로 상태를 가지고, "자유"는 그것을 끄는 버튼이며 둘의 눌림·비활성을 맞춘다.
+    const lt = $<HTMLButtonElement>('lockToggle'), free = $<HTMLButtonElement>('lockFree');
+    const syncFree = () => { free.setAttribute('aria-pressed', String(lt.getAttribute('aria-pressed') !== 'true')); free.disabled = lt.disabled; };
+    free.onclick = () => { if (lt.getAttribute('aria-pressed') === 'true') lt.click(); };
+    new MutationObserver(syncFree).observe(lt, { attributes: true, attributeFilter: ['aria-pressed', 'disabled'] }); syncFree();
+    // 저장된 시점 목록의 "불러오기" 버튼은 같은 줄 썸네일 버튼의 클릭(기존 불러오기)을 그대로 부른다.
+    document.getElementById('vpGrid')?.addEventListener('click', (e) => { const b = (e.target as HTMLElement).closest('.vp-load'); if (!b) return; const t = b.closest('.vp-card')?.querySelector<HTMLButtonElement>('.vp-thumb'); if (t && !t.disabled) t.click(); });
+  }
   // 축 잠금(기본 꺼짐): 켜고 박스 면을 누르면 그 면에 수직인 축으로만 돈다. 화면 전용이라 어디에도 저장하지 않는다(새로고침하면 꺼진다).
   const lockBtn = $<HTMLButtonElement>('lockToggle'), lockHint = $('lockHint');
   let lockHintTimer = 0;
@@ -1724,6 +1739,14 @@ async function init() {
 
   // 저장 / 열기
   $('btnPng').onclick = savePng;
+  // 시안 v6: 선택 목록(data-seg)을 버튼 세그먼트로 보여 준다. 값은 원래 <select>가 그대로 가지고(선택·저장·시험 코드 불변), 버튼은 그 값을 바꾸고 따라간다.
+  document.querySelectorAll<HTMLSelectElement>('select[data-seg]').forEach((sel) => {
+    const box = document.createElement('div'); box.className = 'seg2'; box.setAttribute('role', 'group'); box.setAttribute('aria-label', sel.getAttribute('aria-label') ?? '');
+    const btns = [...sel.options].map((o) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = o.textContent; b.onclick = () => { sel.value = o.value; sel.dispatchEvent(new Event('change', { bubbles: true })); sync(); }; box.appendChild(b); return { b, o }; });
+    const sync = () => btns.forEach(({ b, o }) => b.setAttribute('aria-pressed', String(sel.value === o.value)));
+    sel.addEventListener('change', sync); new MutationObserver(sync).observe(sel, { attributes: true, childList: true }); setInterval(sync, 700); // 값이 코드로 바뀌는 경우(프로젝트 열기 등)도 따라간다
+    sel.after(box); sync();
+  });
   const pngScale = $<HTMLSelectElement>('pngScale');
   try { const v = localStorage.getItem('sabari.pngScale'); if (v && ['1', '2', '4'].includes(v)) pngScale.value = v; } catch { /* 저장소를 못 쓰면 기본값 */ }
   pngScale.onchange = () => { try { localStorage.setItem('sabari.pngScale', pngScale.value); } catch { /* 무시 */ } };

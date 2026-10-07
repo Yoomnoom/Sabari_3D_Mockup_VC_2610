@@ -23,7 +23,7 @@ const hasMsg = await p.evaluate(() => typeof window.__sabari.msg === 'function')
 R.hasMsgHook = hasMsg;
 const trigger = async (kind) => { // msg() 는 모듈 안 함수라 실제 동작으로 알림을 만든다: 오류 = 잘못된 파일 열기, 안내 = 칼선/저장 등
   if (kind === 'error') { const fc = p.waitForEvent('filechooser'); await p.evaluate(() => document.getElementById('btnOpenGlb').click()); const bad = path.join(OUT, 'bad.glb'); fs.writeFileSync(bad, Buffer.from('no')); await (await fc).setFiles(bad); }
-  else { await p.click('#tabExport').catch(() => {}); const w = p.waitForEvent('download'); await p.click('#btnProjSave'); await w; }
+  else { await p.click('#tabExport').catch(() => {}); const w = p.waitForEvent('download'); await p.click('#btnProjSave'); await p.waitForSelector('#saveDlg[open]', { timeout: 2000 }).then(() => p.click('#saveOk')).catch(() => {}); await w; }
   await p.waitForTimeout(400);
 };
 await trigger('error');
@@ -49,14 +49,14 @@ R.log = await p.evaluate(() => ({ open: document.getElementById('notifyDlg').ope
 await p.keyboard.press('Escape');
 checks.notify_log = R.log.open && R.log.n >= 3 && R.log.err >= 1 && !(await p.evaluate(() => document.getElementById('notifyDlg').open));
 // 4) 회전 각도: 설정 3가지 각각에서 드래그 중 "좌우"와 "위아래"가 함께 든 보이는 텍스트가 정확히 1곳
-await p.evaluate(() => { document.getElementById('tabView')?.click(); });
+await p.click('#tabView'); await p.evaluate(() => { const d = document.getElementById('dView'); if (d) d.open = true; }); await p.waitForTimeout(200); // v6 시안: 회전 각도는 보기 탭의 "시점" 카드(시점 버튼 바로 아래)에 한 번만 나온다
 const countRot = () => p.evaluate(() => { const vis = (e) => { const r = e.getBoundingClientRect(); const cs = getComputedStyle(e); return r.width > 0 && r.height > 0 && cs.display !== 'none' && cs.visibility !== 'hidden'; }; return [...document.querySelectorAll('body *')].filter((e) => e.children.length === 0 && /좌우/.test(e.textContent) && /위아래/.test(e.textContent) && vis(e)).map((e) => e.id || e.className || e.tagName); });
 R.rotCounts = {};
 for (const place of ['panel', 'view', 'off']) {
   await p.evaluate((v) => { const s = document.getElementById('optRotPlace'); s.value = v; s.dispatchEvent(new Event('change')); }, place);
   const box = await p.locator('#viewport').boundingBox();
   await p.mouse.move(box.x + box.width / 2, box.y + box.height / 2); await p.mouse.down(); await p.mouse.move(box.x + box.width / 2 + 60, box.y + box.height / 2 + 30, { steps: 6 });
-  R.rotCounts[place] = await countRot(); await p.mouse.up();
+    R.rotCounts[place] = await countRot(); await p.mouse.up();
 }
 checks.rot_exactly_one_place = R.rotCounts.panel.length === 1 && R.rotCounts.view.length === 1 && R.rotCounts.off.length === 0;
 await p.evaluate(() => { const s = document.getElementById('optRotPlace'); s.value = 'panel'; s.dispatchEvent(new Event('change')); });

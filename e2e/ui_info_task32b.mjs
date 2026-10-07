@@ -27,7 +27,7 @@ for (const h of before.desktop.hints) {
 R.missing = missing; checks.original_text_preserved = missing.length === 0;
 let mapOk = true; const mapBad = [];
 for (const [k, m] of Object.entries(map)) {
-  const kept = await p.evaluate((m) => [...document.querySelectorAll('details.more > .more-body')].some((e) => e.textContent.replace(/\s+/g, ' ').trim() === m.before.replace(/\s+/g, ' ').trim()), m);
+  const kept = await p.evaluate((m) => [...document.querySelectorAll('details.more > .more-body, .help-body p, .help-body')].some((e) => e.textContent.replace(/\s+/g, ' ').trim() === m.before.replace(/\s+/g, ' ').trim()), m);
   const shown = domText.includes(norm(m.after_visible));
   if (!kept || !shown) { mapOk = false; mapBad.push(k); }
 }

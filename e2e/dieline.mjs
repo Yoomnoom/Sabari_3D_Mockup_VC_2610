@@ -61,7 +61,7 @@ const svgInfo = async (btn, label) => {
   return { file: label, widthMm: w, heightMm: h, viewBox: vb, cutWidthMm: cw, cutHeightMm: ch, bleedMm: bl, oneToOne: Math.abs(vb[2] - w) < 1e-6 && Math.abs(vb[3] - h) < 1e-6, layers: ['재단선', '접는선', '안내선'].every((id) => t.includes(`id="${id}"`)), disclaimer: t.includes('제조 칼선 아님') && t.includes('인쇄소 템플릿'), hasScript: /<script/i.test(t), dashedFold: /stroke="#0066ff"[^>]*stroke-dasharray/.test(t), solidCut: !/stroke-dasharray/.test(t.slice(t.indexOf('id="재단선"'), t.indexOf('id="접는선"'))) };
 };
 rec('1_svg_lid_default', await svgInfo('#btnDieLid', 'app_dieline_lid_default.svg'));
-await p.click('#dDims > summary'); await p.fill('#dim_outer_lidH', '50'); await p.fill('#dim_outer_baseW', '200'); await p.waitForTimeout(400);
+if (!(await p.evaluate(() => document.getElementById('dDims').open))) await p.click('#dDims > summary'); await p.fill('#dim_outer_lidH', '50'); await p.fill('#dim_outer_baseW', '200'); await p.waitForTimeout(400);
 const lay50 = await p.evaluate(() => window.__sabari.getLayout('lid'));
 const svg50 = await svgInfo('#btnDieLid', 'app_dieline_lid_h50.svg');
 rec('1_svg_lid_changed', { ...svg50, expectCutW: lay50.width, expectCutH: lay50.height, matches: Math.abs(svg50.cutWidthMm - lay50.width) < 0.01 && Math.abs(svg50.cutHeightMm - lay50.height) < 0.01 });

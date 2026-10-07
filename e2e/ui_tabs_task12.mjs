@@ -82,7 +82,7 @@ await p.click('#panelExpand'); await p.click('#tabDesign');
 // ---- 5. 선택한 면 패널: 이름·크기는 동적 값, 비율 변경 표시와 "확인했어요" -----------------------------------------------------
 await p.click('#faceList button[data-face=lid_top]'); await p.setInputFiles('#filePick', synth); await p.waitForFunction(() => window.__sabari.faces.lid_top.img); // 새로고침으로 이미지가 사라졌으므로 다시 넣는다
 R.face_panel_default = await p.evaluate(() => ({ name: document.getElementById('faceTitle').textContent, size: document.getElementById('faceSize').textContent, info: document.getElementById('fileInfo').textContent }));
-await p.click('#tabBox'); await p.click('#dDims > summary'); await p.fill('#dim_outer_baseW', '200'); await p.waitForTimeout(1800);
+await p.click('#tabBox'); if (!(await p.evaluate(() => document.getElementById('dDims').open))) await p.click('#dDims > summary'); await p.fill('#dim_outer_baseW', '200'); await p.waitForTimeout(1800);
 await p.click('#tabDesign'); await p.click('#faceList button[data-face=lid_top]'); await p.waitForTimeout(200);
 R.face_panel_after_dims = await p.evaluate(() => ({ name: document.getElementById('faceTitle').textContent, size: document.getElementById('faceSize').textContent, ratioVisible: !document.getElementById('ratioNote').hidden, ratioText: document.getElementById('ratioNoteText').textContent, badges: document.querySelectorAll('#faceList .badge').length }));
 assert(R.face_panel_after_dims.size !== R.face_panel_default.size, '면 크기는 치수에서 계산된 값');
