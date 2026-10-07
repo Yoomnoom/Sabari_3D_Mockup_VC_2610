@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>사바리 목업 스튜디오</title>
-  <script type="module" crossorigin src="./assets/index-Brafx0eN.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-DxrAN_GW.css">
+  <script type="module" crossorigin src="./assets/index-DFw1UGYU.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-CMC13FtR.css">
 </head>
 <body>
   <header id="topBar">
@@ -158,9 +158,11 @@
             <div id="faceControls">
               <details class="grp" id="dFit" open>
                 <summary>맞춤 방식</summary>
-                <label><input type="radio" name="fit" value="contain" checked /> 이미지 전체 보이기</label>
-                <label><input type="radio" name="fit" value="cover" /> 면 전체 채우기</label>
-                <label id="fitTileLabel" hidden><input type="radio" name="fit" value="tile" /> 반복(타일)</label>
+                <div class="seg" role="radiogroup" aria-label="맞춤 방식">
+                  <label><input type="radio" name="fit" value="contain" checked /> 이미지 전체 보이기</label>
+                  <label><input type="radio" name="fit" value="cover" /> 면 전체 채우기</label>
+                  <label id="fitTileLabel" hidden><input type="radio" name="fit" value="tile" /> 반복(타일)</label>
+                </div>
               </details>
 
               <details class="grp" id="dRot" open>
