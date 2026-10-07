@@ -76,7 +76,7 @@ const same = (a, c) => JSON.stringify(a) === JSON.stringify(c);
 }
 // 5: "하단 몸통 사용"을 켠 직후 — 선택이 하단 면으로 옮겨 가고, 바로 올리면 하단 면에 들어간다(상단이 아님)
 {
-  const p = await newPage();
+  const p = await newPage(); await p.uncheck('#useBase'); await p.waitForTimeout(300); // v0.10.1부터 새 프로젝트는 켬 → 이 시나리오는 끈 상태에서 시작한다
   ok('5_before_toggle_top_selected', (await selected(p)) === 'lid_top');
   await p.check('#useBase'); await p.waitForTimeout(300);
   ok('5_toggle_on_selects_base_face', (await selected(p)) === 'base_front', await selected(p));
@@ -93,7 +93,7 @@ const same = (a, c) => JSON.stringify(a) === JSON.stringify(c);
 }
 // 6: 끈 상태 — 하단 탭이 없고, 올리면 상단에만 들어간다(하단 면은 건드리지 않는다)
 {
-  const p = await newPage();
+  const p = await newPage(); await p.uncheck('#useBase'); await p.waitForTimeout(300); // 끈 상태 시나리오
   ok('6_off_has_no_base_tab', await p.evaluate(() => document.getElementById('faceTabs').hidden));
   await upload(p);
   ok('6_off_upload_only_top', same(await imgs(p), ['lid_top']), await imgs(p));

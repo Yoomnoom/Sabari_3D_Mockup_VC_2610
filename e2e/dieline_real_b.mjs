@@ -34,6 +34,7 @@ const hasImg = (p, ids) => p.evaluate((ids) => Object.fromEntries(ids.map((i) =>
 // ===== C. 빈 몸통(실제 파일과 같은 상황): 몸통 색을 흰색으로 덮지 않는다
 {
   const { browser, context, p, errors } = await page();
+  await p.uncheck('#useBase'); // v0.10.1부터 새 프로젝트의 하단 몸통 사용은 켬 → 이 시나리오(뚜껑만 적용하면 하단 스위치가 켜지지 않는다)는 끈 상태에서 시작한다
   const baseColor0 = await p.evaluate(() => window.__sabari.viewer.getPartColor('base'));
   await openDlg(p, art('blank_body')); await p.click('#btnSplitApply'); await p.waitForTimeout(700);
   const afterLid = { lid: await hasImg(p, LID), base: await hasImg(p, BASE), useBase: await p.isChecked('#useBase'), baseColor: await p.evaluate(() => window.__sabari.viewer.getPartColor('base')), msg: await p.textContent('#msgText') };

@@ -7,6 +7,7 @@ const b = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftsha
 const p = await (await b.newContext({ viewport: { width: 1360, height: 860 } })).newPage();
 const errs = []; p.on('pageerror', (e) => errs.push(String(e)));
 await p.goto(URL); await p.waitForFunction(() => window.__sabari);
+await p.uncheck('#useBase'); // v0.10.1부터 새 프로젝트의 하단 몸통 사용은 켬 → 이 시험이 가정하는 끈 상태로 시작한다
 const R = {};
 const hl = () => p.evaluate(() => { const v = window.__sabari.viewer; return !!v.highlight && v.highlight.visible; });
 const st = () => p.evaluate(() => { const s = window.__sabari.faces.lid_top.state; return [s.offsetX, s.offsetY]; });
