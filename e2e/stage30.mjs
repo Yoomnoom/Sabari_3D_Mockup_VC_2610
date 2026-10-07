@@ -244,7 +244,7 @@ rec('N_sabari_schema', {
   projectJsonBytes: JSON.stringify(proj).length,
 });
 // 작업 13: 배경 설정(viewSettings)을 넣어 schemaVersion이 5 → 6, 작업 25: 스튜디오 배경으로 6 → 7
-assert(proj.schemaVersion === 11 && proj.viewPresets.length === 4 && vpThumbFiles.every((f) => !!zip.files[f]));
+assert(proj.schemaVersion === 12 && proj.viewPresets.length === 4 && vpThumbFiles.every((f) => !!zip.files[f]));
 assert(proj.viewPresets.find((v) => v.slot === 1).name === '내 시점 1');
 assert(JSON.stringify(proj).length < 20000); // 썸네일이 base64로 들어가면 훨씬 커진다
 

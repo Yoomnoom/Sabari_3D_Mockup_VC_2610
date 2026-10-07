@@ -53,7 +53,7 @@ await p.uncheck('#advChkLidInner'); await setColor(p, 'advColLidInner', '#112233
 await p.click('#tabExport').catch(() => {}); const proj = await dl(p, '#btnProjSave', 'p28.sabari');
 const pj = JSON.parse(await (await JSZip.loadAsync(fs.readFileSync(proj))).file('project.json').async('string'));
 R.saved = { v: pj.schemaVersion, colors: pj.colors };
-checks.saved_v8_and_fields = pj.schemaVersion === 11 && pj.colors.lidInner === '#112233' && pj.colors.baseRim === '#445566' && !('lidRim' in pj.colors) && !('baseFace' in pj.colors);
+checks.saved_v8_and_fields = pj.schemaVersion === 12 && pj.colors.lidInner === '#112233' && pj.colors.baseRim === '#445566' && !('lidRim' in pj.colors) && !('baseFace' in pj.colors);
 await p.click('#btnColorReset');
 checks.reset_all_same = await p.evaluate(() => ['LidRim', 'LidInner', 'BaseFace', 'BaseRim', 'BaseInner'].every((k) => document.getElementById('advChk' + k).checked));
 await p.setInputFiles('#fileProj', proj); await p.waitForTimeout(900);
