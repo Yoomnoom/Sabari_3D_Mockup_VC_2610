@@ -499,7 +499,7 @@ function setBaseEnabled(v: boolean, schedule = true) {
 /** 사용자가 스위치를 눌렀을 때. 끌 때 하단 이미지가 있으면 확인을 받고, 실행 취소로 복구할 수 있게 한 항목으로 기록한다. */
 async function onUseBaseToggle() {
   const want = $<HTMLInputElement>('useBase').checked;
-  if (want) return setBaseEnabled(true);
+  if (want) { setBaseEnabled(true); setCurrent(lastByGroup.base); return; } // 켠 직후 선택이 상단에 남아 있으면 이어 올린 이미지가 상단으로 들어간다 → 하단 면(마지막으로 고른 하단 면)으로 옮긴다
   const withImage = facesOf('base').filter((f) => faces[f.id].img).map((f) => f.id);
   if (withImage.length) {
     if (!(await confirmDialog({ kind: 'confirm-base-off', title: '하단 몸통 사용 끄기', text: `하단 이미지 ${withImage.length}개가 제거됩니다.\n계속할까요? (Ctrl+Z로 되돌릴 수 있습니다)`, ok: '제거하고 끄기', cancel: '취소' }))) {
