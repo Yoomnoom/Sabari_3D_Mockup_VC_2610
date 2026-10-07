@@ -55,6 +55,7 @@ export const SHADOW_COLOR = 0x1c1c1c; // 누적 그림자의 고정 색(중립 �
 export const IDLE_MS = 180; // 마지막 변화 뒤 이만큼 조용하면 누적을 시작한다
 export const BAKE_PER_FRAME = 4; // 한 프레임에 더하는 샘플 수(화면 조작이 막히지 않게)
 const BAKE_SIZE = 1024, CONTACT_SIZE = 512;
+export const SMOOTH_PER_DEG = 1.0; // 누적 뒤 흐림 세기(픽셀) = 빛 퍼짐(°) × 이 값 (스튜디오 8° → 8, 접촉 3.5° → 3.5)
 
 const FS_VERT = 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0., 1.); }';
 const BLUR_FRAG = `uniform sampler2D tSrc; uniform vec2 uDir; uniform float uSigma; varying vec2 vUv;
@@ -87,7 +88,7 @@ export class FloorShadow {
   // ---- 누적 경로(스타일 studio/contact, 처음 쓸 때 만든다) ----
   private bk: {
     light: THREE.DirectionalLight; floor: THREE.Mesh; mat: THREE.ShadowMaterial; cam: THREE.OrthographicCamera;
-    rt: THREE.WebGLRenderTarget; contactRt: THREE.WebGLRenderTarget; tmpRt: THREE.WebGLRenderTarget;
+    rt: THREE.WebGLRenderTarget; contactRt: THREE.WebGLRenderTarget; tmpRt: THREE.WebGLRenderTarget; tmpBakeRt: THREE.WebGLRenderTarget;
     shaderFloor: THREE.Mesh; shaderMat: THREE.ShaderMaterial; white: THREE.MeshBasicMaterial; blurMat: THREE.ShaderMaterial;
     fsScene: THREE.Scene; fsCam: THREE.OrthographicCamera;
   } | null = null;
@@ -107,7 +108,7 @@ export class FloorShadow {
     renderer.shadowMap.autoUpdate = false; // 그릴 때마다 우리가 갱신한다(꺼져 있으면 그림자 패스 자체가 없다)
     this.light.castShadow = true;
     this.light.shadow.mapSize.set(SHADOW_MAP_SIZE, SHADOW_MAP_SIZE);
-    this.light.shadow.blurSamples = 16;
+    this.light.shadow.blurSamples = 25; // 부드러움을 크게 하면(반지름 최대 15) 표본 간격이 1칸을 넘어 물결 줄무늬가 생길 수 있어 촘촘하게(간격 ≈1.25칸)
     this.light.shadow.bias = -0.0002;
     this.light.visible = false;
     this.floor = new THREE.Mesh(new THREE.CircleGeometry(1, 96), this.mat);
@@ -133,7 +134,7 @@ export class FloorShadow {
   private ensureBake() {
     if (this.bk) return this.bk;
     const mk = (size: number) => new THREE.WebGLRenderTarget(size, size, { type: THREE.HalfFloatType, format: THREE.RGBAFormat, minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, depthBuffer: false, generateMipmaps: false });
-    const rt = mk(BAKE_SIZE), contactRt = mk(CONTACT_SIZE), tmpRt = mk(CONTACT_SIZE);
+    const rt = mk(BAKE_SIZE), contactRt = mk(CONTACT_SIZE), tmpRt = mk(CONTACT_SIZE), tmpBakeRt = mk(BAKE_SIZE);
     const light = new THREE.DirectionalLight(0xffffff, 1);
     light.castShadow = true; light.shadow.mapSize.set(1024, 1024); light.shadow.blurSamples = 8; light.shadow.radius = 2; light.shadow.bias = -0.0002; light.visible = false;
     const mat = new THREE.ShadowMaterial({ color: 0x000000, opacity: 1, transparent: true, depthWrite: false, depthTest: false, side: THREE.DoubleSide,
@@ -159,8 +160,8 @@ export class FloorShadow {
     const fsQuad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), blurMat); fsQuad.frustumCulled = false;
     fsScene.add(fsQuad);
     this.scene.add(light, light.target, floor, shaderFloor);
-    this.stats.bakeBytes = (BAKE_SIZE * BAKE_SIZE + 2 * CONTACT_SIZE * CONTACT_SIZE) * 8; // RGBA 반정밀(8바이트/픽셀)
-    this.bk = { light, floor, mat, cam, rt, contactRt, tmpRt, shaderFloor, shaderMat, white, blurMat, fsScene, fsCam };
+    this.stats.bakeBytes = (2 * BAKE_SIZE * BAKE_SIZE + 2 * CONTACT_SIZE * CONTACT_SIZE) * 8; // RGBA 반정밀(8바이트/픽셀)
+    this.bk = { light, floor, mat, cam, rt, contactRt, tmpRt, tmpBakeRt, shaderFloor, shaderMat, white, blurMat, fsScene, fsCam };
     return this.bk;
   }
 
@@ -304,7 +305,17 @@ export class FloorShadow {
       }
       this.sampleIdx += todo;
       this.stats.samples = this.sampleIdx;
-      if (this.sampleIdx >= preset.samples) this.done = true;
+      if (this.sampleIdx >= preset.samples) {
+        this.done = true;
+        // 샘플 장수가 유한해서 멀리 번진 가장자리에 층층이 계단(물결·점무늬)이 남는다 → 누적이 끝나면 한 번 작게 흐려 계단을 지운다(접촉 그림자는 따로라 선명함 유지)
+        const sigma = Math.min(8, Math.max(1.5, preset.spread * SMOOTH_PER_DEG));
+        r.autoClear = true; r.clippingPlanes = []; r.setClearColor(0x000000, 0);
+        bk.blurMat.uniforms.uSigma.value = sigma;
+        bk.blurMat.uniforms.tSrc.value = bk.rt.texture; (bk.blurMat.uniforms.uDir.value as THREE.Vector2).set(1 / BAKE_SIZE, 0);
+        r.setRenderTarget(bk.tmpBakeRt); r.render(bk.fsScene, bk.fsCam);
+        bk.blurMat.uniforms.tSrc.value = bk.tmpBakeRt.texture; (bk.blurMat.uniforms.uDir.value as THREE.Vector2).set(0, 1 / BAKE_SIZE);
+        r.setRenderTarget(bk.rt); r.render(bk.fsScene, bk.fsCam);
+      }
     });
   }
 }

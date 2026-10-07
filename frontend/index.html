@@ -157,9 +157,11 @@
             <div id="faceControls">
               <details class="grp" id="dFit" open>
                 <summary>맞춤 방식</summary>
-                <label><input type="radio" name="fit" value="contain" checked /> 이미지 전체 보이기</label>
-                <label><input type="radio" name="fit" value="cover" /> 면 전체 채우기</label>
-                <label id="fitTileLabel" hidden><input type="radio" name="fit" value="tile" /> 반복(타일)</label>
+                <div class="seg" role="radiogroup" aria-label="맞춤 방식">
+                  <label><input type="radio" name="fit" value="contain" checked /> 이미지 전체 보이기</label>
+                  <label><input type="radio" name="fit" value="cover" /> 면 전체 채우기</label>
+                  <label id="fitTileLabel" hidden><input type="radio" name="fit" value="tile" /> 반복(타일)</label>
+                </div>
               </details>
 
               <details class="grp" id="dRot" open>
