@@ -37,7 +37,9 @@ const a11y = await p.evaluate(() => {
   const ds = [...document.querySelectorAll('details.more')];
   return { count: ds.length, allHaveSummary: ds.every((d) => d.querySelector(':scope > summary')?.textContent.includes('자세히 보기')), closedByDefault: ds.every((d) => !d.open), sumMinH: Math.min(...ds.map((d) => d.querySelector('summary').getBoundingClientRect().height)) };
 });
-R.a11y = a11y; checks.details_unified = a11y.count >= 12 && a11y.allHaveSummary && a11y.closedByDefault;
+const helps = await p.evaluate(() => { const hs = [...document.querySelectorAll('button.helpq')]; return { count: hs.length, ok: hs.every((h) => h.getAttribute('aria-expanded') === 'false' && !!document.getElementById(h.getAttribute('aria-controls') ?? '') && document.getElementById(h.getAttribute('aria-controls')).hidden) }; });
+R.helps = helps; // v6 2차: 설명 4개를 "자세히 보기" 대신 ? 도움말로 옮겼다 → 자세히 보기 8개 이상 + ? 도움말 4개 이상(모두 aria-controls·aria-expanded 있음, 처음엔 접힘)
+checks.details_unified = a11y.count >= 8 && a11y.allHaveSummary && a11y.closedByDefault && helps.count >= 4 && helps.ok;
 await p.click('#tabView'); await p.evaluate(() => { const d = document.querySelector('#tp-view details.more'); d.open = false; });
 const sum = p.locator('#tp-view details.more > summary').first(); await sum.focus(); await p.keyboard.press('Enter');
 const afterEnter = await p.evaluate(() => document.querySelector('#tp-view details.more').open); await p.keyboard.press('Space'); const afterSpace = await p.evaluate(() => document.querySelector('#tp-view details.more').open);
