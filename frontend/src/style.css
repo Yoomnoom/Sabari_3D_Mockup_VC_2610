@@ -688,3 +688,10 @@ button.helpq[aria-expanded='true'] { background: #fff1e9; border-color: var(--ac
 .layers > .row.wrap { margin: 6px 0; }
 .layers > .row.wrap button { flex: 1 1 0; min-width: 0; padding: 0 4px; white-space: normal; line-height: 1.2; min-height: 34px; }
 .layers button:disabled { color: #9a9488; background: #f1efea; cursor: not-allowed; }
+.layer-pick[aria-selected='true'] { background: none; color: inherit; }
+.layer-pick, .layer-pick:hover { border: 0; }
+.layer-eye[aria-pressed], .layer-eye[aria-pressed='true'] { background: #fff; color: var(--ink); border-color: #b9b5ad; }
+.layer-row .layer-eye { flex: none; }
+.layers > .row.wrap button { flex: 1 1 28%; }
+#dFit[open] { grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); }
+#dFit label:last-child { border-right: 0; }
