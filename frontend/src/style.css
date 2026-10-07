@@ -103,7 +103,7 @@ details.sec > summary button.fit { margin-left: auto; min-height: 32px; font-wei
 /* 박스 치수 */
 /* 선택 버튼(세그먼트): 항상 가로 한 줄, 패널 폭을 채운다(시안 v6). 라디오 동그라미는 숨기고 눌린 칸을 주황으로 채운다 */
 .seg { display: flex; flex-wrap: nowrap; border: 1px solid #d7dbe0; border-radius: 8px; overflow: hidden; margin: 6px 0 8px; }
-.seg label { flex: 1 1 0; min-width: 0; display: flex; align-items: center; justify-content: center; min-height: 38px; padding: 0 4px; font-weight: 700; font-size: 13px; text-align: center; cursor: pointer; border-right: 1px solid #e1e4e8; background: #fff; }
+.seg label { position: relative; flex: 1 1 0; min-width: 0; display: flex; align-items: center; justify-content: center; min-height: 38px; padding: 0 4px; font-weight: 700; font-size: 13px; text-align: center; cursor: pointer; border-right: 1px solid #e1e4e8; background: #fff; }
 .seg label:last-child { border-right: 0; }
 .seg label:has(input:checked) { background: var(--accent); color: #fff; }
 .seg label[hidden] { display: none; }

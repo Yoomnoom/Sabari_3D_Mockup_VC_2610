@@ -59,7 +59,7 @@ export const SMOOTH_PER_DEG = 1.0; // 누적 뒤 흐림 세기(픽셀) = 빛 퍼
 
 const FS_VERT = 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0., 1.); }';
 const BLUR_FRAG = `uniform sampler2D tSrc; uniform vec2 uDir; uniform float uSigma; varying vec2 vUv;
-void main(){ float w0 = 0.; vec4 sum = vec4(0.); for (int i = -48; i <= 48; i++) { float fi = float(i); if (abs(fi) > uSigma * 3.) continue; float w = exp(-0.5 * fi * fi / (uSigma * uSigma)); sum += texture2D(tSrc, vUv + uDir * fi) * w; w0 += w; } gl_FragColor = sum / w0; }`;
+void main(){ float w0 = 1.; vec4 sum = texture2D(tSrc, vUv); for (int i = 1; i <= 48; i++) { float fi = float(i); if (fi > uSigma * 3.) break; float w = exp(-0.5 * fi * fi / (uSigma * uSigma)); sum += (texture2D(tSrc, vUv + uDir * fi) + texture2D(tSrc, vUv - uDir * fi)) * w; w0 += 2. * w; } gl_FragColor = sum / w0; }`;
 const FLOOR_VERT = 'varying vec3 vW; varying vec2 vL; void main(){ vec4 w = modelMatrix * vec4(position, 1.); vW = w.xyz; vL = position.xy; gl_Position = projectionMatrix * viewMatrix * w; }';
 const FLOOR_FRAG = `uniform sampler2D tCast; uniform sampler2D tContact; uniform vec3 uColor; uniform vec2 uCenter; uniform float uHalf; uniform float uCastK; uniform float uContactK; uniform float uFadeStart; uniform vec2 uC; uniform float uLen; varying vec3 vW; varying vec2 vL;
 void main(){
