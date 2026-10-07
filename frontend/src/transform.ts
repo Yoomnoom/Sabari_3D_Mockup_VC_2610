@@ -51,7 +51,7 @@ export function textureSize(faceWmm: number, faceHmm: number, longSide = 2048): 
 }
 
 /** 바탕 이미지 한 장(합성에 쓰이는 데이터) */
-export interface UnderlayDraw { img: CanvasImageSource; iw: number; ih: number; state: UnderlayState; onTop: boolean }
+export interface UnderlayDraw { img: CanvasImageSource; iw: number; ih: number; state: UnderlayState }
 
 /** 레이어 한 장을 그린다. 'tile' 은 무늬를 반복해 면 전체를 덮는다. */
 function drawLayer(ctx: CanvasRenderingContext2D, cw: number, ch: number, img: CanvasImageSource, iw: number, ih: number, s: SurfaceState, alpha = 1) {
@@ -82,7 +82,7 @@ function drawLayer(ctx: CanvasRenderingContext2D, cw: number, ch: number, img: C
 }
 
 /** 캔버스에 구워 넣는다. 이미지가 없으면 호출하지 않는다. 합성 순서: 면 바탕색 → (바탕 이미지) → 디자인 이미지. under.onTop 이면 바탕 이미지가 디자인 이미지 위에 온다. */
-export function bake(ctx: CanvasRenderingContext2D, cw: number, ch: number, img: CanvasImageSource, iw: number, ih: number, s: SurfaceState, bg = '#ffffff', under?: UnderlayDraw | null) {
+export function bake(ctx: CanvasRenderingContext2D, cw: number, ch: number, img: CanvasImageSource, iw: number, ih: number, s: SurfaceState, bg = '#ffffff', unders: UnderlayDraw[] = [], underOnTop = false) {
   ctx.save();
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.fillStyle = bg; // 투명 픽셀/여백은 면 바탕색(기본 흰색)
@@ -90,9 +90,10 @@ export function bake(ctx: CanvasRenderingContext2D, cw: number, ch: number, img:
   ctx.beginPath();
   ctx.rect(0, 0, cw, ch);
   ctx.clip(); // 면 밖으로 그려지지 않도록
-  const u = under && under.state.visible && under.state.opacity > 0 ? under : null; // 없거나 꺼져 있으면 예전과 똑같이 그린다
-  if (u && !u.onTop) drawLayer(ctx, cw, ch, u.img, u.iw, u.ih, u.state, u.state.opacity);
-  if (!u) {
+  // 바탕 레이어들(아래부터): 보이는 것·불투명도 0 초과만. 하나도 없으면 예전과 똑같이 그린다.
+  const us = unders.filter((x) => x.state.visible && x.state.opacity > 0);
+  if (us.length && !underOnTop) for (const u of us) drawLayer(ctx, cw, ch, u.img, u.iw, u.ih, u.state, u.state.opacity);
+  if (!us.length) {
     const l = computeLayout(cw, ch, iw, ih, s);
     ctx.translate(l.cx, l.cy);
     ctx.scale(l.fx, l.fy);
@@ -100,6 +101,6 @@ export function bake(ctx: CanvasRenderingContext2D, cw: number, ch: number, img:
     ctx.imageSmoothingQuality = 'high';
     ctx.drawImage(img, -l.w / 2, -l.h / 2, l.w, l.h);
   } else drawLayer(ctx, cw, ch, img, iw, ih, s);
-  if (u && u.onTop) drawLayer(ctx, cw, ch, u.img, u.iw, u.ih, u.state, u.state.opacity);
+  if (us.length && underOnTop) for (const u of us) drawLayer(ctx, cw, ch, u.img, u.iw, u.ih, u.state, u.state.opacity);
   ctx.restore();
 }

@@ -43,7 +43,7 @@ const hidden = await px(p, 'lid_top', 0.5, 0.5);
 ok('3_hidden_equals_face_bg', hidden.join() === before.join(), hidden);
 await p.click('.layer-eye');
 // 선택 레이어 이동: 바탕 선택 후 X 위치
-await p.click('.layer-row[data-layer=under] .layer-pick'); await p.fill('#xN', '30'); await p.dispatchEvent('#xN', 'change'); await p.waitForTimeout(200);
+await p.click('#layerList li[data-layer]:not([data-layer=top]) .layer-pick'); await p.fill('#xN', '30'); await p.dispatchEvent('#xN', 'change'); await p.waitForTimeout(200);
 ok('4_under_state_moved', await p.evaluate(() => Math.abs(window.__sabari.faces.lid_top.under.state.offsetX - 0.3) < 1e-6 && window.__sabari.faces.lid_top.state.offsetX === 0));
 // 타일·불투명도
 await p.check('input[name=fit][value=tile]'); await p.fill('#underOpN', '50'); await p.dispatchEvent('#underOpN', 'change'); await p.waitForTimeout(200);

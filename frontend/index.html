@@ -139,12 +139,14 @@
               <h3>레이어</h3>
               <ul id="layerList" role="listbox"></ul>
               <div class="row wrap">
-                <button id="btnUnderAdd" type="button">바탕 이미지 추가</button>
-                <button id="btnUnderSwap" type="button" title="바탕 이미지와 디자인 이미지의 위아래를 바꿉니다">순서 바꾸기</button>
+                <button id="btnUnderAdd" type="button">바탕 레이어 추가</button>
+                <button id="btnUnderUp" type="button" title="선택한 레이어를 위로">위로</button>
+                <button id="btnUnderDown" type="button" title="선택한 레이어를 아래로">아래로</button>
+                <button id="btnUnderSwap" type="button" title="바탕 레이어들과 디자인 이미지의 위아래를 바꿉니다">순서 바꾸기</button>
                 <button id="btnUnderDel" type="button">삭제</button>
                 <input id="fileUnder" type="file" accept="image/png,image/jpeg,image/webp" hidden />
               </div>
-              <label class="slider">바탕 불투명도 (%) <input id="underOpR" type="range" min="0" max="100" step="1" value="100" /><input id="underOpN" type="number" min="0" max="100" step="1" value="100" /></label>
+              <label class="slider">선택한 레이어 불투명도 (%) <input id="underOpR" type="range" min="0" max="100" step="1" value="100" /><input id="underOpN" type="number" min="0" max="100" step="1" value="100" /></label>
               <button id="btnUnderAll" type="button">같은 바탕을 면에 적용</button>
               <p id="underInfo" class="hint"></p>
             </section>

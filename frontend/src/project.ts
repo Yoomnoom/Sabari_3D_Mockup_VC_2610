@@ -8,12 +8,12 @@ import type { BgSettings } from './background';
 import { sanitizeBg, serializeBg } from './background';
 import { SABARI_BOX_ID, resolveTemplate } from './templates';
 
-// 11: 면 바탕 이미지(surfaces.<면>.underlay: 파일·변환값·불투명도·보이기·순서, 선택 필드, 원본은 images/underlay_<면>.<확장자>). 10: 칼선 저장을 종류별로(dielines.lid·dielines.base, 선택 필드. 같은 원본 바이트는 ZIP에 한 번만 저장. 예전 단일 dieline 필드는 계속 기록·읽음). 9: 칼선 이미지 방향(dieline.imageRotation 0/90/180/270, dieline.orientationConfirmed, 0°면 기록 안 함). 8: 고급 색상(colors.lidRim·lidInner·baseFace·baseRim·baseInner, 선택 필드, 같게이면 기록 안 함). 7: 스튜디오 배경(viewSettings.background.studio, 스튜디오 배경이거나 기본값과 다를 때만 저장). 6: 화면 설정(viewSettings.background: 배경 종류·색·이미지, 선택 필드). 4: 박스 치수 파라미터(params) + 칼선 이미지 분할(dieline). 3: 하단 5면 + 스위치(useBaseFaces). 2: 뚜껑 5면. 2~6 모두 열린다.
-export const SCHEMA_VERSION = 11;
-const READABLE_VERSIONS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+// 12: 면 바탕 레이어 여러 장(surfaces.<면>.underlays: 레이어 배열(아래부터)·underlayOnTop, 선택 필드, 원본은 images/underlay_<면>_<번호>.<확장자>, 옛 underlay 한 장은 레이어 1장으로 읽음). 11: 면 바탕 이미지(surfaces.<면>.underlay: 파일·변환값·불투명도·보이기·순서, 선택 필드, 원본은 images/underlay_<면>.<확장자>). 10: 칼선 저장을 종류별로(dielines.lid·dielines.base, 선택 필드. 같은 원본 바이트는 ZIP에 한 번만 저장. 예전 단일 dieline 필드는 계속 기록·읽음). 9: 칼선 이미지 방향(dieline.imageRotation 0/90/180/270, dieline.orientationConfirmed, 0°면 기록 안 함). 8: 고급 색상(colors.lidRim·lidInner·baseFace·baseRim·baseInner, 선택 필드, 같게이면 기록 안 함). 7: 스튜디오 배경(viewSettings.background.studio, 스튜디오 배경이거나 기본값과 다를 때만 저장). 6: 화면 설정(viewSettings.background: 배경 종류·색·이미지, 선택 필드). 4: 박스 치수 파라미터(params) + 칼선 이미지 분할(dieline). 3: 하단 5면 + 스위치(useBaseFaces). 2: 뚜껑 5면. 2~6 모두 열린다.
+export const SCHEMA_VERSION = 12;
+const READABLE_VERSIONS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 export const TEMPLATE_ID = SABARI_BOX_ID;
 const MAX_BYTES = 50 * 1024 * 1024;
-const MAX_ENTRIES = 64; // 면 10 + 바탕 10 + 칼선 2 + 배경 1 + 시점 썸네일 5 + project.json
+const MAX_ENTRIES = 256; // 면 10 + 바탕 레이어(면당 최대 8장=80) + 칼선 2 + 배경 1 + 시점 썸네일 5 + project.json
 
 export class UserError extends Error {}
 
@@ -60,8 +60,8 @@ function parseSurface(v: unknown): { state: SurfaceState; sourceFile: string | n
 }
 
 /** 면의 바탕 이미지(아래 레이어) 저장본: 원본 바이트와 변환값 */
-export interface UnderSave { blob: Blob; name: string | null; state: UnderlayState; onTop: boolean }
-export interface SaveFace { id: FaceId; state: SurfaceState; blob: Blob | null; name: string | null; under?: UnderSave | null }
+export interface UnderSave { blob: Blob; name: string | null; state: UnderlayState }
+export interface SaveFace { id: FaceId; state: SurfaceState; blob: Blob | null; name: string | null; unders?: UnderSave[]; underOnTop?: boolean; /** 예전 임시저장(바탕 한 장) 호환 */ under?: (UnderSave & { onTop?: boolean }) | null }
 
 /** 고급 색상(작업 28)은 선택 필드: 없거나 null = 다른 항목과 같게 */
 export interface Colors { face: string; lid: string; base: string; lidRim?: string; lidInner?: string; baseFace?: string; baseRim?: string; baseInner?: string }
@@ -142,14 +142,14 @@ export async function packProject(i: PackInput): Promise<Blob> {
       sourceFile = `images/${f.id}${info.ext}`;
       zip.file(sourceFile, f.blob, { compression: 'STORE' }); // 원본 바이트 그대로
     }
-    let underlay: unknown;
-    if (f.under) {
-      const ui = await inspectImage(f.under.blob);
-      const uf = `images/underlay_${f.id}${ui.ext}`;
-      zip.file(uf, f.under.blob, { compression: 'STORE' });
-      underlay = { file: uf, originalName: f.under.name, ...f.under.state, onTop: f.under.onTop };
+    const underlays: unknown[] = [];
+    if (sourceFile) for (const [n, u] of (f.unders ?? []).entries()) { // 바탕 레이어는 디자인 이미지가 있는 면에서만 저장한다(예전과 같은 규칙)
+      const ui = await inspectImage(u.blob);
+      const uf = `images/underlay_${f.id}_${n + 1}${ui.ext}`;
+      zip.file(uf, u.blob, { compression: 'STORE' });
+      underlays.push({ file: uf, originalName: u.name, ...u.state });
     }
-    surfaces[f.id] = { ...f.state, sourceFile, originalName: f.name, ...(underlay ? { underlay } : {}) };
+    surfaces[f.id] = { ...f.state, sourceFile, originalName: f.name, ...(underlays.length ? { underlays, underlayOnTop: f.underOnTop === true } : {}) };
   }
   // 칼선 저장: 종류별 항목. 같은 원본 바이트(해시 동일)는 ZIP 안에 한 번만 넣는다. 예전 단일 dieline 필드(뚜껑 우선)도 함께 기록한다.
   const dielinesOut: Record<string, unknown> = {};
@@ -208,7 +208,7 @@ export interface OpenedProject {
   dieline?: DielineSave | null;
   /** 종류별 칼선 저장. 없는 이전 파일·임시저장은 dieline 의 kind 로 옮겨 읽는다 */
   dielines?: DielineSet;
-  faces: Record<FaceId, { state: SurfaceState; blob: Blob | null; name: string | null; under?: UnderSave | null }>;
+  faces: Record<FaceId, { state: SurfaceState; blob: Blob | null; name: string | null; unders?: UnderSave[]; underOnTop?: boolean; under?: (UnderSave & { onTop?: boolean }) | null }>;
   /** 저장된 시점 슬롯(0~4). 없는 이전 파일은 빈 배열로 연다 */
   viewPresets: ViewPresetSlot[];
   /** 이 파일의 템플릿(없는 이전 임시저장은 undefined → 사바리 박스) */
@@ -252,13 +252,18 @@ export async function unpackProject(file: Blob): Promise<OpenedProject> {
   for (const f of FACES) {
     const p = parseSurface(surfaces[f.id]);
     const blob = p.sourceFile ? await readImage(p.sourceFile, f.id) : null;
-    let under: UnderSave | null = null;
-    const ul = (surfaces[f.id] as Record<string, unknown> | undefined)?.underlay as Record<string, unknown> | undefined;
-    if (blob && ul && typeof ul.file === 'string') {
+    const unders: UnderSave[] = [];
+    let underOnTop = false;
+    const raw = surfaces[f.id] as Record<string, unknown> | undefined;
+    // 새 형식(underlays 배열) 또는 예전 형식(underlay 한 장 → 레이어 1장)
+    const rawList: Record<string, unknown>[] = Array.isArray(raw?.underlays) ? (raw!.underlays as Record<string, unknown>[]) : raw?.underlay && typeof raw.underlay === 'object' ? [raw.underlay as Record<string, unknown>] : [];
+    if (blob) for (const ul of rawList.slice(0, 8)) {
+      if (!ul || typeof ul.file !== 'string') continue;
       const us = parseSurface({ ...ul, fit: undefined }).state, ub = await readImage(ul.file, `${f.id} 바탕`);
-      under = { blob: ub, name: typeof ul.originalName === 'string' ? ul.originalName : null, onTop: ul.onTop === true, state: { ...us, fit: ul.fit === 'contain' || ul.fit === 'tile' ? ul.fit : 'cover', opacity: num(ul.opacity, 0, 1, 1), visible: ul.visible !== false } };
+      unders.push({ blob: ub, name: typeof ul.originalName === 'string' ? ul.originalName : null, state: { ...us, fit: ul.fit === 'contain' || ul.fit === 'tile' ? ul.fit : 'cover', opacity: num(ul.opacity, 0, 1, 1), visible: ul.visible !== false } });
     }
-    out[f.id] = { state: p.state, blob, name: blob ? (p.originalName ?? p.sourceFile) : null, ...(under ? { under } : {}) };
+    underOnTop = raw?.underlayOnTop === true || (!Array.isArray(raw?.underlays) && (raw?.underlay as Record<string, unknown> | undefined)?.onTop === true);
+    out[f.id] = { state: p.state, blob, name: blob ? (p.originalName ?? p.sourceFile) : null, ...(unders.length ? { unders, underOnTop } : {}) };
   }
   const box = (raw.box ?? {}) as Record<string, unknown>;
   const c = raw.colors as Record<string, unknown> | undefined;

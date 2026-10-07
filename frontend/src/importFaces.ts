@@ -43,7 +43,7 @@ export function initImportFaces(d: ImportDeps) {
     const dl = src.dielines ?? {};
     const dieOk = (has(LID) && !!dl.lid && Object.keys(dl.lid.regions).length > 0) || (has(BASE) && !!dl.base && Object.keys(dl.base.regions).length > 0);
     $('impOptDieline').hidden = !dieOk;
-    $('impOptUnderlay').hidden = !ids.some((i) => src!.faces[i].under);
+    $('impOptUnderlay').hidden = !ids.some((i) => src!.faces[i].unders?.length || src!.faces[i].under);
     $('impOptParams').hidden = !src.params;
     $('importCount').textContent = `${ids.length}면 선택`;
     $<HTMLButtonElement>('btnImportApply').disabled = busy || ids.length === 0;
@@ -78,7 +78,7 @@ export function initImportFaces(d: ImportDeps) {
       const box = document.createElement('span'); box.className = 'imp-thumb';
       if (has) void thumb(p.blob!).then((c) => box.appendChild(c)).catch(() => { box.textContent = '?'; });
       const name = document.createElement('b'); name.textContent = f.short;
-      const st = document.createElement('small'); st.textContent = has ? (p.under ? '이미지 · 바탕' : '이미지 있음') : '이미지 없음';
+      const st = document.createElement('small'); st.textContent = has ? ((p.unders?.length || p.under) ? '이미지 · 바탕' : '이미지 있음') : '이미지 없음';
       lab.append(cb, box, name, st);
       grid.appendChild(lab);
     }

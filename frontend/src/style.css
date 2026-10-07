@@ -678,3 +678,13 @@ button.helpq[aria-expanded='true'] { background: #fff1e9; border-color: var(--ac
   #dView { order: 1; } #rotMode { order: 2; } #viewQuick { order: 3; } #dBg { order: 4; }
   #viewPresetsCard { order: 5; } #dAngle { order: 6; } #dLight { order: 7; } #dEdge { order: 8; }
 }
+
+/* ===== 바탕 레이어 여러 장(작업 bg-layers): 한 줄에 썸네일·이름·눈·삭제, 선택한 줄은 주황 막대+연한 배경 ===== */
+.layers { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; }
+.layers h3 { font-size: 15px; margin: 0 0 6px; }
+.layer-thumb { flex: none; width: 28px; height: 28px; border: 1px solid var(--line); border-radius: 4px; background: #f1efea; }
+.layer-row.active { box-shadow: inset 3px 0 0 var(--accent); }
+.layer-del { flex: none; min-height: 28px; width: 28px; padding: 0; color: #bd4141; }
+.layers > .row.wrap { margin: 6px 0; }
+.layers > .row.wrap button { flex: 1 1 0; min-width: 0; padding: 0 4px; white-space: normal; line-height: 1.2; min-height: 34px; }
+.layers button:disabled { color: #9a9488; background: #f1efea; cursor: not-allowed; }

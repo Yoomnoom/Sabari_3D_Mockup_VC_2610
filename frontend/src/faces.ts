@@ -12,6 +12,8 @@ export const bgFor = (id: FaceId): string => (groupOf(id) === 'base' ? theme.bas
 
 /** 바탕 이미지(아래 레이어): 원본 바이트(blob)는 그대로, img 는 긴 변 4096px 이내로 줄인 표시용 */
 export interface UnderData {
+  /** 레이어 구분용 id(면 안에서 유일) */
+  id: string;
   state: UnderlayState;
   blob: Blob;
   name: string | null;
@@ -28,15 +30,21 @@ export interface FaceSnapshot {
   img: ImageBitmap | null;
   iw: number;
   ih: number;
-  /** 바탕 이미지(선택). 없으면 null */
-  under: UnderData | null;
-  /** true 면 바탕 이미지가 디자인 이미지 위에 온다("순서 바꾸기") */
+  /** 바탕 레이어들(아래가 먼저). 없으면 빈 배열 */
+  unders: UnderData[];
+  /** true 면 바탕 레이어들이 디자인 이미지 위에 온다("순서 바꾸기") */
   underOnTop: boolean;
 }
 
 export const UNDER_MAX_SIDE = 4096;
+/** 면 하나에 둘 수 있는 바탕 레이어 수(저장 파일 항목 수 한도 때문에) */
+export const MAX_UNDERS = 8;
+let underSeq = 0;
+export const newUnderId = () => `u${Date.now().toString(36)}${(underSeq++).toString(36)}`;
 
 export interface FaceData extends FaceSnapshot {
+  /** 호환용(읽기 전용): 맨 아래 바탕 레이어 또는 null */
+  readonly under: UnderData | null;
   id: FaceId;
   canvas: HTMLCanvasElement; // 구워진 텍스처 (미리보기·GLB 공용)
 }
@@ -47,7 +55,7 @@ export const faces: Record<FaceId, FaceData> = Object.fromEntries(
     const canvas = document.createElement('canvas');
     canvas.width = w;
     canvas.height = h;
-    const d: FaceData = { id: f.id, state: defaultState(), blob: null, name: null, img: null, iw: 0, ih: 0, under: null, underOnTop: false, canvas };
+    const d: FaceData = { id: f.id, state: defaultState(), blob: null, name: null, img: null, iw: 0, ih: 0, unders: [], underOnTop: false, canvas, get under() { return this.unders[0] ?? null; } };
     return [f.id, d];
   }),
 ) as Record<FaceId, FaceData>;
@@ -85,7 +93,7 @@ export function rebake(f: FaceData): boolean {
     ctx.clearRect(0, 0, f.canvas.width, f.canvas.height);
     return false;
   }
-  bake(ctx, f.canvas.width, f.canvas.height, f.img, f.iw, f.ih, f.state, bgFor(f.id), f.under ? { img: f.under.img, iw: f.under.iw, ih: f.under.ih, state: f.under.state, onTop: f.underOnTop } : null);
+  bake(ctx, f.canvas.width, f.canvas.height, f.img, f.iw, f.ih, f.state, bgFor(f.id), f.unders.map((u) => ({ img: u.img, iw: u.iw, ih: u.ih, state: u.state })), f.underOnTop);
   return true;
 }
 

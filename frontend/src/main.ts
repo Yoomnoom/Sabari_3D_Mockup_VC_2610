@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { SNAP_DEG } from './screenRotate';
-import { FACES, FaceData, FaceId, FaceSnapshot, decode, decodeUnder, faces, groupOf, rebake, resizeFaceCanvases, theme } from './faces';
+import { FACES, FaceData, FaceId, FaceSnapshot, decode, decodeUnder, MAX_UNDERS, newUnderId, faces, groupOf, rebake, resizeFaceCanvases, theme } from './faces';
 import { FaceGroup, GROUPS, applyFaceSizes, facesOf } from './faceDefs';
 import { BoxParams, DEFAULT_PARAMS, RatioChange, cloneParams, faceSizes, formatPct, formatRatio, paramsEqual, ratioChanges, ratioOf, validateParams } from './params';
 import { initDimsUi } from './dimsUi';
@@ -36,7 +36,7 @@ let baselineParams: BoxParams = cloneParams(DEFAULT_PARAMS);
 let dims: ReturnType<typeof initDimsUi> | null = null;
 let split: ReturnType<typeof initSplitUi> | null = null;
 /** 마지막으로 올린 칼선 이미지 한 장과 분할 설정(원본 이미지는 .sabari 에 그대로 들어간다) */
-const underSave = (id: FaceId) => { const u = faces[id].under; return u && faces[id].blob ? { blob: u.blob, name: u.name, state: { ...u.state }, onTop: faces[id].underOnTop } : null; };
+const underSaves = (id: FaceId) => (faces[id].blob ? faces[id].unders.map((u) => ({ blob: u.blob, name: u.name, state: { ...u.state } })) : []);
 let layersUi: ReturnType<typeof initLayers> | undefined;
 const activeSt = (f: FaceData) => (layersUi ? layersUi.activeState(f) : f.state);
 let dielines: DielineSet = {}; // 칼선 분할 저장: 뚜껑·하단 몸통 종류별로 따로
@@ -289,7 +289,7 @@ const undoStack: Entry[] = [];
 const redoStack: Entry[] = [];
 let lastPushAt = 0;
 let lastPushId: FaceId | 'params' | null = null;
-const take = (id: FaceId): Snap => { const f = faces[id]; return { id, state: { ...f.state }, blob: f.blob, name: f.name, img: f.img, iw: f.iw, ih: f.ih, under: f.under ? { ...f.under, state: { ...f.under.state } } : null, underOnTop: f.underOnTop }; };
+const take = (id: FaceId): Snap => { const f = faces[id]; return { id, state: { ...f.state }, blob: f.blob, name: f.name, img: f.img, iw: f.iw, ih: f.ih, unders: f.unders.map((u) => ({ ...u, state: { ...u.state } })), underOnTop: f.underOnTop }; };
 const takeEntry = (ids: FaceId[]): Entry => ({ snaps: ids.map(take), base: baseEnabled, params: cloneParams(params) });
 
 function pushHistory(id: FaceId, force = false) {
@@ -325,7 +325,7 @@ function stepHistory(from: Entry[], to: Entry[]): boolean {
   to.push(back);
   lastPushId = null;
   if (!paramsEqual(e.params, params)) applyParams(e.params, false); // 치수 변경도 실행 취소/다시 실행 대상
-  for (const { id, ...rest } of e.snaps) Object.assign(faces[id], { ...rest, state: { ...rest.state }, under: rest.under ? { ...rest.under, state: { ...rest.under.state } } : null });
+  for (const { id, ...rest } of e.snaps) Object.assign(faces[id], { ...rest, state: { ...rest.state }, unders: rest.unders.map((u) => ({ ...u, state: { ...u.state } })) });
   if (e.colors) applyColors(e.colors.face, e.colors.lid, e.colors.base, e.colors.detail);
   if (e.base !== baseEnabled) setBaseEnabled(e.base, false);
   for (const { id } of e.snaps) apply(id);
@@ -457,7 +457,7 @@ function renderFaceList() {
     b.setAttribute('aria-pressed', String(fd.id === current));
     b.dataset.face = fd.id;
     const al = alertOf(fd.id);
-    b.innerHTML = `<span>${fd.short}</span><small>${f.img ? (f.under ? '이미지 있음 · 바탕' : '이미지 있음') : '비어 있음'}</small>${al ? `<span class="badge" title="치수 변경으로 이 면의 비율이 ${formatPct(al.pct)} 달라졌습니다">⚠ 비율 변경</span>` : ''}`;
+    b.innerHTML = `<span>${fd.short}</span><small>${f.img ? (f.unders.length ? '이미지 있음 · 바탕' : '이미지 있음') : '비어 있음'}</small>${al ? `<span class="badge" title="치수 변경으로 이 면의 비율이 ${formatPct(al.pct)} 달라졌습니다">⚠ 비율 변경</span>` : ''}`;
     b.onclick = () => setCurrent(fd.id);
     box.appendChild(b);
   }
@@ -509,7 +509,7 @@ async function onUseBaseToggle() {
     pushHistoryMany(withImage);
     for (const id of withImage) {
       const f = faces[id];
-      f.blob = null; f.name = null; f.img = null; f.iw = f.ih = 0; f.state = defaultState(); f.under = null; f.underOnTop = false;
+      f.blob = null; f.name = null; f.img = null; f.iw = f.ih = 0; f.state = defaultState(); f.unders = []; f.underOnTop = false;
       apply(id);
     }
   }
@@ -575,7 +575,7 @@ function bindPair(k: string, min: number, max: number, set: (f: FaceData, v: num
 async function saveProject() {
   await busy(async () => {
     const blob = await packProject({
-      faces: FACES.map((x) => ({ id: x.id, state: faces[x.id].state, blob: faces[x.id].blob, name: faces[x.id].name, under: underSave(x.id) })),
+      faces: FACES.map((x) => ({ id: x.id, state: faces[x.id].state, blob: faces[x.id].blob, name: faces[x.id].name, unders: underSaves(x.id), underOnTop: faces[x.id].underOnTop })),
       lidLiftMm: Math.round(viewer.slot === 'editor' ? viewer.getLiftMm() : 0),
       templateId: activeTemplateId,
       background: $<HTMLSelectElement>('bgSel').value === 'transparent' ? 'transparent' : 'white', // PNG 배경 옵션("화면 그대로"는 흰색으로 기억)
@@ -613,10 +613,12 @@ async function applyOpened(proj: OpenedProject) {
     } else {
       f.blob = null; f.name = null; f.img = null; f.iw = f.ih = 0;
     }
-    f.under = null; f.underOnTop = false;
-    if (p?.under && p.blob) {
-      try { const ud = await decodeUnder(p.under.blob); f.under = { state: { ...p.under.state }, blob: p.under.blob, name: p.under.name, ...ud }; f.underOnTop = p.under.onTop; } catch { /* 바탕 이미지를 못 읽으면 바탕 없이 연다 */ }
+    f.unders = []; f.underOnTop = false;
+    const saved = p?.unders ?? (p?.under ? [p.under] : []); // 예전 임시저장(바탕 한 장)도 레이어 1장으로 연다
+    if (p?.blob) for (const us of saved.slice(0, MAX_UNDERS)) {
+      try { const ud = await decodeUnder(us.blob); f.unders.push({ id: newUnderId(), state: { ...us.state }, blob: us.blob, name: us.name, ...ud }); } catch { /* 바탕 이미지를 못 읽으면 그 레이어만 빼고 연다 */ }
     }
+    f.underOnTop = p?.underOnTop ?? p?.under?.onTop ?? false;
     apply(fdsc.id);
   }
   if (proj.colors) { const d: DetailColors = {}; for (const [k] of ADV_IDS) { const v = proj.colors[k]; if (v) d[k] = v; } applyColors(proj.colors.face, proj.colors.lid, proj.colors.base, d); }
@@ -663,11 +665,12 @@ async function applyImportedFaces(src: OpenedProject, o: ImportOptions) {
   if (withImage.length && !(await confirmDialog({ kind: 'confirm-import-replace', title: '면 이미지 바꾸기', text: `${withImage.map((id) => FACES.find((f) => f.id === id)!.label).join(', ')} 이미지가 바뀝니다.\n실행 취소(Ctrl+Z)로 되돌릴 수 있습니다.`, ok: '가져오기', cancel: '취소' }))) throw new Error('가져오기를 취소했습니다.');
   // 필요한 것을 모두 읽은 뒤에 현재 작업을 바꾼다(중간에 실패해도 현재 작업은 그대로)
   const dec = new Map<FaceId, Awaited<ReturnType<typeof decode>>>();
-  const und = new Map<FaceId, Awaited<ReturnType<typeof decodeUnder>>>();
+  const und = new Map<FaceId, Awaited<ReturnType<typeof decodeUnder>>[]>();
   for (const id of ids) {
     const p = src.faces[id];
     dec.set(id, await decode(p.blob!));
-    if (o.underlay && p.under) und.set(id, await decodeUnder(p.under.blob));
+    const pu = p.unders ?? (p.under ? [p.under] : []);
+    if (o.underlay && pu.length) und.set(id, await Promise.all(pu.slice(0, MAX_UNDERS).map((x) => decodeUnder(x.blob))));
   }
   opening = true; // 치수·면 갱신 중 비율 알림·변경 표시 중복 방지(끝에서 직접 처리)
   try {
@@ -679,9 +682,10 @@ async function applyImportedFaces(src: OpenedProject, o: ImportOptions) {
       const p = src.faces[id], d = dec.get(id)!, f = faces[id];
       f.blob = p.blob; f.name = p.name; f.img = d.img; f.iw = d.iw; f.ih = d.ih;
       f.state = o.transform ? { ...p.state } : defaultState();
-      f.under = null; f.underOnTop = false;
-      const ud = und.get(id);
-      if (ud && p.under) { f.under = { state: { ...p.under.state }, blob: p.under.blob, name: p.under.name, ...ud }; f.underOnTop = p.under.onTop; }
+      f.unders = []; f.underOnTop = false;
+      const uds = und.get(id), pu = p.unders ?? (p.under ? [p.under] : []);
+      if (uds) uds.forEach((ud, n) => f.unders.push({ id: newUnderId(), state: { ...pu[n].state }, blob: pu[n].blob, name: pu[n].name, ...ud }));
+      if (uds) f.underOnTop = p.underOnTop ?? p.under?.onTop ?? false;
     }
     if (o.bgColor && src.colors) { const { face, lid, base, ...detail } = src.colors; applyColors(face, lid, base, detail); }
     if (o.dieline) {
@@ -715,7 +719,7 @@ function collectDraft(): Draft {
     savedAt: Date.now(), templateId: activeTemplateId, lidLiftMm: Math.round(viewer.getLiftMm()), colors: { face, lid, base, ...detailFor() }, useBase: baseEnabled, params: cloneParams(params), dielines,
     background: $<HTMLSelectElement>('bgSel').value === 'transparent' ? 'transparent' : 'white',
     viewSettings: { background: { settings: JSON.parse(JSON.stringify(bg)) as BgSettings, blob: bgImg?.blob ?? null, name: bgImg?.name ?? null } },
-    faces: Object.fromEntries(FACES.map((x) => [x.id, { state: { ...faces[x.id].state }, blob: faces[x.id].blob, name: faces[x.id].name, under: underSave(x.id) }])) as Draft['faces'],
+    faces: Object.fromEntries(FACES.map((x) => [x.id, { state: { ...faces[x.id].state }, blob: faces[x.id].blob, name: faces[x.id].name, unders: underSaves(x.id), underOnTop: faces[x.id].underOnTop }])) as Draft['faces'],
     viewPresets: presets.filter((p): p is ViewPresetSlot => p !== null),
   };
 }
@@ -1577,7 +1581,7 @@ async function init() {
     const f = faces[current];
     if (!f.img) return;
     pushHistory(current, true);
-    f.blob = null; f.name = null; f.img = null; f.iw = f.ih = 0; f.state = defaultState(); f.under = null; f.underOnTop = false;
+    f.blob = null; f.name = null; f.img = null; f.iw = f.ih = 0; f.state = defaultState(); f.unders = []; f.underOnTop = false;
     apply(current);
   };
   $('btnReset').onclick = () => {
