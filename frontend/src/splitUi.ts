@@ -24,6 +24,8 @@ export interface SplitCtx {
   apply(r: SplitResult): Promise<void>;
   /** 칼선 종류별로 저장된 분할 설정(없으면 null) */
   saved(kind: DieKind): DielineSave | null;
+  /** 대화상자의 칼선 종류가 바뀌었다(열 때·대화상자 안에서 바꿀 때). 카드의 종류 선택과 같은 값을 쓰기 위한 알림 */
+  kindChanged?(kind: DieKind): void;
 }
 
 const COLORS = ['#e8590c', '#1c7ed6', '#2f9e44', '#ae3ec9', '#f08c00'];
@@ -609,13 +611,14 @@ export function initSplitUi(ctx: SplitCtx) {
       else { await reorient(); autoRegions(); active = layout.faces[0].id; regHist.length = 0; syncUndo(); draw(); } // 저장본이 없으면 지금 열린 이미지로 자동 배치
     }
     updateKindNote();
+    ctx.kindChanged?.(kind);
   }
   const sessBlob: Partial<Record<DieKind, Blob>> = {};
 
-  async function load(blob: Blob, name: string | null, saved?: DielineSave | null) {
+  async function load(blob: Blob, name: string | null, saved?: DielineSave | null, startKind?: DieKind) {
     await setRaw(blob, name);
     raw = raw!;
-    kind = saved?.kind ?? 'lid';
+    kind = saved?.kind ?? startKind ?? 'lid'; // 새로 올린 이미지는 호출한 쪽이 고른 종류로 시작한다(없으면 뚜껑)
     bleed = saved?.bleedMm ?? ctx.params().bleed;
     [artW, artH] = saved?.artboardMm ?? preset.artboardMm;
     orient = null; orientRef = null; manualRot = false; needConfirm = false; imgRot = 0;
@@ -779,10 +782,11 @@ export function initSplitUi(ctx: SplitCtx) {
   // 닫으면 큰 이미지(디코드된 비트맵·미리보기)를 놓아 메모리를 돌려준다. 다시 열 때 원본(.sabari 안의 바이트)에서 다시 디코드한다.
   dlg.addEventListener('close', () => { if (bmp !== raw) bmp?.close(); raw?.close(); raw = null; bmp = null; orient = null; for (const k of ['lid', 'base'] as DieKind[]) { delete sess[k]; delete sessBlob[k]; } uploaded = false; if (url) { URL.revokeObjectURL(url); url = ''; } img.removeAttribute('src'); pointers.clear(); panMode = false; spaceHeld = false; handTool = false; $('btnHandTool').setAttribute('aria-pressed', 'false'); syncCursor(); regHist.length = 0; syncUndo(); drag = null; });
   return {
-    open: async (blob: Blob, name: string | null, saved?: DielineSave | null) => {
+    open: async (blob: Blob, name: string | null, saved?: DielineSave | null, startKind?: DieKind) => {
       for (const k of ['lid', 'base'] as DieKind[]) { delete sess[k]; delete sessBlob[k]; }
       uploaded = !saved;
-      await load(blob, name, saved);
+      await load(blob, name, saved, startKind);
+      ctx.kindChanged?.(kind);
     },
   };
 }

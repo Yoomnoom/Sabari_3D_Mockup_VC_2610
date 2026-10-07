@@ -467,10 +467,18 @@ function setCurrent(id: FaceId) {
   if (groupOf(id) === 'base' && !baseEnabled) return; // 스위치가 꺼져 있으면 하단 면은 선택할 수 없다
   current = id;
   lastByGroup[groupOf(id)] = id;
+  syncKindCard(groupOf(id)); // 칼선 카드의 기본 종류는 선택한 면을 따른다(하단 면 → 하단 몸통, 그 외 → 뚜껑)
   viewer.setSelected(id);
   renderFaceList();
   syncControls();
   updateOpenNotice();
+}
+
+/** 칼선 카드의 종류 선택(뚜껑 / 하단 몸통). 칼선 분할 대화상자의 종류 선택·종류별 저장과 같은 값(DieKind)을 쓴다. */
+const cardKind = (): DieKind => ($<HTMLInputElement>('dieKindBase').checked ? 'base' : 'lid');
+function syncKindCard(k: DieKind) {
+  $<HTMLInputElement>('dieKindLid').checked = k === 'lid';
+  $<HTMLInputElement>('dieKindBase').checked = k === 'base';
 }
 
 /** 하단 면을 고른 채 뚜껑이 닫혀 있으면 안내한다(자동으로 열지는 않는다). */
@@ -1890,17 +1898,22 @@ async function init() {
     faceLabel: (id) => FACES.find((f) => f.id === id)?.label ?? id,
     apply: applySplit,
     saved: (k) => dielines[k] ?? null,
+    kindChanged: syncKindCard,
   });
   const dieFile = $<HTMLInputElement>('fileDieline');
   $('btnSplitPick').onclick = () => dieFile.click();
   dieFile.onchange = () => {
     const f = dieFile.files?.[0]; dieFile.value = '';
     if (!f) return;
-    busy(async () => { await inspectImage(f); await split!.open(f, f.name); });
+    busy(async () => { await inspectImage(f); await split!.open(f, f.name, null, cardKind()); }); // 카드에서 고른 종류로 연다
   };
-  $('btnSplitEdit').onclick = () => { // 가장 최근에 쓴 종류의 저장본을 연다(없으면 다른 종류). 대화상자에서 종류를 바꾸면 그 종류의 저장본을 불러온다.
-    const d = dielines[lastDieKind] ?? dielines.lid ?? dielines.base;
+  for (const id of ['dieKindLid', 'dieKindBase']) $<HTMLInputElement>(id).onchange = () => {
+    if (cardKind() === 'base' && !baseEnabled) setBaseEnabled(true); // 하단 몸통을 고르면 하단 면이 있어야 하므로 "하단 몸통 디자인 사용"이 자동으로 켜진다
+  };
+  $('btnSplitEdit').onclick = () => { // 카드에서 고른 종류의 저장본을 연다. 그 종류에 저장본이 없으면 다른 종류의 이미지를 이 종류로 연다. 대화상자에서 종류를 바꾸면 그 종류의 저장본을 불러온다.
+    const k = cardKind(), d = dielines[k];
     if (d) busy(() => split!.open(d.blob, d.name, d));
+    else { const o = dielines[k === 'lid' ? 'base' : 'lid']; if (o) busy(() => split!.open(o.blob, o.name, null, k)); }
   };
   $('btnDieLid').onclick = () => downloadDielineSvg('lid');
   $('btnDieBase').onclick = () => downloadDielineSvg('base');
@@ -1918,6 +1931,7 @@ async function init() {
   defaultColors = { face: '#ffffff', lid: viewer.getPartColor('lid'), base: viewer.getPartColor('base') };
   applyColors(defaultColors.face, defaultColors.lid, defaultColors.base, {});
   for (const f of FACES) viewer.setFaceTexture(f.id, null);
+  setBaseEnabled(true, false); // 새 프로젝트의 기본값은 "하단 몸통 디자인 사용" 켬(열어 온 .sabari·임시저장은 저장된 값을 그대로 쓴다)
   setCurrent('lid_top');
   showView('iso', true);
   await initDraft();
