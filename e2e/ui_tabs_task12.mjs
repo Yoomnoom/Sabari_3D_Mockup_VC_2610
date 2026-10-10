@@ -88,7 +88,7 @@ R.face_panel_after_dims = await p.evaluate(() => ({ name: document.getElementByI
 assert(R.face_panel_after_dims.size !== R.face_panel_default.size, '면 크기는 치수에서 계산된 값');
 assert(R.face_panel_after_dims.ratioVisible && /비율/.test(R.face_panel_after_dims.ratioText) && R.face_panel_after_dims.badges > 0, '비율 변경 표시와 배지 ' + JSON.stringify(R.face_panel_after_dims));
 // 선택한 면 패널은 기본으로 접혀 있으므로 사용자는 먼저 펼친다
-await p.evaluate(() => { if (document.body.classList.contains('face-panel-collapsed')) document.getElementById('facePanelToggle').click(); document.querySelectorAll('#facePanelBody details').forEach((d) => { d.open = true; }); }); await p.click('#btnRatioAck'); await p.waitForTimeout(150);
+await p.evaluate(() => { if (document.body.classList.contains('face-panel-collapsed')) document.getElementById('facePanelToggle').click(); document.querySelectorAll('#facePanelBody details, #faceSection details').forEach((d) => { d.open = true; }); }); await p.click('#btnRatioAck'); await p.waitForTimeout(150);
 R.ratio_ack_hides = await p.evaluate(() => document.getElementById('ratioNote').hidden); assert(R.ratio_ack_hides);
 await p.click('#tabBox'); await p.click('#btnDimsBaseline'); await p.waitForTimeout(800);
 

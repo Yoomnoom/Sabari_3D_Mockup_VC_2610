@@ -107,7 +107,7 @@ await p.setInputFiles('#fileProj', proj); await p.waitForSelector('#msgDlg[open]
 await p.waitForFunction(() => Object.values(window.__sabari.faces).every((f) => f.img), null, { timeout: 8000 }); await p.waitForTimeout(300);
 R.unsaved.afterOpenDirty = await p.isVisible('#dirtyMark'); assert(!R.unsaved.afterOpenDirty, '열면 변경됨 표시가 사라진다');
 // 저장하면 사라진다
-await p.click('#tabDesign'); await p.click('#faceList button[data-face=lid_top]'); await p.evaluate(() => { if (document.body.classList.contains('face-panel-collapsed')) document.getElementById('facePanelToggle').click(); document.querySelectorAll('#facePanelBody details').forEach((d) => { d.open = true; }); }); await p.fill('#xN', '10'); await p.locator('#xN').dispatchEvent('change'); await p.waitForTimeout(300);
+await p.click('#tabDesign'); await p.click('#faceList button[data-face=lid_top]'); await p.evaluate(() => { if (document.body.classList.contains('face-panel-collapsed')) document.getElementById('facePanelToggle').click(); document.querySelectorAll('#facePanelBody details, #faceSection details').forEach((d) => { d.open = true; }); }); await p.fill('#xN', '10'); await p.locator('#xN').dispatchEvent('change'); await p.waitForTimeout(300);
 assert(await p.isVisible('#dirtyMark'));
 await setAsk(false); await p.click('#tabExport'); const dSave = await tryDownload(() => p.click('#btnProjSave'), 4000); assert(dSave); await p.waitForTimeout(300);
 R.dirty.afterSave = await p.isVisible('#dirtyMark'); assert(!R.dirty.afterSave, '저장하면 사라진다'); await setAsk(true);
@@ -161,12 +161,12 @@ await p.click('#btnMore'); await p.click('#btnHelpOpen'); assert(await p.evaluat
 // ---- 9. ⋮ 더보기: 설명 문구·버전 줄·복사·외부 요청 없음 ----------------------------------------------------------------------------------
 await p.click('#btnMore'); await p.evaluate(() => { document.getElementById('dHelp').open = true; });
 R.more = await p.evaluate(() => ({ ver: document.getElementById('verLine').textContent, optKeys: !!document.getElementById('optKeys'), keysHint: document.querySelector('#optKeys').closest('label').textContent.includes('한글 입력기'), askHint: document.getElementById('optAskName').closest('label').textContent.includes('이 브라우저에만'), reset: !!document.getElementById('btnUiReset') }));
-assert(/^사바리 목업 스튜디오 v0\.10\.1 · [0-9a-z]{7} · 빌드 \d{4}-\d{2}-\d{2}$/.test(R.more.ver) && R.more.keysHint && R.more.askHint, JSON.stringify(R.more));
+assert(/^사바리 목업 스튜디오 v0\.11\.0 · [0-9a-z]{7} · 빌드 \d{4}-\d{2}-\d{2}$/.test(R.more.ver) && R.more.keysHint && R.more.askHint, JSON.stringify(R.more));
 await p.screenshot({ path: path.join(OUT, 'ui17_more_menu.png') });
 await p.click('#btnCopyVer'); await p.waitForTimeout(300);
 R.more.clipboard = await p.evaluate(() => navigator.clipboard.readText()).catch(() => null); if (R.more.clipboard !== null) assert.equal(R.more.clipboard, R.more.ver);
 await p.keyboard.press('Escape');
-R.pkg_version = JSON.parse(fs.readFileSync(path.join(ROOT, 'frontend', 'package.json'), 'utf-8')).version; assert.equal(R.pkg_version, '0.10.1');
+R.pkg_version = JSON.parse(fs.readFileSync(path.join(ROOT, 'frontend', 'package.json'), 'utf-8')).version; assert.equal(R.pkg_version, '0.11.0');
 
 // ---- 10. 칼선 분할 대화상자(시안 13~15 항목이 이미 있음: 로직 불변) -----------------------------------------------------------------------------
 await p.click('#tabDesign');
