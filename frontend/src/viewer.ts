@@ -730,13 +730,12 @@ export class Viewer {
    */
   setView(name: ViewName, fit = false) {
     const currentDistance = this.camera.position.distanceTo(this.controls.target);
-    const zoomRatio = currentDistance > 0 ? this.getZoomRatio() : 1;
     this.resetFov();
     this.resetBoxPose(); // 시점 버튼은 박스를 기본 자세로 되돌린 뒤 보는 방향을 정한다(단계 17의 시점과 같다)
     const box = this.bounds();
     const center = box.getCenter(new THREE.Vector3());
-    const nextFitDistance = this.fitDistance(box);
-    const dist = fit ? nextFitDistance : nextFitDistance / zoomRatio;
+    // 확대 유지: 카메라 거리를 그대로 둔다(박스를 기본 자세로 되돌리며 맞춤 거리가 달라져도 시점 버튼을 누를 때마다 확대가 변하지 않게 한다)
+    const dist = fit ? this.fitDistance(box) : currentDistance;
     const d = new THREE.Vector3(...DIRS[name]).normalize();
     this.camera.position.copy(center).addScaledVector(d, dist);
     this.camera.up.set(0, 1, 0);
