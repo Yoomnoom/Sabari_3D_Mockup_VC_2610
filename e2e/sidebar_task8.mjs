@@ -34,7 +34,7 @@ assert(near(e1.yaw, pr1.yaw, 0.06) && near(e1.pitch, pr1.pitch, 0.06), '표시 �
 // 3) 시점 버튼·저장된 시점·세운 시점에서 갱신
 const seen = {};
 for (const v of ['top', 'iso', 'isoL', 'left']) { if (v === 'isoL') await p.keyboard.press('l'); else await p.click(`[data-view=${v}]`); await p.waitForTimeout(80); seen[v] = await readout(); const q = await eulerText(), pr = parse(seen[v]); assert(pr && near(q.yaw, pr.yaw, 0.06) && near(q.pitch, pr.pitch, 0.06), v); }
-await p.click('.vp-fixed[data-side=left]'); await p.waitForTimeout(100); seen.standing = await readout(); assert(seen.standing !== seen.left, '세운 시점 후 갱신: ' + seen.standing);
+await p.standing('left'); await p.waitForTimeout(100); seen.standing = await readout(); assert(seen.standing !== seen.left, '세운 시점 후 갱신: ' + seen.standing);
 rec('after_view_buttons', seen);
 
 // 4) 축 잠금: 축 이름·각도 표시, 각도 바 버튼/드래그로 실시간

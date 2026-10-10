@@ -9,7 +9,7 @@ const set = (o) => p.evaluate((o) => { const V = window.__sabari.viewer; V.setFl
 for (const [az, el] of combos) {
   await set({ on: true, strength: 0.4, soft: 0.5, az, el });
   for (const v of ['iso', 'left', 'right']) {
-    if (v === 'iso') await p.evaluate(() => window.__sabari.viewer.setView('iso')); // 3/4 기본 시점(오른쪽). 버튼은 누를 때마다 R↔L이 바뀌므로 쓰지 않는다 else await p.click(`.vp-fixed[data-side=${v}]`);
+    if (v === 'iso') await p.evaluate(() => window.__sabari.viewer.setView('iso')); // 3/4 기본 시점(오른쪽). 버튼은 누를 때마다 R↔L이 바뀌므로 쓰지 않는다 else await p.standing(v);
     await p.waitForTimeout(250);
     await p.locator('#viewport canvas').screenshot({ path: path.join(OUT, `${process.env.SHOT_PREFIX ?? 'shot'}_${az}_${el}_${v}.png`) });
   }

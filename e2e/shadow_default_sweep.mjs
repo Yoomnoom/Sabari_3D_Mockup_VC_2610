@@ -12,7 +12,7 @@ await p.evaluate(() => {
   window.__stat = (on, off) => { const A = snaps[on], B = snaps[off], k = snaps.__b; let n = 0, sx = 0, sy = 0; for (let i = 0; i < A.width * A.height; i++) { if (Math.abs(A.data[i * 4] - B.data[i * 4]) > 3) { n++; sx += i % A.width; sy += (i / A.width) | 0; } } return { px: n, dx: n ? sx / n - k.bx : null, dy: n ? sy / n - k.by : null }; };
 });
 const setSh = (o) => p.evaluate((o) => { const V = window.__sabari.viewer; V.setFloorShadow({ ...V.getFloorShadow(), ...o }); }, o);
-const goto = async (v) => { if (v === 'iso') await p.evaluate(() => window.__sabari.viewer.setView('iso')); else if (v === 'top') await p.click('[data-view=top]'); else await p.click(`.vp-fixed[data-side=${v}]`); await p.waitForTimeout(120); };
+const goto = async (v) => { if (v === 'iso') await p.evaluate(() => window.__sabari.viewer.setView('iso')); else if (v === 'top') await p.click('[data-view=top]'); else await p.standing(v); await p.waitForTimeout(120); };
 const views = (process.env.VIEWS ?? 'iso,left,right,top').split(','); // 렌더러 메모리 때문에 시점별로 나눠 실행한다
 const [a0, a1] = (process.env.AZR ?? '0-345').split('-').map(Number); const AZ = []; for (let a = a0; a <= a1; a += 15) AZ.push(a); // 방위각 범위도 나눠 실행(렌더러 메모리)
 const EL = [35, 50, 65];

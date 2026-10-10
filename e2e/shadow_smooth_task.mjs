@@ -38,7 +38,7 @@ const cases = [
 ];
 for (const cs of cases) {
   await p.click('#tabView').catch(() => {});
-  if (cs.pose === 'iso') await p.evaluate(() => window.__sabari.viewer.setView('iso')); else await p.evaluate((k) => document.querySelector(`.vp-fixed[data-side=${k}]`).click(), cs.pose);
+  if (cs.pose === 'iso') await p.evaluate(() => window.__sabari.viewer.setView('iso')); else await p.standing(cs.pose);
   await p.waitForTimeout(700);
   await p.evaluate(() => document.querySelector('[data-bgkind=white]').click()); await p.waitForTimeout(400);
   await setSh({ on: false }); await p.waitForTimeout(400); const off = await shot();

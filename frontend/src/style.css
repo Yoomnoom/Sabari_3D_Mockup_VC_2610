@@ -423,6 +423,7 @@ body.clean-screen #topBar, body.clean-screen #tabRail, body.clean-screen #panel,
 body.clean-screen #stage > :not(#bgCanvas):not(#viewport):not(#edgeMask) { display: none !important; }
 body.clean-screen #appBody { width: 100%; }
 body.clean-screen #stage { flex: 1 1 100%; width: 100%; height: 100%; }
+body.clean-screen #stage { margin: 0; border: 0; border-radius: 0; } /* 새 디자인의 둥근 카드·바깥 여백을 깨끗한 화면에서는 없앤다(화면 전체를 채운다) */
 body.hide-rotbadge #rotBadge { display: none !important; }
 body.hide-floatviews #floatViews { display: none !important; }
 
@@ -737,6 +738,8 @@ body.rotplace-view #dView .state, body.rotplace-off #dView .state { display: non
 .vp-card:not(.filled) .vp-load, .vp-card:has(.vp-thumb img[hidden]) .vp-load { display: none; }
 .vp-card:has(.vp-thumb:disabled) .vp-load { opacity: 0.5; pointer-events: none; }
 .vp-card:not(.filled) .vp-name { color: #8a929c; }
+.vp-actions { min-width: 0; } .vp-actions button { min-width: 0; white-space: nowrap; }
+.vp-card.filled .vp-actions { flex-direction: column; } /* 채워진 칸은 버튼이 2~3개라 좁은 카드에서 서로 겹친다. 세로로 쌓는다 */
 /* 조명·그림자: 켜짐/꺼짐 버튼을 스위치 모양으로(버튼·글자·aria-pressed는 그대로) */
 #shadeToggle, #shadowToggle { display: flex; align-items: center; justify-content: space-between; width: 100%; border: 0; background: none; color: var(--ink); font-weight: 700; padding: 0; min-height: 36px; }
 #shadeToggle[aria-pressed], #shadowToggle[aria-pressed] { background: none; color: var(--ink); }
@@ -770,7 +773,7 @@ label.check.sw input[type='checkbox']:focus-visible { outline: 2px solid var(--a
 #dFit .seg label { line-height: 1.2; }
 .layers > #dFit { margin: 8px 0; padding: 8px 0 2px; border: 0; border-top: 1px solid var(--line); border-radius: 0; background: transparent; }
 .layers > #dFit > summary { min-height: 28px; font-size: 12px; }
-#dFit.disabled { opacity: .45; pointer-events: none; }
+#dFit.disabled > :not(summary) { opacity: .45; pointer-events: none; } /* 이미지가 없어도 묶음을 접고 펴는 요약줄은 눌러야 한다 */
 #dRot .row button { flex: 1 1 0; min-width: 0; }
 #dRot .row { margin: 6px 0; }
 #faceSection > .row.wrap > #btnPick { flex: 1 1 100%; min-height: 44px; font-weight: 700; }

@@ -12,7 +12,7 @@ await p.evaluate(() => {
   window.__vis = (on, off) => { const A = snaps[on], B = snaps[off], m = V.debugIdMap(); let outside = 0, inside = 0; for (let i = 0; i < A.width * A.height; i++) { if (Math.abs(A.data[i * 4] - B.data[i * 4]) > 3) { if (m.data[i * 4]) inside++; else outside++; } } return { visibleOutsideBox: outside, onBoxEdge: inside }; };
 });
 const set = (o) => p.evaluate((o) => { const V = window.__sabari.viewer; V.setFloorShadow({ ...V.getFloorShadow(), ...o }); }, o);
-const go = async (v) => { if (v === 'iso') await p.evaluate(() => window.__sabari.viewer.setView('iso')); else if (v === 'top') await p.click('[data-view=top]'); else await p.click(`.vp-fixed[data-side=${v}]`); await p.waitForTimeout(200); };
+const go = async (v) => { if (v === 'iso') await p.evaluate(() => window.__sabari.viewer.setView('iso')); else if (v === 'top') await p.click('[data-view=top]'); else await p.standing(v); await p.waitForTimeout(200); };
 const shot = (n) => p.locator('#viewport canvas').screenshot({ path: path.join(OUT, n) });
 const table = {};
 const defaults = await p.evaluate(() => { document.getElementById('shadowToggle').click(); const V = window.__sabari.viewer; const s = V.getFloorShadow(); document.getElementById('shadowToggle').click(); return s; });

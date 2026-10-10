@@ -56,7 +56,7 @@ await p.click('[data-view=iso]'); await p.waitForTimeout(80);
 const glbBefore = await glbNodes('glb_before.glb');
 const table = {};
 for (const side of ['left', 'right']) {
-  await p.click(`.vp-fixed[data-side=${side}]`); await p.waitForTimeout(150);
+  await p.standing(side); await p.waitForTimeout(150);
   const s = await st(), m = await metrics(side); await canvasShot(`render_${side}.png`);
   const toCam = s.cam.map((x, i) => x - s.c[i]), dist = Math.hypot(...toCam);
   table[side] = { state: s, metrics: m, azimuthDeg: Math.atan2(toCam[0], toCam[2]) * 180 / Math.PI, elevationDeg: Math.asin(toCam[1] / dist) * 180 / Math.PI, distOverFit: dist / s.fit };
@@ -83,7 +83,7 @@ rec('saved_slot_roundtrip', { fov: loaded.fov });
 
 // F·3/4·눕힘(윗면) 전환에서 기본 FOV 복원
 for (const how of ['keyF', 'iso', 'top']) {
-  await p.click('.vp-fixed[data-side=left]'); await p.waitForTimeout(80);
+  await p.standing('left'); await p.waitForTimeout(80);
   if (how === 'keyF') await p.keyboard.press('f'); else await p.click(`[data-view=${how}]`);
   await p.waitForTimeout(80); const f = (await st()).fov; rec(`fov_after_${how}`, f); assert(f === 30);
 }
@@ -94,7 +94,7 @@ assert(near(k.fov, 22, 1e-9) && near(Math.atan2(k.cam[0] - k.c[0], k.cam[2] - k.
 
 // 축 잠금 유지
 await p.click('[data-view=iso]'); await p.click('#lockToggle'); await p.locator('#axisRow button').first().click(); await p.waitForTimeout(80);
-const lockBefore = await st(); await p.click('.vp-fixed[data-side=right]'); await p.waitForTimeout(100);
+const lockBefore = await st(); await p.standing('right'); await p.waitForTimeout(100);
 const lockAfter = await st();
 rec('axis_lock_kept', { before: lockBefore.lock, after: lockAfter.lock, angleAfter: lockAfter.angle });
 assert(lockAfter.lock.on && lockAfter.lock.n && lockAfter.lock.view === lockBefore.lock.view && near(lockAfter.angle, 0, 1e-6));
@@ -107,7 +107,7 @@ assert(q1.some((x, i) => !near(x, q0[i], 1e-4)));
 await p.click('#lockToggle');
 
 // GLB 노드 변환 불변 + validator 0/0, PNG 저장
-await p.click('.vp-fixed[data-side=left]'); await p.waitForTimeout(100);
+await p.standing('left'); await p.waitForTimeout(100);
 const glbDuring = await glbNodes('glb_during.glb');
 rec('glb_nodes_unchanged', glbBefore.nodes === glbDuring.nodes); rec('glb_validator', glbDuring.val);
 assert(glbBefore.nodes === glbDuring.nodes && glbDuring.val.validator.errors === 0 && glbDuring.val.validator.warnings === 0);

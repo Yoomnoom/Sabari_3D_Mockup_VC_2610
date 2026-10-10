@@ -16,8 +16,11 @@ async function ensure(page, selector) {
       if (!el) return;
       const pop = el.closest('.popover');
       if (pop && pop.hidden) document.getElementById(pop.id === 'openMenu' ? 'btnTopOpen' : 'btnMore')?.click();
+      // 새 UI는 회전·고급·칼선 같은 묶음이 기본으로 접혀 있다. 사용자라면 먼저 펼쳤을 것이므로 대상이 접힌 묶음 안이면 펼친다(요약줄 자체를 누르는 경우는 그 묶음을 건드리지 않는다).
+      for (let d = (el.tagName === 'SUMMARY' ? el.parentElement?.parentElement : el.parentElement)?.closest('details'); d; d = d.parentElement?.closest('details')) if (!d.open) d.open = true;
       const tp = el.closest('.tabpanel');
       if (tp && tp.hidden) document.getElementById(TAB_BTN[tp.id])?.click();
+      if (el.closest('#facePanelBody') && document.body.classList.contains('face-panel-collapsed')) document.getElementById('facePanelToggle')?.click(); // 선택한 면 패널은 이제 기본으로 접혀 있다
       if (document.body.classList.contains('panel-collapsed') && tp) document.getElementById('panelExpand')?.click();
     }, { sel: first, TAB_BTN });
   } catch { /* 페이지가 없거나 이동 중이면 건너뜀 */ }
@@ -61,6 +64,14 @@ function patchMouse(page) {
 function addBgPoint(page) {
   const pp = Object.getPrototypeOf(page);
   if (pp.bgPoint) return;
+  // 세운 3/4 버튼은 L↔R 을 번갈아 간다. 원하는 쪽(left/right)이 될 때까지 누른다(최대 2번). 카메라가 타깃의 왼쪽이면 left.
+  pp.standing = async function (side) {
+    for (let i = 0; i < 2; i++) {
+      await this.click('#btnStanding'); await this.waitForTimeout(60);
+      const s = await this.evaluate(() => { const v = window.__sabari.viewer; return Math.sign(v.camera.position.x - v.controls.target.x); });
+      if ((side === 'left') === (s < 0)) return;
+    }
+  };
   pp.bgPoint = async function () { const r = await this.evaluate(() => { const b = document.querySelector('#viewport canvas').getBoundingClientRect(); return [b.right - 24, b.bottom - 24]; }); return r; };
 }
 // 레거시 e2e 호환(작업 17): 저장 이름 대화상자는 건너뛰고(저장 파일 내용은 같다), 안내·오류·"저장하지 않은 변경"·"임시저장 불러오기" 확인은 자동으로 확인한다.

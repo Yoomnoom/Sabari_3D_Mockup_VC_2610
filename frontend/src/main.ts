@@ -26,7 +26,7 @@ let viewer: Viewer;
 let current: FaceId = 'lid_top';
 /** "하단 몸통 디자인 사용" 스위치. 기본은 꺼짐이며, 꺼져 있으면 화면·동작이 뚜껑 5면만 있을 때와 같다. */
 let baseEnabled = false;
-const lastByGroup: Record<FaceGroup, FaceId> = { lid: 'lid_top', base: 'base_bottom' };
+const lastByGroup: Record<FaceGroup, FaceId> = { lid: 'lid_top', base: 'base_front' };
 let externalGlbActive = false;
 let workSnapshot: ReturnType<Viewer['capturePose']> | null = null;
 /** 박스 치수 파라미터. 3D·면 크기·텍스처 크기는 모두 여기서 만들어진다. */

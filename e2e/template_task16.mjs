@@ -24,10 +24,10 @@ const reset = async () => { await p.reload(); await p.waitForFunction(() => wind
 await p.click('#tabBox');
 R.card = await p.evaluate(() => {
   const first = document.querySelector('#tp-box .tp-body').firstElementChild;
-  return { firstIsTemplateCard: first.id === 'cardTemplate', title: first.querySelector('h2').textContent, items: [...document.querySelectorAll('#tplList button')].map((b) => ({ label: b.querySelector('b').textContent, sub: b.querySelector('small').textContent, disabled: b.disabled, checked: b.getAttribute('aria-checked'), role: b.getAttribute('role'), id: b.dataset.template })), group: document.getElementById('tplList').getAttribute('role'), hint: document.querySelector('#cardTemplate .hint').textContent };
+  return { firstIsTemplateCard: first.id === 'cardTemplate', title: first.querySelector('h2').firstChild.textContent.trim(), items: [...document.querySelectorAll('#tplList button')].map((b) => ({ label: b.querySelector('b').textContent, sub: b.querySelector('small').textContent, disabled: b.disabled, checked: b.getAttribute('aria-checked'), role: b.getAttribute('role'), id: b.dataset.template })), group: document.getElementById('tplList').getAttribute('role'), hint: document.querySelector('#cardTemplate .hint').textContent };
 });
 assert(R.card.firstIsTemplateCard && R.card.title === '템플릿' && R.card.group === 'radiogroup');
-assert.deepEqual(R.card.items.map((i) => [i.label, i.sub, i.disabled, i.checked]), [['사바리 박스 160×110×43', '사용 중', false, 'true'], ['책자', '준비 중', true, 'false'], ['카드', '준비 중', true, 'false'], ['접지물', '준비 중', true, 'false']]);
+assert.deepEqual(R.card.items.map((i) => [i.label, i.sub, i.disabled, i.checked]), [['사바리 박스 160×110×43', '사용중', false, 'true'], ['책자', '준비 중', true, 'false'], ['카드', '준비 중', true, 'false'], ['접지물', '준비 중', true, 'false']]);
 await p.click('#tplList button[data-template=booklet]', { force: true, timeout: 2000 }).catch(() => {});
 R.after_click_disabled = await p.evaluate(() => document.querySelector('#tplList button[aria-checked=true]').dataset.template); assert.equal(R.after_click_disabled, 'sabari-160-110-43-v2', '준비 중 항목은 눌러도 바뀌지 않는다');
 await p.screenshot({ path: path.join(OUT, 'template_card.png') });

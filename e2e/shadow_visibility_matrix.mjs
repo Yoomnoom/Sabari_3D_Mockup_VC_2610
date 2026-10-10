@@ -24,10 +24,10 @@ for (let ci = c0; ci <= Math.min(c1, conds.length - 1); ci++) {
   if (!FAST) await colorFaces();
   await p.evaluate(() => { document.getElementById('dLight').open = true; });
   if ((await p.getAttribute('#shadowToggle', 'aria-pressed')) !== 'true') await p.click('#shadowToggle'); // 토글 켬(새로고침 후 저장된 켬 상태가 복원되므로 상태를 보고 누른다)
-  if (hist === 'view') { await p.click('[data-view=top]'); await p.click('.vp-fixed[data-side=left]'); await p.keyboard.press('f'); }
+  if (hist === 'view') { await p.click('[data-view=top]'); await p.standing('left'); await p.keyboard.press('f'); }
   if (hist === 'lift') await p.click('#btnOpen');
   if (hist === 'resize') { await p.setViewportSize({ width: 1100, height: 560 }); await p.waitForTimeout(250); await p.setViewportSize({ width: 1000, height: 520 }); await p.waitForTimeout(250); }
-  if (pose === 'standingL' || pose === 'standingR') await p.click(`.vp-fixed[data-side=${pose === 'standingL' ? 'left' : 'right'}]`); // 세운 3/4 버튼(FOV 22)
+  if (pose === 'standingL' || pose === 'standingR') await p.standing(pose === 'standingL' ? 'left' : 'right'); // 세운 3/4 버튼(FOV 22)
   const onAfterHistory = await p.evaluate(() => window.__sabari.viewer.getFloorShadow().on);
   await p.evaluate(({ q, cam, pose }) => {
     const V = window.__sabari.viewer; V.setBoxQuatRaw(q);

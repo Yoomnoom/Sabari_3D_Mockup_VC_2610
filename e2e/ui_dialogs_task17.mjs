@@ -107,7 +107,7 @@ await p.setInputFiles('#fileProj', proj); await p.waitForSelector('#msgDlg[open]
 await p.waitForFunction(() => Object.values(window.__sabari.faces).every((f) => f.img), null, { timeout: 8000 }); await p.waitForTimeout(300);
 R.unsaved.afterOpenDirty = await p.isVisible('#dirtyMark'); assert(!R.unsaved.afterOpenDirty, '열면 변경됨 표시가 사라진다');
 // 저장하면 사라진다
-await p.click('#tabDesign'); await p.click('#faceList button[data-face=lid_top]'); await p.fill('#xN', '10'); await p.locator('#xN').dispatchEvent('change'); await p.waitForTimeout(300);
+await p.click('#tabDesign'); await p.click('#faceList button[data-face=lid_top]'); await p.evaluate(() => { if (document.body.classList.contains('face-panel-collapsed')) document.getElementById('facePanelToggle').click(); document.querySelectorAll('#facePanelBody details').forEach((d) => { d.open = true; }); }); await p.fill('#xN', '10'); await p.locator('#xN').dispatchEvent('change'); await p.waitForTimeout(300);
 assert(await p.isVisible('#dirtyMark'));
 await setAsk(false); await p.click('#tabExport'); const dSave = await tryDownload(() => p.click('#btnProjSave'), 4000); assert(dSave); await p.waitForTimeout(300);
 R.dirty.afterSave = await p.isVisible('#dirtyMark'); assert(!R.dirty.afterSave, '저장하면 사라진다'); await setAsk(true);

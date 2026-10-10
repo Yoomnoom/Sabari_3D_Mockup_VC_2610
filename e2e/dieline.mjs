@@ -129,7 +129,7 @@ rec('4_result_changed', { before: { bottom: before.bottom, left: before.left }, 
 // 회전 변경: 사용자가 lid_back 의 회전을 바꾸면 표식 위치가 달라진다
 const backBefore = (await faceColors())['lid_back'];
 await p.click('#btnSplitEdit'); await p.waitForSelector('#splitDlg[open]'); await p.waitForTimeout(300);
-await p.evaluate(() => { const rows = [...document.querySelectorAll('#splitList .split-row')]; const row = rows.find((r) => r.querySelector('b').textContent === '뒷날개'); const sel = row.querySelector('select'); sel.value = '270'; sel.dispatchEvent(new Event('change')); });
+await p.evaluate(() => { const rows = [...document.querySelectorAll('#splitList .split-row')]; const row = rows.find((r) => /뒤 날개$|^뒷날개$/.test(r.querySelector('b').textContent)); const sel = row.querySelector('select'); sel.value = '270'; sel.dispatchEvent(new Event('change')); });
 await p.click('#btnSplitApply'); await p.waitForFunction(() => !document.getElementById('splitDlg').open); await p.waitForTimeout(500);
 const backAfter = (await faceColors())['lid_back'];
 rec('4_rotation_change', { before: { w: backBefore.w, h: backBefore.h, tl: backBefore.topLeft }, after: { w: backAfter.w, h: backAfter.h, tl: backAfter.topLeft }, markerMoved: near(backBefore.topLeft, WHITE) && !near(backAfter.topLeft, WHITE) });

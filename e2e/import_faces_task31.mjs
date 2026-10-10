@@ -25,7 +25,7 @@ const fa = await save(A, 'A.sabari');
 const B = await newPage(); await B.check('#useBase'); for (const [i, id] of BASE.entries()) await put(B, id, `hsl(${200 + i * 30} 60% 40%)`);
 const fb = await save(B, 'B.sabari'); const bBase = await hashes(B, BASE);
 // A 프로젝트에 B의 하단 5면만 가져오기
-const p = await newPage(); await p.setInputFiles('#fileProj', fa); await p.waitForFunction(() => window.__sabari.faces.lid_top.img);
+const p = await newPage(); await p.setInputFiles('#fileProj', fa); await p.waitForFunction(() => ['lid_top', 'lid_front', 'lid_back', 'lid_left', 'lid_right'].every((i) => window.__sabari.faces[i].img)); await p.waitForTimeout(400); // 5면이 다 열린 뒤에 기준값을 잰다
 const lidBefore = await hashes(p, LID);
 const shot = async (n) => fs.writeFileSync(path.join(OUT, n), Buffer.from((await p.evaluate(() => window.__sabari.faces.lid_top.canvas.toDataURL('image/png'))).split(',')[1], 'base64'));
 await shot('top_before.png');

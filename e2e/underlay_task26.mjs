@@ -36,7 +36,7 @@ const solid = await px(p, 'lid_top', 0.9, 0.9);
 ok('2_opaque_design_unchanged', Math.abs(solid[0] - 200) <= 1 && Math.abs(solid[1] - 30) <= 1, solid);
 const band = await px(p, 'lid_top', 0.05, 0.9);
 ok('2_semitransparent_blend', band[2] > 100 && band[0] < 140, band);
-ok('2_face_label', /이미지 있음 · 바탕/.test(await p.textContent('#faceList button[data-face=lid_top]')));
+ok('2_face_label', /이미지 있음\s*·\s*바탕/.test(await p.textContent('#faceList button[data-face=lid_top]')));
 // 보이기 끔 → 예전과 같음
 await p.click('.layer-eye'); await p.waitForTimeout(200);
 const hidden = await px(p, 'lid_top', 0.5, 0.5);
