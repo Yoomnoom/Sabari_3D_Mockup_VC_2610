@@ -17,10 +17,10 @@ export const STANDING_VIEW = {
 export type StandingSide = 'left' | 'right';
 
 /** 저장된 시점과 같은 형식으로 낸다(축 잠금·뚜껑 높이는 지금 상태를 유지하도록 호출하는 쪽에서 채운다). */
-export function standingPresetValue(side: StandingSide, base: Pick<ViewPresetValue, 'lock' | 'liftMm'>): ViewPresetValue {
+export function standingPresetValue(side: StandingSide, base: Pick<ViewPresetValue, 'lock' | 'liftMm'>, zoomRatio = 1): ViewPresetValue {
   const az = (side === 'left' ? -1 : 1) * (STANDING_VIEW.azimuthDeg * Math.PI) / 180;
   const el = (STANDING_VIEW.elevationDeg * Math.PI) / 180;
-  const s = STANDING_VIEW.distScale;
+  const s = STANDING_VIEW.distScale / Math.max(zoomRatio, 0.001);
   return {
     boxQuat: [...STANDING_QUAT],
     camOffset: [Math.sin(az) * Math.cos(el) * s, Math.sin(el) * s, Math.cos(az) * Math.cos(el) * s],

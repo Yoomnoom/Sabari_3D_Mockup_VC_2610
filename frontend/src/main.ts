@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { SNAP_DEG } from './screenRotate';
 import { FACES, FaceData, FaceId, FaceSnapshot, decode, decodeUnder, MAX_UNDERS, newUnderId, faces, groupOf, rebake, resizeFaceCanvases, theme } from './faces';
-import { FaceGroup, GROUPS, applyFaceSizes, facesOf } from './faceDefs';
+import { FaceGroup, GROUPS, applyFaceSizes, facesOf, facesOfDisplay } from './faceDefs';
 import { BoxParams, DEFAULT_PARAMS, RatioChange, cloneParams, faceSizes, formatPct, formatRatio, paramsEqual, ratioChanges, ratioOf, validateParams } from './params';
 import { initDimsUi } from './dimsUi';
 import { DieKind, buildDieline, dielineSvg } from './dieline';
@@ -26,7 +26,7 @@ let viewer: Viewer;
 let current: FaceId = 'lid_top';
 /** "하단 몸통 디자인 사용" 스위치. 기본은 꺼짐이며, 꺼져 있으면 화면·동작이 뚜껑 5면만 있을 때와 같다. */
 let baseEnabled = false;
-const lastByGroup: Record<FaceGroup, FaceId> = { lid: 'lid_top', base: 'base_front' };
+const lastByGroup: Record<FaceGroup, FaceId> = { lid: 'lid_top', base: 'base_bottom' };
 let externalGlbActive = false;
 let workSnapshot: ReturnType<Viewer['capturePose']> | null = null;
 /** 박스 치수 파라미터. 3D·면 크기·텍스처 크기는 모두 여기서 만들어진다. */
@@ -80,7 +80,8 @@ function applyPresetValue(v: ViewPresetValue) {
 /** 기본 제공 시점 "세운 3/4": 축 잠금 상태는 유지하고(각도 바 기준만 새 자세로 다시 잡는다) 박스 자세·카메라·FOV만 바꾼다. */
 function goStanding(side: StandingSide) {
   if (externalGlbActive) return;
-  applyPresetValue(standingPresetValue(side, { lock: viewer.captureLockState(), liftMm: viewer.getLiftMm() }));
+  lastStandingSide = side; // Alt+6 으로 갔을 때도 다음 토글이 반대편으로 가도록 기억한다
+  applyPresetValue(standingPresetValue(side, { lock: viewer.captureLockState(), liftMm: viewer.getLiftMm() }, viewer.getZoomRatio()));
   viewer.rebaseLockAngle();
 }
 
@@ -167,7 +168,7 @@ function initViewPresets() {
     card.querySelector<HTMLButtonElement>('.vp-del')!.onclick = () => deletePresetSlot(slot);
     card.querySelector<HTMLInputElement>('.vp-name')!.onchange = (e) => renamePresetSlot(slot, (e.target as HTMLInputElement).value);
   }
-  document.querySelectorAll<HTMLButtonElement>('.vp-fixed').forEach((b) => { b.onclick = () => goStanding(b.dataset.side as StandingSide); });
+  $('btnStanding').onclick = toggleStanding;
   renderPresets();
 }
 
@@ -254,7 +255,7 @@ function renderTemplateCard() {
     b.type = 'button'; b.dataset.template = tp.id; b.setAttribute('role', 'radio');
     b.setAttribute('aria-checked', String(tp.ready && tp.id === activeTemplateId));
     b.disabled = !tp.ready;
-    b.innerHTML = `<b></b><small>${tp.ready ? (tp.id === activeTemplateId ? '사용 중' : '선택') : '준비 중'}</small>`;
+    b.innerHTML = `<b></b><small>${tp.ready ? (tp.id === activeTemplateId ? '사용중' : '선택') : '준비 중'}</small>`;
     b.querySelector('b')!.textContent = tp.label;
     box.appendChild(b); // 준비 중 항목은 비활성이라 눌러도 아무 일도 없다. 사용 가능한 템플릿이 하나뿐이라 선택 변경 동작은 아직 없다.
   }
@@ -451,13 +452,17 @@ function renderFaceList() {
   }
   const box = $('faceList');
   box.innerHTML = '';
-  for (const fd of facesOf(group)) {
+  for (const fd of facesOfDisplay(group)) {
     const f = faces[fd.id];
     const b = document.createElement('button');
     b.setAttribute('aria-pressed', String(fd.id === current));
+    b.setAttribute('aria-label', `${fd.short}, ${f.img ? (f.unders.length ? '이미지 있음, 바탕 있음' : '이미지 있음') : '비어 있음'}`);
     b.dataset.face = fd.id;
     const al = alertOf(fd.id);
-    b.innerHTML = `<span>${fd.short}</span><small>${f.img ? (f.unders.length ? '이미지 있음 · 바탕' : '이미지 있음') : '비어 있음'}</small>${al ? `<span class="badge" title="치수 변경으로 이 면의 비율이 ${formatPct(al.pct)} 달라졌습니다">⚠ 비율 변경</span>` : ''}`;
+    const words = fd.short.split(' ');
+    const short = words.length > 1 ? words.map((word) => `<span>${word}</span>`).join('') : fd.short;
+    const state = f.img ? (f.unders.length ? '<span>이미지 있음</span><span>· 바탕</span>' : '<span>이미지</span><span>있음</span>') : '비어 있음';
+    b.innerHTML = `<span class="face-label">${short}</span><small>${state}</small>${al ? `<span class="badge" title="치수 변경으로 이 면의 비율이 ${formatPct(al.pct)} 달라졌습니다">⚠ 비율 변경</span>` : ''}`;
     b.onclick = () => setCurrent(fd.id);
     box.appendChild(b);
   }
@@ -531,6 +536,7 @@ function syncControls() {
   $('faceSize').textContent = `면 크기 ${fd.wMm}×${fd.hMm}mm (비율 ${(fd.wMm / fd.hMm).toFixed(2)}:1)`;
   $('fileInfo').textContent = f.img ? `${f.name} · 원본 ${f.iw}×${f.ih}px` : '이미지 없음';
   $('faceControls').classList.toggle('disabled', !f.img);
+  $('dFit').classList.toggle('disabled', !f.img);
   $('dropEmpty').hidden = !!f.img; // 시안 v6: 이미지가 없을 때만 점선 영역의 안내를 보인다
   $('facePreview').style.cursor = f.img ? 'grab' : 'default';
   const prev = $<HTMLCanvasElement>('facePreview');
@@ -903,9 +909,7 @@ function syncAdvUi() {
 
 function applyColors(face: string, lid: string, base: string, detail: DetailColors = detailColors) {
   detailColors = { ...detail };
-  $<HTMLInputElement>('colFace').value = face;
-  $<HTMLInputElement>('colLid').value = lid;
-  $<HTMLInputElement>('colBase').value = base;
+  for (const [id, value] of [['colFace', face], ['colFaceDesign', face], ['colLid', lid], ['colLidDesign', lid], ['colBase', base], ['colBaseDesign', base]] as const) $<HTMLInputElement>(id).value = value;
   viewer.setPartColor('lid', lid);
   viewer.setPartColor('base', base);
   viewer.setDetailColors(detailColors);
@@ -1299,7 +1303,7 @@ function setExternalUi(on: boolean) {
 function initWorkspace() {
   const mq = window.matchMedia('(max-width: 899px)');
   const tabBtn = (t: TabId) => $<HTMLButtonElement>('tab' + t[0].toUpperCase() + t.slice(1));
-  const KEY_TAB = 'sabari.activeTab', KEY_PANEL = 'sabari.panelCollapsed', KEY_FACE = 'sabari.facePanelCollapsed';
+  const KEY_TAB = 'sabari.activeTab', KEY_PANEL = 'sabari.panelCollapsed', KEY_FACE = 'sabari.facePanelCollapsed', KEY_PANEL_WIDTH = 'sabari.panelWidth';
   const remember = (k: string, v: string) => { try { localStorage.setItem(k, v); } catch { /* 저장소를 못 쓰면 기억만 안 한다 */ } };
   const recall = (k: string) => { try { return localStorage.getItem(k); } catch { return null; } };
 
@@ -1344,10 +1348,38 @@ function initWorkspace() {
   panelToggle.onclick = () => setPanelCollapsed(true);
   panelExpand.onclick = () => setPanelCollapsed(false);
 
+  // ----- 사이드 패널 너비 조절(데스크톱) -----
+  const panel = $('panel'), panelResize = $('panelResize');
+  const setPanelWidth = (width: number, save = true) => {
+    const max = Math.max(340, Math.min(520, window.innerWidth - 440));
+    const next = Math.round(Math.min(max, Math.max(340, width)));
+    panel.style.setProperty('--panel-w', `${next}px`);
+    panelResize.setAttribute('aria-valuenow', String(next));
+    if (save) remember(KEY_PANEL_WIDTH, String(next));
+  };
+  setPanelWidth(Number(recall(KEY_PANEL_WIDTH)) || 340, false);
+  let panelDrag: { x: number; width: number } | null = null;
+  panelResize.addEventListener('pointerdown', (e) => {
+    if (mq.matches) return;
+    panelDrag = { x: e.clientX, width: panel.getBoundingClientRect().width };
+    panelResize.classList.add('dragging');
+    panelResize.setPointerCapture(e.pointerId);
+  });
+  panelResize.addEventListener('pointermove', (e) => { if (panelDrag) setPanelWidth(panelDrag.width + e.clientX - panelDrag.x, false); });
+  const finishPanelResize = () => { if (!panelDrag) return; panelDrag = null; panelResize.classList.remove('dragging'); remember(KEY_PANEL_WIDTH, String(Math.round(panel.getBoundingClientRect().width))); };
+  panelResize.addEventListener('pointerup', finishPanelResize);
+  panelResize.addEventListener('pointercancel', finishPanelResize);
+  panelResize.addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    e.preventDefault();
+    setPanelWidth(panel.getBoundingClientRect().width + (e.key === 'ArrowRight' ? 16 : -16));
+  });
+  window.addEventListener('resize', () => { if (!mq.matches) setPanelWidth(panel.getBoundingClientRect().width, false); });
+
   // ----- 오른쪽 "선택한 면" 패널 접기/펴기 -----
   const fpToggle = $<HTMLButtonElement>('facePanelToggle');
   const setFaceCollapsed = (c: boolean, save = true) => { document.body.classList.toggle('face-panel-collapsed', c); fpToggle.setAttribute('aria-expanded', String(!c)); if (save) remember(KEY_FACE, c ? '1' : '0'); };
-  setFaceCollapsed(recall(KEY_FACE) === '1', false);
+  setFaceCollapsed(recall(KEY_FACE) !== '0', false);
   fpToggle.onclick = () => setFaceCollapsed(!document.body.classList.contains('face-panel-collapsed'));
 
   // ----- 상단 바 -----
@@ -1380,10 +1412,9 @@ function initWorkspace() {
   document.querySelectorAll<HTMLButtonElement>('[data-proxy]').forEach((b) => { b.onclick = () => { closeMenus(); document.getElementById(b.dataset.proxy!)!.click(); }; });
 
   // ----- 하단 플로팅 시점(기존 시점 코드 호출) -----
-  let standingSide: 'left' | 'right' = 'right';
   $('fvFront').onclick = () => document.querySelector<HTMLButtonElement>('[data-view=front]')!.click();
   $('fvIso').onclick = () => $('btnIso').click();
-  $('fvStanding').onclick = () => { standingSide = standingSide === 'left' ? 'right' : 'left'; document.querySelector<HTMLButtonElement>(`.vp-fixed[data-side=${standingSide}]`)!.click(); };
+  $('fvStanding').onclick = toggleStanding;
   $('fvFit').onclick = () => $('btnFit').click();
 
   // ----- 모바일 작업 시트: 손잡이를 눌러 접힘/반/크게 순환, 끌어서 높이 조절 -----
@@ -1468,14 +1499,13 @@ async function applySplit(r: SplitResult) {
 
 // ---------- 시점 (3/4는 R ↔ L 토글) ----------
 let lastView: ViewName | null = 'iso';
+let lastStandingSide: StandingSide = 'right'; // 처음 누르면 왼쪽(기존 플로팅 세운 3/4 버튼과 같은 순서)
 function showView(v: ViewName, fit = false) {
   viewer.setView(v, fit);
   lastView = v;
-  const b = $('btnIso');
-  b.textContent = v === 'iso' ? '3/4 시점 R' : v === 'isoL' ? '3/4 시점 L' : '3/4 시점';
-  b.setAttribute('aria-pressed', String(v === 'iso' || v === 'isoL'));
 }
 const toggleIso = () => showView(lastView === 'iso' ? 'isoL' : 'iso');
+const toggleStanding = () => { lastStandingSide = lastStandingSide === 'right' ? 'left' : 'right'; goStanding(lastStandingSide); };
 
 // ---------- 시작 ----------
 // 음영 세기(0~100%): 화면 설정이라 이 브라우저(localStorage)에만 기억하고 .sabari·임시저장·GLB에는 넣지 않는다.
@@ -1612,6 +1642,8 @@ async function init() {
   // 목업 색상 (input 이벤트로 즉시 반영)
   const cur = () => [$<HTMLInputElement>('colFace').value, $<HTMLInputElement>('colLid').value, $<HTMLInputElement>('colBase').value] as const;
   for (const id of ['colFace', 'colLid', 'colBase']) $<HTMLInputElement>(id).oninput = () => applyColors(...cur(), detailColors);
+  const designCur = () => [$<HTMLInputElement>('colFaceDesign').value, $<HTMLInputElement>('colLidDesign').value, $<HTMLInputElement>('colBaseDesign').value] as const;
+  for (const id of ['colFaceDesign', 'colLidDesign', 'colBaseDesign']) $<HTMLInputElement>(id).oninput = () => applyColors(...designCur(), detailColors);
   $('btnColorReset').onclick = () => applyColors(defaultColors.face, defaultColors.lid, defaultColors.base, {});
   for (const [k, id] of ADV_IDS) {
     const chk = $<HTMLInputElement>('advChk' + id), col = $<HTMLInputElement>('advCol' + id);
@@ -1631,10 +1663,11 @@ async function init() {
 
   // 보기
   document.querySelectorAll<HTMLButtonElement>('[data-view]').forEach((b) => (b.onclick = () => showView(b.dataset.view as ViewName)));
-  $('btnIso').onclick = toggleIso; // 3/4 시점: 누를 때마다 R ↔ L
+  $('btnIso').onclick = toggleIso;
   // ? 도움말(시안 v6): 긴 설명은 컨트롤 사이에 두지 않고 ? 버튼 뒤에 모은다. 원문은 숨겨진 본문에 그대로 있다.
   document.addEventListener('click', (e) => {
     const b = (e.target as HTMLElement).closest<HTMLButtonElement>('button.helpq'); if (!b) return;
+    e.preventDefault(); e.stopPropagation();
     const body = document.getElementById(b.getAttribute('aria-controls') ?? ''); if (!body) return;
     const open = b.getAttribute('aria-expanded') !== 'true'; b.setAttribute('aria-expanded', String(open)); body.hidden = !open;
   });

@@ -159,8 +159,13 @@ export class Viewer {
 
   /** 확대 배율(%): 처음 맞춤 거리 대비 지금 카메라 거리. 100% = 박스가 화면에 맞는 처음 확대 */
   getZoomPct(): number {
+    return Math.round(100 * this.getZoomRatio());
+  }
+
+  /** 반올림하지 않은 확대 배율. 시점 전환에서 현재 화면 크기를 정확히 보존한다. */
+  getZoomRatio(): number {
     const d = this.camera.position.distanceTo(this.controls.target);
-    return d > 0 ? Math.round((100 * this.getFitDistance()) / d) : 100;
+    return d > 0 ? this.getFitDistance() / d : 1;
   }
 
   /** 카메라 기울기에서 구한 수평선 높이(화면 위쪽 0 ~ 아래쪽 1, 범위 밖이면 0~1로 제한하지 않은 값). 스튜디오 배경의 "자동" 수평선이 쓴다. */
@@ -724,11 +729,14 @@ export class Viewer {
    * fit=true면 박스 전체가 보이는 거리로 다시 맞춘다(처음 열기·GLB 불러오기).
    */
   setView(name: ViewName, fit = false) {
+    const currentDistance = this.camera.position.distanceTo(this.controls.target);
+    const zoomRatio = currentDistance > 0 ? this.getZoomRatio() : 1;
     this.resetFov();
     this.resetBoxPose(); // 시점 버튼은 박스를 기본 자세로 되돌린 뒤 보는 방향을 정한다(단계 17의 시점과 같다)
     const box = this.bounds();
     const center = box.getCenter(new THREE.Vector3());
-    const dist = fit ? this.fitDistance(box) : this.camera.position.distanceTo(this.controls.target);
+    const nextFitDistance = this.fitDistance(box);
+    const dist = fit ? nextFitDistance : nextFitDistance / zoomRatio;
     const d = new THREE.Vector3(...DIRS[name]).normalize();
     this.camera.position.copy(center).addScaledVector(d, dist);
     this.camera.up.set(0, 1, 0);
