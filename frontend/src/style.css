@@ -548,7 +548,7 @@ details.more > .more-body { margin: 2px 0 4px; }
 #panel > #ratioBanner #ratioDetail { max-height: 120px; overflow: auto; }
 
 /* GPT UI 정리: 밝은 작업 화면, 컴팩트 패널, 일관된 도움말 위계 */
-:root { --accent: #c64f25; --line: #e8e6e2; --bg: #faf9f7; --ink: #292b30; --muted: #73757b; --accent-soft: #fcf0e9; }
+:root { --accent: #c64f25; --line: #e8e6e2; --bg: #faf9f7; --ink: #292b30; --muted: #686b71; --accent-soft: #fcf0e9; }
 body { background: var(--bg); -webkit-font-smoothing: antialiased; }
 button { border-color: var(--line); border-radius: 8px; font-size: 13px; transition: background-color .15s, border-color .15s; }
 button:hover { background: var(--bg); border-color: #c9c7c2; }

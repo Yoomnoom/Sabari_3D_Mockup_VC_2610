@@ -27,7 +27,7 @@ for (const h of before.desktop.hints) {
 R.missing = missing; checks.original_text_preserved = missing.length === 0;
 let mapOk = true; const mapBad = [];
 for (const [k, m] of Object.entries(map)) {
-  const kept = await p.evaluate((m) => [...document.querySelectorAll('details.more > .more-body, .help-body p, .help-body')].some((e) => e.textContent.replace(/\s+/g, ' ').trim() === m.before.replace(/\s+/g, ' ').trim()), m);
+  const kept = await p.evaluate((m) => [...document.querySelectorAll('details.more > .more-body, .help-body p, .help-body')].some((e) => e.textContent.replace(/\s+/g, ' ').trim() === (m.after_full ?? m.before).replace(/\s+/g, ' ').trim()), m); // after_full: 새 디자인에서 문구가 바뀐 항목은 바뀐 원문이 ? 도움말에 있어야 한다
   const shown = domText.includes(norm(m.after_visible));
   if (!kept || !shown) { mapOk = false; mapBad.push(k); }
 }
@@ -39,11 +39,11 @@ const a11y = await p.evaluate(() => {
 });
 const helps = await p.evaluate(() => { const hs = [...document.querySelectorAll('button.helpq')]; return { count: hs.length, ok: hs.every((h) => h.getAttribute('aria-expanded') === 'false' && !!document.getElementById(h.getAttribute('aria-controls') ?? '') && document.getElementById(h.getAttribute('aria-controls')).hidden) }; });
 R.helps = helps; // v6 2차: 설명 4개를 "자세히 보기" 대신 ? 도움말로 옮겼다 → 자세히 보기 8개 이상 + ? 도움말 4개 이상(모두 aria-controls·aria-expanded 있음, 처음엔 접힘)
-checks.details_unified = a11y.count >= 8 && a11y.allHaveSummary && a11y.closedByDefault && helps.count >= 4 && helps.ok;
-await p.click('#tabView'); await p.evaluate(() => { const d = document.querySelector('#tp-view details.more'); d.open = false; });
-const sum = p.locator('#tp-view details.more > summary').first(); await sum.focus(); await p.keyboard.press('Enter');
-const afterEnter = await p.evaluate(() => document.querySelector('#tp-view details.more').open); await p.keyboard.press('Space'); const afterSpace = await p.evaluate(() => document.querySelector('#tp-view details.more').open);
-R.keys = { afterEnter, afterSpace }; checks.enter_space_toggle = afterEnter === true && afterSpace === false;
+checks.details_unified = (a11y.count === 0 || (a11y.allHaveSummary && a11y.closedByDefault)) && helps.count >= 9 && helps.ok; // 새 디자인: 자세히 보기 대신 ? 도움말 9개 이상(모두 aria 연결·처음엔 접힘)
+await p.click('#tabView'); 
+const sum = p.locator('#tp-view button.helpq').first(); await sum.focus(); await p.keyboard.press('Enter');
+const isOpen = () => p.evaluate(() => document.querySelector('#tp-view button.helpq').getAttribute('aria-expanded') === 'true'); const afterEnter = await isOpen(); await p.keyboard.press('Space'); const afterSpace = await isOpen(); await p.keyboard.press('Enter'); const afterEnter2 = await isOpen(); // ? 버튼: Enter 로 열고 닫는다. Space 는 3D 화면 이동 키라 토글하지 않는다(옛 v0.10.1 과 같음)
+R.keys = { afterEnter, afterSpace, afterEnter2 }; checks.enter_space_toggle = afterEnter === true && afterSpace === true && afterEnter2 === false;
 const colors = await p.evaluate(() => { const rgb = (c) => '#' + c.match(/\d+/g).slice(0, 3).map((x) => (+x).toString(16).padStart(2, '0')).join(''); const h = document.querySelector('#tp-view p.hint.short'), s = document.querySelector('#tp-view details.more > summary'); const bg = rgb(getComputedStyle(document.querySelector('#tp-view')).backgroundColor === 'rgba(0, 0, 0, 0)' ? 'rgb(245,243,238)' : getComputedStyle(document.querySelector('#tp-view')).backgroundColor); return { hint: rgb(getComputedStyle(h).color), summary: rgb(getComputedStyle(s).color), bg }; });
 R.contrast = { ...colors, hintRatio: +contrast(colors.hint, colors.bg).toFixed(2), summaryRatio: +contrast(colors.summary, colors.bg).toFixed(2) }; checks.contrast_4_5 = R.contrast.hintRatio >= 4.5 && R.contrast.summaryRatio >= 4.5;
 checks.disabled_reason_tooltips = await p.evaluate(() => ['btnRemove', 'btnReset', 'btnSplitEdit', 'btnUnderAdd'].every((id) => { const e = document.getElementById(id); return !e.disabled || e.title.length > 0; }));
