@@ -26,7 +26,7 @@ let viewer: Viewer;
 let current: FaceId = 'lid_top';
 /** "하단 몸통 디자인 사용" 스위치. 기본은 꺼짐이며, 꺼져 있으면 화면·동작이 뚜껑 5면만 있을 때와 같다. */
 let baseEnabled = false;
-const lastByGroup: Record<FaceGroup, FaceId> = { lid: 'lid_top', base: 'base_front' };
+const lastByGroup: Record<FaceGroup, FaceId> = { lid: 'lid_top', base: 'base_bottom' };
 let externalGlbActive = false;
 let workSnapshot: ReturnType<Viewer['capturePose']> | null = null;
 /** 박스 치수 파라미터. 3D·면 크기·텍스처 크기는 모두 여기서 만들어진다. */
@@ -79,9 +79,10 @@ function applyPresetValue(v: ViewPresetValue) {
 
 /** 기본 제공 시점 "세운 3/4": 축 잠금 상태는 유지하고(각도 바 기준만 새 자세로 다시 잡는다) 박스 자세·카메라·FOV만 바꾼다. */
 function goStanding(side: StandingSide) {
-  if (externalGlbActive) return;
   lastStandingSide = side; // Alt+6 으로 갔을 때도 다음 토글이 반대편으로 가도록 기억한다
-  applyPresetValue(standingPresetValue(side, { lock: viewer.captureLockState(), liftMm: viewer.getLiftMm() }, viewer.getZoomRatio()));
+  const value = standingPresetValue(side, { lock: viewer.captureLockState(), liftMm: viewer.getLiftMm() }, viewer.getZoomRatio());
+  if (externalGlbActive) value.boxQuat = viewer.standingQuatForCurrent();
+  applyPresetValue(value);
   viewer.rebaseLockAngle();
 }
 
@@ -99,11 +100,8 @@ function renderPresetCard(slot: number) {
   const save = card.querySelector<HTMLButtonElement>('.vp-save')!;
   const del = card.querySelector<HTMLButtonElement>('.vp-del')!;
   card.classList.toggle('filled', !!p);
-  thumb.disabled = !p || externalGlbActive;
-  save.disabled = externalGlbActive;
+  thumb.disabled = !p;
   del.hidden = !p;
-  del.disabled = externalGlbActive;
-  name.disabled = externalGlbActive;
   if (p) {
     name.value = p.name;
     const url = presetThumbUrls[slot];
@@ -119,7 +117,6 @@ function renderPresetCard(slot: number) {
 
 function renderPresets() {
   for (let i = 0; i < VP_SLOTS; i++) renderPresetCard(i);
-  document.querySelectorAll<HTMLButtonElement>('.vp-fixed').forEach((b) => { b.disabled = externalGlbActive; });
 }
 
 function setPresetThumb(slot: number, blob: Blob | null) {
@@ -141,7 +138,7 @@ async function savePresetSlot(slot: number) {
 
 function loadPresetSlot(slot: number) {
   const p = presets[slot];
-  if (!p || externalGlbActive) return;
+  if (!p) return;
   applyPresetValue(p.value);
 }
 
@@ -1283,18 +1280,25 @@ let syncTopHistory: () => void = () => {};
 /** 면 선택선과 3D 면 클릭 편집 선택은 디자인 탭이 열려 있고 외부 GLB를 보는 중이 아닐 때만 동작한다. */
 function syncEditingEnabled() { viewer.setEditingEnabled(activeTab === 'design' && !externalGlbActive); }
 
-/** 외부 GLB를 보는 중: 디자인·박스 탭과 상단 저장·실행 취소·다시 실행은 비활성, 내보내기 탭은 PNG 저장만 활성이다. */
+/** 외부 GLB를 보는 중: 편집·프로젝트 출력만 막고 보기 기능은 그대로 둔다. */
 function setExternalUi(on: boolean) {
+  const reason = '외부 GLB를 보는 중에는 편집 기능을 사용할 수 없습니다';
+  const titled = (el: HTMLElement) => {
+    el.dataset.enabledTitle ??= el.title;
+    el.title = on ? reason : (el.dataset.enabledTitle ?? '');
+  };
   for (const id of ['tp-design', 'tp-box']) {
     const el = $(id);
     (el as HTMLElement & { inert: boolean }).inert = on;
     el.classList.toggle('ext-off', on);
     el.querySelector<HTMLElement>('.ext-note')!.hidden = !on;
+    titled(el);
+    el.querySelectorAll<HTMLElement>('button,input,select,textarea').forEach(titled);
   }
-  for (const id of ['expSvg', 'expFiles']) { const el = $(id); (el as HTMLElement & { inert: boolean }).inert = on; el.style.opacity = on ? '0.45' : ''; }
+  for (const id of ['expSvg', 'expFiles']) { const el = $(id); (el as HTMLElement & { inert: boolean }).inert = on; el.style.opacity = on ? '0.45' : ''; titled(el); el.querySelectorAll<HTMLElement>('button,input,select,textarea').forEach(titled); }
   $('tp-export').querySelector<HTMLElement>('.ext-note')!.hidden = !on;
-  for (const id of ['tabDesign', 'tabBox']) $(id).classList.toggle('ext-off', on);
-  for (const id of ['btnTopSave', 'btnTopUndo', 'btnTopRedo']) $<HTMLButtonElement>(id).disabled = on;
+  for (const id of ['tabDesign', 'tabBox']) { const el = $(id); el.classList.toggle('ext-off', on); if (on) el.setAttribute('aria-disabled', 'true'); else el.removeAttribute('aria-disabled'); titled(el); }
+  for (const id of ['btnTopSave', 'btnTopUndo', 'btnTopRedo']) { const el = $<HTMLButtonElement>(id); el.disabled = on; titled(el); }
   if (on) { tabBeforeExternal = activeTab; if (activeTab === 'design' || activeTab === 'box') setTab('view', false); }
   else { if (tabBeforeExternal) setTab(tabBeforeExternal, false); tabBeforeExternal = null; syncTopHistory(); }
   syncEditingEnabled();
@@ -1491,7 +1495,7 @@ async function applySplit(r: SplitResult) {
   dielines = { ...dielines, [r.kind]: { blob: r.source, name: r.name, bleedMm: r.bleedMm, kind: r.kind, regions: r.regions, rotations: r.rotations, ...(r.mode === 'artboard' || r.mode === 'crop' ? { mode: r.mode, artboardMm: r.artboardMm } : {}), ...(r.imageRotation ? { imageRotation: r.imageRotation, orientationConfirmed: r.orientConfirmed } : {}) } };
   resetRatioRefs(ids);
   renderDielineInfo();
-  setCurrent(ids[0]);
+  setCurrent(r.kind === 'base' ? 'base_bottom' : ids[0]);
   scheduleDraft();
   const skipNote = r.skipped.length ? ` 빈 영역이라 적용하지 않은 면: ${r.skipped.map((id) => FACES.find((f) => f.id === id)?.label ?? id).join(', ')}.` : '';
   msg(`칼선 이미지를 ${ids.length}개 면으로 나눠 적용했습니다.${skipNote} 실행 취소(Ctrl+Z)로 되돌릴 수 있습니다.`, 'ok');
@@ -1880,7 +1884,7 @@ async function init() {
       else if (k === 'y' || (k === 'z' && e.shiftKey)) { e.preventDefault(); if (editing) redo(); }
       return;
     }
-    if (e.altKey && !externalGlbActive) {
+    if (e.altKey) {
       const m = /^Digit([1-5])$/.exec(e.code);
       if (m) { e.preventDefault(); loadPresetSlot(Number(m[1]) - 1); return; }
       if (e.code === 'Digit6') { e.preventDefault(); goStanding('left'); return; } // 세운 3/4 · 왼쪽 옆면(오른쪽은 버튼만)
@@ -1941,7 +1945,10 @@ async function init() {
     busy(async () => { await inspectImage(f); await split!.open(f, f.name, null, cardKind()); }); // 카드에서 고른 종류로 연다
   };
   for (const id of ['dieKindLid', 'dieKindBase']) $<HTMLInputElement>(id).onchange = () => {
-    if (cardKind() === 'base' && !baseEnabled) setBaseEnabled(true); // 하단 몸통을 고르면 하단 면이 있어야 하므로 "하단 몸통 디자인 사용"이 자동으로 켜진다
+    if (cardKind() === 'base') {
+      if (!baseEnabled) setBaseEnabled(true); // 하단 몸통을 고르면 하단 면이 있어야 하므로 "하단 몸통 디자인 사용"이 자동으로 켜진다
+      setCurrent('base_bottom');
+    }
   };
   $('btnSplitEdit').onclick = () => { // 카드에서 고른 종류의 저장본을 연다. 그 종류에 저장본이 없으면 다른 종류의 이미지를 이 종류로 연다. 대화상자에서 종류를 바꾸면 그 종류의 저장본을 불러온다.
     const k = cardKind(), d = dielines[k];
@@ -1965,7 +1972,7 @@ async function init() {
   applyColors(defaultColors.face, defaultColors.lid, defaultColors.base, {});
   for (const f of FACES) viewer.setFaceTexture(f.id, null);
   setBaseEnabled(true, false); // 새 프로젝트의 기본값은 "하단 몸통 디자인 사용" 켬(열어 온 .sabari·임시저장은 저장된 값을 그대로 쓴다)
-  setCurrent('lid_top');
+  setCurrent('base_bottom');
   showView('iso', true);
   await initDraft();
   setDirty(false); // 시작 시 초기 설정은 "변경"이 아니다

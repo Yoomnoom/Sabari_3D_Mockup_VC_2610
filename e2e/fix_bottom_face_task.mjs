@@ -61,7 +61,7 @@ const same = (a, c) => JSON.stringify(a) === JSON.stringify(c);
 }
 // 4: 다른 프로젝트에서 면 가져오기 — 하단 5면만, 상단 이미지는 그대로
 {
-  const A = await newPage(); await A.setInputFiles('#filePick', { name: 'a.png', mimeType: 'image/png', buffer: Buffer.from(await png(A, 'rgb(30,30,200)'), 'base64') }); await A.waitForTimeout(500);
+  const A = await newPage(); await A.click('#tab_lid'); await A.click('#faceList button[data-face=lid_top]'); await A.setInputFiles('#filePick', { name: 'a.png', mimeType: 'image/png', buffer: Buffer.from(await png(A, 'rgb(30,30,200)'), 'base64') }); await A.waitForTimeout(500);
   await A.click('#tabExport'); const [da] = await Promise.all([A.waitForEvent('download'), A.click('#btnProjSave')]); const fa = path.join(OUT, 'A.sabari'); await da.saveAs(fa);
   const Bp = await newPage(); await Bp.check('#useBase');
   for (const id of BASE) { await pickBase(Bp, id); await upload(Bp, 'rgb(200,100,30)'); }
@@ -79,9 +79,9 @@ const same = (a, c) => JSON.stringify(a) === JSON.stringify(c);
   const p = await newPage(); await p.uncheck('#useBase'); await p.waitForTimeout(300); // v0.10.1부터 새 프로젝트는 켬 → 이 시나리오는 끈 상태에서 시작한다
   ok('5_before_toggle_top_selected', (await selected(p)) === 'lid_top');
   await p.check('#useBase'); await p.waitForTimeout(300);
-  ok('5_toggle_on_selects_base_face', (await selected(p)) === 'base_front', await selected(p));
+  ok('5_toggle_on_selects_base_face', (await selected(p)) === 'base_bottom', await selected(p));
   await upload(p);
-  ok('5_upload_after_toggle_goes_to_base', same(await imgs(p), ['base_front']), await imgs(p));
+  ok('5_upload_after_toggle_goes_to_base', same(await imgs(p), ['base_bottom']), await imgs(p));
   // 마지막으로 고른 하단 면을 기억한다: 하단 좌 선택 → 끄기(이미지 제거 확인) → 다시 켜기
   await pickBase(p, 'base_left'); await p.uncheck('#useBase'); await p.waitForTimeout(300);
   const dlg = p.locator('dialog[open] button', { hasText: '제거하고 끄기' }); if (await dlg.count()) await dlg.first().click();

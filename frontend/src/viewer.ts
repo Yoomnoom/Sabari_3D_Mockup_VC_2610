@@ -20,6 +20,8 @@ interface Model {
   lidBaseY: number;
   /** 화면 전용 박스 자세. pivot(박스 중심, 자세 회전) → shift(−중심) → root 순이라 root 의 변환은 그대로다(GLB 내보내기 불변). */
   pivot: THREE.Group;
+  /** 불러온 원래 자세의 축 정렬 바운딩 박스에서 가장 긴 축. 외부 GLB 세운 보기에 쓴다. */
+  uprightAxis?: THREE.Vector3;
 }
 
 /** 화면에만 보이는 표시(선택선·축 잠금 면 표시·축 선). 선택·범위 계산·내보내기에서 제외한다. */
@@ -79,8 +81,6 @@ export class Viewer {
   /** 선택한 축에 수직인 면(마주 보는 면들)의 약한 테두리 표시 */
   private lockHls: THREE.LineSegments[] = [];
   private lockLine: THREE.Line | null = null;
-  /** 앱이 만든 템플릿 GLB(면 이름이 있는 메시)인지: 외부 GLB는 면을 알 수 없어 축 잠금을 쓰지 않는다 */
-  private viewerHasFaces = false;
   private readonly shade = createShadeState();
   onLockChange: ((s: { on: boolean; face: FaceId | null; view: ViewName | null; views: ViewName[]; available: boolean }) => void) | null = null;
   onLockHint: ((text: string) => void) | null = null;
@@ -315,8 +315,8 @@ export class Viewer {
   }
 
   // ------------------------------------------------------------ 축 잠금(면을 눌러 축을 정한다)
-  /** 지금 모델에서 축 잠금을 쓸 수 있는지: 편집 모델은 항상, GLB 뷰어는 앱이 만든 템플릿 GLB(면 이름이 있는 메시)일 때만 */
-  lockAvailable(): boolean { return this.slot === 'editor' ? !!this.models.editor : this.viewerHasFaces; }
+  /** 축 버튼은 모든 모델의 자세 pivot에 적용할 수 있다. */
+  lockAvailable(): boolean { return !!this.cur; }
   getLockFace(): FaceId | null { return this.lockFace; }
   getLockView(): ViewName | null { return this.lockView; }
   /** 지금 축과 같은 선인 회전축 버튼들(마주 보는 버튼은 함께 표시된다) */
@@ -388,17 +388,17 @@ export class Viewer {
 
   private emitLock() { this.onLockChange?.({ on: this.lockOn, face: this.lockFace, view: this.lockView, views: this.lockPressedViews(), available: this.lockAvailable() }); }
 
-  /** 클릭한 면을 축 기준 면으로 정한다. 두께면·안쪽면·배경은 무시하고 안내한다. */
+  /** 클릭한 메시 표면의 법선을 축으로 정한다. 이름 있는 편집 면은 라벨도 함께 기억한다. */
   private pickLockAxis(e: PointerEvent) {
     const m = this.cur;
     const hit = m && this.rayAt(e, [m.root])[0];
     const id = hit && FACES.find((f) => f.id === hit.object.name)?.id;
-    if (!hit || !id) { this.onLockHint?.('면을 눌러 주세요'); return; }
+    if (!hit?.face || (this.slot === 'editor' && !id)) { this.onLockHint?.('면을 눌러 주세요'); return; } // 앱 박스는 이름 있는 편집 면만 축으로 삼고 두께·안쪽·테두리는 안내만 한다. 외부 GLB 는 어느 메시든 법선을 쓴다
     const mesh = hit.object as THREE.Mesh;
     mesh.updateWorldMatrix(true, false);
-    const n = new THREE.Vector3().fromBufferAttribute(mesh.geometry.getAttribute('normal'), 0).transformDirection(mesh.matrixWorld).applyQuaternion(this.boxQuat.clone().invert()).normalize();
+    const n = hit.face.normal.clone().transformDirection(mesh.matrixWorld).applyQuaternion(this.boxQuat.clone().invert()).normalize();
     for (const k of ['x', 'y', 'z'] as const) if (Math.abs(n[k]) < 1e-6) n[k] = 0; // 수치 잡음 정리
-    this.lockFace = id; this.lockView = null; this.lockN = n.normalize(); this.lockBaseline = this.boxQuat.clone();
+    this.lockFace = id ?? null; this.lockView = null; this.lockN = n.normalize(); this.lockBaseline = this.boxQuat.clone();
     this.refreshLockVisuals();
     this.emitLock();
   }
@@ -484,7 +484,16 @@ export class Viewer {
   private makeModel(root: THREE.Group): Model {
     const lid = root.getObjectByName('Lid') ?? null;
     // 닫힌 상태 = 뚜껑 y 0 (템플릿 규약). 열린 채 저장된 GLB도 슬라이더에 실제 높이가 표시된다.
-    return { root, lid, base: root.getObjectByName('Base') ?? null, lidBaseY: 0, pivot: new THREE.Group() };
+    const s = new THREE.Box3().setFromObject(root).getSize(new THREE.Vector3());
+    const uprightAxis = s.x >= s.y && s.x >= s.z ? new THREE.Vector3(1, 0, 0) : s.y >= s.z ? new THREE.Vector3(0, 1, 0) : new THREE.Vector3(0, 0, 1);
+    return { root, lid, base: root.getObjectByName('Base') ?? null, lidBaseY: 0, pivot: new THREE.Group(), uprightAxis };
+  }
+
+  /** 외부 GLB의 가장 긴 바운딩 박스 축을 화면의 위쪽(+Y)으로 세우는 자세. */
+  standingQuatForCurrent(): [number, number, number, number] {
+    const axis = this.cur?.uprightAxis ?? new THREE.Vector3(0, 1, 0);
+    const q = new THREE.Quaternion().setFromUnitVectors(axis, new THREE.Vector3(0, 1, 0));
+    return [q.x, q.y, q.z, q.w];
   }
 
   /** 하이라이트·텍스처를 뺀 모델의 GPU 자원을 해제한다. */
@@ -794,8 +803,6 @@ export class Viewer {
     const m = this.makeModel(gltf.scene);
     m.pivot = this.mountModel(gltf.scene);
     this.models.viewer = m;
-    this.viewerHasFaces = false;
-    gltf.scene.traverse((o) => { if ((o as THREE.Mesh).isMesh && FACES.some((f) => f.id === o.name)) this.viewerHasFaces = true; });
     if (this.slot === 'viewer') this.emitLock();
     let meshes = 0, textured = 0;
     m.root.traverse((o) => {
