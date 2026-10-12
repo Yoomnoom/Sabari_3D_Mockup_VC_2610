@@ -81,7 +81,7 @@ function applyPresetValue(v: ViewPresetValue) {
 function goStanding(side: StandingSide) {
   lastStandingSide = side; // Alt+6 으로 갔을 때도 다음 토글이 반대편으로 가도록 기억한다
   const value = standingPresetValue(side, { lock: viewer.captureLockState(), liftMm: viewer.getLiftMm() }, viewer.getZoomRatio());
-  if (externalGlbActive) value.boxQuat = viewer.standingQuatForCurrent();
+  if (externalGlbActive) value.boxQuat = viewer.standingQuatForCurrent() ?? value.boxQuat;
   applyPresetValue(value);
   viewer.rebaseLockAngle();
 }

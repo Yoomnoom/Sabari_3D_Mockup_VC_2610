@@ -486,12 +486,13 @@ export class Viewer {
     // 닫힌 상태 = 뚜껑 y 0 (템플릿 규약). 열린 채 저장된 GLB도 슬라이더에 실제 높이가 표시된다.
     const s = new THREE.Box3().setFromObject(root).getSize(new THREE.Vector3());
     const uprightAxis = s.x >= s.y && s.x >= s.z ? new THREE.Vector3(1, 0, 0) : s.y >= s.z ? new THREE.Vector3(0, 1, 0) : new THREE.Vector3(0, 0, 1);
-    return { root, lid, base: root.getObjectByName('Base') ?? null, lidBaseY: 0, pivot: new THREE.Group(), uprightAxis };
+    return { root, lid, base: root.getObjectByName('Base') ?? null, lidBaseY: 0, pivot: new THREE.Group(), uprightAxis: root.getObjectByName('lid_top') ? undefined : uprightAxis }; // 앱이 내보낸 GLB(면 메시 이름 있음)는 앱 박스와 같은 STANDING_QUAT 를 쓰므로 축을 따로 구하지 않는다
   }
 
   /** 외부 GLB의 가장 긴 바운딩 박스 축을 화면의 위쪽(+Y)으로 세우는 자세. */
-  standingQuatForCurrent(): [number, number, number, number] {
-    const axis = this.cur?.uprightAxis ?? new THREE.Vector3(0, 1, 0);
+  standingQuatForCurrent(): [number, number, number, number] | null {
+    const axis = this.cur?.uprightAxis;
+    if (!axis) return null;
     const q = new THREE.Quaternion().setFromUnitVectors(axis, new THREE.Vector3(0, 1, 0));
     return [q.x, q.y, q.z, q.w];
   }
