@@ -31,6 +31,7 @@ export async function collectStates(p, fixtures) {
   const all = new Map(); // key -> item (+ states)
   const add = (state, items) => { for (const it of items) { const key = it.id ? `#${it.id}` : `${it.tag}|${it.text ?? ''}|${it['aria-label'] ?? ''}|${it.title ?? ''}`; const prev = all.get(key); if (prev) prev.states.push(state); else all.set(key, { ...it, states: [state] }); } };
   const snap = async (state) => add(state, await p.evaluate(collectInPage));
+  if (await p.evaluate(() => !!window.__sabari?.setCurrent)) await p.evaluate(() => window.__sabari.setCurrent('lid_top')); // 새 프로젝트 기본 선택이 하단이라, 옛 기본(뚜껑 상단)의 면 크기·안내 문구를 처음 상태로 모은다
   await snap('default');
   const goTab = async (name) => { const id = '#tab' + name[0].toUpperCase() + name.slice(1); if (await p.locator(id).count()) await p.click(id); }; // 새 UI의 작업 탭(옛 UI에는 없음)
   // 하단 몸통 사용
